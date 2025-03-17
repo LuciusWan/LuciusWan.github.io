@@ -272,13 +272,22 @@
     </li>
     <li><a href="#缓存雪崩">缓存雪崩</a>
       <ol>
-        <li><a href="#简单解决办法">简单解决办法</a></li>
+        <li><a href="#简单解决办法">简单解决办法</a>
+          <ol>
+            <li><a href="#java代码如下其实就是生成随机数">java代码如下（其实就是生成随机数)</a></li>
+          </ol>
+        </li>
         <li><a href="#其他高级解决方案">其他高级解决方案:</a></li>
       </ol>
     </li>
     <li><a href="#缓存击穿">缓存击穿</a>
       <ol>
         <li><a href="#解决方案1互斥锁">解决方案1:互斥锁</a></li>
+        <li><a href="#解决方案2逻辑过期时间">解决方案2:逻辑过期时间</a>
+          <ol>
+            <li><a href="#java代码如下">java代码如下</a></li>
+          </ol>
+        </li>
       </ol>
     </li>
   </ol>
@@ -349,7 +358,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 3 分钟
+                    阅读时长: 5 分钟
                 </time>
             </div>
         
@@ -507,7 +516,26 @@
 </ul>
 <h3 id="简单解决办法">简单解决办法
 </h3><ul>
-<li>把数据存储进Redis的时候直接随机过期时间存储</li>
+<li>
+<p>把数据存储进Redis的时候直接随机过期时间存储</p>
+<h4 id="java代码如下其实就是生成随机数">java代码如下（其实就是生成随机数)
+</h4><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">private</span><span class="w"> </span><span class="n">Long</span><span class="w"> </span><span class="nf">cacheAvalanche</span><span class="p">(){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Random</span><span class="w"> </span><span class="n">random</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">Random</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Long</span><span class="w"> </span><span class="n">number</span><span class="o">=</span><span class="n">random</span><span class="p">.</span><span class="na">nextInt</span><span class="p">(</span><span class="n">11</span><span class="p">)</span><span class="o">+</span><span class="n">20L</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">number</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
 </ul>
 <h3 id="其他高级解决方案">其他高级解决方案:
 </h3><ul>
@@ -523,6 +551,18 @@
 </ul>
 <h2 id="缓存击穿">缓存击穿
 </h2><p>一个热点数据过期,大量线程同时访问,每个线程都选择查询完Redis后查询数据库,导致数据库压力剧增</p>
+<p><img src="/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250317212328.png"
+	width="986"
+	height="675"
+	srcset="/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250317212328_hu_16d51d1263f7e6f7.png 480w, /p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250317212328_hu_569dcaedb9d72474.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="146"
+		data-flex-basis="350px"
+	
+></p>
 <h3 id="解决方案1互斥锁">解决方案1:互斥锁
 </h3><ul>
 <li>
@@ -641,7 +681,124 @@
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>其中为防止获得锁的线程挂了不会释放锁资源,给锁设置过期时间</p>
-
+<h3 id="解决方案2逻辑过期时间">解决方案2:逻辑过期时间
+</h3><p><img src="/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250317212127.png"
+	width="1187"
+	height="614"
+	srcset="/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250317212127_hu_2469e5f227ab76b8.png 480w, /p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250317212127_hu_e950a2cd10b2dc2c.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="193"
+		data-flex-basis="463px"
+	
+></p>
+<ul>
+<li>在Redis中存储数据时,多存储一条过期时间,如果过期的话,最快发现的线程会主动申请互斥锁,并且查询数据库,查完后设置过期时间并且写回redis,同时返回给客户端,其他的线程请求完锁后,请求不到就直接返回过期的数据,这种方式可以防止死锁的发生,但是牺牲了一部分redis空间</li>
+</ul>
+<h4 id="java代码如下">java代码如下
+</h4><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="nf">redisLogicExpireTime</span><span class="p">(</span><span class="n">Long</span><span class="w"> </span><span class="n">id</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">shop</span><span class="o">=</span><span class="w"> </span><span class="n">stringRedisTemplate</span><span class="p">.</span><span class="na">opsForValue</span><span class="p">().</span><span class="na">get</span><span class="p">(</span><span class="n">RedisConstants</span><span class="p">.</span><span class="na">CACHE_SHOP_KEY</span><span class="o">+</span><span class="n">id</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">logger</span><span class="p">.</span><span class="na">info</span><span class="p">(</span><span class="n">shop</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">//查询到对应的value,并且这个value不是&#34;&#34;,则店铺存在,直接返回</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">shop</span><span class="o">!=</span><span class="kc">null</span><span class="o">&amp;&amp;!</span><span class="s">&#34;&#34;</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="n">shop</span><span class="p">)){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">RedisData</span><span class="w"> </span><span class="n">redisData</span><span class="o">=</span><span class="n">JSONUtil</span><span class="p">.</span><span class="na">toBean</span><span class="p">(</span><span class="n">shop</span><span class="p">,</span><span class="n">RedisData</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">//判断是否过期</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">redisData</span><span class="p">.</span><span class="na">getExpireTime</span><span class="p">().</span><span class="na">isAfter</span><span class="p">(</span><span class="n">LocalDateTime</span><span class="p">.</span><span class="na">now</span><span class="p">())){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">Shop</span><span class="w"> </span><span class="n">shopRedis</span><span class="o">=</span><span class="w"> </span><span class="n">redisData</span><span class="p">.</span><span class="na">getData</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">shopRedis</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">logger</span><span class="p">.</span><span class="na">info</span><span class="p">(</span><span class="s">&#34;查询redis直接输出&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="na">ok</span><span class="p">(</span><span class="n">shopRedis</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">//店铺value不等于null,但是为&#34;&#34;，说明缓存和数据库中都没有,直接返回不存在信息</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">shop</span><span class="o">!=</span><span class="kc">null</span><span class="o">&amp;&amp;</span><span class="n">shop</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="s">&#34;&#34;</span><span class="p">)){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="na">fail</span><span class="p">(</span><span class="s">&#34;店铺信息不存在&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">//所有线程同时去抢夺互斥锁资源,只会有一个线程抢到</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">setLock</span><span class="p">(</span><span class="n">RedisConstants</span><span class="p">.</span><span class="na">LOCK_SHOP_KEY</span><span class="o">+</span><span class="n">id</span><span class="p">)){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">Shop</span><span class="w"> </span><span class="n">shop1</span><span class="o">=</span><span class="w"> </span><span class="n">getById</span><span class="p">(</span><span class="n">id</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">//数据没查到,说明这个店铺id不存在,这次缓存穿透了,但是可以把空信息写入redis</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">shop1</span><span class="o">==</span><span class="kc">null</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">stringRedisTemplate</span><span class="p">.</span><span class="na">opsForValue</span><span class="p">().</span><span class="na">set</span><span class="p">(</span><span class="n">RedisConstants</span><span class="p">.</span><span class="na">CACHE_SHOP_KEY</span><span class="o">+</span><span class="n">id</span><span class="p">,</span><span class="s">&#34;&#34;</span><span class="p">,</span><span class="n">cacheAvalanche</span><span class="p">(),</span><span class="w"> </span><span class="n">TimeUnit</span><span class="p">.</span><span class="na">MINUTES</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="na">fail</span><span class="p">(</span><span class="s">&#34;店铺信息不存在&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">RedisData</span><span class="w"> </span><span class="n">redisData</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">RedisData</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">redisData</span><span class="p">.</span><span class="na">setData</span><span class="p">(</span><span class="n">shop1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">redisData</span><span class="p">.</span><span class="na">setExpireTime</span><span class="p">(</span><span class="n">LocalDateTime</span><span class="p">.</span><span class="na">now</span><span class="p">().</span><span class="na">plusMinutes</span><span class="p">(</span><span class="n">cacheAvalanche</span><span class="p">()));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">json</span><span class="o">=</span><span class="w"> </span><span class="n">JSON</span><span class="p">.</span><span class="na">toJSONString</span><span class="p">(</span><span class="n">redisData</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">//查询到店铺,返回店铺信息,并且把信息写入Redis</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">shop1</span><span class="o">!=</span><span class="kc">null</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">stringRedisTemplate</span><span class="p">.</span><span class="na">opsForValue</span><span class="p">().</span><span class="na">set</span><span class="p">(</span><span class="n">RedisConstants</span><span class="p">.</span><span class="na">CACHE_SHOP_KEY</span><span class="o">+</span><span class="n">id</span><span class="p">,</span><span class="n">json</span><span class="p">,</span><span class="n">cacheAvalanche</span><span class="p">(),</span><span class="w"> </span><span class="n">TimeUnit</span><span class="p">.</span><span class="na">MINUTES</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="na">ok</span><span class="p">(</span><span class="n">shop1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">//所有工作做完后释放锁资源</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">unLock</span><span class="p">(</span><span class="n">RedisConstants</span><span class="p">.</span><span class="na">LOCK_SHOP_KEY</span><span class="o">+</span><span class="n">id</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">//其他线程直接返回过期的数据</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">RedisData</span><span class="w"> </span><span class="n">redisData</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">RedisData</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">redisData</span><span class="p">.</span><span class="na">setData</span><span class="p">(</span><span class="n">JSONUtil</span><span class="p">.</span><span class="na">toBean</span><span class="p">(</span><span class="n">shop</span><span class="p">,</span><span class="n">Shop</span><span class="p">.</span><span class="na">class</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">Shop</span><span class="w"> </span><span class="n">redis</span><span class="o">=</span><span class="n">redisData</span><span class="p">.</span><span class="na">getData</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="na">ok</span><span class="p">(</span><span class="n">redis</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="na">fail</span><span class="p">(</span><span class="s">&#34;店铺信息不存在&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
 </section>
 
 

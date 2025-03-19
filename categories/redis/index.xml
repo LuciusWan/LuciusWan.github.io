@@ -8,20 +8,20 @@
         <language>zh-cn</language>
         <copyright>LuciusWan</copyright>
         <lastBuildDate>Sun, 16 Mar 2025 20:30:40 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/categories/redis/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Redis缓存问题</title>
-        <link>https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/</link>
+        <title>Redis学习与实战</title>
+        <link>https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/</link>
         <pubDate>Sun, 16 Mar 2025 20:30:40 +0800</pubDate>
         
-        <guid>https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/</guid>
-        <description>&lt;h1 id=&#34;redis缓存问题&#34;&gt;Redis缓存问题
+        <guid>https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/</guid>
+        <description>&lt;h1 id=&#34;redis学习与实战&#34;&gt;Redis学习与实战
 &lt;/h1&gt;&lt;h2 id=&#34;缓存穿透&#34;&gt;缓存穿透
 &lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;缓存穿透是指客户端请求的数据,Redis和Mysql里面都没有,缓存永远不会生效,如果客户端一直请求相同的id,请求就会一直到达数据库,给数据库上压力了.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/2025-03-16-16-56-31-image.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/2025-03-16-16-56-31-image.png&#34;
 	width=&#34;476&#34;
 	height=&#34;559&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/2025-03-16-16-56-31-image_hu_757921f65469b251.png 480w, https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/2025-03-16-16-56-31-image_hu_52739d6c31d5f117.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/2025-03-16-16-56-31-image_hu_757921f65469b251.png 480w, https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/2025-03-16-16-56-31-image_hu_52739d6c31d5f117.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -42,10 +42,10 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;解决缓存穿透的业务逻辑&#34;&gt;解决缓存穿透的业务逻辑:
-&lt;/h3&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/2025-03-16-18-46-46-image.png&#34;
+&lt;/h3&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/2025-03-16-18-46-46-image.png&#34;
 	width=&#34;722&#34;
 	height=&#34;682&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/2025-03-16-18-46-46-image_hu_dffccb838d26e29e.png 480w, https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/2025-03-16-18-46-46-image_hu_9f43ed378673c129.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/2025-03-16-18-46-46-image_hu_dffccb838d26e29e.png 480w, https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/2025-03-16-18-46-46-image_hu_9f43ed378673c129.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -115,10 +115,10 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;h3 id=&#34;解决方案2布隆过滤&#34;&gt;解决方案2:布隆过滤
 &lt;/h3&gt;&lt;p&gt;缓存穿透后,穿透的信息进入布隆过滤器,如果再进行查询,先查询布隆过滤器,如果这个id是穿透信息,就直接拒绝查询&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/2025-03-16-18-55-26-image.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/2025-03-16-18-55-26-image.png&#34;
 	width=&#34;524&#34;
 	height=&#34;577&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/2025-03-16-18-55-26-image_hu_a99f3263ba55db0b.png 480w, https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/2025-03-16-18-55-26-image_hu_1061cd7984d64a7f.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/2025-03-16-18-55-26-image_hu_a99f3263ba55db0b.png 480w, https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/2025-03-16-18-55-26-image_hu_1061cd7984d64a7f.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -140,10 +140,10 @@
 &lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;缓存雪崩是指大量数据同时到期,或者Redis服务直接宕机,大量请求涌入Mysql)&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/2025-03-16-19-08-47-image.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/2025-03-16-19-08-47-image.png&#34;
 	width=&#34;986&#34;
 	height=&#34;563&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/2025-03-16-19-08-47-image_hu_c0c17e73cfe158fd.png 480w, https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/2025-03-16-19-08-47-image_hu_40b82863e75db47e.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/2025-03-16-19-08-47-image_hu_c0c17e73cfe158fd.png 480w, https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/2025-03-16-19-08-47-image_hu_40b82863e75db47e.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -191,10 +191,10 @@
 &lt;/ul&gt;
 &lt;h2 id=&#34;缓存击穿&#34;&gt;缓存击穿
 &lt;/h2&gt;&lt;p&gt;一个热点数据过期,大量线程同时访问,每个线程都选择查询完Redis后查询数据库,导致数据库压力剧增&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250317212328.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250317212328.png&#34;
 	width=&#34;986&#34;
 	height=&#34;675&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250317212328_hu_16d51d1263f7e6f7.png 480w, https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250317212328_hu_569dcaedb9d72474.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250317212328_hu_16d51d1263f7e6f7.png 480w, https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250317212328_hu_569dcaedb9d72474.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -322,10 +322,10 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;其中为防止获得锁的线程挂了不会释放锁资源,给锁设置过期时间&lt;/p&gt;
 &lt;h3 id=&#34;解决方案2逻辑过期时间&#34;&gt;解决方案2:逻辑过期时间
-&lt;/h3&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250317212127.png&#34;
+&lt;/h3&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250317212127.png&#34;
 	width=&#34;1187&#34;
 	height=&#34;614&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250317212127_hu_2469e5f227ab76b8.png 480w, https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250317212127_hu_e950a2cd10b2dc2c.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250317212127_hu_2469e5f227ab76b8.png 480w, https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250317212127_hu_e950a2cd10b2dc2c.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -440,10 +440,10 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;h2 id=&#34;订单秒杀问题&#34;&gt;订单秒杀问题
 &lt;/h2&gt;&lt;p&gt;限量限时商品可能会在短时间内面临大量请求,可能会出现超卖的情况&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319153853.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319153853.png&#34;
 	width=&#34;858&#34;
 	height=&#34;631&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319153853_hu_dce5769fe2922e9e.png 480w, https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319153853_hu_bb99a4dce83e0ca7.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319153853_hu_dce5769fe2922e9e.png 480w, https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319153853_hu_bb99a4dce83e0ca7.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -454,10 +454,10 @@
 &gt;&lt;/p&gt;
 &lt;p&gt;如果第一次遇到1的时候没来得及写到数据库里,后面的线程查询的时候遇到的还是1,就可以继续执行扣减的操作,导致超卖的情况发生&lt;/p&gt;
 &lt;h3 id=&#34;jmeter测试结果&#34;&gt;JMeter测试结果
-&lt;/h3&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319154619.png&#34;
+&lt;/h3&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319154619.png&#34;
 	width=&#34;672&#34;
 	height=&#34;231&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319154619_hu_f1ef6c840de5ca69.png 480w, https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319154619_hu_12cfff0b9a9da33b.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319154619_hu_f1ef6c840de5ca69.png 480w, https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319154619_hu_12cfff0b9a9da33b.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -496,10 +496,10 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;在写入数据库之前,先查询数据库目前的值和之前查询到的是否一样,是否在写入之前被修改了,如果被修改了就不能写入&lt;/p&gt;
 &lt;h4 id=&#34;jmeter测试结果-1&#34;&gt;JMeter测试结果
-&lt;/h4&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319155630.png&#34;
+&lt;/h4&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319155630.png&#34;
 	width=&#34;688&#34;
 	height=&#34;250&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319155630_hu_56297921ea3e35d7.png 480w, https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319155630_hu_1007e175f9c61c3a.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319155630_hu_56297921ea3e35d7.png 480w, https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319155630_hu_1007e175f9c61c3a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -508,10 +508,10 @@
 		data-flex-basis=&#34;660px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319155715.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319155715.png&#34;
 	width=&#34;739&#34;
 	height=&#34;445&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319155715_hu_e51a0a3ca73f8da3.png 480w, https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319155715_hu_921362bb640e50b1.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319155715_hu_e51a0a3ca73f8da3.png 480w, https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319155715_hu_921362bb640e50b1.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -550,10 +550,10 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h3 id=&#34;jmeter测试结果-2&#34;&gt;JMeter测试结果
-&lt;/h3&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319160408.png&#34;
+&lt;/h3&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319160408.png&#34;
 	width=&#34;126&#34;
 	height=&#34;84&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319160408_hu_1f5772414911368b.png 480w, https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319160408_hu_76e2d4beb9de5726.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319160408_hu_1f5772414911368b.png 480w, https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319160408_hu_76e2d4beb9de5726.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -673,10 +673,10 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h4 id=&#34;jmeter测试结果-3&#34;&gt;JMeter测试结果
-&lt;/h4&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319165951.png&#34;
+&lt;/h4&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319165951.png&#34;
 	width=&#34;126&#34;
 	height=&#34;85&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319165951_hu_e2431104e170f14c.png 480w, https://LuciusWan.github.io/p/redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319165951_hu_b0b6455250702fad.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319165951_hu_e2431104e170f14c.png 480w, https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319165951_hu_b0b6455250702fad.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -749,7 +749,22 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;允许SpringIOC容器暴露代理对象,这样我们才能正常获取代理对象&lt;/p&gt;
-</description>
+&lt;h2 id=&#34;redis实现分布式锁&#34;&gt;Redis实现分布式锁
+&lt;/h2&gt;&lt;p&gt;如果现在同时开两个进程,服务器集群部署,由nginx实现负载均衡,实现轮询发送请求,先给8081端口发送,再给8082端口,导致进程内的锁无法和另一个进程的锁联动&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319205449.png&#34;
+	width=&#34;293&#34;
+	height=&#34;90&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319205449_hu_c6a1b3a2184f4692.png 480w, https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250319205449_hu_b65744c681bbdb7e.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;325&#34;
+		data-flex-basis=&#34;781px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;这时可以使用伟大的&lt;strong&gt;Redis&lt;/strong&gt;制作分布式锁来解决这个问题!&lt;/p&gt;
+&lt;img src=&#34;微信截图_20250319201422.png&#34; title=&#34;&#34; alt=&#34;&#34; width=&#34;445&#34;&gt;</description>
         </item>
         
     </channel>

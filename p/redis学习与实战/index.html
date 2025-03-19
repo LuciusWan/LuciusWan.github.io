@@ -317,7 +317,12 @@
         <li><a href="#java魅力时刻">Java魅力时刻</a></li>
       </ol>
     </li>
-    <li><a href="#redis实现分布式锁">Redis实现分布式锁</a></li>
+    <li><a href="#redis实现分布式锁">Redis实现分布式锁</a>
+      <ol>
+        <li><a href="#分布式锁的设计">分布式锁的设计</a></li>
+        <li><a href="#java代码实现">Java代码实现</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -386,7 +391,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 9 分钟
+                    阅读时长: 10 分钟
                 </time>
             </div>
         
@@ -1153,6 +1158,97 @@
 ></p>
 <p>这时可以使用伟大的<strong>Redis</strong>制作分布式锁来解决这个问题!</p>
 <img src="微信截图_20250319201422.png" title="" alt="" width="445">
+<h3 id="分布式锁的设计">分布式锁的设计
+</h3><ul>
+<li>
+<p>这个锁应当起到<strong>互斥作用</strong>,很多个线程同时发送过来,只能有一个线程获取锁资源,因此得用setnx.</p>
+</li>
+<li>
+<p>在此线程结束运行的时候应当及时释放锁资源,防止服务器资源浪费,及时del key</p>
+</li>
+<li>
+<p>如果一个服务器在发送完这个请求后就宕机了,不会执行这个释放锁资源的代码,那么锁资源就不会被释放,导致其他服务器资源浪费.这时候就要给锁设置过期时间,<strong>到时间自动释放锁资源</strong></p>
+</li>
+<li>
+<p>如果在还没执行expire time的时候服务器就宕机了,那么锁资源一样不会被释放,这时候就得这么写获取锁的语句</p>
+</li>
+<li>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">set lock thread1 nx ex 10
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>保持了原子性,让互斥和过期时间一起设置</p>
+</li>
+<li>
+<p>同时采用<strong>非阻塞的锁</strong>,防止很多线程一直等待锁资源释放,尝试一次,如果没获取锁资源就return false,成功就return true</p>
+</li>
+</ul>
+<h3 id="java代码实现">Java代码实现
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.hmdp.utils</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.springframework.data.redis.core.StringRedisTemplate</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.concurrent.TimeUnit</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SimpleRedisLock</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">ILock</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">StringRedisTemplate</span><span class="w"> </span><span class="n">stringRedisTemplate</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">LOCK_PREFIX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;lock:&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">lockName</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">SimpleRedisLock</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">lockName</span><span class="p">,</span><span class="n">StringRedisTemplate</span><span class="w"> </span><span class="n">stringRedisTemplate</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">lockName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lockName</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">stringRedisTemplate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stringRedisTemplate</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Boolean</span><span class="w"> </span><span class="nf">tryLock</span><span class="p">(</span><span class="n">Long</span><span class="w"> </span><span class="n">timeoutSec</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Long</span><span class="w"> </span><span class="n">threadId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Thread</span><span class="p">.</span><span class="na">currentThread</span><span class="p">().</span><span class="na">getId</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Boolean</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stringRedisTemplate</span><span class="p">.</span><span class="na">opsForValue</span><span class="p">().</span><span class="na">setIfAbsent</span><span class="p">(</span><span class="n">LOCK_PREFIX</span><span class="o">+</span><span class="n">lockName</span><span class="p">,</span><span class="n">threadId</span><span class="o">+</span><span class="s">&#34;&#34;</span><span class="p">,</span><span class="n">timeoutSec</span><span class="p">,</span><span class="w"> </span><span class="n">TimeUnit</span><span class="p">.</span><span class="na">SECONDS</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">//这样写的话,是true就返回true,如果是false或者null都返回false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Boolean</span><span class="p">.</span><span class="na">TRUE</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="n">result</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">unlock</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">stringRedisTemplate</span><span class="p">.</span><span class="na">delete</span><span class="p">(</span><span class="n">LOCK_PREFIX</span><span class="o">+</span><span class="n">lockName</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div>
 </section>
 
 

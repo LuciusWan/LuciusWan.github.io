@@ -7,7 +7,15 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>LuciusWan</copyright>
-        <lastBuildDate>Sun, 16 Mar 2025 20:30:40 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 21 Mar 2025 14:01:52 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Linux</title>
+        <link>https://LuciusWan.github.io/categories/linux/</link>
+        <pubDate>Fri, 21 Mar 2025 14:01:52 +0800</pubDate>
+        
+        <guid>https://LuciusWan.github.io/categories/linux/</guid>
+        <description>&lt;img src="https://LuciusWan.github.io/categories/linux/OIP-C.jpg" alt="Featured image of post Linux" /&gt;</description>
+        </item>
+        <item>
         <title>Java</title>
         <link>https://LuciusWan.github.io/categories/java/</link>
         <pubDate>Sun, 16 Mar 2025 20:30:40 +0800</pubDate>

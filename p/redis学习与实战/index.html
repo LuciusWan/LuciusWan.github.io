@@ -361,6 +361,7 @@
           </ol>
         </li>
         <li><a href="#redis本地集群部署">Redis本地集群部署</a></li>
+        <li><a href="#redisson实现分布式联锁">Redisson实现分布式联锁</a></li>
       </ol>
     </li>
   </ol>
@@ -1930,6 +1931,73 @@
 	
 ></p>
 <p>然后分别启动Redis就实现Redis集群了</p>
+<h3 id="redisson实现分布式联锁">Redisson实现分布式联锁
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">RLock</span><span class="w"> </span><span class="n">lock1</span><span class="o">=</span><span class="n">redisson6379</span><span class="p">.</span><span class="na">getLock</span><span class="p">(</span><span class="s">&#34;lock:order:&#34;</span><span class="o">+</span><span class="n">userId</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">RLock</span><span class="w"> </span><span class="n">lock2</span><span class="o">=</span><span class="n">redisson6380</span><span class="p">.</span><span class="na">getLock</span><span class="p">(</span><span class="s">&#34;lock:order:&#34;</span><span class="o">+</span><span class="n">userId</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">RLock</span><span class="w"> </span><span class="n">lock3</span><span class="o">=</span><span class="n">redisson6381</span><span class="p">.</span><span class="na">getLock</span><span class="p">(</span><span class="s">&#34;lock:order:&#34;</span><span class="o">+</span><span class="n">userId</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">RLock</span><span class="w"> </span><span class="n">lock</span><span class="o">=</span><span class="n">redisson6380</span><span class="p">.</span><span class="na">getMultiLock</span><span class="p">(</span><span class="n">lock1</span><span class="p">,</span><span class="n">lock2</span><span class="p">,</span><span class="n">lock3</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>使用随机一个redisson客户端来调用它的.getMultiLock方法就可以制作出联锁</p>
+</li>
+<li>
+<p>联锁就可以在Redis集群的情况下,所有Redis共有一把锁,以免出现重复申请锁资源的情况</p>
+</li>
+<li>
+<p><code>getMultiLock</code>会尝试同时获取所有指定的锁，只有当所有锁都成功获取时，才算加锁成功。如果任何一个锁获取失败，它会回滚已经获取的锁，确保加锁操作的原子性。</p>
+</li>
+<li>
+<p>通过将多个锁的获取和释放封装在一起，<code>getMultiLock</code>简化了在复杂业务场景下的并发控制逻辑，减少了开发人员在处理多个锁时的错误风险。</p>
+</li>
+</ul>
+<p>其中redisson.getMultilock使用任意一个对象都可以的原因是,这里是统一新创建</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="n">RLock</span><span class="w"> </span><span class="nf">getMultiLock</span><span class="p">(</span><span class="n">RLock</span><span class="p">...</span><span class="w"> </span><span class="n">locks</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RedissonMultiLock</span><span class="p">(</span><span class="n">locks</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>通过这样制作联锁,可以让每一个Redis都有lock</p>
+<p><img src="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250325200900.png"
+	width="875"
+	height="376"
+	srcset="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250325200900_hu_a8388458ac50d058.png 480w, /p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250325200900_hu_4921acba233cf1b6.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="232"
+		data-flex-basis="558px"
+	
+></p>
+<p><img src="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250325201046.png"
+	width="818"
+	height="301"
+	srcset="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250325201046_hu_8805a7414345e230.png 480w, /p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250325201046_hu_eede12fe6514b02.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="271"
+		data-flex-basis="652px"
+	
+></p>
 
 </section>
 

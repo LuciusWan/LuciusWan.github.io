@@ -360,6 +360,7 @@
             <li><a href="#redisson的trylock原码">Redisson的tryLock原码</a></li>
           </ol>
         </li>
+        <li><a href="#redis本地集群部署">Redis本地集群部署</a></li>
       </ol>
     </li>
   </ol>
@@ -434,7 +435,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 14 分钟
+                    阅读时长: 15 分钟
                 </time>
             </div>
         
@@ -1888,6 +1889,47 @@
 <p>如果时间没到上限,就再尝试获取锁,没获取到就继续订阅,因为很多线程同时请求过来,得按顺序获取锁.直到获取到锁或者直接到时间才结束这个循环.</p>
 </li>
 </ul>
+<h3 id="redis本地集群部署">Redis本地集群部署
+</h3><p>只要改一下端口号就能实现本地的Redis集群</p>
+<p><img src="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250325185410.png"
+	width="630"
+	height="99"
+	srcset="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250325185410_hu_d1b73711350fd74a.png 480w, /p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250325185410_hu_3e398bf45d5b2566.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="636"
+		data-flex-basis="1527px"
+	
+></p>
+<p>在config文件下修改端口号</p>
+<p><img src="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250325185530.png"
+	width="680"
+	height="197"
+	srcset="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250325185530_hu_a6d76a1522fb010.png 480w, /p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250325185530_hu_9b0cc19fb87aa1d6.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="345"
+		data-flex-basis="828px"
+	
+></p>
+<p>用记事本或者vscode打开都可以,然后按下Ctrl+F搜索6379,下面的端口号改成没设置过的端口号,但也不要跟其他进程冲突了,我这里改为了6381</p>
+<p><img src="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250325185700.png"
+	width="796"
+	height="253"
+	srcset="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250325185700_hu_b807bb230308dd77.png 480w, /p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250325185700_hu_7a1e039d24f75eac.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="314"
+		data-flex-basis="755px"
+	
+></p>
+<p>然后分别启动Redis就实现Redis集群了</p>
 
 </section>
 

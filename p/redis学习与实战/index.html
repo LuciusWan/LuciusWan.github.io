@@ -375,6 +375,21 @@
         </li>
       </ol>
     </li>
+    <li><a href="#redis实现消息队列">Redis实现消息队列</a>
+      <ol>
+        <li><a href="#认识消息队列">认识消息队列</a></li>
+        <li><a href="#redis要求">Redis要求:</a></li>
+        <li><a href="#redis单消费模式">Redis单消费模式</a></li>
+        <li><a href="#redis消费者组模式">Redis消费者组模式</a>
+          <ol>
+            <li><a href="#省流版">省流版:</a></li>
+            <li><a href="#创建消费者组">创建消费者组</a></li>
+            <li><a href="#通过消费者组读消息队列">通过消费者组读消息队列</a></li>
+            <li><a href="#确认信息方法xack">确认信息方法XACK</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -447,7 +462,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 19 分钟
+                    阅读时长: 22 分钟
                 </time>
             </div>
         
@@ -2488,7 +2503,228 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 	
 ></p>
 <p>1000人抢200张票,只有20%成功率,80%的异常率,测试成功</p>
-
+<h2 id="redis实现消息队列">Redis实现消息队列
+</h2><h3 id="认识消息队列">认识消息队列
+</h3><ul>
+<li>消息队列（Message Queue，简称MQ）是一种在软件架构中用于实现应用程序之间异步通信的中间件。它允许一个或多个生产者（消息的发送者）将消息发送到队列中，然后由一个或多个消费者（消息的接收者）从队列中读取消息。消息队列的主要作用是解耦、缓冲、异步通信和负载均衡等,可以用来削峰填谷,减轻服务器和数据库的处理压力。</li>
+</ul>
+<p><img src="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250327205444.png"
+	width="1410"
+	height="578"
+	srcset="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250327205444_hu_9364cc43b40fb120.png 480w, /p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250327205444_hu_e6efd63f2bfe442c.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="243"
+		data-flex-basis="585px"
+	
+></p>
+<p>之前有用到spring的阻塞队列,但是这个阻塞队列效果不是很好,如果中途服务挂机了,或者说停机后JVM会强制删除所有内存数据,那么后续请求就无法完成,并且不保留记录.这时候就需要外部的消息队列了,这里先用Redis实现,后面还可以用实现好的消息队列,kafka,RocketMQ</p>
+<h3 id="redis要求">Redis要求:
+</h3><p>redis必须达到5版本及其以上,这里使用的是stream数据结构来制作消息队列</p>
+<h3 id="redis单消费模式">Redis单消费模式
+</h3><p>我们可以使用XADD来向消息队列里面加入元素,用XREAD来读取消息队列的元素</p>
+<p><img src="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250327210230.png"
+	width="1592"
+	height="489"
+	srcset="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250327210230_hu_1acc5edfc79a2fe8.png 480w, /p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250327210230_hu_510f35457d2210b1.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="325"
+		data-flex-basis="781px"
+	
+></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">XADD users * k2 v2
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>第一次redis会去查存储空间里面有没有users这个消息队列如果没有就创建</p>
+</li>
+<li>
+<p>这个语句的意思是添加名称为users的消息队列,然后*为自动生成id,k2 v2为一个键值对</p>
+</li>
+<li>
+<p>添加成功后会返回一个数据&quot;1743079174227-0&quot;这是一个时间戳,用来唯一标识这个队列</p>
+</li>
+</ul>
+<p>同样的我们可以用XREAD来读取消息队列中的数据</p>
+<p><img src="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250327210342.png"
+	width="1491"
+	height="502"
+	srcset="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250327210342_hu_31937d3820ba32b9.png 480w, /p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250327210342_hu_98339e398ee0438.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="297"
+		data-flex-basis="712px"
+	
+></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">XREAD count <span class="m">1</span> streams users <span class="m">0</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这个语句的意思是读消息,一次读一条,读取消息队列users的消息,并且从0开始读</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">XREAD count <span class="m">1</span> block <span class="m">0</span> streams users $
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这个语句的意思是读取users的消息,($)读取最新的消息,然后无限阻塞,直到有消息进入队列就读取一条消息.</p>
+<p>这样看上去一个消息队列建好了,但是有bug,如果存储数据时间较长,存储数据没来得及存储完,又传来了一堆新的消息,$只能读取最新的消息,导致中间有很多消息都漏掉了</p>
+<h3 id="redis消费者组模式">Redis消费者组模式
+</h3><p><img src="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250327212218.png"
+	width="1560"
+	height="741"
+	srcset="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250327212218_hu_9f21638f8449fb27.png 480w, /p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250327212218_hu_e161b42c99ba5e89.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="210"
+		data-flex-basis="505px"
+	
+></p>
+<h4 id="省流版">省流版:
+</h4><ul>
+<li>
+<p>消费者组里面有很多消费者,它们是竞争关系,都来争着处理消息,可以解决消息漏处理的问题</p>
+</li>
+<li>
+<p>消息表示指的是最后被处理的消息会被打上标签,就像看书有个书签,看完后下次再看就立马知道在哪了</p>
+</li>
+<li>
+<p>消息确认就跟TCP三次握手相似,只是没有最后一段客户端向服务端的确认信息,每次处理完信息都会确认一下,并且有个pending-list,如果没处理这个消息就根据这个list继续处理</p>
+</li>
+</ul>
+<h4 id="创建消费者组">创建消费者组
+</h4><p><img src="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250327213032.png"
+	width="1431"
+	height="324"
+	srcset="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250327213032_hu_e5da63f8ec5f8259.png 480w, /p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250327213032_hu_24611b291e29df6a.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="441"
+		data-flex-basis="1060px"
+	
+></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">XGROUP CREATE users group1 <span class="m">0</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这个语句的意思是在users这个消息队列中创建消费者组,如果没有users这个消息队列就会创建失败,这个消费者组的名称为group1,每次从id=0开始读</p>
+<h4 id="通过消费者组读消息队列">通过消费者组读消息队列
+</h4><p><img src="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250327213918.png"
+	width="1586"
+	height="655"
+	srcset="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250327213918_hu_388993d688765585.png 480w, /p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250327213918_hu_4ca08af37ea1b7d8.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="242"
+		data-flex-basis="581px"
+	
+></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">localhost:6379&gt; XREADGROUP group group1 c1 count <span class="m">1</span> block <span class="m">2000</span> streams users &gt;
+</span></span><span class="line"><span class="cl">1<span class="o">)</span> 1<span class="o">)</span> <span class="s2">&#34;users&#34;</span>
+</span></span><span class="line"><span class="cl">   2<span class="o">)</span> 1<span class="o">)</span> 1<span class="o">)</span> <span class="s2">&#34;1743074094428-0&#34;</span>
+</span></span><span class="line"><span class="cl">         2<span class="o">)</span> 1<span class="o">)</span> <span class="s2">&#34;k1&#34;</span>
+</span></span><span class="line"><span class="cl">            2<span class="o">)</span> <span class="s2">&#34;v1&#34;</span>
+</span></span><span class="line"><span class="cl">localhost:6379&gt; XREADGROUP group group1 c1 count <span class="m">1</span> block <span class="m">2000</span> streams users &gt;
+</span></span><span class="line"><span class="cl">1<span class="o">)</span> 1<span class="o">)</span> <span class="s2">&#34;users&#34;</span>
+</span></span><span class="line"><span class="cl">   2<span class="o">)</span> 1<span class="o">)</span> 1<span class="o">)</span> <span class="s2">&#34;1743079174227-0&#34;</span>
+</span></span><span class="line"><span class="cl">         2<span class="o">)</span> 1<span class="o">)</span> <span class="s2">&#34;k2&#34;</span>
+</span></span><span class="line"><span class="cl">            2<span class="o">)</span> <span class="s2">&#34;v2&#34;</span>
+</span></span><span class="line"><span class="cl">localhost:6379&gt; XREADGROUP group group1 c1 count <span class="m">1</span> block <span class="m">2000</span> streams users &gt;
+</span></span><span class="line"><span class="cl">1<span class="o">)</span> 1<span class="o">)</span> <span class="s2">&#34;users&#34;</span>
+</span></span><span class="line"><span class="cl">   2<span class="o">)</span> 1<span class="o">)</span> 1<span class="o">)</span> <span class="s2">&#34;1743082841091-0&#34;</span>
+</span></span><span class="line"><span class="cl">         2<span class="o">)</span> 1<span class="o">)</span> <span class="s2">&#34;k3&#34;</span>
+</span></span><span class="line"><span class="cl">            2<span class="o">)</span> <span class="s2">&#34;v3&#34;</span>
+</span></span><span class="line"><span class="cl">localhost:6379&gt; XREADGROUP group group1 c1 count <span class="m">1</span> block <span class="m">2000</span> streams users &gt;
+</span></span><span class="line"><span class="cl">1<span class="o">)</span> 1<span class="o">)</span> <span class="s2">&#34;users&#34;</span>
+</span></span><span class="line"><span class="cl">   2<span class="o">)</span> 1<span class="o">)</span> 1<span class="o">)</span> <span class="s2">&#34;1743082847320-0&#34;</span>
+</span></span><span class="line"><span class="cl">         2<span class="o">)</span> 1<span class="o">)</span> <span class="s2">&#34;k4&#34;</span>
+</span></span><span class="line"><span class="cl">            2<span class="o">)</span> <span class="s2">&#34;v4&#34;</span>
+</span></span><span class="line"><span class="cl">localhost:6379&gt; XREADGROUP group group1 c1 count <span class="m">1</span> block <span class="m">2000</span> streams users &gt;
+</span></span><span class="line"><span class="cl">1<span class="o">)</span> 1<span class="o">)</span> <span class="s2">&#34;users&#34;</span>
+</span></span><span class="line"><span class="cl">   2<span class="o">)</span> 1<span class="o">)</span> 1<span class="o">)</span> <span class="s2">&#34;1743082852967-0&#34;</span>
+</span></span><span class="line"><span class="cl">         2<span class="o">)</span> 1<span class="o">)</span> <span class="s2">&#34;k5&#34;</span>
+</span></span><span class="line"><span class="cl">            2<span class="o">)</span> <span class="s2">&#34;v5&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这个语句的含义是通过消费者组进行读取,group的名称是group1(刚刚创建的),消费者名称叫c1(随便取的名字,没有的话会自动创建),每次消费一条信息,阻塞2秒,消息队列名称为users,选择从最早发过来的未读消息开始读,&gt;换成0可以使因为之前处理消息的时候,服务器炸了,重新处理的时候读取pending-list,直接从未处理完成的消息继续处理</p>
+<h4 id="确认信息方法xack">确认信息方法XACK
+</h4><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">XACK users group1 1743074094428-0 1743079320687-0 1743082841091-0 1743082847320-0 
+</span></span><span class="line"><span class="cl"><span class="o">(</span>integer<span class="o">)</span> <span class="m">4</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>前面是消息队列名称和消费者组名,后面是消息被消费后发出的时间戳</p>
+<p>通过如下语句查询pending-list</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"></code></pre></td></tr></table>
+</div>
+</div>
 </section>
 
 

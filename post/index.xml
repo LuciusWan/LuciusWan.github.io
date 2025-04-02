@@ -2885,7 +2885,12 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;</description>
+&lt;/div&gt;&lt;h2 id=&#34;点赞功能&#34;&gt;点赞功能
+&lt;/h2&gt;&lt;h3 id=&#34;问题分析&#34;&gt;问题分析
+&lt;/h3&gt;&lt;p&gt;点赞要求我们第一次点上去是点赞数+1,再点一次是点赞数-1,这完全可以交给数据库去解决,然后就是&lt;/p&gt;
+&lt;h2 id=&#34;关注与互关&#34;&gt;关注与互关
+&lt;/h2&gt;&lt;p&gt;TODO明天写完&lt;/p&gt;
+</description>
         </item>
         <item>
         <title>OpenEuler实战</title>

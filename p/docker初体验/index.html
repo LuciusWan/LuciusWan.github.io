@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="初学docker">
+<title>Docker初体验</title>
+
+<link rel='canonical' href='https://LuciusWan.github.io/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Docker初体验">
+<meta property='og:description' content="初学docker">
+<meta property='og:url' content='https://LuciusWan.github.io/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/'>
+<meta property='og:site_name' content='LuciusWan'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-04-08T14:25:17&#43;08:00'/><meta property='article:modified_time' content='2025-04-08T14:25:17&#43;08:00'/>
+<meta name="twitter:title" content="Docker初体验">
+<meta name="twitter:description" content="初学docker">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_a00c4178710685fc.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🎇</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">LuciusWan</a></h1>
+            <h2 class="site-description">欢迎来到我的blog</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/440554295'
+                        target="_blank"
+                        title="Bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/LuciusWan'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#docker-是什么">Docker 是什么</a>
+      <ol>
+        <li><a href="#跟普通虚拟机的对比">跟普通虚拟机的对比</a></li>
+        <li><a href="#打包分发部署">打包、分发、部署</a></li>
+      </ol>
+    </li>
+    <li><a href="#下载安装docker">下载&amp;安装docker</a>
+      <ol>
+        <li><a href="#添加镜像源">添加镜像源</a></li>
+      </ol>
+    </li>
+    <li><a href="#用docker安装软件">用docker安装软件</a>
+      <ol>
+        <li><a href="#下载redis镜像">下载Redis镜像</a></li>
+        <li><a href="#运行redis容器">运行Redis容器</a></li>
+        <li><a href="#验证redis服务">验证Redis服务</a>
+          <ol>
+            <li><a href="#我们可以在docker的终端上打开redis并使用">我们可以在docker的终端上打开redis并使用</a></li>
+          </ol>
+        </li>
+        <li><a href="#停止和删除容器">停止和删除容器</a></li>
+        <li><a href="#配置redis密码可选">配置Redis密码（可选）</a></li>
+      </ol>
+    </li>
+    <li><a href="#制作自己的镜像">制作自己的镜像</a>
+      <ol>
+        <li><a href="#springboot的dockerfile">SpringBoot的dockerfile</a></li>
+      </ol>
+    </li>
+    <li><a href="#多容器通信">多容器通信</a>
+      <ol>
+        <li><a href="#多容器通信的意义">多容器通信的意义</a></li>
+        <li><a href="#举个例子">举个例子</a></li>
+        <li><a href="#容器的通信路由">容器的通信路由</a></li>
+      </ol>
+    </li>
+    <li><a href="#docker部署mysql">Docker部署MySQL</a>
+      <ol>
+        <li><a href="#修改docker-composeyml">修改docker-compose.yml</a></li>
+        <li><a href="#挂载目录">挂载目录</a>
+          <ol>
+            <li><a href="#1数据持久化">1. <strong>数据持久化</strong></a></li>
+            <li><a href="#2-方便数据迁移">2 . <strong>方便数据迁移</strong></a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#实现多端负载均衡">实现多端负载均衡</a>
+      <ol>
+        <li><a href="#修改docker-composeyml-1">修改docker-compose.yml</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/docker/" style="background-color: #eb12ded1; color: #fff;">
+                Docker
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/">Docker初体验</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            初学docker
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-04-08</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 8 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="docker初体验">Docker初体验
+</h1><h2 id="docker-是什么">Docker 是什么
+</h2><p>Docker 是一个应用打包、分发、部署的工具<br>
+你也可以把它理解为一个轻量的虚拟机，它只虚拟你软件需要的运行环境，多余的一点都不要，<br>
+而普通虚拟机则是一个完整而庞大的系统，包含各种不管你要不要的软件。</p>
+<h3 id="跟普通虚拟机的对比">跟普通虚拟机的对比
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>特性</th>
+          <th>普通虚拟机</th>
+          <th>Docker</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>跨平台</td>
+          <td>通常只能在桌面级系统运行，例如 Windows/Mac，无法在不带图形界面的服务器上运行</td>
+          <td>支持的系统非常多，各类 windows 和 Linux 都支持</td>
+      </tr>
+      <tr>
+          <td>性能</td>
+          <td>性能损耗大，内存占用高，因为是把整个完整系统都虚拟出来了</td>
+          <td>性能好，只虚拟软件所需运行环境，最大化减少没用的配置</td>
+      </tr>
+      <tr>
+          <td>自动化</td>
+          <td>需要手动安装所有东西</td>
+          <td>一个命令就可以自动部署好所需环境</td>
+      </tr>
+      <tr>
+          <td>稳定性</td>
+          <td>稳定性不高，不同系统差异大</td>
+          <td>稳定性好，不同系统都一样部署方式</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="打包分发部署">打包、分发、部署
+</h3><p><strong>打包</strong>：就是把你软件运行所需的依赖、第三方库、软件打包到一起，变成一个安装包</p>
+<p><strong>分发</strong>：你可以把你打包好的“安装包”上传到一个镜像仓库，其他人可以非常方便的获取和安装</p>
+<p><strong>部署</strong>：拿着“安装包”就可以一个命令运行起来你的应用，自动模拟出一模一样的运行环境，不管是在 Windows/Mac/Linux。</p>
+<h2 id="下载安装docker">下载&amp;安装docker
+</h2><p>下面是桌面版链接,点击下载</p>
+<p><a class="link" href="https://www.docker.com/products/docker-desktop"  target="_blank" rel="noopener"
+    >https://www.docker.com/products/docker-desktop</a></p>
+<img src="微信截图_20250408143656.png" title="" alt="" width="531">
+<p>推荐下载这个</p>
+<img src="微信截图_20250408143754.png" title="" alt="" width="478">
+<p>下载完后是个exe文件,点开后开始安装</p>
+<p>我们在安装完成后可能会遇到这个报错</p>
+<img src="kvacsk82.png" title="" alt="" width="591">
+<p>这是因为我们没开启虚拟化,如果你下载过Linux虚拟机应该就不会有这个错误,同时我们还要下载Linux子系统,跟着引导来就好</p>
+<p><strong>解决方法</strong>：<br>
+控制面板-&gt;程序-&gt;启用或关闭 windows 功能，开启 Windows 虚拟化和 Linux 子系统（WSL2)</p>
+<p>要确定BIOS支持虚拟化</p>
+<img src="kvaf7ody.png" title="" alt="" width="542">
+<h3 id="添加镜像源">添加镜像源
+</h3><p>我们如果每次都到docker官方去获取镜像,那么没有魔法就会非常慢,所以我们可以添加镜像源</p>
+<p><img src="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408144451.png"
+	width="1270"
+	height="720"
+	srcset="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408144451_hu_5bba20750ea2c975.png 480w, /p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408144451_hu_bb973bb1f5521d99.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="176"
+		data-flex-basis="423px"
+	
+></p>
+<p>可用的国内镜像源如下.可以添加多个镜像源</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>镜像加速器</th>
+          <th>镜像加速器地址</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Docker 中国官方镜像</td>
+          <td><a class="link" href="https://registry.docker-cn.com"  target="_blank" rel="noopener"
+    >https://registry.docker-cn.com</a></td>
+      </tr>
+      <tr>
+          <td>DaoCloud 镜像站</td>
+          <td><a class="link" href="http://f1361db2.m.daocloud.io"  target="_blank" rel="noopener"
+    >http://f1361db2.m.daocloud.io</a></td>
+      </tr>
+      <tr>
+          <td>Azure 中国镜像</td>
+          <td><a class="link" href="https://dockerhub.azk8s.cn"  target="_blank" rel="noopener"
+    >https://dockerhub.azk8s.cn</a></td>
+      </tr>
+      <tr>
+          <td>科大镜像站</td>
+          <td><a class="link" href="https://docker.mirrors.ustc.edu.cn"  target="_blank" rel="noopener"
+    >https://docker.mirrors.ustc.edu.cn</a></td>
+      </tr>
+      <tr>
+          <td>阿里云</td>
+          <td><a class="link" href="https://ud6340vz.mirror.aliyuncs.com"  target="_blank" rel="noopener"
+    >https://ud6340vz.mirror.aliyuncs.com</a></td>
+      </tr>
+      <tr>
+          <td>七牛云</td>
+          <td><a class="link" href="https://reg-mirror.qiniu.com"  target="_blank" rel="noopener"
+    >https://reg-mirror.qiniu.com</a></td>
+      </tr>
+      <tr>
+          <td>网易云</td>
+          <td><a class="link" href="https://hub-mirror.c.163.com"  target="_blank" rel="noopener"
+    >https://hub-mirror.c.163.com</a></td>
+      </tr>
+      <tr>
+          <td>腾讯云</td>
+          <td><a class="link" href="https://mirror.ccs.tencentyun.com"  target="_blank" rel="noopener"
+    >https://mirror.ccs.tencentyun.com</a></td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="用docker安装软件">用docker安装软件
+</h2><p>我们可以下载个redis玩玩</p>
+<h3 id="下载redis镜像">下载Redis镜像
+</h3><p>打开命令提示符（CMD）或PowerShell，然后使用以下命令从Docker Hub下载官方的Redis镜像：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker pull redis
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这将下载最新版本的Redis镜像。你也可以指定版本号来下载特定版本的Redis镜像，例如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker pull redis:latest
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="运行redis容器">运行Redis容器
+</h3><p>下载完成后，你可以使用以下命令来启动一个Redis容器：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run --name my-redis -d -p 6379:6379 redis
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这里的参数解释如下：</p>
+<ul>
+<li><code>--name my-redis</code>：为容器指定一个名称，这里是<code>my-redis</code>。</li>
+<li><code>-d</code>：表示以分离模式运行容器,在后台运行。</li>
+<li><code>-p 6379:6379</code>：将容器的6379端口映射到宿主机的6379端口，这样你就可以通过宿主机的6379端口访问Redis服务。</li>
+</ul>
+<h3 id="验证redis服务">验证Redis服务
+</h3><p>为了验证Redis服务是否正常运行，你可以使用以下命令连接到Redis容器：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker <span class="nb">exec</span> -it my-redis redis-cli
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这将打开一个Redis命令行接口。你可以在这里输入Redis命令来测试服务，例如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ping
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>如果服务正常运行，你应该看到输出<code>PONG</code>。</p>
+<h4 id="我们可以在docker的终端上打开redis并使用">我们可以在docker的终端上打开redis并使用
+</h4><p><img src="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408145031.png"
+	width="1161"
+	height="331"
+	srcset="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408145031_hu_a211212d6c1ebb57.png 480w, /p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408145031_hu_3f0c72348e197dd9.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="350"
+		data-flex-basis="841px"
+	
+></p>
+<p><img src="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408145117.png"
+	width="580"
+	height="310"
+	srcset="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408145117_hu_1b06881ee6a4e239.png 480w, /p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408145117_hu_41a7ca478a2b244a.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="187"
+		data-flex-basis="449px"
+	
+></p>
+<h3 id="停止和删除容器">停止和删除容器
+</h3><p>当你完成测试并想要停止Redis容器时，可以使用以下命令：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker stop my-redis
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>要删除容器，可以使用：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker rm my-redis
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>如果你想要强制删除正在运行的容器，可以添加<code>-f</code>参数：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker rm -f my-redis
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="配置redis密码可选">配置Redis密码（可选）
+</h3><p>如果你需要为Redis设置密码，可以在运行容器时通过环境变量<code>REDIS_PASSWORD</code>来设置。例如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run --name my-redis -d -p 6379:6379 -e <span class="nv">REDIS_PASSWORD</span><span class="o">=</span>mypassword redis redis-server --requirepass mypassword
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这将设置Redis的密码为<code>mypassword</code>。之后，你需要使用这个密码来连接到Redis服务。</p>
+<h2 id="制作自己的镜像">制作自己的镜像
+</h2><p>我们可以把自己的项目打包成一个镜像,让这个镜像在别的电脑上不配环境就能跑起来</p>
+<p>下面是springboot项目的制作镜像案例</p>
+<p>在制作镜像的时候,我们要先写一个dockerfile,这个dockerfile怎么写可以直接问AI</p>
+<h3 id="springboot的dockerfile">SpringBoot的dockerfile
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="line"><span class="cl"><span class="c"># 使用官方的 OpenJDK 作为基础镜像,写清楚你的jdk版本</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">FROM</span><span class="s"> openjdk:17-jdk-alpine</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 设置工作目录</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">WORKDIR</span><span class="s"> /app</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 将构建好的 JAR 文件复制到镜像中</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">COPY</span> target/你的jar包的名字.jar /app/app.jar<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 暴露应用运行的端口（例如 Spring Boot 默认的 8080 端口）</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">EXPOSE</span><span class="s"> 8083</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="c"># 设置容器启动时运行的命令</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&#34;java&#34;</span><span class="p">,</span> <span class="s2">&#34;-jar&#34;</span><span class="p">,</span> <span class="s2">&#34;app.jar&#34;</span><span class="p">]</span><span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>这个文件就跟src和pom.xml坐一桌(放一块)就行了</p>
+<p><img src="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408175856.png"
+	width="111"
+	height="116"
+	srcset="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408175856_hu_4ea287ac937e9e2.png 480w, /p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408175856_hu_cbfedcbc4f66cd10.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="95"
+		data-flex-basis="229px"
+	
+></p>
+<p>然后我们就可以通过下面的命令来制作这个docker镜像</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker build -t test:v1 .
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>test是镜像的名称,v1是版本号</p>
+<p>然后我们可以在本地跑一下这个镜像</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker run -p 8083:8083 --name test-hello test:v1
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>&ndash;name test-hello指的是容器的名称是test-hello,后面跟的是要跑的是什么镜像的什么版本</p>
+<h2 id="多容器通信">多容器通信
+</h2><h3 id="多容器通信的意义">多容器通信的意义
+</h3><ul>
+<li>
+<p>在Docker中，多容器通信是指多个容器之间能够相互发现并进行数据交换的能力。</p>
+</li>
+<li>
+<p>这种通信机制在构建微服务架构和分布式应用时尤为重要，因为它允许不同服务之间高效地协作。</p>
+</li>
+<li>
+<p>Docker提供了多种网络模式来实现容器间的通信，包括桥接网络（Bridge）、主机网络（Host）、覆盖网络（Overlay）以及Macvlan网络等。</p>
+</li>
+</ul>
+<p>在本地,我们通过本地回环的测试网络localhost127.0.0.1来相互通信,前端代码,后端代码,中间件,数据库等都通过127.0.0.1通信,而我们在docker部署多个容器并没有这样一个网络实现容器间通信,这时候就要用这样个网络.</p>
+<ul>
+<li>上面三种网络形式挺麻烦的,我们直接用docker-compose.yml,当容器多了,这种方法的好处就体现出来了.</li>
+</ul>
+<h3 id="举个例子">举个例子
+</h3><p>我的这个项目要用到3个redis,还有rabbitmq,下面这个是我的docker-compose.yml文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">services</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">springboot-app</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">test:v1 </span><span class="w"> </span><span class="c"># 替换为你的 Spring Boot 应用镜像</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;8083:8083&#34;</span><span class="w">  </span><span class="c"># 假设 Spring Boot 应用运行在 8080 端口</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">redis1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">redis2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">redis3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">rabbitmq</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">my-network</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">redis1</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">redis:latest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;6379:6379&#34;</span><span class="w">  </span><span class="c"># 映射 6379 端口</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">my-network</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">redis2</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">redis:latest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;6380:6379&#34;</span><span class="w">  </span><span class="c"># 映射 6380 端口</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">my-network</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">redis3</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">redis:latest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;6381:6379&#34;</span><span class="w">  </span><span class="c"># 映射 6381 端口</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">my-network</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">rabbitmq</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">rabbitmq:3.12-management</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;5672:5672&#34;</span><span class="w">  </span><span class="c"># AMQP协议端口</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;15672:15672&#34;</span><span class="w">  </span><span class="c"># 管理界面端口</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">RABBITMQ_DEFAULT_USER</span><span class="p">:</span><span class="w"> </span><span class="l">YourUserName</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">RABBITMQ_DEFAULT_PASS</span><span class="p">:</span><span class="w"> </span><span class="l">YourPassword</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">#volumes:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">#  - ./rabbitmq/data:/var/lib/rabbitmq</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">my-network</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">my-network</span><span class="p">:</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>我们的这个网络就叫my-network,然后所有的容器都配置在这一个文件中,我们只需要在项目目录里面加上这个yml文件就可以准备启动整个项目了</p>
+<p><img src="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408181410.png"
+	width="633"
+	height="190"
+	srcset="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408181410_hu_4c343f301cb3eb82.png 480w, /p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408181410_hu_dc7850146f42fe49.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="333"
+		data-flex-basis="799px"
+	
+></p>
+<p>在这里打开终端,然后输入如下命令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker-compose up -d
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后项目就启动了</p>
+<p><img src="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408181606.png"
+	width="1195"
+	height="174"
+	srcset="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408181606_hu_6b47bd27271311a8.png 480w, /p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408181606_hu_a8685ea7a3e98ddb.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="686"
+		data-flex-basis="1648px"
+	
+></p>
+<p>这样可以方便快捷的实现容器间的通信互联</p>
+<h3 id="容器的通信路由">容器的通信路由
+</h3><p>我们的容器现在都在一个网络下了,我们要通过域名来访问对应的容器</p>
+<p>比如我这个java代码,这是Redisson的配置代码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">com.hmdp.config</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Configuration</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">RedissonConfig</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Autowired</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">RedisProperties</span><span class="w"> </span><span class="n">redisProperties</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Bean</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">RedissonClient</span><span class="w"> </span><span class="nf">redisson6379</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Config</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Config</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="na">useSingleServer</span><span class="p">().</span><span class="na">setAddress</span><span class="p">(</span><span class="s">&#34;redis://redis1:6379&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Redisson</span><span class="p">.</span><span class="na">create</span><span class="p">(</span><span class="n">config</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Bean</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">RedissonClient</span><span class="w"> </span><span class="nf">redisson6380</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Config</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Config</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="na">useSingleServer</span><span class="p">().</span><span class="na">setAddress</span><span class="p">(</span><span class="s">&#34;redis://redis2:6379&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Redisson</span><span class="p">.</span><span class="na">create</span><span class="p">(</span><span class="n">config</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Bean</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">RedissonClient</span><span class="w"> </span><span class="nf">redisson6381</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Config</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Config</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="na">useSingleServer</span><span class="p">().</span><span class="na">setAddress</span><span class="p">(</span><span class="s">&#34;redis://redis3:6379&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Redisson</span><span class="p">.</span><span class="na">create</span><span class="p">(</span><span class="n">config</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>ip地址localhost改写为容器的名称,也就是容器的域名</p>
+</li>
+<li>
+<p>后面的端口一定要是镜像暴露出来的端口,redis暴露出来的就是6379端口</p>
+</li>
+</ul>
+<p>rabbitmq的配置也要改</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="w">  </span><span class="nt">rabbitmq</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">rabbitmq</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">5672</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l">YourUserName</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">YourPassword</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">virtual-host</span><span class="p">:</span><span class="w"> </span><span class="l">/</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>host要改为容器名称.</p>
+<h2 id="docker部署mysql">Docker部署MySQL
+</h2><h3 id="修改docker-composeyml">修改docker-compose.yml
+</h3><p>想要在docker上部署MySQL,先要关掉MySQL的本地服务,可以直接在任务管理器里找mysql,然后关闭这个任务即可.</p>
+<p>然后修改docker-compose.yml，加上这个即可</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="w">  </span><span class="nt">mysql</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">mysql:8.0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;3306:3306&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">MYSQL_ROOT_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="m">123456</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">MYSQL_DATABASE</span><span class="p">:</span><span class="w"> </span><span class="l">YourDataBaseName</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c">#MYSQL_USER: your_username</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c">#MYSQL_PASSWORD: your_password</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">./mysql/data:/var/lib/mysql</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">my-network</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">./mysql/data:/var/lib/mysql</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>这个语句的意思是挂载目录</p>
+<h3 id="挂载目录">挂载目录
+</h3><p>在使用 Docker 部署 MySQL 时，挂载目录（通常使用 Docker 的 <code>volume</code> 功能）主要有以下几个目的：</p>
+<h4 id="1数据持久化">1. <strong>数据持久化</strong>
+</h4><ul>
+<li>
+<p><strong>背景</strong>：Docker 容器是无状态的，当容器被删除或重新启动时，容器内部的数据（如 MySQL 数据库文件）会丢失。</p>
+</li>
+<li>
+<p><strong>解决方案</strong>：通过挂载宿主机的目录到容器内部，可以将 MySQL 的数据文件存储在宿主机上。这样，即使容器被删除或重新启动，数据仍然可以被保留。</p>
+</li>
+</ul>
+<h4 id="2-方便数据迁移">2 . <strong>方便数据迁移</strong>
+</h4><ul>
+<li>
+<p><strong>背景</strong>：当需要将数据库从一个环境迁移到另一个环境时，数据的迁移是一个关键步骤。</p>
+</li>
+<li>
+<p><strong>解决方案</strong>：通过挂载目录，可以直接将宿主机上的数据目录复制到新的宿主机上，然后启动新的 MySQL 容器，从而实现数据的迁移。</p>
+</li>
+<li>
+<p><strong>示例</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 将数据目录从旧宿主机复制到新宿主机</span>
+</span></span><span class="line"><span class="cl">scp -r /path/to/mysql-data user@new-host:/path/to/mysql-data
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<p>具体就是这个语句让我本地建了个文件夹，实现了持久化存储</p>
+<p><img src="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408200327.png"
+	width="727"
+	height="282"
+	srcset="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408200327_hu_b43e8930156efafd.png 480w, /p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408200327_hu_195c771ef22cf295.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="257"
+		data-flex-basis="618px"
+	
+></p>
+<p>然后我们在终端上登录mysql,使用对应的数据库,然后把表数据填进去就可以再次启动容器了</p>
+<h2 id="实现多端负载均衡">实现多端负载均衡
+</h2><p>我的这个项目是开了8083和8084端口同时接受前端请求,用nginx实现负载均衡,目前只开放了8083端口,修改docker-compose.yml即可</p>
+<h3 id="修改docker-composeyml-1">修改docker-compose.yml
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="w">  </span><span class="nt">springboot-app-2</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">hmdp:v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;8084:8083&#34;</span><span class="w">  </span><span class="c"># 映射8084端口到容器的8080端口</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">redis1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">redis2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">redis3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">rabbitmq</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">mysql</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">my-network</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>加入这个语句即可,启动后就实现了多端口接收数据</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 LuciusWan
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

@@ -313,6 +313,14 @@
         <li><a href="#修改docker-composeyml-1">修改docker-compose.yml</a></li>
       </ol>
     </li>
+    <li><a href="#发布docker镜像">发布Docker镜像</a>
+      <ol>
+        <li><a href="#镜像仓库介绍">镜像仓库介绍</a></li>
+        <li><a href="#上传镜像">上传镜像</a></li>
+        <li><a href="#修改docker-composeyml文件">修改docker-compose.yml文件</a></li>
+        <li><a href="#docker启动">docker,启动!</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -381,7 +389,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 8 分钟
+                    阅读时长: 9 分钟
                 </time>
             </div>
         
@@ -1084,6 +1092,292 @@
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><p>加入这个语句即可,启动后就实现了多端口接收数据</p>
+<h2 id="发布docker镜像">发布Docker镜像
+</h2><h3 id="镜像仓库介绍">镜像仓库介绍
+</h3><p>镜像仓库用来存储我们 build 出来的“安装包”，Docker 官方提供了一个 <a class="link" href="https://hub.docker.com/"  target="_blank" rel="noopener"
+    >镜像库</a>，里面包含了大量镜像，基本各种软件所需依赖都有，要什么直接上去搜索。</p>
+<p>我们也可以把自己 build 出来的镜像上传到 docker 提供的镜像库中，方便传播。<br>
+当然你也可以搭建自己的私有镜像库，或者使用国内各种大厂提供的镜像托管服务，例如：阿里云、腾讯云</p>
+<h3 id="上传镜像">上传镜像
+</h3><ul>
+<li>首先要 <a class="link" href="https://hub.docker.com/"  target="_blank" rel="noopener"
+    >注册一个账号</a></li>
+<li>创建一个镜像库</li>
+<li><img src="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408211027.png"
+	width="1013"
+	height="558"
+	srcset="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408211027_hu_b18f8857d07da4bc.png 480w, /p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408211027_hu_94c680483df39116.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="181"
+		data-flex-basis="435px"
+	
+></li>
+</ul>
+<p>然后在命令行中登录一下</p>
+<p><img src="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408211137.png"
+	width="677"
+	height="218"
+	srcset="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408211137_hu_6b8187e39812b485.png 480w, /p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408211137_hu_d6490bf3cc829be9.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="310"
+		data-flex-basis="745px"
+	
+></p>
+<p>注意:这里登录只能是小写字母,之前写的大写字母username也得转为小写</p>
+<ul>
+<li>新建一个tag，名字必须跟你注册账号一样</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">  docker tag test:v1 username/test:v1
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>推上去</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"> docker push username/test:v1
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后我们可以随便新建一个文件夹,修改一下docker-compose.yml文件,然后粘过来</p>
+<p><img src="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408213626.png"
+	width="586"
+	height="154"
+	srcset="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408213626_hu_2cfcfaae8af81c48.png 480w, /p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408213626_hu_42ad0c0ea49fb5e.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="380"
+		data-flex-basis="913px"
+	
+></p>
+<h3 id="修改docker-composeyml文件">修改docker-compose.yml文件
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">services</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">springboot-app</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">luciuswan/hmdp:v1 </span><span class="w"> </span><span class="c"># 替换为你的 Spring Boot 应用镜像</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;8083:8083&#34;</span><span class="w">  </span><span class="c"># 假设 Spring Boot 应用运行在 8083 端口</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">redis1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">redis2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">redis3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">rabbitmq</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">mysql</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">my-network</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">springboot-app-2</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">luciuswan/hmdp:v1 </span><span class="w"> </span><span class="c"># 替换为你的 Spring Boot 应用镜像</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;8084:8083&#34;</span><span class="w">  </span><span class="c"># 映射 8084 端口到容器的 8083 端口</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">depends_on</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">redis1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">redis2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">redis3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">rabbitmq</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">mysql</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">my-network</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">redis1</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">redis:latest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;6379:6379&#34;</span><span class="w">  </span><span class="c"># 映射 6379 端口</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">my-network</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">redis2</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">redis:latest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;6380:6379&#34;</span><span class="w">  </span><span class="c"># 映射 6380 端口</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">my-network</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">redis3</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">redis:latest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;6381:6379&#34;</span><span class="w">  </span><span class="c"># 映射 6381 端口</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">my-network</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">rabbitmq</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">rabbitmq:3.12-management</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;5672:5672&#34;</span><span class="w">  </span><span class="c"># AMQP 协议端口</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;15672:15672&#34;</span><span class="w">  </span><span class="c"># 管理界面端口</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">RABBITMQ_DEFAULT_USER</span><span class="p">:</span><span class="w"> </span><span class="l">LuciusWan</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">RABBITMQ_DEFAULT_PASS</span><span class="p">:</span><span class="w"> </span><span class="l">Wwwaxk12345@</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">my-network</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">mysql</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">mysql:8.0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="s2">&#34;3306:3306&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">MYSQL_ROOT_PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="m">123456</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">MYSQL_DATABASE</span><span class="p">:</span><span class="w"> </span><span class="l">hmdp</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">./mysql/data:/var/lib/mysql</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="l">my-network</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">networks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">my-network</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">driver</span><span class="p">:</span><span class="w"> </span><span class="l">bridge</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>主要是修改这个image</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="w">  </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">luciuswan/hmdp:v1 </span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="docker启动">docker,启动!
+</h3><p>然后在这里启动powershell,输入命令即可运行项目</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docker-compose -p hmdp up -d
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>如果直接输入docker-compose -d,会提示你没有容器名称</p>
+<p><img src="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408214010.png"
+	width="1208"
+	height="108"
+	srcset="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408214010_hu_88616390a8c80360.png 480w, /p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408214010_hu_7f886d27959ffeaa.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="1118"
+		data-flex-basis="2684px"
+	
+></p>
+<p>正常输入的话,我们的项目就跑起来了</p>
+<p><img src="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408214114.png"
+	width="1213"
+	height="536"
+	srcset="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408214114_hu_316a7c0706d11b68.png 480w, /p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408214114_hu_a31aefb7dee2ecc9.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="226"
+		data-flex-basis="543px"
+	
+></p>
+<p><img src="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408214210.png"
+	width="1010"
+	height="637"
+	srcset="/p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408214210_hu_e2a48c16533a723b.png 480w, /p/docker%E5%88%9D%E4%BD%93%E9%AA%8C/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250408214210_hu_e19d91fb7d802dfb.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="158"
+		data-flex-basis="380px"
+	
+></p>
+<p>这时候还跑不了,因为数据没有迁移</p>
 
 </section>
 

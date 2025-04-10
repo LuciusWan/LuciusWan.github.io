@@ -427,6 +427,23 @@
         <li><a href="#查看互关">查看互关</a></li>
       </ol>
     </li>
+    <li><a href="#feed流滚动分页查询">feed流&amp;滚动分页查询</a>
+      <ol>
+        <li><a href="#feed流定义">feed流定义</a></li>
+        <li><a href="#核心特点">核心特点</a>
+          <ol>
+            <li><a href="#分析b站的推送机制">分析B站的推送机制</a></li>
+          </ol>
+        </li>
+        <li><a href="#设计思路">设计思路</a></li>
+        <li><a href="#滚动分页查询">滚动分页查询</a>
+          <ol>
+            <li><a href="#附java代码">附Java代码</a></li>
+            <li><a href="#最后的效果">最后的效果:</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -499,7 +516,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 29 分钟
+                    阅读时长: 31 分钟
                 </time>
             </div>
         
@@ -3588,6 +3605,208 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 </div>
 </div><p>然后共同关注就做好了</p>
 <img src="微信截图_20250409154755.png" title="" alt="" width="368">
+<h2 id="feed流滚动分页查询">feed流&amp;滚动分页查询
+</h2><p>Feed流是一种常见的信息展示方式</p>
+<h3 id="feed流定义">feed流定义
+</h3><p>Feed流是一种基于用户社交关系或兴趣偏好的信息分发机制。它通过动态地向用户推送个性化的内容，让用户在浏览过程中能够快速获取到自己感兴趣的信息。</p>
+<h3 id="核心特点">核心特点
+</h3><ul>
+<li>
+<p><strong>个性化推荐</strong>：Feed流会根据用户的浏览历史、兴趣标签、社交关系等多维度数据，为每个用户量身定制内容。例如，抖音会根据用户点赞、关注、评论等行为，推荐相关的短视频；微博会根据用户的关注列表和兴趣偏好，推送微博动态。</p>
+</li>
+<li>
+<p><strong>动态更新</strong>：内容会实时更新，用户每次刷新页面或打开应用时，都能看到最新的信息。这种动态性让用户能够及时获取到新鲜的内容，增强了用户的粘性和活跃度。</p>
+</li>
+</ul>
+<h4 id="分析b站的推送机制">分析B站的推送机制
+</h4><ul>
+<li>
+<p>当你特别关注了一个up主,那个up主每次发视频就会私信发送给你,这叫推模式,直接推送给个人</p>
+</li>
+<li>
+<p>如果你直接去查看up主的主页,你就能看到他所有的内容,这种叫拉模式,拉取up主的所有内容</p>
+</li>
+<li>
+<p>上述两种模式,推模式不适合大V,如果不特别关注就推送,那么网络资源消耗过大.</p>
+</li>
+</ul>
+<p>这次我要用Redis实现推模式,写一个feed流</p>
+<h3 id="设计思路">设计思路
+</h3><p>我们要实现推流,就要在博主发送blog的时候把信息发到关注他的粉丝账号上,我们先查数据库,找到粉丝id,然后选取Redis数据结构来存储推流信息.</p>
+<ul>
+<li>List和SortedSet都可以来记录有序集合,但是要实现分页滚动查询,还是用ZSET好</li>
+</ul>
+<p>我们可以这样写保存blog的代码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="nf">saveBlog</span><span class="p">(</span><span class="n">Blog</span><span class="w"> </span><span class="n">blog</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 获取登录用户</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">UserDTO</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">UserHolder</span><span class="p">.</span><span class="na">getUser</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">blog</span><span class="p">.</span><span class="na">setUserId</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="na">getId</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 保存探店博文</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">boolean</span><span class="w"> </span><span class="n">saveSuccess</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blogService</span><span class="p">.</span><span class="na">save</span><span class="p">(</span><span class="n">blog</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">saveSuccess</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="na">fail</span><span class="p">(</span><span class="s">&#34;发布笔记失败&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span><span class="w"> </span><span class="n">idList</span><span class="o">=</span><span class="n">userMapper</span><span class="p">.</span><span class="na">selectByFollower</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="na">getId</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">idList</span><span class="o">!=</span><span class="kc">null</span><span class="o">&amp;&amp;!</span><span class="n">idList</span><span class="p">.</span><span class="na">isEmpty</span><span class="p">()){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">for</span><span class="p">(</span><span class="n">Long</span><span class="w"> </span><span class="n">id</span><span class="p">:</span><span class="n">idList</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">stringRedisTemplate</span><span class="p">.</span><span class="na">opsForZSet</span><span class="p">().</span><span class="na">add</span><span class="p">(</span><span class="n">RedisConstants</span><span class="p">.</span><span class="na">FEED_KEY</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">blog</span><span class="p">.</span><span class="na">getId</span><span class="p">().</span><span class="na">toString</span><span class="p">(),</span><span class="w"> </span><span class="n">System</span><span class="p">.</span><span class="na">currentTimeMillis</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 返回id</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="na">ok</span><span class="p">(</span><span class="n">blog</span><span class="p">.</span><span class="na">getId</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>存储结果是这样的</p>
+<p><img src="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250410214333.png"
+	width="1299"
+	height="409"
+	srcset="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250410214333_hu_d1d10ea4f168adec.png 480w, /p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250410214333_hu_ccad1f8290b4de5f.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="317"
+		data-flex-basis="762px"
+	
+></p>
+<p>我们以时间戳作为分数,越靠前的blog时间戳大,到时候用户最先看到的就是最新消息</p>
+<h3 id="滚动分页查询">滚动分页查询
+</h3><p><img src="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250410214754.png"
+	width="604"
+	height="497"
+	srcset="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250410214754_hu_2f80544494b81e8d.png 480w, /p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250410214754_hu_41a63bf722266d70.png 1024w"
+	loading="lazy"
+	
+		alt="p"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="121"
+		data-flex-basis="291px"
+	
+></p>
+<p>用户每次查询2条记录,记录按照时间戳来排序,第一次查询的最大时间戳为当前时间,要找到最新的消息,后面再查就是上一次查到的最小的时间戳,然后偏移量加一,因为要查询后面两条,偏移量是通过之前重复时间戳数量计算出来的,当很多人同时建立blog时,时间戳可能会一样,这时候就得去重,加上偏移量</p>
+<h4 id="附java代码">附Java代码
+</h4><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="nf">queryBlogByUserId</span><span class="p">(</span><span class="n">Long</span><span class="w"> </span><span class="n">time</span><span class="p">,</span><span class="w"> </span><span class="n">Long</span><span class="w"> </span><span class="n">offset</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Long</span><span class="w"> </span><span class="n">userId</span><span class="o">=</span><span class="n">UserHolder</span><span class="p">.</span><span class="na">getUser</span><span class="p">().</span><span class="na">getId</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Set</span><span class="o">&lt;</span><span class="n">ZSetOperations</span><span class="p">.</span><span class="na">TypedTuple</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">typedTuples</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">offset</span><span class="o">==</span><span class="n">0</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">typedTuples</span><span class="o">=</span><span class="w"> </span><span class="n">stringRedisTemplate</span><span class="p">.</span><span class="na">opsForZSet</span><span class="p">().</span><span class="na">reverseRangeByScoreWithScores</span><span class="p">(</span><span class="n">RedisConstants</span><span class="p">.</span><span class="na">FEED_KEY</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">0</span><span class="p">,</span><span class="w"> </span><span class="n">System</span><span class="p">.</span><span class="na">currentTimeMillis</span><span class="p">(),</span><span class="w"> </span><span class="n">offset</span><span class="p">,</span><span class="w"> </span><span class="n">2</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="k">else</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">typedTuples</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stringRedisTemplate</span><span class="p">.</span><span class="na">opsForZSet</span><span class="p">().</span><span class="na">reverseRangeByScoreWithScores</span><span class="p">(</span><span class="n">RedisConstants</span><span class="p">.</span><span class="na">FEED_KEY</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">userId</span><span class="p">,</span><span class="w"> </span><span class="n">0</span><span class="p">,</span><span class="w"> </span><span class="n">time</span><span class="p">,</span><span class="w"> </span><span class="n">offset</span><span class="p">,</span><span class="w"> </span><span class="n">2</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">typedTuples</span><span class="o">==</span><span class="kc">null</span><span class="o">||</span><span class="w"> </span><span class="n">typedTuples</span><span class="p">.</span><span class="na">isEmpty</span><span class="p">()){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="na">fail</span><span class="p">(</span><span class="s">&#34;没有文章可以看了捏&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Blog</span><span class="o">&gt;</span><span class="w"> </span><span class="n">blogs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span><span class="w"> </span><span class="n">score</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">ZSetOperations</span><span class="p">.</span><span class="na">TypedTuple</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">object</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">typedTuples</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">score</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">Objects</span><span class="p">.</span><span class="na">requireNonNull</span><span class="p">(</span><span class="n">object</span><span class="p">.</span><span class="na">getScore</span><span class="p">()).</span><span class="na">longValue</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">Blog</span><span class="w"> </span><span class="n">blog</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">blogMapper</span><span class="p">.</span><span class="na">selectById</span><span class="p">(</span><span class="n">Long</span><span class="p">.</span><span class="na">parseLong</span><span class="p">(</span><span class="n">Objects</span><span class="p">.</span><span class="na">requireNonNull</span><span class="p">(</span><span class="n">object</span><span class="p">.</span><span class="na">getValue</span><span class="p">())));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">blogs</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">blog</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="o">=</span><span class="n">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Long</span><span class="w"> </span><span class="n">lastScore</span><span class="o">=</span><span class="n">score</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">0</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">score</span><span class="p">.</span><span class="na">size</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">score</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">!=</span><span class="n">lastScore</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">count</span><span class="o">=</span><span class="n">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">lastScore</span><span class="o">=</span><span class="n">score</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">i</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="k">else</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">count</span><span class="o">++</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ScrollResult</span><span class="w"> </span><span class="n">scrollResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ScrollResult</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">scrollResult</span><span class="p">.</span><span class="na">setList</span><span class="p">(</span><span class="n">blogs</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">scrollResult</span><span class="p">.</span><span class="na">setMinTime</span><span class="p">(</span><span class="n">score</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">score</span><span class="p">.</span><span class="na">size</span><span class="p">()</span><span class="o">-</span><span class="n">1</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">scrollResult</span><span class="p">.</span><span class="na">setOffset</span><span class="p">(</span><span class="n">count</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="na">ok</span><span class="p">(</span><span class="n">scrollResult</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>注意reverseRangeByScoreWithScores函数参数顺序,集合名称,分数最小值,分数最大值,偏移量,查询信息数,这个函数可以同时返回score和value</p>
+<h4 id="最后的效果">最后的效果:
+</h4><p><img src="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250410215703.png"
+	width="378"
+	height="888"
+	srcset="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250410215703_hu_8fd906a02141c9c5.png 480w, /p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250410215703_hu_2e05eb04adf74fe5.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="42"
+		data-flex-basis="102px"
+	
+></p>
+
 </section>
 
 

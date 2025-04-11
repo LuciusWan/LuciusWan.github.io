@@ -444,6 +444,11 @@
         </li>
       </ol>
     </li>
+    <li><a href="#redis-geo实现搜索附近商户">Redis-Geo实现搜索附近商户</a>
+      <ol>
+        <li><a href="#软件设计思路">软件设计思路</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -516,7 +521,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 31 分钟
+                    阅读时长: 33 分钟
                 </time>
             </div>
         
@@ -3806,6 +3811,169 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 		data-flex-basis="102px"
 	
 ></p>
+<h2 id="redis-geo实现搜索附近商户">Redis-Geo实现搜索附近商户
+</h2><p><strong>Redis-Geo可以实现两个经纬度之间的距离测算</strong></p>
+<ul>
+<li>
+<p>比如我给出一个店铺的经纬度是87.588076 43.841359</p>
+</li>
+<li>
+<p>我的坐标是87.5795849 43.81927399</p>
+</li>
+<li>
+<p>那我们可以通过redis计算出这两地之间的距离</p>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">localhost:6379&gt; geoadd g1 87.529252 43.841359 urmuqizhan
+</span></span><span class="line"><span class="cl"><span class="o">(</span>integer<span class="o">)</span> <span class="m">1</span>
+</span></span><span class="line"><span class="cl">localhost:6379&gt; geoadd g1 87.588076 43.8242569 ShenZhenCheng
+</span></span><span class="line"><span class="cl"><span class="o">(</span>integer<span class="o">)</span> <span class="m">1</span>
+</span></span><span class="line"><span class="cl">localhost:6379&gt; geodist g1 urmuqizhan ShenZhenCheng
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;5088.3803&#34;</span>
+</span></span><span class="line"><span class="cl">localhost:6379&gt; geodist g1 urmuqizhan ShenZhenCheng km
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;5.0884&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这里我们通过geoadd语句添加了两地坐标,然后通过geodist计算出了两地之间的距离,如果限定输出格式的话,默认是米,可以限制输出为千米</p>
+<h3 id="软件设计思路">软件设计思路
+</h3><p>用户要查看周围店铺的时候,我们就要按照距离顺序来给用户推荐,比如美团外卖的最近店铺,用户会给我们自己的坐标,也就是经纬度,我们要做的就是按照他传过来的位置和店铺位置算一个距离数据,然后排序查询后的搜索结果,返回给前端.</p>
+<p><img src="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411201040.png"
+	width="551"
+	height="527"
+	srcset="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411201040_hu_ea40a9a46622c1db.png 480w, /p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411201040_hu_801a7ce2ebf620a9.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="104"
+		data-flex-basis="250px"
+	
+></p>
+<p>注意到这里面有typeId,表示店铺的类型,比如美食,娱乐等等</p>
+<p><img src="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411201137.png"
+	width="408"
+	height="182"
+	srcset="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411201137_hu_3b3efbb93c65c023.png 480w, /p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411201137_hu_5f8322a4e4974937.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="224"
+		data-flex-basis="538px"
+	
+></p>
+<p>我们要在redis上存储这些店铺的信息,先把经纬度存进去,还有店铺的ID,还有typeId,我们这样可以设计</p>
+<p><img src="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411201330.png"
+	width="1246"
+	height="507"
+	srcset="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411201330_hu_1cf976316088233b.png 480w, /p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411201330_hu_64ca20ccdddb2702.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="245"
+		data-flex-basis="589px"
+	
+></p>
+<p>shop:geo表示redis数据类型,1表示typeId</p>
+<p>当我们把查询到的typeId用来查询所有相关的店铺</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">GeoResults</span><span class="o">&lt;</span><span class="n">RedisGeoCommands</span><span class="p">.</span><span class="na">GeoLocation</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stringRedisTemplate</span><span class="p">.</span><span class="na">opsForGeo</span><span class="p">().</span><span class="na">search</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">key</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">GeoReference</span><span class="p">.</span><span class="na">fromCoordinate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="c1">//默认米为单位,5公里</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">Distance</span><span class="p">(</span><span class="n">5000</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">RedisGeoCommands</span><span class="p">.</span><span class="na">GeoSearchCommandArgs</span><span class="p">.</span><span class="na">newGeoSearchArgs</span><span class="p">().</span><span class="na">includeDistance</span><span class="p">().</span><span class="na">limit</span><span class="p">(</span><span class="n">end</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>这个函数的参数为,key,用户坐标,查询附近5km的所有店铺,查询到分页表的最后一个下标,因为redis没有设置from 到end的查询方式,所以只能全查了,这样查出来的就按照距离顺序</p>
+<p>这里同时查询出来了距离和店铺的id,我们可以这样取出所有值</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">List</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ids</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Distance</span><span class="o">&gt;</span><span class="w"> </span><span class="n">distances</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">GeoResult</span><span class="o">&lt;</span><span class="n">RedisGeoCommands</span><span class="p">.</span><span class="na">GeoLocation</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sum</span><span class="o">&lt;</span><span class="n">from</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">sum</span><span class="o">++</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">continue</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">RedisGeoCommands</span><span class="p">.</span><span class="na">GeoLocation</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">location</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="na">getContent</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ids</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">Long</span><span class="p">.</span><span class="na">valueOf</span><span class="p">(</span><span class="n">location</span><span class="p">.</span><span class="na">getName</span><span class="p">()));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">distances</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">r</span><span class="p">.</span><span class="na">getDistance</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后查询数据库,把店铺所有信息和距离返回给前端</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="n">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">ids</span><span class="p">.</span><span class="na">size</span><span class="p">();</span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">Shop</span><span class="w"> </span><span class="n">shop</span><span class="o">=</span><span class="w"> </span><span class="n">shopMapper</span><span class="p">.</span><span class="na">selectById</span><span class="p">(</span><span class="n">ids</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">i</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">shop</span><span class="p">.</span><span class="na">setDistance</span><span class="p">(</span><span class="n">Double</span><span class="p">.</span><span class="na">valueOf</span><span class="p">(</span><span class="n">distances</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">i</span><span class="p">).</span><span class="na">toString</span><span class="p">().</span><span class="na">replaceAll</span><span class="p">(</span><span class="s">&#34;[^\\d.]&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;&#34;</span><span class="p">)));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">shop</span><span class="o">!=</span><span class="kc">null</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">shops</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">shop</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>最后结果就是这样了</p>
+<p><img src="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411204506.png"
+	width="396"
+	height="714"
+	srcset="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411204506_hu_8b45bacfb550c223.png 480w, /p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411204506_hu_21281749a82e717.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="55"
+		data-flex-basis="133px"
+	
+></p>
+<p>查询的时候是按照距离来搜的,并且附带距离</p>
 
 </section>
 

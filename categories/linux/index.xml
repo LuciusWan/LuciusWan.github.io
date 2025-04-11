@@ -274,29 +274,64 @@
 &lt;/ol&gt;
 &lt;h4 id=&#34;运行结果及分析&#34;&gt;运行结果及分析
 &lt;/h4&gt;&lt;p&gt;&lt;strong&gt;例1运行结果：&lt;/strong&gt;&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
-&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
-&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;hello
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;hello
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;hello
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;hello
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;hello
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;hello
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;hello
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;hello
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+
+
+&lt;div class=&#34;goat svg-container &#34;&gt;
+  
+    &lt;svg
+      xmlns=&#34;http://www.w3.org/2000/svg&#34;
+      font-family=&#34;Menlo,Lucida Console,monospace&#34;
+      
+        viewBox=&#34;0 0 48 137&#34;
+      &gt;
+      &lt;g transform=&#39;translate(8,16)&#39;&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;0&#39; y=&#39;4&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;h&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;0&#39; y=&#39;20&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;h&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;0&#39; y=&#39;36&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;h&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;0&#39; y=&#39;52&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;h&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;0&#39; y=&#39;68&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;h&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;0&#39; y=&#39;84&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;h&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;0&#39; y=&#39;100&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;h&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;0&#39; y=&#39;116&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;h&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;8&#39; y=&#39;4&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;e&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;8&#39; y=&#39;20&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;e&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;8&#39; y=&#39;36&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;e&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;8&#39; y=&#39;52&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;e&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;8&#39; y=&#39;68&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;e&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;8&#39; y=&#39;84&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;e&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;8&#39; y=&#39;100&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;e&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;8&#39; y=&#39;116&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;e&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;16&#39; y=&#39;4&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;l&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;16&#39; y=&#39;20&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;l&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;16&#39; y=&#39;36&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;l&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;16&#39; y=&#39;52&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;l&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;16&#39; y=&#39;68&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;l&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;16&#39; y=&#39;84&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;l&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;16&#39; y=&#39;100&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;l&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;16&#39; y=&#39;116&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;l&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;24&#39; y=&#39;4&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;l&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;24&#39; y=&#39;20&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;l&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;24&#39; y=&#39;36&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;l&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;24&#39; y=&#39;52&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;l&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;24&#39; y=&#39;68&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;l&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;24&#39; y=&#39;84&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;l&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;24&#39; y=&#39;100&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;l&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;24&#39; y=&#39;116&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;l&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;32&#39; y=&#39;4&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;o&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;32&#39; y=&#39;20&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;o&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;32&#39; y=&#39;36&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;o&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;32&#39; y=&#39;52&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;o&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;32&#39; y=&#39;68&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;o&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;32&#39; y=&#39;84&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;o&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;32&#39; y=&#39;100&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;o&lt;/text&gt;
+&lt;text text-anchor=&#39;middle&#39; x=&#39;32&#39; y=&#39;116&#39; fill=&#39;currentColor&#39; style=&#39;font-size:1em&#39;&gt;o&lt;/text&gt;
+&lt;/g&gt;
+
+    &lt;/svg&gt;
+  
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;strong&gt;例一分析：&lt;/strong&gt; 每次&lt;code&gt;fork()&lt;/code&gt;调用都会创建一个新的进程，三次&lt;code&gt;fork()&lt;/code&gt;会创建8个进程（2^3），每个进程都会执行&lt;code&gt;printf(&amp;quot;hello\n&amp;quot;);&lt;/code&gt;，所以输出8次&amp;quot;hello&amp;quot;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;例一分析：&lt;/strong&gt; 每次&lt;code&gt;fork()&lt;/code&gt;调用都会创建一个新的进程，三次&lt;code&gt;fork()&lt;/code&gt;会创建8个进程（2^3），每个进程都会执行&lt;code&gt;printf(&amp;quot;hello\n&amp;quot;);&lt;/code&gt;，所以输出8次&amp;quot;hello&amp;quot;。&lt;/p&gt;
 &lt;h3 id=&#34;例题二操作&#34;&gt;例题二操作
 &lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;

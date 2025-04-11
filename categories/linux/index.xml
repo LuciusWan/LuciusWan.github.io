@@ -8,22 +8,22 @@
         <language>zh-cn</language>
         <copyright>LuciusWan</copyright>
         <lastBuildDate>Fri, 21 Mar 2025 14:01:52 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/categories/linux/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>OpenEuler实战</title>
-        <link>https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/</link>
+        <title>Linux实战</title>
+        <link>https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/</link>
         <pubDate>Fri, 21 Mar 2025 14:01:52 +0800</pubDate>
         
-        <guid>https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/</guid>
-        <description>&lt;h1 id=&#34;openeuler实战&#34;&gt;OpenEuler实战
+        <guid>https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/</guid>
+        <description>&lt;h1 id=&#34;linux实战&#34;&gt;Linux实战
 &lt;/h1&gt;&lt;h2 id=&#34;openeuler安装&#34;&gt;OpenEuler安装
 &lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;可以参考这个up主的视频 &lt;a class=&#34;link&#34; href=&#34;https://www.bilibili.com/video/BV12N4y1Q72q?vd_source=df996e877d54bec22f414fed7cb7fac4&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;B站视频链接&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;下载virtualbox虚拟机&#34;&gt;下载VirtualBox虚拟机
-&lt;/h3&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-14-46-image.png&#34;
+&lt;/h3&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-14-46-image.png&#34;
 	width=&#34;80&#34;
 	height=&#34;109&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-14-46-image_hu_52dbcbfd437bd891.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-14-46-image_hu_dbfc2f86e128a9e9.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-14-46-image_hu_52dbcbfd437bd891.png 480w, https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-14-46-image_hu_dbfc2f86e128a9e9.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -33,10 +33,10 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;在浏览器官网搜索virtualBox官网&lt;a class=&#34;link&#34; href=&#34;https://www.virtualbox.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Oracle VirtualBox&lt;/a&gt;然后直接下载即可&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-16-10-image.png&#34;
+    &gt;Oracle VirtualBox&lt;/a&gt;然后直接下载即可&lt;img src=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-16-10-image.png&#34;
 	width=&#34;1866&#34;
 	height=&#34;542&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-16-10-image_hu_a0848e2a95ac2c89.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-16-10-image_hu_55d5c1bc4bdfd439.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-16-10-image_hu_a0848e2a95ac2c89.png 480w, https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-16-10-image_hu_55d5c1bc4bdfd439.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -45,10 +45,10 @@
 		data-flex-basis=&#34;826px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-16-21-image.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-16-21-image.png&#34;
 	width=&#34;287&#34;
 	height=&#34;61&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-16-21-image_hu_c3bb596daa017268.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-16-21-image_hu_c333e10069621f85.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-16-21-image_hu_c3bb596daa017268.png 480w, https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-16-21-image_hu_c333e10069621f85.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -57,10 +57,10 @@
 		data-flex-basis=&#34;1129px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;p&gt;打开VirtualBox后发现并没有操作系统(),那么我们就再去浏览器下载openEuler操作系统&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-18-05-image.png&#34;
+&lt;p&gt;打开VirtualBox后发现并没有操作系统(),那么我们就再去浏览器下载openEuler操作系统&lt;img src=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-18-05-image.png&#34;
 	width=&#34;1296&#34;
 	height=&#34;735&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-18-05-image_hu_f1248d645c8ea38f.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-18-05-image_hu_911c6626d5cddb92.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-18-05-image_hu_f1248d645c8ea38f.png 480w, https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-18-05-image_hu_911c6626d5cddb92.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -72,10 +72,10 @@
 &lt;h3 id=&#34;下载openeuler操作系统&#34;&gt;下载OpenEuler操作系统
 &lt;/h3&gt;&lt;p&gt;在浏览器上搜索OpenEuler社区&lt;a class=&#34;link&#34; href=&#34;https://www.openeuler.org/zh/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;openEuler | 开源社区 | openEuler社区官网&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;点开后找到Offline Everything ISO，下载就好了&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-19-35-image.png&#34;
+&lt;p&gt;点开后找到Offline Everything ISO，下载就好了&lt;img src=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-19-35-image.png&#34;
 	width=&#34;1476&#34;
 	height=&#34;633&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-19-35-image_hu_6183c6e4fbb31abe.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-19-35-image_hu_4098aebfaec6d4d1.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-19-35-image_hu_6183c6e4fbb31abe.png 480w, https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-19-35-image_hu_4098aebfaec6d4d1.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -84,10 +84,10 @@
 		data-flex-basis=&#34;559px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-21-49-image.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-21-49-image.png&#34;
 	width=&#34;339&#34;
 	height=&#34;74&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-21-49-image_hu_46d41a8e12bebb88.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-21-49-image_hu_b0a744c44c13b76e.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-21-49-image_hu_46d41a8e12bebb88.png 480w, https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-21-49-image_hu_b0a744c44c13b76e.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -98,10 +98,10 @@
 &gt;&lt;/p&gt;
 &lt;p&gt;事实上并没有删除()&lt;/p&gt;
 &lt;h3 id=&#34;在virtualbox中加载openeuler&#34;&gt;在VirtualBox中加载OpenEuler
-&lt;/h3&gt;&lt;p&gt;点击注册,然后按照下图配置&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-23-30-image.png&#34;
+&lt;/h3&gt;&lt;p&gt;点击注册,然后按照下图配置&lt;img src=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-23-30-image.png&#34;
 	width=&#34;801&#34;
 	height=&#34;557&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-23-30-image_hu_8a1bd1ebb3827ccd.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-23-30-image_hu_6af3a7738de016db.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-23-30-image_hu_8a1bd1ebb3827ccd.png 480w, https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-23-30-image_hu_6af3a7738de016db.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -110,10 +110,10 @@
 		data-flex-basis=&#34;345px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;p&gt;然后新建虚拟电脑的时候配置一下&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-26-20-image.png&#34;
+&lt;p&gt;然后新建虚拟电脑的时候配置一下&lt;img src=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-26-20-image.png&#34;
 	width=&#34;1452&#34;
 	height=&#34;1026&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-26-20-image_hu_ef5b0e64d320955f.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-26-20-image_hu_56702d26e46da99f.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-26-20-image_hu_ef5b0e64d320955f.png 480w, https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-26-20-image_hu_56702d26e46da99f.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -123,10 +123,10 @@
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;全都配置好就可以使用了&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-28-23-image.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-28-23-image.png&#34;
 	width=&#34;1296&#34;
 	height=&#34;881&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-28-23-image_hu_bae3669225c5c4a9.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/2025-03-13-12-28-23-image_hu_fdb55c0d7ce36381.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-28-23-image_hu_bae3669225c5c4a9.png 480w, https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/2025-03-13-12-28-23-image_hu_fdb55c0d7ce36381.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -258,10 +258,10 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;观察输出结果。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250321134207.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250321134207.png&#34;
 	width=&#34;663&#34;
 	height=&#34;371&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250321134207_hu_a00e43ecde1a5821.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250321134207_hu_c6803a2aac8bdb6a.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250321134207_hu_a00e43ecde1a5821.png 480w, https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250321134207_hu_c6803a2aac8bdb6a.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -338,10 +338,10 @@
 &lt;/h3&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;strong&gt;例2运行结果：&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250321135822.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250321135822.png&#34;
 	width=&#34;348&#34;
 	height=&#34;109&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250321135822_hu_4a13dbfbb3a11877.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250321135822_hu_b8d56ac76a355058.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250321135822_hu_4a13dbfbb3a11877.png 480w, https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250321135822_hu_b8d56ac76a355058.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -453,10 +453,10 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;输出结果为：&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;Hello World!&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145016.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145016.png&#34;
 	width=&#34;1495&#34;
 	height=&#34;671&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145016_hu_146abe79d6b2985c.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145016_hu_8ca0061f6482dbaf.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145016_hu_146abe79d6b2985c.png 480w, https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145016_hu_8ca0061f6482dbaf.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -465,10 +465,10 @@
 		data-flex-basis=&#34;534px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145133.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145133.png&#34;
 	width=&#34;814&#34;
 	height=&#34;113&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145133_hu_c0e9e1283494d900.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145133_hu_14e3e610cb358199.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145133_hu_c0e9e1283494d900.png 480w, https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145133_hu_14e3e610cb358199.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -551,10 +551,10 @@
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git status
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145208.png&#34;
+&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145208.png&#34;
 	width=&#34;824&#34;
 	height=&#34;417&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145208_hu_d4719b4f0cacb760.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145208_hu_f21a42d27adb565f.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145208_hu_d4719b4f0cacb760.png 480w, https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145208_hu_f21a42d27adb565f.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -565,10 +565,10 @@
 &gt;&lt;/p&gt;
 &lt;h3 id=&#34;提交代码至github&#34;&gt;提交代码至github
 &lt;/h3&gt;&lt;h4 id=&#34;在github中注册好之后创建代码仓库&#34;&gt;在github中注册好之后,创建代码仓库
-&lt;/h4&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143726.png&#34;
+&lt;/h4&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143726.png&#34;
 	width=&#34;1119&#34;
 	height=&#34;867&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143726_hu_298b19c3efde4abe.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143726_hu_54e9c8502877e740.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143726_hu_298b19c3efde4abe.png 480w, https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143726_hu_54e9c8502877e740.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -600,10 +600,10 @@
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;然后本地仓库就和github连上了.&lt;/p&gt;
 &lt;p&gt;我们可以在本地编译,提交代码至github仓库&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143917.png&#34;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143917.png&#34;
 	width=&#34;717&#34;
 	height=&#34;521&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143917_hu_2a2fdd7ddca3160f.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143917_hu_a72d85447b9ec22e.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143917_hu_2a2fdd7ddca3160f.png 480w, https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143917_hu_a72d85447b9ec22e.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -643,10 +643,10 @@
 &lt;p&gt;&lt;strong&gt;git push&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;很好理解,把本地仓库修改内容和修改信息一并推送到远程仓库&lt;/p&gt;
 &lt;h4 id=&#34;提交后我们的仓库就会发生变化&#34;&gt;提交后,我们的仓库就会发生变化
-&lt;/h4&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411144341.png&#34;
+&lt;/h4&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411144341.png&#34;
 	width=&#34;1239&#34;
 	height=&#34;560&#34;
-	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411144341_hu_f399bfb5d87c0df8.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411144341_hu_b59d11a4dd202b0b.png 1024w&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411144341_hu_f399bfb5d87c0df8.png 480w, https://LuciusWan.github.io/p/linux%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411144341_hu_b59d11a4dd202b0b.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	

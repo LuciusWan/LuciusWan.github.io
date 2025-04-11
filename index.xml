@@ -5059,6 +5059,30 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;输出结果为：&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;Hello World!&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145016.png&#34;
+	width=&#34;1495&#34;
+	height=&#34;671&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145016_hu_146abe79d6b2985c.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145016_hu_8ca0061f6482dbaf.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;222&#34;
+		data-flex-basis=&#34;534px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145133.png&#34;
+	width=&#34;814&#34;
+	height=&#34;113&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145133_hu_c0e9e1283494d900.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145133_hu_14e3e610cb358199.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;720&#34;
+		data-flex-basis=&#34;1728px&#34;
+	
+&gt;&lt;/p&gt;
 &lt;h3 id=&#34;2-使用git管理项目&#34;&gt;2. 使用Git管理项目
 &lt;/h3&gt;&lt;h4 id=&#34;21-创建项目目录&#34;&gt;2.1 创建项目目录
 &lt;/h4&gt;&lt;p&gt;在主目录下创建一个名为&lt;code&gt;os_practice&lt;/code&gt;的项目目录：&lt;/p&gt;
@@ -5105,8 +5129,6 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 &lt;/div&gt;
 &lt;/div&gt;&lt;h4 id=&#34;24-添加文件到git&#34;&gt;2.4 添加文件到Git
 &lt;/h4&gt;&lt;p&gt;将文件添加到Git仓库：&lt;/p&gt;
-&lt;p&gt;bash&lt;/p&gt;
-&lt;p&gt;复制&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
@@ -5135,7 +5157,19 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git status
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;h3 id=&#34;提交代码至github&#34;&gt;提交代码至github
+&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145208.png&#34;
+	width=&#34;824&#34;
+	height=&#34;417&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145208_hu_d4719b4f0cacb760.png 480w, https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411145208_hu_f21a42d27adb565f.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;197&#34;
+		data-flex-basis=&#34;474px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;提交代码至github&#34;&gt;提交代码至github
 &lt;/h3&gt;&lt;h4 id=&#34;在github中注册好之后创建代码仓库&#34;&gt;在github中注册好之后,创建代码仓库
 &lt;/h4&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143726.png&#34;
 	width=&#34;1119&#34;

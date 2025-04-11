@@ -3365,7 +3365,8 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;shop:geo表示redis数据类型,1表示typeId&lt;/p&gt;
-&lt;p&gt;当我们把查询到的typeId用来查询所有相关的店铺&lt;/p&gt;
+&lt;h3 id=&#34;具体实现&#34;&gt;具体实现
+&lt;/h3&gt;&lt;p&gt;当我们把查询到的typeId用来查询所有相关的店铺&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1

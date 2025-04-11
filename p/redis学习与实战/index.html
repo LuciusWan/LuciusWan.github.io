@@ -447,6 +447,7 @@
     <li><a href="#redis-geo实现搜索附近商户">Redis-Geo实现搜索附近商户</a>
       <ol>
         <li><a href="#软件设计思路">软件设计思路</a></li>
+        <li><a href="#具体实现">具体实现</a></li>
       </ol>
     </li>
   </ol>
@@ -3888,7 +3889,8 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 	
 ></p>
 <p>shop:geo表示redis数据类型,1表示typeId</p>
-<p>当我们把查询到的typeId用来查询所有相关的店铺</p>
+<h3 id="具体实现">具体实现
+</h3><p>当我们把查询到的typeId用来查询所有相关的店铺</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1

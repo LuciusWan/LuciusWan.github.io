@@ -290,6 +290,34 @@
         </li>
       </ol>
     </li>
+    <li><a href="#hw3-多线程-git">HW3-多线程-git</a>
+      <ol>
+        <li><a href="#1-编写和编译多线程代码">1. 编写和编译多线程代码</a>
+          <ol>
+            <li><a href="#11-创建代码文件">1.1 创建代码文件</a></li>
+            <li><a href="#12-编译代码">1.2 编译代码</a></li>
+            <li><a href="#13-运行程序">1.3 运行程序</a></li>
+          </ol>
+        </li>
+        <li><a href="#2-使用git管理项目">2. 使用Git管理项目</a>
+          <ol>
+            <li><a href="#21-创建项目目录">2.1 创建项目目录</a></li>
+            <li><a href="#22-初始化git仓库">2.2 初始化Git仓库</a></li>
+            <li><a href="#23-创建子目录">2.3 创建子目录</a></li>
+            <li><a href="#24-添加文件到git">2.4 添加文件到Git</a></li>
+            <li><a href="#25-提交更改">2.5 提交更改</a></li>
+            <li><a href="#26-检查git状态">2.6 检查Git状态</a></li>
+          </ol>
+        </li>
+        <li><a href="#提交代码至github">提交代码至github</a>
+          <ol>
+            <li><a href="#在github中注册好之后创建代码仓库">在github中注册好之后,创建代码仓库</a></li>
+            <li><a href="#创建好之后使用github给的bash代码">创建好之后,使用github给的bash代码</a></li>
+            <li><a href="#提交后我们的仓库就会发生变化">提交后,我们的仓库就会发生变化</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -358,7 +386,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 3 分钟
+                    阅读时长: 4 分钟
                 </time>
             </div>
         
@@ -634,64 +662,29 @@
 </ol>
 <h4 id="运行结果及分析">运行结果及分析
 </h4><p><strong>例1运行结果：</strong></p>
-
-
-
-<div class="goat svg-container ">
-  
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      font-family="Menlo,Lucida Console,monospace"
-      
-        viewBox="0 0 48 137"
-      >
-      <g transform='translate(8,16)'>
-<text text-anchor='middle' x='0' y='4' fill='currentColor' style='font-size:1em'>h</text>
-<text text-anchor='middle' x='0' y='20' fill='currentColor' style='font-size:1em'>h</text>
-<text text-anchor='middle' x='0' y='36' fill='currentColor' style='font-size:1em'>h</text>
-<text text-anchor='middle' x='0' y='52' fill='currentColor' style='font-size:1em'>h</text>
-<text text-anchor='middle' x='0' y='68' fill='currentColor' style='font-size:1em'>h</text>
-<text text-anchor='middle' x='0' y='84' fill='currentColor' style='font-size:1em'>h</text>
-<text text-anchor='middle' x='0' y='100' fill='currentColor' style='font-size:1em'>h</text>
-<text text-anchor='middle' x='0' y='116' fill='currentColor' style='font-size:1em'>h</text>
-<text text-anchor='middle' x='8' y='4' fill='currentColor' style='font-size:1em'>e</text>
-<text text-anchor='middle' x='8' y='20' fill='currentColor' style='font-size:1em'>e</text>
-<text text-anchor='middle' x='8' y='36' fill='currentColor' style='font-size:1em'>e</text>
-<text text-anchor='middle' x='8' y='52' fill='currentColor' style='font-size:1em'>e</text>
-<text text-anchor='middle' x='8' y='68' fill='currentColor' style='font-size:1em'>e</text>
-<text text-anchor='middle' x='8' y='84' fill='currentColor' style='font-size:1em'>e</text>
-<text text-anchor='middle' x='8' y='100' fill='currentColor' style='font-size:1em'>e</text>
-<text text-anchor='middle' x='8' y='116' fill='currentColor' style='font-size:1em'>e</text>
-<text text-anchor='middle' x='16' y='4' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='16' y='20' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='16' y='36' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='16' y='52' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='16' y='68' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='16' y='84' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='16' y='100' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='16' y='116' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='24' y='4' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='24' y='20' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='24' y='36' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='24' y='52' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='24' y='68' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='24' y='84' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='24' y='100' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='24' y='116' fill='currentColor' style='font-size:1em'>l</text>
-<text text-anchor='middle' x='32' y='4' fill='currentColor' style='font-size:1em'>o</text>
-<text text-anchor='middle' x='32' y='20' fill='currentColor' style='font-size:1em'>o</text>
-<text text-anchor='middle' x='32' y='36' fill='currentColor' style='font-size:1em'>o</text>
-<text text-anchor='middle' x='32' y='52' fill='currentColor' style='font-size:1em'>o</text>
-<text text-anchor='middle' x='32' y='68' fill='currentColor' style='font-size:1em'>o</text>
-<text text-anchor='middle' x='32' y='84' fill='currentColor' style='font-size:1em'>o</text>
-<text text-anchor='middle' x='32' y='100' fill='currentColor' style='font-size:1em'>o</text>
-<text text-anchor='middle' x='32' y='116' fill='currentColor' style='font-size:1em'>o</text>
-</g>
-
-    </svg>
-  
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">hello</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">hello</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">hello</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">hello</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">hello</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">hello</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">hello</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">hello</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
-<p><strong>例一分析：</strong> 每次<code>fork()</code>调用都会创建一个新的进程，三次<code>fork()</code>会创建8个进程（2^3），每个进程都会执行<code>printf(&quot;hello\n&quot;);</code>，所以输出8次&quot;hello&quot;。</p>
+</div><p><strong>例一分析：</strong> 每次<code>fork()</code>调用都会创建一个新的进程，三次<code>fork()</code>会创建8个进程（2^3），每个进程都会执行<code>printf(&quot;hello\n&quot;);</code>，所以输出8次&quot;hello&quot;。</p>
 <h3 id="例题二操作">例题二操作
 </h3><ul>
 <li>
@@ -753,6 +746,269 @@
 </ul>
 <h4 id="五总结">五、总结
 </h4><p>通过本次实践，我掌握了在Linux环境下使用GCC编译C代码的基本流程，理解了<code>fork()</code>系统调用的原理和用法，以及进程控制的基本概念。同时，也熟悉了在OpenEuler操作系统下的开发环境和工具的使用。</p>
+<h2 id="hw3-多线程-git">HW3-多线程-git
+</h2><h3 id="1-编写和编译多线程代码">1. 编写和编译多线程代码
+</h3><h4 id="11-创建代码文件">1.1 创建代码文件
+</h4><p>在Linux命令行中，使用<code>vi</code>或<code>nano</code>编辑器创建一个名为<code>pthread_hello.c</code>的文件：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">vi pthread_hello.c
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>编写如下代码</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;pthread.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* Thread function that prints &#34;Hello World&#34; */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="nf">worker</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Hello World!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>  <span class="cm">/* Thread exits (dies) */</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">pthread_t</span> <span class="kr">thread</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">ret</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="cm">/* Create a new thread */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ret</span> <span class="o">=</span> <span class="nf">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="kr">thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">worker</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">perror</span><span class="p">(</span><span class="s">&#34;pthread_create failed&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="cm">/* Wait for the thread to finish */</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">pthread_join</span><span class="p">(</span><span class="kr">thread</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="12-编译代码">1.2 编译代码
+</h4><p>使用<code>gcc</code>编译代码，并链接<code>pthread</code>库：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">gcc pthread_hello.c -o pthread_hello -lpthread
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="13-运行程序">1.3 运行程序
+</h4><p>运行编译后的程序：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">./pthread_hello
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>输出结果为：</p>
+<p><code>Hello World!</code></p>
+<h3 id="2-使用git管理项目">2. 使用Git管理项目
+</h3><h4 id="21-创建项目目录">2.1 创建项目目录
+</h4><p>在主目录下创建一个名为<code>os_practice</code>的项目目录：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mkdir os_practice
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> os_practice
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="22-初始化git仓库">2.2 初始化Git仓库
+</h4><p>初始化Git仓库：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git init
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="23-创建子目录">2.3 创建子目录
+</h4><p>为每次的实践创建单独的子目录，例如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mkdir hw1
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> hw1
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>将<code>pthread_hello.c</code>文件复制到该目录下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cp ~/pthread_hello.c .
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="24-添加文件到git">2.4 添加文件到Git
+</h4><p>将文件添加到Git仓库：</p>
+<p>bash</p>
+<p>复制</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git add pthread_hello.c
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="25-提交更改">2.5 提交更改
+</h4><p>提交更改并添加描述信息：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git commit -m <span class="s2">&#34;Added pthread Hello World example&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="26-检查git状态">2.6 检查Git状态
+</h4><p>检查当前Git仓库的状态：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git status
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="提交代码至github">提交代码至github
+</h3><h4 id="在github中注册好之后创建代码仓库">在github中注册好之后,创建代码仓库
+</h4><p><img src="/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143726.png"
+	width="1119"
+	height="867"
+	srcset="/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143726_hu_298b19c3efde4abe.png 480w, /p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143726_hu_54e9c8502877e740.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="129"
+		data-flex-basis="309px"
+	
+></p>
+<h4 id="创建好之后使用github给的bash代码">创建好之后,使用github给的bash代码
+</h4><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;# OS-HomeWork&#34;</span> &gt;&gt; README.md
+</span></span><span class="line"><span class="cl">git init
+</span></span><span class="line"><span class="cl">git add README.md
+</span></span><span class="line"><span class="cl">git commit -m <span class="s2">&#34;first commit&#34;</span>
+</span></span><span class="line"><span class="cl">git branch -M main
+</span></span><span class="line"><span class="cl">git remote add origin https://github.com/LuciusWan/OS-HomeWork.git
+</span></span><span class="line"><span class="cl">git push -u origin main
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后本地仓库就和github连上了.</p>
+<p>我们可以在本地编译,提交代码至github仓库</p>
+<p><img src="/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143917.png"
+	width="717"
+	height="521"
+	srcset="/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143917_hu_2a2fdd7ddca3160f.png 480w, /p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411143917_hu_a72d85447b9ec22e.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="137"
+		data-flex-basis="330px"
+	
+></p>
+<p>分别使用下面bash语句</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git add .
+</span></span><span class="line"><span class="cl">git commit -m <span class="s2">&#34;update&#34;</span>
+</span></span><span class="line"><span class="cl">git push
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>git add .</strong></p>
+<p>将当前工作区中的所有更改（包括新文件、修改的文件和删除的文件）添加到 Git 的暂存区</p>
+<p><strong>git commit -m &ldquo;update&rdquo;</strong></p>
+<p>将暂存区中的更改正式提交到本地仓库，并添加一条提交信息。</p>
+<ul>
+<li>
+<p>提交（commit）是 Git 的一个快照，记录了当前暂存区中的所有更改。</p>
+</li>
+<li>
+<p><code>-m &quot;update&quot;</code> 是提交信息，用来描述这次提交的内容或目的。</p>
+</li>
+<li>
+<p>提交信息是可选的，但强烈建议添加，以便以后能够清楚地了解每次提交的更改内容。</p>
+</li>
+</ul>
+<p><strong>git push</strong></p>
+<p>很好理解,把本地仓库修改内容和修改信息一并推送到远程仓库</p>
+<h4 id="提交后我们的仓库就会发生变化">提交后,我们的仓库就会发生变化
+</h4><p><img src="/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411144341.png"
+	width="1239"
+	height="560"
+	srcset="/p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411144341_hu_f399bfb5d87c0df8.png 480w, /p/openeuler%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250411144341_hu_b59d11a4dd202b0b.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="221"
+		data-flex-basis="531px"
+	
+></p>
 
 </section>
 

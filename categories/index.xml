@@ -7,7 +7,15 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>LuciusWan</copyright>
-        <lastBuildDate>Tue, 08 Apr 2025 14:25:17 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 13 May 2025 20:22:24 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Redis</title>
+        <link>https://LuciusWan.github.io/categories/redis/</link>
+        <pubDate>Tue, 13 May 2025 20:22:24 +0800</pubDate>
+        
+        <guid>https://LuciusWan.github.io/categories/redis/</guid>
+        <description>&lt;img src="https://LuciusWan.github.io/categories/redis/Redis.jpg" alt="Featured image of post Redis" /&gt;</description>
+        </item>
+        <item>
         <title>Docker</title>
         <link>https://LuciusWan.github.io/categories/docker/</link>
         <pubDate>Tue, 08 Apr 2025 14:25:17 +0800</pubDate>
@@ -30,14 +38,6 @@
         
         <guid>https://LuciusWan.github.io/categories/java/</guid>
         <description>&lt;img src="https://LuciusWan.github.io/categories/java/java.png" alt="Featured image of post Java" /&gt;</description>
-        </item>
-        <item>
-        <title>Redis</title>
-        <link>https://LuciusWan.github.io/categories/redis/</link>
-        <pubDate>Sun, 16 Mar 2025 20:30:40 +0800</pubDate>
-        
-        <guid>https://LuciusWan.github.io/categories/redis/</guid>
-        <description>&lt;img src="https://LuciusWan.github.io/categories/redis/Redis.jpg" alt="Featured image of post Redis" /&gt;</description>
         </item>
         <item>
         <title>Test</title>

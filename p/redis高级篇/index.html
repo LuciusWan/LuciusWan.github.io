@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="分布式缓存,多级缓存,底层原理">
+<title>Redis高级篇</title>
+
+<link rel='canonical' href='https://LuciusWan.github.io/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Redis高级篇">
+<meta property='og:description' content="分布式缓存,多级缓存,底层原理">
+<meta property='og:url' content='https://LuciusWan.github.io/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/'>
+<meta property='og:site_name' content='LuciusWan'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-05-13T20:22:24&#43;08:00'/><meta property='article:modified_time' content='2025-05-13T20:22:24&#43;08:00'/>
+<meta name="twitter:title" content="Redis高级篇">
+<meta name="twitter:description" content="分布式缓存,多级缓存,底层原理">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_a00c4178710685fc.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🎇</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">LuciusWan</a></h1>
+            <h2 class="site-description">欢迎来到我的blog</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/440554295'
+                        target="_blank"
+                        title="Bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/LuciusWan'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#redis持久化">Redis持久化</a>
+      <ol>
+        <li><a href="#rdbredisdatabase">RDB(RedisDatabase)</a></li>
+        <li><a href="#aofappend-only-file">AOF（Append-Only File）</a></li>
+      </ol>
+    </li>
+    <li><a href="#redis主从同步">Redis主从同步</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/redis/" style="background-color: #eb1212d1; color: #fff;">
+                Redis
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/">Redis高级篇</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            分布式缓存,多级缓存,底层原理
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-05-13</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 3 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="redis高级篇">Redis高级篇
+</h1><h2 id="redis持久化">Redis持久化
+</h2><h3 id="rdbredisdatabase">RDB(RedisDatabase)
+</h3><p>RDB 会在指定的时间间隔（比如每 5 分钟）对 Redis 的内存数据进行一次“拍照”，生成一个二进制文件（<code>dump.rdb</code>）。这个文件可以自己设置名称,默认为dump.rdb.这个文件包含了当时的所有数据状态。</p>
+<p>如果 Redis 崩溃了，重启时会加载最近的dump.rdb来恢复数据。</p>
+<p>如果使用命令save可以直接保存rdb文件</p>
+<p><img src="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513202611.png"
+	width="1183"
+	height="539"
+	srcset="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513202611_hu_131921b59da761c6.png 480w, /p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513202611_hu_83c2e26c0e40ae60.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="219"
+		data-flex-basis="526px"
+	
+></p>
+<p>每次启动Redis的时候Redis就会访问这个rdb文件来获取以前的数据</p>
+<p>每次关闭Redis服务端的时候都会生成一个新的dump.rdb</p>
+<p>文件就在这里</p>
+<p><img src="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513202958.png"
+	width="659"
+	height="247"
+	srcset="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513202958_hu_d32c0781adebea65.png 480w, /p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513202958_hu_fe707fe1a23ec089.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="266"
+		data-flex-basis="640px"
+	
+></p>
+<p>如果只是关机的时候使用,万一什么时候Redis宕机了,就无法恢复数据了,这时候得用间隔保存了,这时候只需要打开Redis配置文件,修改如下字段</p>
+<p><img src="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513203122.png"
+	width="197"
+	height="127"
+	srcset="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513203122_hu_ac97e97ad0d92b84.png 480w, /p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513203122_hu_fca0ed4c8f94385c.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="155"
+		data-flex-basis="372px"
+	
+></p>
+<p><code># save &quot;&quot;</code>表示注释掉了 Redis 的默认 RDB 持久化策略（即禁用默认的自动快照生成）。</p>
+<p>下面的意思是900秒内有1次操作就保存一次,300秒内10次操作就自动保存一次,60秒内有10000次操作就保存一次.</p>
+<p>fork 子进程：Redis 调用 <code>fork()</code> 创建一个子进程，子进程与主进程共享内存数据。</p>
+<p>COW（Copy-On-Write）：</p>
+<ul>
+<li>子进程开始快照操作时，主进程仍可处理客户端请求并修改数据。</li>
+<li>当主进程修改某个数据页时，操作系统会将该页复制一份（写时复制），子进程看到的仍是修改前的数据。</li>
+<li>子进程将所有数据页写入磁盘生成 <code>.rdb</code> 文件，而主进程不影响快照的一致性。</li>
+</ul>
+<p>COW有缺点就是,如果我的Redis已经占用了很高的内存,此时我要修改的数据也很多,复制的数据非常多会导致内存溢出</p>
+<p>并且修改次数多,导致复制次数也多,开销也很大</p>
+<p>修改次数少的时候如果宕机就会导致大部分数据丢失</p>
+<h3 id="aofappend-only-file">AOF（Append-Only File）
+</h3><p>AOF则是记录每一次操作Redis的命令,把命令记录在磁盘中,如果后面需要恢复就再执行一次所有Redis命令,下面的就是AOF文件</p>
+<p><img src="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513204541.png"
+	width="663"
+	height="146"
+	srcset="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513204541_hu_4a6582b2390d6fd4.png 480w, /p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513204541_hu_fa83ede9384a9956.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="454"
+		data-flex-basis="1089px"
+	
+></p>
+<p>只有修改了redis.conf中的如下文件后才能使用</p>
+<p><img src="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513204615.png"
+	width="547"
+	height="190"
+	srcset="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513204615_hu_c85f74be5d184f38.png 480w, /p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513204615_hu_9703042842ecd095.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="287"
+		data-flex-basis="690px"
+	
+></p>
+<p>有如下三种记录频率</p>
+<p><img src="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513204810.png"
+	width="841"
+	height="150"
+	srcset="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513204810_hu_fe183d4a791ee0d0.png 480w, /p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513204810_hu_ebaf26c6c5a7fb9b.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="560"
+		data-flex-basis="1345px"
+	
+></p>
+<p>第一个是每写一次命令,执行完后就写入磁盘,然后返回信息,这样就很慢了,和直接操作数据库没有区别,第二个方法是隔了一秒后进行,实现了异步处理,顶多丢失1秒的数据,最后一种由操作系统判断什么时候写回磁盘,推荐使用第二种.</p>
+<p><img src="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513205046.png"
+	width="206"
+	height="84"
+	srcset="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513205046_hu_3d58e319926ebc13.png 480w, /p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513205046_hu_6f11494ad34c98a2.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="245"
+		data-flex-basis="588px"
+	
+></p>
+<p>下面是AOF文件中的内容</p>
+<p><img src="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513205159.png"
+	width="167"
+	height="281"
+	srcset="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513205159_hu_a7379f5054c2cd4e.png 480w, /p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513205159_hu_667fedfcd1b84243.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="59"
+		data-flex-basis="142px"
+	
+></p>
+<p>如果我写三个如下命令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">127.0.0.1:6379&gt; <span class="nb">set</span> name111 dinglz
+</span></span><span class="line"><span class="cl">OK
+</span></span><span class="line"><span class="cl">127.0.0.1:6379&gt; <span class="nb">set</span> name111 wfg
+</span></span><span class="line"><span class="cl">OK
+</span></span><span class="line"><span class="cl">127.0.0.1:6379&gt; <span class="nb">set</span> name111 <span class="m">666</span>
+</span></span><span class="line"><span class="cl">OK
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这样直接写入aof文件会比较占内存,可以使用如下命令来重写AOF文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">BGREWRITEAOF
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>重写后的文件如下</p>
+<p><img src="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513210729.png"
+	width="376"
+	height="101"
+	srcset="/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513210729_hu_840efbface485113.png 480w, /p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250513210729_hu_88d04af419d7604c.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="372"
+		data-flex-basis="893px"
+	
+></p>
+<p>直接就看不懂了,但是这样确实简化了AOF文件,不用连续设置三次才得到最终数据.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">127.0.0.1:6379&gt; bgrewriteaof
+</span></span><span class="line"><span class="cl">Background append only file rewriting started
+</span></span><span class="line"><span class="cl">127.0.0.1:6379&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以看到这个命令甚至是在后台执行的</p>
+<p>通常情况下是两种持久化机制一起使用,可以保证数据的稳定性</p>
+<h2 id="redis主从同步">Redis主从同步
+</h2><p>主从同步示例要三个Redis,我们可以使用windows本地复制三个Redis文件,然后修改配置文件,端口号6379,6380,6381,或者直接用docker,pull下redis的最新版本,然后创建三个实例.</p>
+<p>分别启动三个Redis的服务端,然后再Redis-cli的6380上输入如下名令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">slaveof 127.0.0.1 <span class="m">6379</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>意思是Redis6380要成为6379的从节点</p>
+<p>也可以使用如下命令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">replicaof 127.0.0.1 <span class="m">6379</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这时候6380就是6379的从节点了</p>
+<p>当我们在6379上使用set命令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">127.0.0.1:6379&gt; <span class="nb">set</span> number <span class="m">111</span>
+</span></span><span class="line"><span class="cl">OK
+</span></span><span class="line"><span class="cl">127.0.0.1:6379&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>那么从节点上也可以看到被修改了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"> ~  .<span class="se">\r</span>edis-cli.exe -p <span class="m">6381</span> -h localhost
+</span></span><span class="line"><span class="cl">localhost:6381&gt; replicaof localhost <span class="m">6379</span>
+</span></span><span class="line"><span class="cl">OK
+</span></span><span class="line"><span class="cl">localhost:6381&gt; get number
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;111&#34;</span>
+</span></span><span class="line"><span class="cl">localhost:6381&gt;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这就实现了主从同步</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">相关文章</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Redis学习与实战</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 LuciusWan
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

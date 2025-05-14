@@ -3695,6 +3695,90 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;这就实现了主从同步&lt;/p&gt;
+&lt;h3 id=&#34;全量同步&#34;&gt;全量同步
+&lt;/h3&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250514192915.png&#34;
+	width=&#34;1145&#34;
+	height=&#34;575&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250514192915_hu_f05332514f3578a0.png 480w, https://LuciusWan.github.io/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250514192915_hu_d8351e0c2b2a7245.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;199&#34;
+		data-flex-basis=&#34;477px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;在我们输入slaveof host port之后,slave向master发送了自己的replid和offset,id和master肯定不一样,这时候就告知master这时候得做全量同步,清空slave本地缓存,把master生成的RDB发给slave进行数据同步.&lt;/p&gt;
+&lt;p&gt;并且在建立主从关系后,master会把自己的命令都交给slave去做数据同步,增量同步.&lt;/p&gt;
+&lt;h3 id=&#34;增量同步&#34;&gt;增量同步
+&lt;/h3&gt;&lt;p&gt;repl_baklog是记录了RDB期间的所有命令的一个文件,是环状读写的,每次做增量同步的时候slave都会发送自己的offset,master在自己的repl_baklog表中查找offset,如果找到的话就把offset后面的数据交给master.下图红绿交接就是offset&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250514195247.png&#34;
+	width=&#34;157&#34;
+	height=&#34;206&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250514195247_hu_bd6c342d1648c7da.png 480w, https://LuciusWan.github.io/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250514195247_hu_4ee18c23b71a8ecb.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;76&#34;
+		data-flex-basis=&#34;182px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250514195530.png&#34;
+	width=&#34;214&#34;
+	height=&#34;237&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250514195530_hu_a89b2888f2fcb655.png 480w, https://LuciusWan.github.io/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250514195530_hu_95a75cfe22944148.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;90&#34;
+		data-flex-basis=&#34;216px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;如果slave宕机了,而且时间还挺长,master写repl_baklog文件已经覆盖了offset,那此时只能做一个全量同步.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250514195701.png&#34;
+	width=&#34;165&#34;
+	height=&#34;207&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250514195701_hu_323e165f4a257e33.png 480w, https://LuciusWan.github.io/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250514195701_hu_41709c06502691e.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;79&#34;
+		data-flex-basis=&#34;191px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;可以从以下几个方面来优化Redis主从就集群:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;在master中配置repl-diskless-syncyes启用无磁盘复制，避免全量同步时的磁盘IO。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Redis单节点上的内存占用不要太大，减少RDB导致的过多磁盘IO&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;适当提高repl baklog的大小，发现slave宕机时尽快实现故障恢复，尽可能避免全量同步限制一个master上的slave节点数量，如果实在是太多slave，则可以采用主-从-从链式结构，减少master压力,可以直接从其他slave上直接读取数据,而不是都找master&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250514195927.png&#34;
+	width=&#34;1158&#34;
+	height=&#34;328&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250514195927_hu_e22920d8bea9fd7a.png 480w, https://LuciusWan.github.io/p/redis%E9%AB%98%E7%BA%A7%E7%AF%87/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20250514195927_hu_af46440309ce8fc1.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;353&#34;
+		data-flex-basis=&#34;847px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;哨兵模式&#34;&gt;哨兵模式
+&lt;/h2&gt;&lt;h3 id=&#34;哨兵的工作原理&#34;&gt;哨兵的工作原理
+&lt;/h3&gt;&lt;p&gt;Redis的哨兵（Sentinel）是一个监控和故障转移系统，用于管理Redis主从复制架构中的高可用性。它在Redis 2.8版本中被引入，主要目的是解决当主节点出现故障时，如何自动完成故障发现和故障转移的问题。以下是关于Redis哨兵的一些&lt;/p&gt;
+&lt;p&gt;哨兵每一秒广播发送一次ping命令,告诉所有节点,自己没有宕机&lt;/p&gt;
+&lt;p&gt;如果某个节点在指定时间内没有响应，则会被标记为“主观下线”。如果主节点被标记为主观下线，哨兵会询问其他哨兵实例，根据多数哨兵的意见决定是否将其标记为“客观下线”。&lt;/p&gt;
+&lt;p&gt;客观下线后就会触发主从交换,选出一个offset最大的slave,向其发送slaveof no one,让其成为master节点,然后强制修改原主节点的配置文件,让那个redis slave of新的master,然后让所有节点都执行slaveof新master.&lt;/p&gt;
 </description>
         </item>
         

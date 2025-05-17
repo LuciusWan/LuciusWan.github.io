@@ -7,7 +7,15 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>LuciusWan</copyright>
-        <lastBuildDate>Tue, 13 May 2025 20:22:24 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 16 May 2025 20:56:35 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>软件工程</title>
+        <link>https://LuciusWan.github.io/categories/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/</link>
+        <pubDate>Fri, 16 May 2025 20:56:35 +0800</pubDate>
+        
+        <guid>https://LuciusWan.github.io/categories/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>Redis</title>
         <link>https://LuciusWan.github.io/categories/redis/</link>
         <pubDate>Tue, 13 May 2025 20:22:24 +0800</pubDate>
@@ -46,6 +54,14 @@
         
         <guid>https://LuciusWan.github.io/categories/test/</guid>
         <description>&lt;img src="https://LuciusWan.github.io/categories/test/hutomo-abrianto-l2jk-uxb1BY-unsplash.jpg" alt="Featured image of post Test" /&gt;</description>
+        </item>
+        <item>
+        <title>软件工程</title>
+        <link>https://LuciusWan.github.io/categories/redis---%E5%89%AF%E6%9C%AC/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>https://LuciusWan.github.io/categories/redis---%E5%89%AF%E6%9C%AC/</guid>
+        <description>&lt;img src="https://LuciusWan.github.io/categories/redis---%E5%89%AF%E6%9C%AC/factory-method-mini.png" alt="Featured image of post 软件工程" /&gt;</description>
         </item>
         <item>
         <title>置顶</title>

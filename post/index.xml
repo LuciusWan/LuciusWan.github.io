@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>LuciusWan</copyright>
-        <lastBuildDate>Fri, 16 May 2025 20:56:35 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 06 Jun 2025 10:06:50 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Redis学习与实战</title>
         <link>https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/</link>
         <pubDate>Sun, 16 Mar 2025 20:30:40 +0800</pubDate>
@@ -3453,6 +3453,63 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 &gt;&lt;/p&gt;
 &lt;p&gt;查询的时候是按照距离来搜的,并且附带距离&lt;/p&gt;
 </description>
+        </item>
+        <item>
+        <title>Leetcode刷题</title>
+        <link>https://LuciusWan.github.io/p/leetcode%E5%88%B7%E9%A2%98/</link>
+        <pubDate>Fri, 06 Jun 2025 10:06:50 +0800</pubDate>
+        
+        <guid>https://LuciusWan.github.io/p/leetcode%E5%88%B7%E9%A2%98/</guid>
+        <description>&lt;h1 id=&#34;刷&#34;&gt;刷!
+&lt;/h1&gt;&lt;h2 id=&#34;字母异位词分组&#34;&gt;字母异位词分组
+&lt;/h2&gt;&lt;h3 id=&#34;题目&#34;&gt;题目
+&lt;/h3&gt;&lt;p&gt;给你一个字符串数组，请你将 &lt;strong&gt;字母异位词&lt;/strong&gt; 组合在一起。可以按任意顺序返回结果列表。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;字母异位词&lt;/strong&gt; 是由重新排列源单词的所有字母得到的一个新单词。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 1:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;输入:&lt;/strong&gt; strs = &lt;code&gt;[&amp;quot;eat&amp;quot;, &amp;quot;tea&amp;quot;, &amp;quot;tan&amp;quot;, &amp;quot;ate&amp;quot;, &amp;quot;nat&amp;quot;, &amp;quot;bat&amp;quot;]&lt;/code&gt;
+&lt;strong&gt;输出:&lt;/strong&gt; [[&amp;ldquo;bat&amp;rdquo;],[&amp;ldquo;nat&amp;rdquo;,&amp;ldquo;tan&amp;rdquo;],[&amp;ldquo;ate&amp;rdquo;,&amp;ldquo;eat&amp;rdquo;,&amp;ldquo;tea&amp;rdquo;]]&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 2:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;输入:&lt;/strong&gt; strs = &lt;code&gt;[&amp;quot;&amp;quot;]&lt;/code&gt;
+&lt;strong&gt;输出:&lt;/strong&gt; [[&amp;quot;&amp;quot;]]&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;示例 3:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;输入:&lt;/strong&gt; strs = &lt;code&gt;[&amp;quot;a&amp;quot;]&lt;/code&gt;
+&lt;strong&gt;输出:&lt;/strong&gt; [[&amp;ldquo;a&amp;rdquo;]]&lt;/p&gt;
+&lt;p&gt;题意就是一个单词里面所有字母都相同的就是字母异位词&lt;/p&gt;
+&lt;h3 id=&#34;解法&#34;&gt;解法:
+&lt;/h3&gt;&lt;p&gt;题目要求返回格式是List&amp;lt;List&lt;String&gt;&amp;gt;,那么每个字母异位词都要放入List&lt;String&gt;里面&lt;/p&gt;
+&lt;p&gt;可以通过给字符串排序,然后判断这个字符串是否和其他字符串相等来判断字母异位词&lt;/p&gt;
+&lt;p&gt;可以使用Char[] arr=string.toCharArray();函数来将String转为Char[]类型,然后用Arrays.sort()进行排序.&lt;/p&gt;
+&lt;p&gt;互相比较很麻烦,所以我们使用HashMap数据结构&lt;/p&gt;
+&lt;p&gt;Map&amp;lt;String,List&lt;String&gt;&amp;gt;&lt;/p&gt;
+&lt;p&gt;其中String是排完序后的Char[]转为的String,用String str=new String(arr);来获取&lt;/p&gt;
+&lt;p&gt;如果有这个key,就直接在map.get(key)里面add(str)&lt;/p&gt;
+&lt;p&gt;如果没有这个key,就新建一个List&lt;String&gt;,一定要加入排序好的str&lt;/p&gt;
+&lt;p&gt;最后return的时候要遍历map获取所有List&lt;String&gt;&lt;/p&gt;
+&lt;p&gt;使用for-each&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;List&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;List&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;result&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ArrayList&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;for&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;List&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;map&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;values&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()){&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ans&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;add&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ans&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;完整版代码&#34;&gt;完整版代码
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description>
         </item>
         <item>
         <title>设计模式</title>

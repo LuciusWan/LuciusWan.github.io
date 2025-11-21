@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>LuciusWan</copyright>
-        <lastBuildDate>Tue, 13 May 2025 20:22:24 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/categories/redis/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 21 Nov 2025 21:35:16 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/categories/redis/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Redis学习与实战</title>
         <link>https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/</link>
         <pubDate>Sun, 16 Mar 2025 20:30:40 +0800</pubDate>
@@ -3452,6 +3452,419 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;查询的时候是按照距离来搜的,并且附带距离&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>面试八股</title>
+        <link>https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/</link>
+        <pubDate>Fri, 21 Nov 2025 21:35:16 +0800</pubDate>
+        
+        <guid>https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/</guid>
+        <description>&lt;h1 id=&#34;面试题总结--java基础篇&#34;&gt;面试题总结- Java基础篇
+&lt;/h1&gt;&lt;h2 id=&#34;hashmap的底层原理&#34;&gt;HashMap的底层原理
+&lt;/h2&gt;&lt;p&gt;Hashap 是基于哈希表的数据结构，用于存储键值对(key-value )。其核心是将键的哈希值映射到数组索引位置，通过数组 +链表(在 Java 8 及之后是数组 +链表 +红黑树)来处理哈希冲突。&lt;/p&gt;
+&lt;p&gt;Hashmap 的默认初始容量为 16，负载因子为 0.75。也就是说，当存储的元素数量超过16x0.75=12个时， Hashmap 会触
+发扩容操作，容量x2并重新分配元素位置。这种扩容是比较耗时的操作，频繁扩容会影响性能。&lt;/p&gt;
+&lt;h3 id=&#34;hashmap-的红黑树优化&#34;&gt;HashMap 的红黑树优化:
+&lt;/h3&gt;&lt;p&gt;从Java8开始，为了优化当多个元素映射到同一个哈希桶(即发生哈希冲突)时的查找性能，当链表长度超过8时，链表会转变为红黑树。红黑树是一种自平衡二叉搜索树，能够将最坏情况下的査找复杂度从 O(n) 降低到 O(log n)。如果树中元素的数量低于 6，红黑树会转换回链表，以减少不必要的树操作开销。&lt;/p&gt;
+&lt;h3 id=&#34;hashcode和-equals的重要性&#34;&gt;hashCode()和 equals()的重要性:
+&lt;/h3&gt;&lt;p&gt;HashMp 的键必须实现 hashcode()和 equals()方法。 hashcode()用于计算哈希值，以决定键的存储位置，而 equals()用于比较两个键是否相同。在 put 操作时，如果两个键的 hashcode()相同，但 equals()返回 false，则这两个键会被视为不同的键，存储在同一个桶的不同位置。&lt;/p&gt;
+&lt;h3 id=&#34;经典的哈希冲突案例&#34;&gt;经典的“哈希冲突”案例
+&lt;/h3&gt;&lt;p&gt;在 Java 中，最著名的例子就是字符串 &lt;code&gt;&amp;quot;Aa&amp;quot;&lt;/code&gt; 和 &lt;code&gt;&amp;quot;BB&amp;quot;&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;Java&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;String s1 = &amp;#34;Aa&amp;#34;;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;String s2 = &amp;#34;BB&amp;#34;;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;System.out.println(s1.hashCode()); // 输出 2112
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;System.out.println(s2.hashCode()); // 输出 2112
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;System.out.println(s1.equals(s2)); // 输出 false
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;发生了什么？&lt;/p&gt;
+&lt;p&gt;Java 字符串的哈希算法是 s[0]*31 + s[1]：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;&#39;A&#39;&lt;/code&gt; 是 65，&lt;code&gt;&#39;a&#39;&lt;/code&gt; 是 97 \rightarrow 65 \times 31 + 97 = 2112&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;&#39;B&#39;&lt;/code&gt; 是 66 \rightarrow 66 \times 31 + 66 = 2112&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;虽然算出来的数字一样，但显然 &lt;code&gt;&amp;quot;Aa&amp;quot;&lt;/code&gt; 和 &lt;code&gt;&amp;quot;BB&amp;quot;&lt;/code&gt; 是完全不同的字符串。&lt;/p&gt;
+&lt;h3 id=&#34;hashmap成环&#34;&gt;HashMap成环
+&lt;/h3&gt;&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/2025-11-21-10-33-37-image.png&#34;
+	width=&#34;1046&#34;
+	height=&#34;496&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/2025-11-21-10-33-37-image_hu_245e35e2ba895441.png 480w, https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/2025-11-21-10-33-37-image_hu_99cead4911386ea3.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;210&#34;
+		data-flex-basis=&#34;506px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/2025-11-21-10-35-17-image.png&#34;
+	width=&#34;1370&#34;
+	height=&#34;672&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/2025-11-21-10-35-17-image_hu_d4551b7e186d0924.png 480w, https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/2025-11-21-10-35-17-image_hu_cf4451a0d7533d2c.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;203&#34;
+		data-flex-basis=&#34;489px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/2025-11-21-10-35-31-image.png&#34;
+	width=&#34;1365&#34;
+	height=&#34;666&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/2025-11-21-10-35-31-image_hu_569407ec3d36eaa0.png 480w, https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/2025-11-21-10-35-31-image_hu_10318e994b3afc1e.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;204&#34;
+		data-flex-basis=&#34;491px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/2025-11-21-10-35-53-image.png&#34;
+	width=&#34;1003&#34;
+	height=&#34;475&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/2025-11-21-10-35-53-image_hu_d06933d3711cdba2.png 480w, https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/2025-11-21-10-35-53-image_hu_118961ddc2fcce3b.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;211&#34;
+		data-flex-basis=&#34;506px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/2025-11-21-10-36-04-image.png&#34;
+	width=&#34;953&#34;
+	height=&#34;502&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/2025-11-21-10-36-04-image_hu_859596b78859ff6c.png 480w, https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/2025-11-21-10-36-04-image_hu_884412cd639396be.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;189&#34;
+		data-flex-basis=&#34;455px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;由于线程1已经指向了B和A，线程2却先一步执行了扩容操作，而停止循环的条件就是e.next为null，当执行完扩容后，线程1苏醒，此时e为B，e.next为A，当前e的next指向A，导致A与B之间产生死循环，颠倒后依旧产生连接，就形成了环。&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.bilibili.com/video/BV1hN411L7dy?vd_source=df996e877d54bec22f414fed7cb7fac4&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;JDK1.7HashMap多线程死循环问题_哔哩哔哩_bilibili&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;synchronized-和-reentrantlock有什么区别&#34;&gt;Synchronized 和 ReentrantLock有什么区别?
+&lt;/h2&gt;&lt;h3 id=&#34;实现层面&#34;&gt;实现层面
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;synchronized&lt;/code&gt;&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;是 Java 的&lt;strong&gt;关键字&lt;/strong&gt;，属于 &lt;strong&gt;JVM 层面&lt;/strong&gt;的实现。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;ReentrantLock&lt;/code&gt;&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;是 JDK 提供的一个&lt;strong&gt;类&lt;/strong&gt;（&lt;code&gt;java.util.concurrent.locks.ReentrantLock&lt;/code&gt;），属于 &lt;strong&gt;API 层面&lt;/strong&gt;的实现。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;锁的释放&#34;&gt;锁的释放
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;synchronized&lt;/code&gt;&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;自动释放&lt;/strong&gt;。代码执行完同步代码块，或者抛出异常时，JVM 会自动释放锁，不会导致死锁。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;ReentrantLock&lt;/code&gt;&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;手动释放&lt;/strong&gt;。必须手动调用 &lt;code&gt;unlock()&lt;/code&gt; 方法。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;锁的公平性&#34;&gt;锁的公平性
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;synchronized&lt;/code&gt;&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;只能是&lt;strong&gt;非公平锁&lt;/strong&gt;。线程获取锁的顺序是不确定的，可能发生“饥饿”现象。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;ReentrantLock&lt;/code&gt;&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;默认是&lt;strong&gt;非公平锁&lt;/strong&gt;（性能更好）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;可以通过构造函数 &lt;code&gt;new ReentrantLock(true)&lt;/code&gt; 指定为&lt;strong&gt;公平锁&lt;/strong&gt;（&lt;strong&gt;遵循先来后到原则&lt;/strong&gt;），但性能会下降。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;等待可中断&#34;&gt;等待可中断
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;synchronized&lt;/code&gt;&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;不可中断&lt;/strong&gt;。如果一个线程正在等待获取锁，它不能被中断（&lt;code&gt;interrupt&lt;/code&gt;），只能一直阻塞等待。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;ReentrantLock&lt;/code&gt;&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;可中断&lt;/strong&gt;。通过 &lt;code&gt;lockInterruptibly()&lt;/code&gt; 方法，可以让正在等待锁的线程响应中断，放弃等待去处理其他事情。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;尝试获取锁&#34;&gt;尝试获取锁
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;&lt;code&gt;synchronized&lt;/code&gt;&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;不行。要么拿到锁，要么阻塞死等。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;ReentrantLock&lt;/code&gt;&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;提供 &lt;code&gt;tryLock()&lt;/code&gt; 方法。可以尝试获取锁，如果锁被占用，可以选择立即返回 &lt;code&gt;false&lt;/code&gt; 或者等待一段指定的时间，非常灵活。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;&lt;strong&gt;特性&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;synchronized（隐式锁）&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;ReentrantLock（显式锁）&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;实现方式&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;关键字 (JVM 层面)&lt;/td&gt;
+          &lt;td&gt;类 (JDK API 层面)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;锁的释放&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;隐式自动释放&lt;/td&gt;
+          &lt;td&gt;显式手动释放 (需在 finally 中 unlock)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;公平性&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;非公平&lt;/td&gt;
+          &lt;td&gt;默认非公平，可设置为公平&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;响应中断&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;不支持&lt;/td&gt;
+          &lt;td&gt;支持 (&lt;code&gt;lockInterruptibly&lt;/code&gt;)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;条件队列&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;单个 (wait/notify)&lt;/td&gt;
+          &lt;td&gt;多个 (Condition)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;尝试获取&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;不支持 (死等)&lt;/td&gt;
+          &lt;td&gt;支持 (&lt;code&gt;tryLock&lt;/code&gt;)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;灵活性&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;低&lt;/td&gt;
+          &lt;td&gt;高&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;锁升级&#34;&gt;锁升级
+&lt;/h2&gt;&lt;h3 id=&#34;锁升级流程图解&#34;&gt;锁升级流程图解
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;&lt;strong&gt;锁状态&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;触发条件&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;优点&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;缺点&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;偏向锁&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;只有一个线程反复加锁&lt;/td&gt;
+          &lt;td&gt;加锁/解锁几乎零消耗&lt;/td&gt;
+          &lt;td&gt;如果存在线程竞争，撤销偏向锁会有额外开销&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;轻量级锁&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;线程交替执行，无同时竞争&lt;/td&gt;
+          &lt;td&gt;不会阻塞线程，利用 CAS 和自旋，响应速度快&lt;/td&gt;
+          &lt;td&gt;如果始终得不到锁，自旋会空耗 CPU&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;重量级锁&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;发生长时间或多线程同时竞争&lt;/td&gt;
+          &lt;td&gt;不会空耗 CPU，未获锁线程进入阻塞&lt;/td&gt;
+          &lt;td&gt;线程阻塞/唤醒涉及上下文切换，开销大，较慢&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;cas与自旋&#34;&gt;CAS与自旋
+&lt;/h2&gt;&lt;h3 id=&#34;什么是cas乐观锁&#34;&gt;什么是CAS（乐观锁）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;你看到原句是“Hello”（&lt;strong&gt;A&lt;/strong&gt;）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;你想改成“Hi”（&lt;strong&gt;B&lt;/strong&gt;）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在你提交修改的一瞬间，系统检查文档当前还是不是“Hello”（&lt;strong&gt;V&lt;/strong&gt;）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;如果是，修改成功。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如果文档已经被别人改成了“Hello World”，你的预期（A）和实际（V）不符，提交失败，你需要重新读取再尝试。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;cas-的三大问题&#34;&gt;&lt;strong&gt;CAS 的三大问题&lt;/strong&gt;
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;ABA 问题&lt;/strong&gt;（最著名的坑）：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;虽然 V 还是 A，但不代表它没变过。它可能经历了 &lt;code&gt;A -&amp;gt; B -&amp;gt; A&lt;/code&gt; 的过程。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;比喻&lt;/strong&gt;：桌上有一杯水（A），你离开了一会儿。回来时水还是满的（A），你以为没人动过。实际上可能有人喝光了（B），又给你倒满了（A）。虽然结果一样，但过程可能由于“杯子被用过”而产生副作用。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;解决&lt;/strong&gt;：加&lt;strong&gt;版本号&lt;/strong&gt;。变成 &lt;code&gt;1A -&amp;gt; 2B -&amp;gt; 3A&lt;/code&gt;。Java 中的 &lt;code&gt;AtomicStampedReference&lt;/code&gt; 就是干这个的。给提交结果加版本号&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;只能保证一个变量的原子性&lt;/strong&gt;：无法同时操作多个变量。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;CPU 开销大&lt;/strong&gt;：这通常与“自旋”结合在一起，见下文。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;什么是-自旋-&#34;&gt;什么是 自旋 ？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;自旋&lt;/strong&gt;是一种线程等待的策略。&lt;/p&gt;
+&lt;p&gt;当线程抢不到锁（或 CAS 失败）时，它&lt;strong&gt;不放弃 CPU，不进入阻塞状态（不睡觉）&lt;/strong&gt;，而是执行一个&lt;strong&gt;空循环&lt;/strong&gt;（Loop），不断地检查“锁释放了吗？”或者“我能重试 CAS 了吗？”。&lt;/p&gt;
+&lt;h4 id=&#34;为什么要自旋&#34;&gt;&lt;strong&gt;为什么要自旋？&lt;/strong&gt;
+&lt;/h4&gt;&lt;p&gt;为了&lt;strong&gt;避免上下文切换&lt;/strong&gt;的开销。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;阻塞/唤醒&lt;/strong&gt;：线程挂起和恢复需要操作系统介入，保存和恢复现场，非常耗时（可能比执行代码本身还慢）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;自旋&lt;/strong&gt;：如果锁被占用的时间很短，我在门口转两圈（自旋）锁就释放了，这样比“回家睡觉再被电话叫醒”快得多。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;&lt;strong&gt;概念&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;作用&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;核心词&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;优缺点&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;CAS&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;实现原子更新&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;比较并交换&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;优点：非阻塞，性能好&lt;br&gt;缺点：ABA 问题&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;自旋&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;等待锁的策略&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;循环重试&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;优点：避免上下文切换&lt;br&gt;缺点：耗费 CPU&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;springbean的生命周期&#34;&gt;SpringBean的生命周期
+&lt;/h2&gt;&lt;h3 id=&#34;阶段一创建与注入-的基础&#34;&gt;阶段一：创建与注入 (的基础)
+&lt;/h3&gt;&lt;h4 id=&#34;1-实例化-instantiation&#34;&gt;1. 实例化 (Instantiation)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;发生了什么：&lt;/strong&gt; Spring 容器通过反射（&lt;code&gt;Constructor.newInstance()&lt;/code&gt;）调用 Bean 的构造函数。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;状态：&lt;/strong&gt; 此时对象已经在堆内存中存在了，但它只是一个“空壳子”，里面的属性（依赖）全是 &lt;code&gt;null&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;类比：&lt;/strong&gt; 刚买了一个毛坯房，房子建好了，但里面什么家具都没有。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-属性赋值-populate-properties&#34;&gt;2. 属性赋值 (Populate Properties)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;发生了什么：&lt;/strong&gt; Spring 依据配置（XML 或 &lt;code&gt;@Autowired&lt;/code&gt;、&lt;code&gt;@Value&lt;/code&gt;），将依赖的对象或属性值注入到 Bean 中。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;状态：&lt;/strong&gt; 对象内部的依赖已经填充完毕。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;类比：&lt;/strong&gt; 装修工进场，把沙发（Service）、电视（Dao）都搬进了房子里。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;阶段二容器感知-aware-接口回调&#34;&gt;阶段二：容器感知 (Aware 接口回调)
+&lt;/h3&gt;&lt;h4 id=&#34;3-aware-接口回调-invoke-aware-interfaces&#34;&gt;3. Aware 接口回调 (Invoke Aware Interfaces)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;发生了什么：&lt;/strong&gt; 如果 Bean 实现了特定的 &lt;code&gt;Aware&lt;/code&gt; 接口，Spring 会把容器内部的一些资源“告诉”这个 Bean。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;阶段三初始化与增强-最关键的步骤&#34;&gt;阶段三：初始化与增强 (最关键的步骤)
+&lt;/h3&gt;&lt;p&gt;所谓的“初始化阶段”，就是 Spring 给你一个机会，在“属性都装好了”之后，但在“给别人使用”之前，让你执行一段自己的业务代码（比如连数据库、加载缓存、校验配置）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Spring AOP&lt;/strong&gt;（默认机制）使用的是 &lt;strong&gt;动态代理（Dynamic Proxy）&lt;/strong&gt;。它的逻辑是&lt;strong&gt;委托（Delegation）&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;原本的流程：&lt;/p&gt;
+&lt;p&gt;调用者 \rightarrow 目标对象（Target）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Spring AOP 的流程：&lt;/p&gt;
+&lt;p&gt;调用者 \rightarrow 代理对象（Proxy） \rightarrow 执行增强代码（Before） \rightarrow 调用目标对象 \rightarrow 执行增强代码（After） \rightarrow 返回&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;&lt;strong&gt;特性&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;Spring AOP&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;AspectJ（静态代理）&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;原理&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;动态代理&lt;/strong&gt; (Proxy)&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;字节码织入&lt;/strong&gt; (Bytecode Weaving)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;修改方式&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;运行时生成新类包裹目标&lt;/td&gt;
+          &lt;td&gt;编译期/加载期直接修改目标类字节码&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;是否需要接口&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;JDK模式需要，CGLIB不需要&lt;/td&gt;
+          &lt;td&gt;不需要&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;性能&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;稍慢（有反射和代理调用的开销）&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;极快&lt;/strong&gt;（就是普通的方法调用）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;能力范围&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;只能拦截 &lt;strong&gt;public 方法&lt;/strong&gt; 的调用&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;无所不能&lt;/strong&gt;：可拦截 private 方法、静态方法、构造函数、字段访问等&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;内部调用(this)&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;失效&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;有效&lt;/strong&gt; (完美解决自调用问题)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;复杂度&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;低（Spring Boot 开箱即用）&lt;/td&gt;
+          &lt;td&gt;高（需要配置编译器或 JVM Agent）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 </description>
         </item>
         <item>

@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="面试题总结- Java基础篇 HashMap的底层原理 Hashap 是基于哈希表的数据结构，用于存储键值对(key-value )。其核心是将键的哈希值映射到数组索引位置，通过数组 +链表(在 Java 8 及之后是数组 +链表 +红黑树)来处理哈希冲突。\n">
+<title></title>
+
+<link rel='canonical' href='https://LuciusWan.github.io/categories/javainterview/interview/'>
+
+<link rel="stylesheet" href="/scss/style.min.6a692fd055deae459f2a9767f57f3855ba80cafd5041317f24f7360f6ca47cdf.css"><meta property='og:title' content="">
+<meta property='og:description' content="面试题总结- Java基础篇 HashMap的底层原理 Hashap 是基于哈希表的数据结构，用于存储键值对(key-value )。其核心是将键的哈希值映射到数组索引位置，通过数组 +链表(在 Java 8 及之后是数组 +链表 +红黑树)来处理哈希冲突。\n">
+<meta property='og:url' content='https://LuciusWan.github.io/categories/javainterview/interview/'>
+<meta property='og:site_name' content='LuciusWan'>
+<meta property='og:type' content='article'><meta property='article:section' content='Categories' />
+<meta name="twitter:title" content="">
+<meta name="twitter:description" content="面试题总结- Java基础篇 HashMap的底层原理 Hashap 是基于哈希表的数据结构，用于存储键值对(key-value )。其核心是将键的哈希值映射到数组索引位置，通过数组 +链表(在 Java 8 及之后是数组 +链表 +红黑树)来处理哈希冲突。\n">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_a00c4178710685fc.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🎇</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">LuciusWan</a></h1>
+            <h2 class="site-description">欢迎来到我的blog</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/440554295'
+                        target="_blank"
+                        title="Bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/LuciusWan'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#hashmap的底层原理">HashMap的底层原理</a>
+      <ol>
+        <li><a href="#hashmap-的红黑树优化">HashMap 的红黑树优化:</a></li>
+        <li><a href="#hashcode和-equals的重要性">hashCode()和 equals()的重要性:</a></li>
+        <li><a href="#经典的哈希冲突案例">经典的“哈希冲突”案例</a></li>
+        <li><a href="#hashmap成环">HashMap成环</a></li>
+      </ol>
+    </li>
+    <li><a href="#synchronized-和-reentrantlock有什么区别">Synchronized 和 ReentrantLock有什么区别?</a>
+      <ol>
+        <li><a href="#实现层面">实现层面</a></li>
+        <li><a href="#锁的释放">锁的释放</a></li>
+        <li><a href="#锁的公平性">锁的公平性</a></li>
+        <li><a href="#等待可中断">等待可中断</a></li>
+        <li><a href="#尝试获取锁">尝试获取锁</a></li>
+      </ol>
+    </li>
+    <li><a href="#锁升级">锁升级</a>
+      <ol>
+        <li><a href="#锁升级流程图解">锁升级流程图解</a></li>
+      </ol>
+    </li>
+    <li><a href="#cas与自旋">CAS与自旋</a>
+      <ol>
+        <li><a href="#什么是cas乐观锁">什么是CAS（乐观锁）</a></li>
+        <li><a href="#cas-的三大问题"><strong>CAS 的三大问题</strong></a></li>
+        <li><a href="#什么是-自旋-">什么是 自旋 ？</a>
+          <ol>
+            <li><a href="#为什么要自旋"><strong>为什么要自旋？</strong></a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#springbean的生命周期">SpringBean的生命周期</a>
+      <ol>
+        <li><a href="#阶段一创建与注入-的基础">阶段一：创建与注入 (的基础)</a>
+          <ol>
+            <li><a href="#1-实例化-instantiation">1. 实例化 (Instantiation)</a></li>
+            <li><a href="#2-属性赋值-populate-properties">2. 属性赋值 (Populate Properties)</a></li>
+          </ol>
+        </li>
+        <li><a href="#阶段二容器感知-aware-接口回调">阶段二：容器感知 (Aware 接口回调)</a>
+          <ol>
+            <li><a href="#3-aware-接口回调-invoke-aware-interfaces">3. Aware 接口回调 (Invoke Aware Interfaces)</a></li>
+          </ol>
+        </li>
+        <li><a href="#阶段三初始化与增强-最关键的步骤">阶段三：初始化与增强 (最关键的步骤)</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/categories/javainterview/interview/"></a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 7 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="面试题总结--java基础篇">面试题总结- Java基础篇
+</h1><h2 id="hashmap的底层原理">HashMap的底层原理
+</h2><p>Hashap 是基于哈希表的数据结构，用于存储键值对(key-value )。其核心是将键的哈希值映射到数组索引位置，通过数组 +链表(在 Java 8 及之后是数组 +链表 +红黑树)来处理哈希冲突。</p>
+<p>Hashmap 的默认初始容量为 16，负载因子为 0.75。也就是说，当存储的元素数量超过16x0.75=12个时， Hashmap 会触
+发扩容操作，容量x2并重新分配元素位置。这种扩容是比较耗时的操作，频繁扩容会影响性能。</p>
+<h3 id="hashmap-的红黑树优化">HashMap 的红黑树优化:
+</h3><p>从Java8开始，为了优化当多个元素映射到同一个哈希桶(即发生哈希冲突)时的查找性能，当链表长度超过8时，链表会转变为红黑树。红黑树是一种自平衡二叉搜索树，能够将最坏情况下的査找复杂度从 O(n) 降低到 O(log n)。如果树中元素的数量低于 6，红黑树会转换回链表，以减少不必要的树操作开销。</p>
+<h3 id="hashcode和-equals的重要性">hashCode()和 equals()的重要性:
+</h3><p>HashMp 的键必须实现 hashcode()和 equals()方法。 hashcode()用于计算哈希值，以决定键的存储位置，而 equals()用于比较两个键是否相同。在 put 操作时，如果两个键的 hashcode()相同，但 equals()返回 false，则这两个键会被视为不同的键，存储在同一个桶的不同位置。</p>
+<h3 id="经典的哈希冲突案例">经典的“哈希冲突”案例
+</h3><p>在 Java 中，最著名的例子就是字符串 <code>&quot;Aa&quot;</code> 和 <code>&quot;BB&quot;</code>。</p>
+<p>Java</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">String s1 = &#34;Aa&#34;;
+</span></span><span class="line"><span class="cl">String s2 = &#34;BB&#34;;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">System.out.println(s1.hashCode()); // 输出 2112
+</span></span><span class="line"><span class="cl">System.out.println(s2.hashCode()); // 输出 2112
+</span></span><span class="line"><span class="cl">System.out.println(s1.equals(s2)); // 输出 false
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>发生了什么？</p>
+<p>Java 字符串的哈希算法是 s[0]*31 + s[1]：</p>
+<ul>
+<li>
+<p><code>'A'</code> 是 65，<code>'a'</code> 是 97 $\rightarrow 65 \times 31 + 97 = 2112$</p>
+</li>
+<li>
+<p><code>'B'</code> 是 66 $\rightarrow 66 \times 31 + 66 = 2112$</p>
+</li>
+</ul>
+<p>虽然算出来的数字一样，但显然 <code>&quot;Aa&quot;</code> 和 <code>&quot;BB&quot;</code> 是完全不同的字符串。</p>
+<h3 id="hashmap成环">HashMap成环
+</h3><p><img src="C:%5cUsers%5c86180%5cAppData%5cRoaming%5cmarktext%5cimages%5c2025-11-21-10-33-37-image.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p><img src="C:%5cUsers%5c86180%5cAppData%5cRoaming%5cmarktext%5cimages%5c2025-11-21-10-35-17-image.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p><img src="C:%5cUsers%5c86180%5cAppData%5cRoaming%5cmarktext%5cimages%5c2025-11-21-10-35-31-image.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p><img src="C:%5cUsers%5c86180%5cAppData%5cRoaming%5cmarktext%5cimages%5c2025-11-21-10-35-53-image.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p><img src="C:%5cUsers%5c86180%5cAppData%5cRoaming%5cmarktext%5cimages%5c2025-11-21-10-36-04-image.png"
+	
+	
+	
+	loading="lazy"
+	
+	
+></p>
+<p>由于线程1已经指向了B和A，线程2却先一步执行了扩容操作，而停止循环的条件就是e.next为null，当执行完扩容后，线程1苏醒，此时e为B，e.next为A，当前e的next指向A，导致A与B之间产生死循环，颠倒后依旧产生连接，就形成了环。</p>
+<p><a class="link" href="https://www.bilibili.com/video/BV1hN411L7dy?vd_source=df996e877d54bec22f414fed7cb7fac4"  target="_blank" rel="noopener"
+    >JDK1.7HashMap多线程死循环问题_哔哩哔哩_bilibili</a></p>
+<h2 id="synchronized-和-reentrantlock有什么区别">Synchronized 和 ReentrantLock有什么区别?
+</h2><h3 id="实现层面">实现层面
+</h3><p><strong><code>synchronized</code></strong>：</p>
+<ul>
+<li>是 Java 的<strong>关键字</strong>，属于 <strong>JVM 层面</strong>的实现。</li>
+</ul>
+<p><strong><code>ReentrantLock</code></strong>：</p>
+<ul>
+<li>是 JDK 提供的一个<strong>类</strong>（<code>java.util.concurrent.locks.ReentrantLock</code>），属于 <strong>API 层面</strong>的实现。</li>
+</ul>
+<h3 id="锁的释放">锁的释放
+</h3><p><strong><code>synchronized</code></strong>：</p>
+<ul>
+<li><strong>自动释放</strong>。代码执行完同步代码块，或者抛出异常时，JVM 会自动释放锁，不会导致死锁。</li>
+</ul>
+<p><strong><code>ReentrantLock</code></strong>：</p>
+<ul>
+<li><strong>手动释放</strong>。必须手动调用 <code>unlock()</code> 方法。</li>
+</ul>
+<h3 id="锁的公平性">锁的公平性
+</h3><p><strong><code>synchronized</code></strong>：</p>
+<ul>
+<li>只能是<strong>非公平锁</strong>。线程获取锁的顺序是不确定的，可能发生“饥饿”现象。</li>
+</ul>
+<p><strong><code>ReentrantLock</code></strong>：</p>
+<ul>
+<li>
+<p>默认是<strong>非公平锁</strong>（性能更好）。</p>
+</li>
+<li>
+<p>可以通过构造函数 <code>new ReentrantLock(true)</code> 指定为<strong>公平锁</strong>（<strong>遵循先来后到原则</strong>），但性能会下降。</p>
+</li>
+</ul>
+<h3 id="等待可中断">等待可中断
+</h3><p><strong><code>synchronized</code></strong>：</p>
+<ul>
+<li><strong>不可中断</strong>。如果一个线程正在等待获取锁，它不能被中断（<code>interrupt</code>），只能一直阻塞等待。</li>
+</ul>
+<p><strong><code>ReentrantLock</code></strong>：</p>
+<ul>
+<li><strong>可中断</strong>。通过 <code>lockInterruptibly()</code> 方法，可以让正在等待锁的线程响应中断，放弃等待去处理其他事情。</li>
+</ul>
+<h3 id="尝试获取锁">尝试获取锁
+</h3><p><strong><code>synchronized</code></strong>：</p>
+<ul>
+<li>不行。要么拿到锁，要么阻塞死等。</li>
+</ul>
+<p><strong><code>ReentrantLock</code></strong>：</p>
+<ul>
+<li>提供 <code>tryLock()</code> 方法。可以尝试获取锁，如果锁被占用，可以选择立即返回 <code>false</code> 或者等待一段指定的时间，非常灵活。</li>
+</ul>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>特性</strong></th>
+          <th><strong>synchronized（隐式锁）</strong></th>
+          <th><strong>ReentrantLock（显式锁）</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>实现方式</strong></td>
+          <td>关键字 (JVM 层面)</td>
+          <td>类 (JDK API 层面)</td>
+      </tr>
+      <tr>
+          <td><strong>锁的释放</strong></td>
+          <td>隐式自动释放</td>
+          <td>显式手动释放 (需在 finally 中 unlock)</td>
+      </tr>
+      <tr>
+          <td><strong>公平性</strong></td>
+          <td>非公平</td>
+          <td>默认非公平，可设置为公平</td>
+      </tr>
+      <tr>
+          <td><strong>响应中断</strong></td>
+          <td>不支持</td>
+          <td>支持 (<code>lockInterruptibly</code>)</td>
+      </tr>
+      <tr>
+          <td><strong>条件队列</strong></td>
+          <td>单个 (wait/notify)</td>
+          <td>多个 (Condition)</td>
+      </tr>
+      <tr>
+          <td><strong>尝试获取</strong></td>
+          <td>不支持 (死等)</td>
+          <td>支持 (<code>tryLock</code>)</td>
+      </tr>
+      <tr>
+          <td><strong>灵活性</strong></td>
+          <td>低</td>
+          <td>高</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="锁升级">锁升级
+</h2><h3 id="锁升级流程图解">锁升级流程图解
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>锁状态</strong></th>
+          <th><strong>触发条件</strong></th>
+          <th><strong>优点</strong></th>
+          <th><strong>缺点</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>偏向锁</strong></td>
+          <td>只有一个线程反复加锁</td>
+          <td>加锁/解锁几乎零消耗</td>
+          <td>如果存在线程竞争，撤销偏向锁会有额外开销</td>
+      </tr>
+      <tr>
+          <td><strong>轻量级锁</strong></td>
+          <td>线程交替执行，无同时竞争</td>
+          <td>不会阻塞线程，利用 CAS 和自旋，响应速度快</td>
+          <td>如果始终得不到锁，自旋会空耗 CPU</td>
+      </tr>
+      <tr>
+          <td><strong>重量级锁</strong></td>
+          <td>发生长时间或多线程同时竞争</td>
+          <td>不会空耗 CPU，未获锁线程进入阻塞</td>
+          <td>线程阻塞/唤醒涉及上下文切换，开销大，较慢</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="cas与自旋">CAS与自旋
+</h2><h3 id="什么是cas乐观锁">什么是CAS（乐观锁）
+</h3><ul>
+<li>
+<p>你看到原句是“Hello”（<strong>A</strong>）。</p>
+</li>
+<li>
+<p>你想改成“Hi”（<strong>B</strong>）。</p>
+</li>
+<li>
+<p>在你提交修改的一瞬间，系统检查文档当前还是不是“Hello”（<strong>V</strong>）。</p>
+<ul>
+<li>
+<p>如果是，修改成功。</p>
+</li>
+<li>
+<p>如果文档已经被别人改成了“Hello World”，你的预期（A）和实际（V）不符，提交失败，你需要重新读取再尝试。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="cas-的三大问题"><strong>CAS 的三大问题</strong>
+</h3><ol>
+<li>
+<p><strong>ABA 问题</strong>（最著名的坑）：</p>
+<ul>
+<li>
+<p>虽然 V 还是 A，但不代表它没变过。它可能经历了 <code>A -&gt; B -&gt; A</code> 的过程。</p>
+</li>
+<li>
+<p><strong>比喻</strong>：桌上有一杯水（A），你离开了一会儿。回来时水还是满的（A），你以为没人动过。实际上可能有人喝光了（B），又给你倒满了（A）。虽然结果一样，但过程可能由于“杯子被用过”而产生副作用。</p>
+</li>
+<li>
+<p><strong>解决</strong>：加<strong>版本号</strong>。变成 <code>1A -&gt; 2B -&gt; 3A</code>。Java 中的 <code>AtomicStampedReference</code> 就是干这个的。给提交结果加版本号</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>只能保证一个变量的原子性</strong>：无法同时操作多个变量。</p>
+</li>
+<li>
+<p><strong>CPU 开销大</strong>：这通常与“自旋”结合在一起，见下文。</p>
+</li>
+</ol>
+<h3 id="什么是-自旋-">什么是 自旋 ？
+</h3><p><strong>自旋</strong>是一种线程等待的策略。</p>
+<p>当线程抢不到锁（或 CAS 失败）时，它<strong>不放弃 CPU，不进入阻塞状态（不睡觉）</strong>，而是执行一个<strong>空循环</strong>（Loop），不断地检查“锁释放了吗？”或者“我能重试 CAS 了吗？”。</p>
+<h4 id="为什么要自旋"><strong>为什么要自旋？</strong>
+</h4><p>为了<strong>避免上下文切换</strong>的开销。</p>
+<ul>
+<li>
+<p><strong>阻塞/唤醒</strong>：线程挂起和恢复需要操作系统介入，保存和恢复现场，非常耗时（可能比执行代码本身还慢）。</p>
+</li>
+<li>
+<p><strong>自旋</strong>：如果锁被占用的时间很短，我在门口转两圈（自旋）锁就释放了，这样比“回家睡觉再被电话叫醒”快得多。</p>
+</li>
+</ul>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>概念</strong></th>
+          <th><strong>作用</strong></th>
+          <th><strong>核心词</strong></th>
+          <th><strong>优缺点</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>CAS</strong></td>
+          <td>实现原子更新</td>
+          <td><strong>比较并交换</strong></td>
+          <td>优点：非阻塞，性能好<br>缺点：ABA 问题</td>
+      </tr>
+      <tr>
+          <td><strong>自旋</strong></td>
+          <td>等待锁的策略</td>
+          <td><strong>循环重试</strong></td>
+          <td>优点：避免上下文切换<br>缺点：耗费 CPU</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="springbean的生命周期">SpringBean的生命周期
+</h2><h3 id="阶段一创建与注入-的基础">阶段一：创建与注入 (的基础)
+</h3><h4 id="1-实例化-instantiation">1. 实例化 (Instantiation)
+</h4><ul>
+<li>
+<p><strong>发生了什么：</strong> Spring 容器通过反射（<code>Constructor.newInstance()</code>）调用 Bean 的构造函数。</p>
+</li>
+<li>
+<p><strong>状态：</strong> 此时对象已经在堆内存中存在了，但它只是一个“空壳子”，里面的属性（依赖）全是 <code>null</code>。</p>
+</li>
+<li>
+<p><strong>类比：</strong> 刚买了一个毛坯房，房子建好了，但里面什么家具都没有。</p>
+</li>
+</ul>
+<h4 id="2-属性赋值-populate-properties">2. 属性赋值 (Populate Properties)
+</h4><ul>
+<li>
+<p><strong>发生了什么：</strong> Spring 依据配置（XML 或 <code>@Autowired</code>、<code>@Value</code>），将依赖的对象或属性值注入到 Bean 中。</p>
+</li>
+<li>
+<p><strong>状态：</strong> 对象内部的依赖已经填充完毕。</p>
+</li>
+<li>
+<p><strong>类比：</strong> 装修工进场，把沙发（Service）、电视（Dao）都搬进了房子里。</p>
+</li>
+</ul>
+<h3 id="阶段二容器感知-aware-接口回调">阶段二：容器感知 (Aware 接口回调)
+</h3><h4 id="3-aware-接口回调-invoke-aware-interfaces">3. Aware 接口回调 (Invoke Aware Interfaces)
+</h4><ul>
+<li><strong>发生了什么：</strong> 如果 Bean 实现了特定的 <code>Aware</code> 接口，Spring 会把容器内部的一些资源“告诉”这个 Bean。</li>
+</ul>
+<h3 id="阶段三初始化与增强-最关键的步骤">阶段三：初始化与增强 (最关键的步骤)
+</h3><p>所谓的“初始化阶段”，就是 Spring 给你一个机会，在“属性都装好了”之后，但在“给别人使用”之前，让你执行一段自己的业务代码（比如连数据库、加载缓存、校验配置）。</p>
+<p><strong>Spring AOP</strong>（默认机制）使用的是 <strong>动态代理（Dynamic Proxy）</strong>。它的逻辑是<strong>委托（Delegation）</strong>。</p>
+<ul>
+<li>
+<p>原本的流程：</p>
+<p>调用者 $\rightarrow$ 目标对象（Target）</p>
+</li>
+<li>
+<p>Spring AOP 的流程：</p>
+<p>调用者 $\rightarrow$ 代理对象（Proxy） $\rightarrow$ 执行增强代码（Before） $\rightarrow$ 调用目标对象 $\rightarrow$ 执行增强代码（After） $\rightarrow$ 返回</p>
+</li>
+</ul>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>特性</strong></th>
+          <th><strong>Spring AOP</strong></th>
+          <th><strong>AspectJ（静态代理）</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>原理</strong></td>
+          <td><strong>动态代理</strong> (Proxy)</td>
+          <td><strong>字节码织入</strong> (Bytecode Weaving)</td>
+      </tr>
+      <tr>
+          <td><strong>修改方式</strong></td>
+          <td>运行时生成新类包裹目标</td>
+          <td>编译期/加载期直接修改目标类字节码</td>
+      </tr>
+      <tr>
+          <td><strong>是否需要接口</strong></td>
+          <td>JDK模式需要，CGLIB不需要</td>
+          <td>不需要</td>
+      </tr>
+      <tr>
+          <td><strong>性能</strong></td>
+          <td>稍慢（有反射和代理调用的开销）</td>
+          <td><strong>极快</strong>（就是普通的方法调用）</td>
+      </tr>
+      <tr>
+          <td><strong>能力范围</strong></td>
+          <td>只能拦截 <strong>public 方法</strong> 的调用</td>
+          <td><strong>无所不能</strong>：可拦截 private 方法、静态方法、构造函数、字段访问等</td>
+      </tr>
+      <tr>
+          <td><strong>内部调用(this)</strong></td>
+          <td><strong>失效</strong></td>
+          <td><strong>有效</strong> (完美解决自调用问题)</td>
+      </tr>
+      <tr>
+          <td><strong>复杂度</strong></td>
+          <td>低（Spring Boot 开箱即用）</td>
+          <td>高（需要配置编译器或 JVM Agent）</td>
+      </tr>
+  </tbody>
+</table></div>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 LuciusWan
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

@@ -370,6 +370,21 @@
         <li><a href="#3-硬件中断-hardware-interrupt--被动打断">3. 硬件中断 (Hardware Interrupt) —— 被动打断</a></li>
       </ol>
     </li>
+    <li><a href="#redis单线程避免上下文切换的开销">Redis单线程避免上下文切换的开销</a>
+      <ol>
+        <li><a href="#1-什么是昂贵的上下文切换">1. 什么是“昂贵”的上下文切换？</a></li>
+        <li><a href="#2-多线程模式的痛点-the-context-switch-storm">2. 多线程模式的痛点 (The &ldquo;Context Switch Storm&rdquo;)</a></li>
+        <li><a href="#3-redis-的单线程魔法-the-run-to-completion">3. Redis 的单线程魔法 (The &ldquo;Run-to-Completion&rdquo;)</a>
+          <ol>
+            <li><a href="#a-彻底消灭锁竞争">A. 彻底消灭“锁竞争”</a></li>
+            <li><a href="#b-极致的-cache-亲和性-cache-affinity">B. 极致的 Cache 亲和性 (Cache Affinity)</a></li>
+            <li><a href="#c-io-多路复用-epoll--避免-io-阻塞">C. I/O 多路复用 (Epoll) —— 避免 I/O 阻塞</a></li>
+          </ol>
+        </li>
+        <li><a href="#4-总结对比多线程-vs-单线程">4. 总结对比：多线程 vs 单线程</a></li>
+        <li><a href="#5-什么时候-redis-还是会切换">5. 什么时候 Redis 还是会切换？</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -442,7 +457,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 18 分钟
+                    阅读时长: 21 分钟
                 </time>
             </div>
         
@@ -1523,6 +1538,154 @@
       </tr>
   </tbody>
 </table></div>
+<h2 id="redis单线程避免上下文切换的开销">Redis单线程避免上下文切换的开销
+</h2><h3 id="1-什么是昂贵的上下文切换">1. 什么是“昂贵”的上下文切换？
+</h3><p>首先，我们要明确，为什么切换线程很贵？</p>
+<p>当 CPU 从 线程 A 切换到 线程 B 时，不仅仅是“换个人干活”这么简单，它涉及两个巨大的成本：</p>
+<ol>
+<li>
+<p><strong>直接成本 (CPU 寄存器重置)：</strong></p>
+<ul>
+<li>
+<p>CPU 需要把线程 A 的“现场”（程序计数器 PC、堆栈指针 SP、通用寄存器等）保存到内存里。</p>
+</li>
+<li>
+<p>然后从内存里把线程 B 的“现场”恢复到寄存器里。</p>
+</li>
+<li>
+<p>这本身需要花费几微秒 ($\mu s$)。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>间接成本 (Cache 失效 —— 这才是真正的杀手)：</strong></p>
+<ul>
+<li>
+<p>CPU 有 L1/L2/L3 高速缓存。线程 A 跑得正欢的时候，缓存Cache里全是线程 A 需要的数据（热数据）。</p>
+</li>
+<li>
+<p>突然切到线程 B，线程 B 要用的数据不在缓存里（Cache Miss）。</p>
+</li>
+<li>
+<p>CPU 被迫去慢如蜗牛的内存（RAM）里拿数据。</p>
+</li>
+<li>
+<p><strong>这会导致 CPU 的执行效率瞬间暴跌。</strong></p>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="2-多线程模式的痛点-the-context-switch-storm">2. 多线程模式的痛点 (The &ldquo;Context Switch Storm&rdquo;)
+</h3><p>假设 Redis 是传统的多线程模型（比如像早期的 Tomcat 或 MySQL）：</p>
+<ul>
+<li>
+<p><strong>场景：</strong> 来了 1000 个请求。</p>
+</li>
+<li>
+<p><strong>处理：</strong> 系统开启 1000 个线程（或者用线程池）。</p>
+</li>
+<li>
+<p><strong>锁竞争：</strong> 线程 A 要修改 Key &ldquo;user:1&rdquo;，线程 B 也要修改。线程 B 抢不到锁，被迫<strong>挂起 (Block)</strong>。</p>
+</li>
+<li>
+<p><strong>自愿切换 (Voluntary Context Switch)：</strong></p>
+<ul>
+<li>
+<p>因为抢不到锁，或者等待磁盘 I/O，线程 B 主动告诉操作系统：“我干不下去了，把 CPU 让给别人吧。”</p>
+</li>
+<li>
+<p>操作系统进行上下文切换。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>结果：</strong> 在高并发下，CPU 把大量的时间花在** “保存现场、恢复现场、调度线程、等待锁” **上，真正用来执行 <code>set name gemini</code> 这行代码的时间反而被挤压了。</p>
+</li>
+</ul>
+<h3 id="3-redis-的单线程魔法-the-run-to-completion">3. Redis 的单线程魔法 (The &ldquo;Run-to-Completion&rdquo;)
+</h3><p>Redis 的主处理逻辑（Command Execution）是单线程的，这意味着：</p>
+<h4 id="a-彻底消灭锁竞争">A. 彻底消灭“锁竞争”
+</h4><ul>
+<li>
+<p>因为只有我一个人（主线程）在动数据，<strong>所以我根本不需要锁（Lock-free）</strong>。</p>
+</li>
+<li>
+<p>没有锁，就不会出现“因为抢不到锁而挂起”的情况。</p>
+</li>
+<li>
+<p>不存在“挂起”，就没有“自愿上下文切换”。</p>
+</li>
+<li>
+<p><strong>结果：</strong> Redis 主线程是一路狂奔的，它处理完一个请求，马上处理下一个，中间没有任何停顿。</p>
+</li>
+</ul>
+<h4 id="b-极致的-cache-亲和性-cache-affinity">B. 极致的 Cache 亲和性 (Cache Affinity)
+</h4><ul>
+<li>
+<p>因为始终是这同一个线程在这一颗 CPU 核心上跑。</p>
+</li>
+<li>
+<p>Redis 的核心数据结构（dict, ziplist, skiplist）和代码指令，会一直停留在 CPU 的 L1/L2 缓存里。</p>
+</li>
+<li>
+<p><strong>Cache Hit 率极高</strong>。</p>
+</li>
+<li>
+<p>这就像一个熟练工人在自己的工位上干活，所有工具都在手边（L1 Cache），闭着眼睛都能拿到。</p>
+</li>
+</ul>
+<h4 id="c-io-多路复用-epoll--避免-io-阻塞">C. I/O 多路复用 (Epoll) —— 避免 I/O 阻塞
+</h4><ul>
+<li>
+<p>你可能会问：<em>“那如果读 Socket 数据的时候，数据还没来怎么办？线程不就阻塞了吗？”</em></p>
+</li>
+<li>
+<p>Redis 使用 <strong>epoll (Linux)</strong>。</p>
+</li>
+<li>
+<p><strong>机制：</strong> Redis 告诉内核：“这一万个 Socket 你帮我盯着，谁有数据来了你告诉我。”</p>
+</li>
+<li>
+<p><strong>非阻塞：</strong> Redis 主线程<strong>永远不会</strong>在某个 Socket 上死等（Block）。它只处理那些“已经准备好数据”的 Socket。</p>
+</li>
+<li>
+<p>所以，Redis 永远不会因为 I/O 等待而发生上下文切换。</p>
+</li>
+</ul>
+<hr>
+<h3 id="4-总结对比多线程-vs-单线程">4. 总结对比：多线程 vs 单线程
+</h3><p>我们可以用<strong>去银行办事</strong>来比喻：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>模式</strong></th>
+          <th><strong>场景比喻</strong></th>
+          <th><strong>上下文切换情况</strong></th>
+          <th><strong>效率</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>多线程模型</strong></td>
+          <td><strong>10 个窗口，10 个柜员。</strong> <br> 所有的柜员都要抢同一个账本（锁）来记账。抢不到的柜员就去喝茶（切换）。柜员之间换班还要交接工作（保存现场）。</td>
+          <td><strong>极高</strong> <br> (锁竞争、线程调度)</td>
+          <td><strong>低</strong> <br> (大量时间花在抢锁和交接上)</td>
+      </tr>
+      <tr>
+          <td><strong>Redis 单线程</strong></td>
+          <td><strong>1 个超级柜员 (Flash)。</strong> <br> 只有他一个人，账本就在手边（Cache）。他动作极快，处理完张三马上处理李四，不用跟任何人抢账本，也不用交接班。</td>
+          <td><strong>极低</strong> <br> (几乎为 0，除非时间片用完)</td>
+          <td><strong>极高</strong> <br> (CPU 100% 用在干活上)</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="5-什么时候-redis-还是会切换">5. 什么时候 Redis 还是会切换？
+</h3><p>虽然 Redis 尽力避免切换，但<strong>被动切换 (Involuntary Context Switch)</strong> 是无法避免的，因为操作系统才是老大。</p>
+<ol>
+<li><strong>时间片用完 (Time Slice):</strong> 操作系统采用了<strong>分时调度</strong>。给 Redis 的 10ms 用完了，不管你活干没干完，OS 必须强行把 CPU 抢走给别的进程（比如 SSH、系统日志）用一下。</li>
+</ol>
+<p>Redis 单线程避免上下文切换的核心在于：<strong>它通过“非阻塞 I/O”和“单线程串行执行”，消灭了代码层面的“锁”和“等待”，从而让 CPU 始终处于全速运算的高效状态。</strong></p>
 
 </section>
 

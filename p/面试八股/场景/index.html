@@ -408,6 +408,16 @@
         </li>
       </ol>
     </li>
+    <li><a href="#为什么rpchttp2能比http11快那么多">为什么RPC/HTTP2能比HTTP1.1快那么多</a>
+      <ol>
+        <li><a href="#1-多路复用-multiplexing--解决核心痛点">1. 多路复用 (Multiplexing) —— 解决核心痛点</a></li>
+        <li><a href="#2-头部压缩-hpack--节省带宽">2. 头部压缩 (HPACK) —— 节省带宽</a></li>
+        <li><a href="#3-二进制分帧-binary-framing--解析更快">3. 二进制分帧 (Binary Framing) —— 解析更快</a></li>
+        <li><a href="#4-序列化协议-serialization--rpc-的独门秘籍">4. 序列化协议 (Serialization) —— RPC 的独门秘籍</a></li>
+        <li><a href="#5-服务端推送-server-push">5. 服务端推送 (Server Push)</a></li>
+        <li><a href="#总结对比">总结对比</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -480,7 +490,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 25 分钟
+                    阅读时长: 28 分钟
                 </time>
             </div>
         
@@ -1987,6 +1997,139 @@
 <p><strong>Kafka</strong> 之所以吞吐量宇宙第一，是因为它<strong>放弃了对消息细节的掌控</strong>，直接用 <code>sendfile</code> 当了一个“甩手掌柜”，把数据直接丢给网卡。</p>
 <p><strong>RocketMQ</strong> 之所以功能强大（支持 Tag 过滤、复杂的事务状态），是因为它用了 <code>mmap</code>，<strong>保留了对数据的访问权</strong>，虽然牺牲了一点点传输性能，但换来了业务灵活性。</p>
 <p><strong>一句话概括：Kafka 是为了“运货”而生，RocketMQ 是为了“验货”而生。</strong></p>
+<p><strong>Page Cache</strong> 是 Linux 内核为了掩盖磁盘龟速而用闲置内存做的“障眼法”。</p>
+<h2 id="为什么rpchttp2能比http11快那么多">为什么RPC/HTTP2能比HTTP1.1快那么多
+</h2><p>简单来说，HTTP/1.1 像是<strong>单车道</strong>，而 HTTP/2 + RPC 像是<strong>多车道高速公路</strong>，且路上跑的都是<strong>压缩后的跑车</strong>而不是臃肿的大卡车。</p>
+<p>以下是具体的技术核心差异：</p>
+<hr>
+<h3 id="1-多路复用-multiplexing--解决核心痛点">1. 多路复用 (Multiplexing) —— 解决核心痛点
+</h3><p>这是 HTTP/2 相比 HTTP/1.1 最大的性能提升点，解决了“<strong>队头阻塞</strong>”（Head-of-Line Blocking）问题。</p>
+<ul>
+<li>
+<p>HTTP/1.1 的问题：</p>
+<p>在同一个 TCP 连接中，请求是串行的。浏览器/客户端必须等上一个请求响应回来，才能发下一个。如果第一个请求处理很慢（比如数据库卡了），后面的所有请求都会被堵住。</p>
+<ul>
+<li><em>补救措施：</em> 浏览器通常会针对同一个域名建立 6 个 TCP 连接来并行传输，但这对服务器资源消耗很大。</li>
+</ul>
+</li>
+<li>
+<p>HTTP/2 (RPC) 的方案：</p>
+<p>它引入了 流 (Stream) 和 帧 (Frame) 的概念。</p>
+<ul>
+<li>
+<p>所有的请求和响应都共用<strong>同一个 TCP 连接</strong>。</p>
+</li>
+<li>
+<p>不同的请求被拆分成许多小的二进制“帧”，这些帧像洗牌一样混在一起传输，每一帧都有 ID 标识属于哪个请求。</p>
+</li>
+<li>
+<p><strong>结果：</strong> 请求 A 的数据包不需要等请求 B 处理完就能发送。高并发下，吞吐量极高。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-头部压缩-hpack--节省带宽">2. 头部压缩 (HPACK) —— 节省带宽
+</h3><p>在微服务架构中，RPC 调用非常频繁，HTTP 头部（Headers）占用的开销比你想象的要大。</p>
+<ul>
+<li>
+<p>HTTP/1.1 的问题：</p>
+<p>HTTP 是无状态的，每次请求都会携带完整的 Header（如 User-Agent, Cookie, Accept 等）。这些全是纯文本，往往几百字节甚至上 KB。如果你的请求体（Body）只有几十字节，那传输的有效数据比例极低。</p>
+</li>
+<li>
+<p>HTTP/2 (RPC) 的方案：</p>
+<p>使用了 HPACK 算法。</p>
+<ul>
+<li>
+<p>客户端和服务器共同维护一张<strong>动态表</strong>和<strong>静态表</strong>。</p>
+</li>
+<li>
+<p>如果发送过 <code>User-Agent: Chrome</code>，第二次只需要发送一个索引号（比如 <code>1</code>），服务器查表就知道是 <code>User-Agent: Chrome</code>。</p>
+</li>
+<li>
+<p>这使得 Header 的大小几乎可以忽略不计。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-二进制分帧-binary-framing--解析更快">3. 二进制分帧 (Binary Framing) —— 解析更快
+</h3><p>计算机处理二进制数据远快于处理文本。</p>
+<ul>
+<li>
+<p>HTTP/1.1 的问题：</p>
+<p>是文本协议。解析文本需要处理换行符、空格、大小写等，对于高并发服务器来说，解析 JSON 或 HTTP 报文会消耗大量的 CPU 资源。</p>
+</li>
+<li>
+<p>HTTP/2 (RPC) 的方案：</p>
+<p>是二进制协议。数据在传输层就已经被分割为更小的消息和帧，并采用二进制编码。机器解析起来非常高效，出错率低，且更紧凑。</p>
+</li>
+</ul>
+<hr>
+<h3 id="4-序列化协议-serialization--rpc-的独门秘籍">4. 序列化协议 (Serialization) —— RPC 的独门秘籍
+</h3><p>这一条主要针对 RPC（如 gRPC 使用的 Protocol Buffers）对比传统的 RESTful (HTTP/1.1 + JSON)。</p>
+<ul>
+<li>
+<p>HTTP/1.1 + JSON：</p>
+<p>JSON 是基于文本的，冗余度极高。比如 {&ldquo;id&rdquo;: 12345, &ldquo;name&rdquo;: &ldquo;user&rdquo;}，你需要传输字段名 id 和 name。且 JSON 的解析（反序列化）非常耗 CPU。</p>
+</li>
+<li>
+<p>RPC (Protobuf)：</p>
+<p>使用 Protocol Buffers (Protobuf) 或 Thrift 等二进制序列化协议。</p>
+<ul>
+<li>
+<p><strong>体积小：</strong> 它是通过 ID 映射字段，不传输字段名，压缩后的体积通常只有 JSON 的 1/3 到 1/10。</p>
+</li>
+<li>
+<p><strong>速度快：</strong> 二进制流直接映射到内存对象，序列化/反序列化速度比 JSON 快 5-10 倍。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-服务端推送-server-push">5. 服务端推送 (Server Push)
+</h3><p>虽然在 RPC 场景下用得相对少，但 HTTP/2 允许服务器在客户端请求之前“主动”推送资源，减少了往返延迟（RTT）。</p>
+<hr>
+<h3 id="总结对比">总结对比
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>特性</strong></th>
+          <th><strong>HTTP/1.1</strong></th>
+          <th><strong>HTTP/2 (及 gRPC)</strong></th>
+          <th><strong>优势</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>传输格式</strong></td>
+          <td>文本 (Text)</td>
+          <td>二进制 (Binary)</td>
+          <td>解析更快，体积更小</td>
+      </tr>
+      <tr>
+          <td><strong>连接模型</strong></td>
+          <td>串行 (Keep-Alive)</td>
+          <td><strong>多路复用 (Multiplexing)</strong></td>
+          <td>解决队头阻塞，极大提高并发</td>
+      </tr>
+      <tr>
+          <td><strong>头部开销</strong></td>
+          <td>巨大 (纯文本重复发送)</td>
+          <td><strong>HPACK 压缩</strong></td>
+          <td>节省带宽</td>
+      </tr>
+      <tr>
+          <td><strong>负载内容</strong></td>
+          <td>通常是 JSON (大、慢)</td>
+          <td>通常是 Protobuf (小、快)</td>
+          <td>序列化性能提升明显</td>
+      </tr>
+      <tr>
+          <td><strong>TCP 连接数</strong></td>
+          <td>多个 (通常 6 个)</td>
+          <td><strong>只需 1 个</strong></td>
+          <td>降低服务器握手和资源开销</td>
+      </tr>
+  </tbody>
+</table></div>
 
 </section>
 

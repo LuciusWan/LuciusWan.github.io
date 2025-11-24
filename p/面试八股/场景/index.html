@@ -512,6 +512,18 @@
         <li><a href="#mvcc简单的流程">MVCC简单的流程</a></li>
       </ol>
     </li>
+    <li><a href="#mysql的锁">MySQL的锁</a>
+      <ol>
+        <li><a href="#共享锁">共享锁</a></li>
+        <li><a href="#排他锁">排他锁</a></li>
+        <li><a href="#表锁">表锁</a></li>
+        <li><a href="#意向锁">意向锁</a></li>
+        <li><a href="#行锁">行锁</a></li>
+        <li><a href="#间隙锁">间隙锁</a></li>
+        <li><a href="#next-key-lock">Next-Key Lock</a></li>
+        <li><a href="#mdl锁">MDL锁</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -584,7 +596,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 45 分钟
+                    阅读时长: 48 分钟
                 </time>
             </div>
         
@@ -3383,6 +3395,161 @@ $$<p>计算出 Slot 编号（比如 5000）后，Redis 只需要查看<strong>�
 <p>这个规则对<strong>全库所有表</strong>通用。</p>
 <h3 id="mvcc简单的流程">MVCC简单的流程
 </h3><p>事务在第一次select的时候会去检查当前活跃事务，然后会查看下一个要分配的事务id，然后记录下来，后面查询的时候会先去查询当前行数据的trx_id，查看数据的trx_id如果小于当前事务的id就应该<strong>直接使用这条数据</strong>，如果大于自己的事务id，就去查undo log，顺着undolog版本链找到真正自己能看到的数据，然后修改查询得到的数据。</p>
+<h2 id="mysql的锁">MySQL的锁
+</h2><h3 id="共享锁">共享锁
+</h3><p>在sql语句末尾加上for share代表共享锁，所有事务都可以读，但是不能修改，直至事务提交</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">uploaded_file</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1981221658045493248</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="k">share</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="排他锁">排他锁
+</h3><p>在sql语句末尾加上for update代表排他锁，其他事务不能修改，也不能读。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">uploaded_file</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1981221658045493248</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="k">update</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="表锁">表锁
+</h3><ul>
+<li>
+<p><strong>定义</strong>：最基本的锁策略，开销最小。它会锁定整张表。</p>
+</li>
+<li>
+<p><strong>特点</strong>：</p>
+<ul>
+<li>
+<p><strong>无死锁</strong>：因为一次性获取所有需要的锁。</p>
+</li>
+<li>
+<p><strong>并发度低</strong>：一个用户在写，其他用户都不能读写。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>适用场景</strong>：主要由 MyISAM 引擎使用；InnoDB 在特定情况下（如没有索引或手动指定 <code>LOCK TABLES</code>）也会用到，但通常尽量避免。</p>
+</li>
+</ul>
+<h3 id="意向锁">意向锁
+</h3><ul>
+<li>
+<p><strong>痛点</strong>：假设事务 A 锁住了表中的<strong>某一行</strong>（行锁），此时事务 B 想申请<strong>整个表</strong>的写锁（表锁）。事务 B 怎么知道表里有没有人正在改数据？它必须遍历每一行去检查，效率极低。</p>
+</li>
+<li>
+<p><strong>定义</strong>：<strong>意向锁是表级锁</strong>。</p>
+<ul>
+<li>
+<p>当事务 A 想要给某一行加锁时，必须先给表加一个“意向锁”。</p>
+</li>
+<li>
+<p>这就像在写字楼门口挂个牌子：“楼里有人（意向锁）”。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>作用</strong>：事务 B 看到门口有“意向锁”的牌子，就知道表里有人在忙，直接等待，不用进去逐个房间（行）检查了。它主要用于<strong>快速判断表锁和行锁的冲突</strong>。</p>
+</li>
+</ul>
+<h3 id="行锁">行锁
+</h3><ul>
+<li>
+<p><strong>定义</strong>：InnoDB 的核心特性。只锁定被操作的那一行数据。</p>
+</li>
+<li>
+<p><strong>特点</strong>：</p>
+<ul>
+<li>
+<p><strong>并发度高</strong>：多个人可以同时修改同一张表的不同行。</p>
+</li>
+<li>
+<p><strong>开销大</strong>：需要加锁、解锁，且容易发生<strong>死锁</strong>。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>关键点</strong>：<strong>InnoDB 的行锁是加在索引上的</strong>。如果你查询时没有用到索引，InnoDB 会退化为锁定整张表（虽然实现机制上是把所有行都锁了），导致并发性能大跌。</p>
+</li>
+</ul>
+<h3 id="间隙锁">间隙锁
+</h3><ul>
+<li>
+<p><strong>含义</strong>：只锁住两个记录之间的**“缝隙”**，<strong>不包含</strong>记录本身。</p>
+</li>
+<li>
+<p><strong>锁住范围</strong>：<code>(10, 20)</code> —— 指的是大于 10 且小于 20 的范围。</p>
+</li>
+<li>
+<p><strong>作用</strong>：<strong>纯粹是为了防止插入</strong>。别人不能在这个范围内 <code>INSERT</code> 任何数据（比如插 15）。但他如果要修改 <code>id=20</code> 这行数据，Gap Lock 是不管的。</p>
+</li>
+</ul>
+<h3 id="next-key-lock">Next-Key Lock
+</h3><p>假设数据库表中只有三行数据：<code>id = 10, 20, 30</code>。</p>
+<ul>
+<li>
+<p><strong>含义</strong>：锁住一段间隙 <strong>+</strong> 锁住间隙右边的那个记录。</p>
+</li>
+<li>
+<p><strong>锁住范围</strong>：<code>(10, 20]</code> —— <strong>左开右闭区间</strong>。</p>
+</li>
+<li>
+<p><strong>组成</strong>：即锁住了 <code>(10, 20)</code> 这个缝隙，也锁住了 <code>20</code> 这个记录。</p>
+</li>
+<li>
+<p><strong>作用</strong>：既不准你在缝隙里插数据（防幻读），也不准你修改右边那个记录。</p>
+</li>
+</ul>
+<p>$Next\text{-}Key \ Lock = Gap \ Lock + Record \ Lock$</p>
+<h3 id="mdl锁">MDL锁
+</h3><ul>
+<li>
+<p><strong>定义</strong>：它不是用来锁数据的，而是用来锁**表结构（Schema）**的。</p>
+</li>
+<li>
+<p><strong>触发机制</strong>（系统自动控制，用户无需显式调用）：</p>
+<ul>
+<li>
+<p><strong>MDL 读锁</strong>：当你对表进行增删改查（DML）时，自动加 MDL 读锁。</p>
+</li>
+<li>
+<p><strong>MDL 写锁</strong>：当你对表结构进行修改（DDL，如 <code>ALTER TABLE</code>）时，自动加 MDL 写锁。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>互斥关系</strong>：</p>
+<ul>
+<li>
+<p>读锁和读锁不互斥（大家可以一起查数据）。</p>
+</li>
+<li>
+<p><strong>读写互斥、写写互斥</strong>。这意味着，如果有长事务正在查询数据（持有 MDL 读锁），你此时想给表加个字段（申请 MDL 写锁），会被阻塞。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>危险场景（MDL 风暴）</strong>：</p>
+<ol>
+<li>
+<p>Session A 开启事务查数据（持有 MDL 读）。</p>
+</li>
+<li>
+<p>Session B 想加字段（申请 MDL 写，被阻塞）。</p>
+</li>
+<li>
+<p><strong>Session C 及其后的所有查询</strong>（申请 MDL 读），因为写锁优先级通常高于读锁，或者写锁在排队，导致后续所有查询全部堵塞。</p>
+</li>
+</ol>
+</li>
+<li>
+<p><em>结果</em>：数据库线程瞬间爆满，导致宕机。</p>
+</li>
+</ul>
 
 </section>
 

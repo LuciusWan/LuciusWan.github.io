@@ -524,6 +524,40 @@
         <li><a href="#mdl锁">MDL锁</a></li>
       </ol>
     </li>
+    <li><a href="#索引下推是什么">索引下推是什么？</a>
+      <ol>
+        <li><a href="#mysql-处理-sql-语句时主要分为两层">MySQL 处理 SQL 语句时，主要分为两层：</a></li>
+        <li><a href="#场景复盘">场景复盘</a>
+          <ol>
+            <li><a href="#为什么这个场景特殊">为什么这个场景特殊？</a></li>
+          </ol>
+        </li>
+        <li><a href="#详细对比无-icp-vs-有-icp">详细对比：无 ICP vs 有 ICP</a>
+          <ol>
+            <li><a href="#-阶段一没有-icp-mysql-56-之前">❌ 阶段一：没有 ICP (MySQL 5.6 之前)</a></li>
+            <li><a href="#-阶段二开启-icp-mysql-56-及以后">✅ 阶段二：开启 ICP (MySQL 5.6 及以后)</a></li>
+          </ol>
+        </li>
+        <li><a href="#怎么看有没有用到-icp">怎么看有没有用到 ICP？</a></li>
+        <li><a href="#正常的联合索引完美匹配">正常的联合索引（完美匹配）</a></li>
+        <li><a href="#索引下推-icp范围查询导致断档">索引下推 ICP（范围查询导致断档）</a></li>
+        <li><a href="#server层处理无法下推的条件">Server层处理“无法下推”的条件</a></li>
+      </ol>
+    </li>
+    <li><a href="#索引下推查询的全流程">索引下推查询的全流程</a>
+      <ol>
+        <li><a href="#场景设定">场景设定</a></li>
+        <li><a href="#2-详细执行流程-pipeline">2. 详细执行流程 (Pipeline)</a>
+          <ol>
+            <li><a href="#第一步server-层准备阶段">第一步：Server 层（准备阶段）</a></li>
+            <li><a href="#第二步innodb-存储引擎层icp-核心阶段">第二步：InnoDB 存储引擎层（ICP 核心阶段）</a></li>
+            <li><a href="#第三步innodb-存储引擎层回表阶段">第三步：InnoDB 存储引擎层（回表阶段）</a></li>
+            <li><a href="#第四步server-层最终兜底阶段">第四步：Server 层（最终兜底阶段）</a></li>
+          </ol>
+        </li>
+        <li><a href="#3-流程总结图解">3. 流程总结图解</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -596,7 +630,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 48 分钟
+                    阅读时长: 54 分钟
                 </time>
             </div>
         
@@ -3550,6 +3584,444 @@ $$<p>计算出 Slot 编号（比如 5000）后，Redis 只需要查看<strong>�
 <p><em>结果</em>：数据库线程瞬间爆满，导致宕机。</p>
 </li>
 </ul>
+<h2 id="索引下推是什么">索引下推是什么？
+</h2><h3 id="mysql-处理-sql-语句时主要分为两层">MySQL 处理 SQL 语句时，主要分为两层：
+</h3><ol>
+<li>
+<p><strong>Server 层（服务器层）：</strong> 负责解析 SQL、优化器生成执行计划、调用存储引擎接口、并处理最终的数据过滤（<code>WHERE</code> 条件判断）。</p>
+</li>
+<li>
+<p><strong>Storage Engine 层（存储引擎层，如 InnoDB）：</strong> 负责真正的数据存储、提取，通过索引在磁盘上找数据。</p>
+</li>
+</ol>
+<p><strong>“下推”的意思是：</strong> 把原本只能在 Server 层做的事情，<strong>推给</strong> 存储引擎层去做。</p>
+<h3 id="场景复盘">场景复盘
+</h3><p>我们使用你的例子：</p>
+<ul>
+<li>
+<p><strong>表结构：</strong> <code>user</code> 表，有列 <code>id</code> (主键), <code>name</code>, <code>age</code>, <code>address</code> 等。</p>
+</li>
+<li>
+<p><strong>索引：</strong> 联合索引 <code>idx_name_age (name, age)</code>。</p>
+</li>
+<li>
+<p><strong>SQL：</strong></p>
+<p>SQL</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">SELECT * FROM user WHERE name LIKE &#39;王%&#39; AND age = 20;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><em>(注意：这里是 <code>SELECT *</code>，意味着必须回表拿到 <code>address</code> 等其他字段，不能仅靠覆盖索引)</em></p>
+</li>
+</ul>
+<h4 id="为什么这个场景特殊">为什么这个场景特殊？
+</h4><p>根据<strong>最左前缀原则</strong>：</p>
+<ol>
+<li>
+<p><code>name LIKE '王%'</code> 是范围查询。索引能帮我们快速定位到所有姓“王”的人的<strong>起始位置</strong>。</p>
+</li>
+<li>
+<p>但是，一旦使用了范围查询（Range），索引<strong>后续的列</strong>（这里是 <code>age</code>）就无法用于<strong>定位</strong>（Seek）了。</p>
+<ul>
+<li>
+<p>索引里的数据排序是：先按 name 排，name 相同才按 age 排。</p>
+</li>
+<li>
+<p>对于 <code>王五</code> 和 <code>王六</code>，他们的 age 是无序的（相对于整个“王%”区间），所以引擎必须扫描所有姓王的数据。</p>
+</li>
+</ul>
+</li>
+</ol>
+<p>虽然无法用来<strong>定位</strong>，但 <code>age</code> 的值<strong>确实存在于索引树的叶子节点中</strong>。ICP 的核心就在于是否利用了这个已有的数据。</p>
+<h3 id="详细对比无-icp-vs-有-icp">详细对比：无 ICP vs 有 ICP
+</h3><p>假设数据库里有 4 条记录，索引结构 <code>(name, age)</code> 如下：</p>
+<ol>
+<li>
+<p>(<code>王五</code>, 10) —— 主键 ID: 1</p>
+</li>
+<li>
+<p>(<code>王六</code>, 20) —— 主键 ID: 2 &lt;&ndash; <strong>目标数据</strong></p>
+</li>
+<li>
+<p>(<code>王七</code>, 30) —— 主键 ID: 3</p>
+</li>
+<li>
+<p>(<code>张三</code>, 20) —— 主键 ID: 4</p>
+</li>
+</ol>
+<h4 id="-阶段一没有-icp-mysql-56-之前">❌ 阶段一：没有 ICP (MySQL 5.6 之前)
+</h4><p>在没有 ICP 的时候，存储引擎认为自己的任务就是<strong>找所有 <code>name</code> 以“王”开头的数据</strong>。它会忽略 <code>age = 20</code> 这个条件，因为按老规矩，范围查询后的列“失效”了。</p>
+<p><strong>执行流程：</strong></p>
+<ol>
+<li>
+<p><strong>Server 层</strong>告诉 <strong>InnoDB</strong>：“给我找所有 <code>name LIKE '王%'</code> 的记录。”</p>
+</li>
+<li>
+<p><strong>InnoDB</strong> 在索引树上找到第一条 <code>(王五, 10)</code>。</p>
+<ul>
+<li>
+<p>InnoDB 此时<strong>无视</strong> <code>age=10</code> 不等于 20 这个事实。</p>
+</li>
+<li>
+<p>InnoDB 拿着 ID: 1 去聚簇索引<strong>回表</strong>，取出整行数据。</p>
+</li>
+<li>
+<p>InnoDB 把整行数据返回给 <strong>Server 层</strong>。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Server 层</strong>拿到数据，进行 <code>WHERE</code> 判断：<code>age</code> 是 20 吗？</p>
+<ul>
+<li>发现是 10，<strong>丢弃</strong>。</li>
+</ul>
+</li>
+<li>
+<p><strong>InnoDB</strong> 继续找下一条 <code>(王六, 20)</code>。</p>
+<ul>
+<li>回表，取整行，返回给 Server。</li>
+</ul>
+</li>
+<li>
+<p><strong>Server 层</strong> 判断：<code>age</code> 是 20 吗？</p>
+<ul>
+<li>是，<strong>保留</strong>。</li>
+</ul>
+</li>
+<li>
+<p><strong>InnoDB</strong> 继续找下一条 <code>(王七, 30)</code>。</p>
+<ul>
+<li>回表，取整行，返回给 Server。</li>
+</ul>
+</li>
+<li>
+<p><strong>Server 层</strong> 判断：<code>age</code> 是 20 吗？</p>
+<ul>
+<li>不是，<strong>丢弃</strong>。</li>
+</ul>
+</li>
+</ol>
+<p><strong>结果：</strong> 进行了 <strong>3 次回表</strong>，Server 层做了 3 次判断，最后只得到了 1 条数据。<strong>做了很多无用功（多回了 2 次表）。</strong></p>
+<hr>
+<h4 id="-阶段二开启-icp-mysql-56-及以后">✅ 阶段二：开启 ICP (MySQL 5.6 及以后)
+</h4><p>MySQL 意识到：<em>“嘿，InnoDB 兄弟，虽然你正在扫描索引，但我需要的 <code>age</code> 其实就在你手里的索引节点上。你能不能顺便帮我看一眼？如果 <code>age</code> 不对，你就别回表了，直接看下一个。”</em></p>
+<p>这就是 <strong>Index Condition Pushdown</strong>：把 <code>age = 20</code> 这个条件<strong>下推</strong>到存储引擎层。</p>
+<p><strong>执行流程：</strong></p>
+<ol>
+<li>
+<p><strong>Server 层</strong>告诉 <strong>InnoDB</strong>：“给我找 <code>name LIKE '王%'</code> 的记录，<strong>同时，如果 <code>age</code> 不等于 20，你就别给我了</strong>。”</p>
+</li>
+<li>
+<p><strong>InnoDB</strong> 在索引树上找到第一条 <code>(王五, 10)</code>。</p>
+<ul>
+<li>
+<p>InnoDB <strong>直接检查索引上的值</strong>：<code>age</code> 是 10。</p>
+</li>
+<li>
+<p>不符合 <code>age = 20</code>。</p>
+</li>
+<li>
+<p><strong>InnoDB 直接跳过</strong>（不回表，不返回给 Server）。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>InnoDB</strong> 继续找下一条 <code>(王六, 20)</code>。</p>
+<ul>
+<li>
+<p>检查索引：<code>age</code> 是 20。</p>
+</li>
+<li>
+<p>符合！</p>
+</li>
+<li>
+<p>InnoDB 拿着 ID: 2 <strong>回表</strong>，取出整行数据，返回给 Server。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Server 层</strong> 再次确认（兜底），保留数据。</p>
+</li>
+<li>
+<p><strong>InnoDB</strong> 继续找下一条 <code>(王七, 30)</code>。</p>
+<ul>
+<li>
+<p>检查索引：<code>age</code> 是 30。</p>
+</li>
+<li>
+<p>不符合，<strong>直接跳过</strong>。</p>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>结果：</strong> 只进行了 <strong>1 次回表</strong>。I/O 操作大幅减少，性能提升。</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>特性</strong></th>
+          <th><strong>判断 age=20 的位置</strong></th>
+          <th><strong>处理 (王五, 10)</strong></th>
+          <th><strong>处理 (王六, 20)</strong></th>
+          <th><strong>处理 (王七, 30)</strong></th>
+          <th><strong>总回表次数</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>无 ICP</strong></td>
+          <td><strong>Server 层</strong> (回表之后)</td>
+          <td>回表 -&gt; 丢弃</td>
+          <td>回表 -&gt; 保留</td>
+          <td>回表 -&gt; 丢弃</td>
+          <td>3 次 (慢)</td>
+      </tr>
+      <tr>
+          <td><strong>有 ICP</strong></td>
+          <td><strong>存储引擎层</strong> (回表之前)</td>
+          <td><strong>索引层直接丢弃</strong></td>
+          <td>回表 -&gt; 保留</td>
+          <td><strong>索引层直接丢弃</strong></td>
+          <td><strong>1 次</strong> (快)</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="怎么看有没有用到-icp">怎么看有没有用到 ICP？
+</h3><p>你可以使用 <code>EXPLAIN</code> 命令查看执行计划。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">EXPLAIN</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;王%&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>如果输出的 <strong>Extra</strong> 列中包含：<code>Using index condition</code></p>
+</li>
+<li>
+<p>这就说明 <strong>ICP 生效了</strong>。</p>
+</li>
+</ul>
+<p><em>(注：如果 Extra 是 <code>Using where</code>，说明在 Server 层过滤；如果是 <code>Using index</code>，说明是覆盖索引，不需要回表，性能更好)</em></p>
+<h3 id="正常的联合索引完美匹配">正常的联合索引（完美匹配）
+</h3><p>假设索引还是 <code>(name, age)</code>。 <strong>SQL:</strong> <code>SELECT * FROM user WHERE name = '王五' AND age = 20;</code></p>
+<p>在这种情况下，都是<strong>等值查询</strong>，符合最左前缀原则。</p>
+<ul>
+<li>
+<p><strong>怎么执行？</strong> InnoDB 里的 B+ 树是严格排序的：先按 <code>name</code> 排，<code>name</code> 此时固定是 &lsquo;王五&rsquo;，那么里面的数据就是严格按 <code>age</code> 排序的。
+InnoDB 不需要“先找王五，再遍历过滤 age”，而是直接根据 B+ 树的算法，<strong>一次性跳（Seek）</strong> 到 <code>(王五, 20)</code> 这个节点的位置。</p>
+</li>
+<li>
+<p><strong>谁在做？</strong> <strong>存储引擎 (InnoDB)</strong>。它利用 B+ 树结构直接定位数据。</p>
+</li>
+<li>
+<p><strong>Server 层在干嘛？</strong> Server 层只是给 InnoDB 下达了一个指令：“把 <code>name='王五' AND age=20</code> 的数据给我。”
+InnoDB 说：“好的，我通过索引直接定位到了，这是数据。”
+Server 层拿到数据，甚至不需要再判断一次（但在代码实现逻辑上可能会做双重确认），直接发给客户端。</p>
+</li>
+</ul>
+<hr>
+<h3 id="索引下推-icp范围查询导致断档">索引下推 ICP（范围查询导致断档）
+</h3><p>这是我们刚才聊的场景。 <strong>SQL:</strong> <code>SELECT * FROM user WHERE name LIKE '王%' AND age = 20;</code></p>
+<ul>
+<li>
+<p><strong>怎么执行？</strong> 因为 <code>name</code> 是范围，B+ 树只能帮你定位到“姓王的开始了”和“姓王的结束了”。在这个范围内，<code>age</code> 是乱序的（相对全局而言）。
+InnoDB <strong>不能</strong>直接跳到 <code>age=20</code> 的位置，只能从“王”的第一个数据开始<strong>扫描</strong>。</p>
+</li>
+<li>
+<p><strong>ICP 的作用：</strong> 在扫描过程中，InnoDB 顺便看一眼索引里的 <code>age</code>。如果不符合，就不回表了。</p>
+</li>
+<li>
+<p><strong>谁在做？</strong> 还是 <strong>存储引擎 (InnoDB)</strong>。但是这次它不是“直接定位”，而是“扫描 + 顺便过滤”。</p>
+</li>
+</ul>
+<h3 id="server层处理无法下推的条件">Server层处理“无法下推”的条件
+</h3><p>这是 Server 层更重要的工作。如果 SQL 中包含<strong>不在索引里</strong>的字段条件，InnoDB 是无能为力的，必须由 Server 层来做。</p>
+<p>举个例子：</p>
+<ul>
+<li>
+<p><strong>索引：</strong> <code>(name, age)</code></p>
+</li>
+<li>
+<p><strong>SQL：</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">user</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;王%&#39;</span><span class="w">    </span><span class="c1">-- 索引前缀（用于范围扫描）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="w">          </span><span class="c1">-- 索引下推（ICP 在 InnoDB 过滤）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;北京&#39;</span><span class="p">;</span><span class="w">  </span><span class="c1">-- 索引里没有（Server 层过滤）
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<p>详情见下方流程</p>
+<h2 id="索引下推查询的全流程">索引下推查询的全流程
+</h2><h3 id="场景设定">场景设定
+</h3><ul>
+<li>
+<p><strong>表结构：</strong> <code>user (id, name, age, address)</code></p>
+</li>
+<li>
+<p><strong>索引：</strong> <code>idx_name_age (name, age)</code> —— 联合二级索引</p>
+</li>
+<li>
+<p><strong>SQL 语句：</strong></p>
+<p>SQL</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">SELECT * FROM user 
+</span></span><span class="line"><span class="cl">WHERE name LIKE &#39;王%&#39;    -- 索引范围查询 (Range)
+</span></span><span class="line"><span class="cl">  AND age = 20          -- 索引下推过滤 (ICP)
+</span></span><span class="line"><span class="cl">  AND address = &#39;北京&#39;;  -- 普通条件 (Server 层过滤)
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<hr>
+<h3 id="2-详细执行流程-pipeline">2. 详细执行流程 (Pipeline)
+</h3><p>这个流程就像一个<strong>漏斗</strong>，每经过一层，数据就变少一点，性能就越高。</p>
+<h4 id="第一步server-层准备阶段">第一步：Server 层（准备阶段）
+</h4><ol>
+<li>
+<p><strong>解析与优化：</strong> MySQL 优化器分析 SQL，发现可以使用 <code>idx_name_age</code> 索引。</p>
+</li>
+<li>
+<p><strong>生成计划：</strong> 虽然 <code>name</code> 是范围查询导致 <code>age</code> 无法用于<strong>定位</strong>，但优化器决定开启 <strong>ICP</strong>。</p>
+<ul>
+<li><em>标志：</em> EXPLAIN 中的 Extra 显示 <code>Using index condition</code>。</li>
+</ul>
+</li>
+<li>
+<p><strong>下发指令：</strong> Server 层告诉 InnoDB：“去 <code>idx_name_age</code> 索引里找 <code>name</code> 以 &lsquo;王&rsquo; 开头的数据。<strong>同时，把 <code>age = 20</code> 这个条件带上，如果不满足就别给我了。</strong>”</p>
+</li>
+</ol>
+<h4 id="第二步innodb-存储引擎层icp-核心阶段">第二步：InnoDB 存储引擎层（ICP 核心阶段）
+</h4><ol start="4">
+<li>
+<p><strong>定位游标：</strong> InnoDB 在二级索引 B+ 树上，找到第一个 <code>name</code> 匹配 <code>'王%'</code> 的叶子节点记录（假设是 <code>王五, 10岁, ID:1</code>）。</p>
+</li>
+<li>
+<p><strong>索引内过滤 (ICP Check)：</strong></p>
+<ul>
+<li>
+<p>InnoDB <strong>不急着回表</strong>。</p>
+</li>
+<li>
+<p>它先看手头索引元组里的 <code>age</code>。</p>
+</li>
+<li>
+<p><strong>情况 A（不匹配）：</strong> 发现 <code>age</code> 是 10（不等于 20）。</p>
+<ul>
+<li><strong>动作：</strong> 直接忽略该条记录，指针移向下一条。<strong>（省下一次回表 I/O）</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>情况 B（匹配）：</strong> 指针移向下一条（假设是 <code>王六, 20岁, ID:2</code>）。</p>
+<ul>
+<li>检查 <code>age</code> 是 20。符合条件！准备回表。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="第三步innodb-存储引擎层回表阶段">第三步：InnoDB 存储引擎层（回表阶段）
+</h4><ol start="6">
+<li>
+<p><strong>读取主键：</strong> 拿到符合 ICP 条件的记录的主键 <code>ID:2</code>。</p>
+</li>
+<li>
+<p><strong>回表 (Table Lookup)：</strong> 拿着 <code>ID:2</code> 去**聚簇索引（主键索引）**树里查找。</p>
+</li>
+<li>
+<p><strong>提取行数据：</strong> 从聚簇索引叶子节点里读取<strong>完整的行数据</strong>（包含 <code>name, age, address</code> 等所有列）。</p>
+</li>
+<li>
+<p><strong>返回数据：</strong> 把这行完整数据返回给 Server 层。</p>
+</li>
+</ol>
+<h4 id="第四步server-层最终兜底阶段">第四步：Server 层（最终兜底阶段）
+</h4><ol start="10">
+<li>
+<p><strong>接收数据：</strong> Server 层拿到 <code>王六</code> 的完整行数据。</p>
+</li>
+<li>
+<p><strong>二次确认 (Double Check)：</strong> 尽管 InnoDB 过滤过，Server 层依然会校验 <code>name LIKE '王%'</code> 和 <code>age = 20</code>（流程规范）。</p>
+</li>
+<li>
+<p><strong>补充过滤：</strong> Server 层检查 SQL 中剩下的、没法下推的条件 —— <code>address = '北京'</code>。</p>
+<ul>
+<li>
+<p>如果 <code>王六</code> 的 address 是 &lsquo;上海&rsquo; -&gt; <strong>丢弃</strong>。</p>
+</li>
+<li>
+<p>如果 <code>王六</code> 的 address 是 &lsquo;北京&rsquo; -&gt; <strong>放入结果集</strong>。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>发送结果：</strong> 将最终通过的记录发送给客户端。</p>
+</li>
+</ol>
+<hr>
+<h3 id="3-流程总结图解">3. 流程总结图解
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>步骤</strong></th>
+          <th><strong>所在层级</strong></th>
+          <th><strong>处理内容</strong></th>
+          <th><strong>数据状态 (示例)</strong></th>
+          <th><strong>关键作用</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>1</strong></td>
+          <td><strong>Server</strong></td>
+          <td>生成执行计划</td>
+          <td>指令：<code>Scan idx, Filter age=20</code></td>
+          <td>开启 ICP</td>
+      </tr>
+      <tr>
+          <td><strong>2</strong></td>
+          <td><strong>InnoDB</strong></td>
+          <td><strong>扫描二级索引</strong></td>
+          <td><code>(王五, 10)</code> -&gt; ❌ <strong>直接丢弃</strong><br><code>(王六, 20)</code> -&gt; ✅ <strong>保留</strong></td>
+          <td><strong>ICP 核心：减少回表</strong></td>
+      </tr>
+      <tr>
+          <td><strong>3</strong></td>
+          <td><strong>InnoDB</strong></td>
+          <td><strong>回表 (聚簇索引)</strong></td>
+          <td>拿 ID:2 去找完整行数据</td>
+          <td>最耗时的 I/O 操作</td>
+      </tr>
+      <tr>
+          <td><strong>4</strong></td>
+          <td><strong>Server</strong></td>
+          <td><strong>最终过滤</strong></td>
+          <td>检查 <code>address='北京'</code></td>
+          <td>处理非索引列逻辑</td>
+      </tr>
+  </tbody>
+</table></div>
 
 </section>
 

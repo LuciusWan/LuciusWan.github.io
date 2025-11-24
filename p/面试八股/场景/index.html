@@ -427,6 +427,91 @@
         <li><a href="#lru代码实现">LRU代码实现</a></li>
       </ol>
     </li>
+    <li><a href="#redis的大key的问题怎么解决">Redis的大key的问题怎么解决</a>
+      <ol>
+        <li><a href="#一-什么是-big-key标准定义">一、 什么是 Big Key？（标准定义）</a></li>
+        <li><a href="#二-如何发现-big-key">二、 如何发现 Big Key？</a></li>
+        <li><a href="#三-如何安全地删除-big-key">三、 如何安全地删除 Big Key？</a>
+          <ol>
+            <li><a href="#1-redis-40-及以上版本推荐">1. Redis 4.0 及以上版本（推荐）</a></li>
+            <li><a href="#2-redis-40-以下版本手动渐进式删除">2. Redis 4.0 以下版本（手动渐进式删除）</a></li>
+          </ol>
+        </li>
+        <li><a href="#四-如何彻底解决设计与预防">四、 如何彻底解决（设计与预防）？</a>
+          <ol>
+            <li><a href="#1-拆分split">1. 拆分（Split）</a></li>
+            <li><a href="#2-压缩compression">2. 压缩（Compression）</a></li>
+            <li><a href="#3-剪裁与清洗pruning">3. 剪裁与清洗（Pruning）</a></li>
+            <li><a href="#4-设置过期时间ttl">4. 设置过期时间（TTL）</a></li>
+            <li><a href="#5-存储转移offloading">5. 存储转移（Offloading）</a></li>
+          </ol>
+        </li>
+        <li><a href="#总结对照表">总结对照表</a></li>
+      </ol>
+    </li>
+    <li><a href="#redis是怎么找到key存储在哪个节点上">Redis是怎么找到key存储在哪个节点上？</a>
+      <ol>
+        <li><a href="#一-核心算法crc16--取模">一、 核心算法：CRC16 + 取模</a></li>
+        <li><a href="#二-生动比喻快递分拣中心">二、 生动比喻：快递分拣中心</a></li>
+        <li><a href="#三-客户端是怎么知道去哪个节点的">三、 客户端是怎么知道去哪个节点的？</a>
+          <ol>
+            <li><a href="#1-笨客户端每次都问或问错了-moved-重定向错误">1. 笨客户端（每次都问，或问错了）—— MOVED 重定向错误</a></li>
+            <li><a href="#2-聪明客户端smart-client如-jedis-lettuce-本地缓存">2. 聪明客户端（Smart Client，如 Jedis, Lettuce）—— 本地缓存</a></li>
+          </ol>
+        </li>
+        <li><a href="#四-特殊情况hash-tag强制特定-key-去特定节点">四、 特殊情况：Hash Tag（强制特定 Key 去特定节点）</a></li>
+        <li><a href="#1-没有-hash-tag老实模式">1. <strong>没有 Hash Tag（老实模式）</strong></a></li>
+        <li><a href="#2-有-hash-tag偷懒模式">2. <strong>有 Hash Tag（偷懒模式）</strong></a></li>
+        <li><a href="#小贴士hash-tag使用风险">小贴士（Hash Tag使用风险）</a></li>
+      </ol>
+    </li>
+    <li><a href="#mysql三层b树能存储多少数据">MySQL三层B+树能存储多少数据?</a>
+      <ol>
+        <li><a href="#1-核心预设条件">1. 核心预设条件</a></li>
+        <li><a href="#2-b-树结构拆解">2. B+ 树结构拆解</a>
+          <ol>
+            <li><a href="#第一步计算非叶子节点能存多少索引">第一步：计算非叶子节点能存多少索引？</a></li>
+            <li><a href="#第二步计算叶子节点能存多少数据">第二步：计算叶子节点能存多少数据？</a></li>
+          </ol>
+        </li>
+        <li><a href="#3-三层-b-树容量计算">3. 三层 B+ 树容量计算</a></li>
+        <li><a href="#4-如果数据行很小怎么办">4. 如果数据行很小怎么办？</a></li>
+        <li><a href="#5-现实中的误差fill-factor">5. 现实中的误差（Fill Factor）</a></li>
+      </ol>
+    </li>
+    <li><a href="#事务的四大特性acid">事务的四大特性（ACID）</a></li>
+    <li><a href="#mysql的事务隔离级别">MySQL的事务隔离级别</a>
+      <ol>
+        <li><a href="#并发事务的三大问题">并发事务的三大问题</a></li>
+        <li><a href="#四种隔离级别详解">四种隔离级别详解</a>
+          <ol>
+            <li><a href="#1-读未提交-read-uncommitted">1. 读未提交 (Read Uncommitted)</a></li>
+            <li><a href="#2-读已提交-read-committed---rc">2. 读已提交 (Read Committed - RC)</a></li>
+            <li><a href="#3-可重复读-repeatable-read---rr--mysql-默认">3. 可重复读 (Repeatable Read - RR) —— <strong>MySQL 默认</strong></a></li>
+            <li><a href="#4-串行化-serializable">4. 串行化 (Serializable)</a></li>
+          </ol>
+        </li>
+        <li><a href="#隔离级别对比总结表">隔离级别对比总结表</a></li>
+      </ol>
+    </li>
+    <li><a href="#为什么可重复读的情况下不能避免幻读">为什么可重复读的情况下不能避免幻读</a>
+      <ol>
+        <li><a href="#幻读示例自己修改或插入的数据trx_id会变为自己的可见">幻读示例（自己修改或插入的数据，trx_id会变为自己的，可见）</a>
+          <ol>
+            <li><a href="#阶段-1事务-a-开启生成-readview">阶段 1：事务 A 开启，生成 ReadView</a></li>
+            <li><a href="#阶段-2事务-b-插入并提交">阶段 2：事务 B 插入并提交</a></li>
+            <li><a href="#阶段-3事务-a-第一次查询-id5">阶段 3：事务 A 第一次查询 <code>id=5</code></a></li>
+            <li><a href="#阶段-4事务-a-执行-update关键转折点">阶段 4：事务 A 执行 UPDATE（关键转折点！）</a></li>
+            <li><a href="#阶段-5事务-a-第二次查询-id5">阶段 5：事务 A 第二次查询 <code>id=5</code></a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#readview-到底存了什么">ReadView 到底存了什么？</a>
+      <ol>
+        <li><a href="#mvcc简单的流程">MVCC简单的流程</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -499,7 +584,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 31 分钟
+                    阅读时长: 45 分钟
                 </time>
             </div>
         
@@ -2431,7 +2516,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">DLinkedNode</span><span class="w"> </span><span class="n">prev</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">DLinkedNode</span><span class="w"> </span><span class="n">next</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">public</span><span class="w"> </span><span class="nf">DLinkedNode</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">public</span><span class="w"> </span><span class="nf">DLinkedNode</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">_key</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">_value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_key</span><span class="p">;</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_value</span><span class="p">;}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
@@ -2464,7 +2549,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">put</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">DLinkedNode</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cache</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">key</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">node</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// 如果 key 不存在，创建一个新节点</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">DLinkedNode</span><span class="w"> </span><span class="n">newNode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DLinkedNode</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">);</span><span class="w">
@@ -2473,7 +2558,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// 添加至双向链表的头部</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">addToHead</span><span class="p">(</span><span class="n">newNode</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">size</span><span class="o">++</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">            
+</span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// 如果超出容量，删除双向链表的尾部节点</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">capacity</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">DLinkedNode</span><span class="w"> </span><span class="n">tail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">removeTail</span><span class="p">();</span><span class="w">
@@ -2519,7 +2604,786 @@
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
+</div><h2 id="redis的大key的问题怎么解决">Redis的大key的问题怎么解决
+</h2><p>由于 Redis 是<strong>单线程模型</strong>，处理一个巨大的 Key（无论是读取、写入还是删除）都会占用主线程，导致后续请求排队等待，造成 &ldquo;卡顿&rdquo;。</p>
+<p>以下是系统化的解决思路，分为 <strong>发现</strong>、<strong>删除</strong> 和 <strong>治理（预防）</strong> 三个阶段。</p>
+<hr>
+<h3 id="一-什么是-big-key标准定义">一、 什么是 Big Key？（标准定义）
+</h3><p>通常根据 Value 的大小或元素数量来判定：</p>
+<ul>
+<li>
+<p><strong>String 类型：</strong> Value &gt; 10KB（严格标准）或 1MB（宽松标准）。</p>
+</li>
+<li>
+<p><strong>集合类型（Hash, List, Set, ZSet）：</strong> 元素个数 &gt; 5000 或 10000 个。</p>
+</li>
+</ul>
+<hr>
+<h3 id="二-如何发现-big-key">二、 如何发现 Big Key？
+</h3><p>在治理之前，首先要定位它们。</p>
+<ol>
+<li>
+<p><strong><code>redis-cli --bigkeys</code> 命令：</strong></p>
+<ul>
+<li>
+<p>Redis 自带的工具，会扫描整个 Key 空间。</p>
+</li>
+<li>
+<p><em>缺点：</em> 它是阻塞式的扫描（虽然用了 SCAN），在数据量巨大时可能会轻微影响性能，且只能返回每种类型最大的那个 Key，信息不全。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong><code>MEMORY USAGE key</code> 命令：</strong></p>
+<ul>
+<li>如果你怀疑某个 Key 是大 Key，可以用这个命令查询其实际内存占用。</li>
+</ul>
+</li>
+<li>
+<p><strong>RDB 文件分析（推荐）：</strong></p>
+<ul>
+<li>
+<p>使用工具（如 <code>rdb-tools</code> 或 <code>redis-rdb-tools</code>）离线分析 RDB 备份文件。</p>
+</li>
+<li>
+<p><em>优点：</em> <strong>完全不影响线上 Redis 性能</strong>，生成的报告非常详细（包含 Key 名称、大小、类型）。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>监控告警：</strong></p>
+<ul>
+<li>
+<p>如果在云服务商（如阿里云、AWS）上，通常控制台会有 &ldquo;大 Key 分析&rdquo; 功能。</p>
+</li>
+<li>
+<p>监控网络带宽，如果网络流出流量瞬间飙升，通常是有客户端读取了大 Key。</p>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="三-如何安全地删除-big-key">三、 如何安全地删除 Big Key？
+</h3><p>绝对禁止直接使用 DEL 命令删除大 Key！</p>
+<p>DEL 是同步阻塞操作，删除一个几百 MB 的 Key 可能会阻塞 Redis 几秒钟，导致故障转移或请求超时。</p>
+<h4 id="1-redis-40-及以上版本推荐">1. Redis 4.0 及以上版本（推荐）
+</h4><p>使用 <strong><code>UNLINK</code></strong> 命令代替 <code>DEL</code>。</p>
+<ul>
+<li><strong>原理：</strong> <code>UNLINK</code> 只是将 Key 从元数据中解绑（逻辑删除），真正的内存回收操作会由后台线程（Lazy Free）异步执行，<strong>不会阻塞主线程</strong>。</li>
+</ul>
+<h4 id="2-redis-40-以下版本手动渐进式删除">2. Redis 4.0 以下版本（手动渐进式删除）
+</h4><p>如果版本较老，必须手动分批删除，避免阻塞：</p>
+<ul>
+<li>
+<p><strong>Hash:</strong> 使用 <code>HSCAN</code> 每次扫描一部分字段，然后用 <code>HDEL</code> 删除。</p>
+</li>
+<li>
+<p><strong>List:</strong> 使用 <code>LPOP</code>/<code>RPOP</code> 或 <code>LTRIM</code> 分批删除。</p>
+</li>
+<li>
+<p><strong>Set:</strong> 使用 <code>SSCAN</code> 扫描，<code>SREM</code> 删除。</p>
+</li>
+<li>
+<p><strong>ZSet:</strong> 使用 <code>ZREMRANGEBYRANK</code> 分批删除。</p>
+</li>
+</ul>
+<hr>
+<h3 id="四-如何彻底解决设计与预防">四、 如何彻底解决（设计与预防）？
+</h3><p>删除只是治标，只有修改业务设计才能治本。</p>
+<h4 id="1-拆分split">1. 拆分（Split）
+</h4><p>将一个大 Key 拆分为多个小 Key。</p>
+<ul>
+<li>
+<p><strong>场景：</strong> 一个 Hash 存储了 100 万个用户对象。</p>
+</li>
+<li>
+<p><strong>方案：</strong> 使用 Hash 取模设计。例如定义 <code>hash_0</code> 到 <code>hash_99</code> 共100个 Bucket。</p>
+<ul>
+<li>
+<p>存取时：<code>id % 100</code> 决定存入哪个 Key。</p>
+</li>
+<li>
+<p>这样每个 Key 的大小就只有原来的 1/100。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-压缩compression">2. 压缩（Compression）
+</h4><p>对于 String 类型的长文本（如 JSON、XML），使用压缩算法。</p>
+<ul>
+<li><strong>方案：</strong> 写入 Redis 前使用 Gzip、Snappy 或 Protobuf 进行压缩/序列化。通常能减少 50%-80% 的体积。</li>
+</ul>
+<h4 id="3-剪裁与清洗pruning">3. 剪裁与清洗（Pruning）
+</h4><p>不要把 Redis 当数据库用，只存 &ldquo;热点数据&rdquo;。</p>
+<ul>
+<li>
+<p><strong>场景：</strong> 一个 List 存了用户的历史浏览记录，长达几万条。</p>
+</li>
+<li>
+<p><strong>方案：</strong> 业务上只需要展示最近 100 条。在写入时维持定长队列（<code>LTRIM</code>），或者定期清理过期数据。</p>
+</li>
+</ul>
+<h4 id="4-设置过期时间ttl">4. 设置过期时间（TTL）
+</h4><ul>
+<li>防止 &ldquo;僵尸&rdquo; 大 Key 长期占用内存。给 Key 设置合理的 TTL，让其自动过期删除（注意：Redis 的自动过期在 4.0 之前删除大 Key 也可能阻塞，4.0+ 配置 <code>lazyfree-lazy-expire yes</code> 可解）。</li>
+</ul>
+<h4 id="5-存储转移offloading">5. 存储转移（Offloading）
+</h4><ul>
+<li>
+<p>如果数据本身就是很大（例如图片二进制、长文章），且必须完整读取，那么它<strong>不适合</strong>存入 Redis。</p>
+</li>
+<li>
+<p><strong>方案：</strong> 存入 S3、MongoDB 或 CDN，Redis 只存该数据的 URL 或索引 ID。</p>
+</li>
+</ul>
+<hr>
+<h3 id="总结对照表">总结对照表
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>策略</strong></th>
+          <th><strong>适用场景</strong></th>
+          <th><strong>关键手段</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>发现</strong></td>
+          <td>线上排查 / 离线分析</td>
+          <td><code>redis-cli --bigkeys</code>, RDB Tools</td>
+      </tr>
+      <tr>
+          <td><strong>应急处理</strong></td>
+          <td>此时此刻必须删除</td>
+          <td><strong><code>UNLINK</code></strong> (异步删除)</td>
+      </tr>
+      <tr>
+          <td><strong>架构优化</strong></td>
+          <td>集合元素过多</td>
+          <td><strong>拆分</strong> (Sharding/Bucketing)</td>
+      </tr>
+      <tr>
+          <td><strong>架构优化</strong></td>
+          <td>文本 Value 过大</td>
+          <td><strong>压缩</strong> (Gzip/Snappy)</td>
+      </tr>
+      <tr>
+          <td><strong>架构优化</strong></td>
+          <td>无效数据堆积</td>
+          <td><strong>定期清理</strong> (LTRIM) / 设置 TTL</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="redis是怎么找到key存储在哪个节点上">Redis是怎么找到key存储在哪个节点上？
+</h2><p>Redis 在集群模式（Redis Cluster）下，并不是直接把 Key 存到节点上的，而是引入了一个中间层：<strong>哈希槽 (Hash Slot)</strong>。</p>
+<p>简单来说，Redis 集群<strong>预分好了一万多个坑位（Slot）</strong>，所有的 Key 都要先算一下自己该去哪个坑，而具体的节点（Node）只是负责管理这些坑位。</p>
+<p>以下是具体的寻址过程，分为 <strong>理论计算</strong> 和 <strong>客户端交互</strong> 两个层面。</p>
+<hr>
+<h3 id="一-核心算法crc16--取模">一、 核心算法：CRC16 + 取模
+</h3><p>Redis Cluster 固定的将数据空间划分为 <strong>16384</strong> 个哈希槽（编号 0 ~ 16383）。</p>
+<p>当你要存储一个 Key（比如 <code>set name lucius</code>）时，Redis 会通过以下两步计算出这个 Key 属于哪个槽：</p>
+<ol>
+<li>
+<p><strong>计算哈希值</strong>：使用 <strong>CRC16</strong> 算法对 Key 进行计算，得到一个整数。</p>
+</li>
+<li>
+<p><strong>取模运算</strong>：将得到的整数对 16384 取模。</p>
+</li>
+</ol>
+<p>公式：</p>
+$$
+Slot = CRC16(key) \pmod{16384}
+$$<p>计算出 Slot 编号（比如 5000）后，Redis 只需要查看<strong>当前集群配置中，编号 5000 的槽是由哪个节点负责的</strong>，就能确定数据在哪个节点。</p>
+<hr>
+<h3 id="二-生动比喻快递分拣中心">二、 生动比喻：快递分拣中心
+</h3><p>为了方便理解，我们可以把 Redis Cluster 想象成一个<strong>巨大的物流分拣系统</strong>：</p>
+<ol>
+<li>
+<p><strong>货物 (Key)</strong>：你要存的数据。</p>
+</li>
+<li>
+<p><strong>快递筐 (Hash Slot)</strong>：系统里一共有 <strong>16384 个固定的筐子</strong>，编号 0-16383。</p>
+</li>
+<li>
+<p><strong>货车 (Node)</strong>：实际负责运货的物理服务器（比如有 3 台服务器 A、B、C）。</p>
+</li>
+</ol>
+<p><strong>流程是这样的：</strong></p>
+<ul>
+<li>
+<p><strong>分配规则</strong>：</p>
+<ul>
+<li>
+<p>货车 A 负责运送 0 ~ 5500 号筐子。</p>
+</li>
+<li>
+<p>货车 B 负责运送 5501 ~ 11000 号筐子。</p>
+</li>
+<li>
+<p>货车 C 负责运送 11001 ~ 16383 号筐子。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>存货过程</strong>：</p>
+<ul>
+<li>
+<p>来了一个包裹 <code>name</code>。</p>
+</li>
+<li>
+<p>系统算一下（CRC16），发现它应该进 <strong>5000 号筐子</strong>。</p>
+</li>
+<li>
+<p>查表发现 5000 号筐子归 <strong>货车 A</strong> 管。</p>
+</li>
+<li>
+<p>于是包裹被丢进货车 A。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>为什么要这么设计？</p>
+<p>如果因为业务繁忙，你要加一辆货车 D，你不需要把所有包裹重新拆包计算一遍。你只需要把 货车 A 上的一部分筐子（比如 0~1000号）搬到 货车 D 上即可。</p>
+<p>这就是 Redis Cluster 扩容方便的原因：数据迁移的单位是“槽”，而不是单个 Key。</p>
+<hr>
+<h3 id="三-客户端是怎么知道去哪个节点的">三、 客户端是怎么知道去哪个节点的？
+</h3><p>虽然服务器知道槽位映射关系，但**客户端（比如你的 Java 代码）**是怎么知道的呢？</p>
+<p>通常有两种情况：</p>
+<h4 id="1-笨客户端每次都问或问错了-moved-重定向错误">1. 笨客户端（每次都问，或问错了）—— MOVED 重定向错误
+</h4><p>假设客户端不知道 Key <code>name</code> 在哪个节点，它随便连了一个节点（比如节点 B）发送命令：<code>GET name</code>。</p>
+<ol>
+<li>
+<p>节点 B 收到命令，计算 <code>CRC16('name') % 16384</code>，发现属于 Slot 5000。</p>
+</li>
+<li>
+<p>节点 B 查自己的小本本，发现 Slot 5000 归 <strong>节点 A</strong> 管。</p>
+</li>
+<li>
+<p>节点 B 不会帮客户端去取数据（因为那是代理做的事），而是直接返回一个错误：</p>
+<p>MOVED 5000 192.168.1.100:6379</p>
+<p>(翻译：哥们你找错人了，这个 Key 归 5000 号槽管，那个槽在 IP 为 &hellip; 的节点上，你自己去找它吧。)</p>
+</li>
+<li>
+<p>客户端收到报错，根据新地址，重新去连接节点 A。</p>
+</li>
+</ol>
+<h4 id="2-聪明客户端smart-client如-jedis-lettuce-本地缓存">2. 聪明客户端（Smart Client，如 Jedis, Lettuce）—— 本地缓存
+</h4><p>为了性能，现在的客户端（如 Java 的 Jedis、Lettuce）在启动时，会先连接集群，把 <strong>Slot -&gt; Node 的映射表</strong> 下载下来缓存在本地内存里。</p>
+<ol>
+<li>
+<p>你要 <code>GET name</code>。</p>
+</li>
+<li>
+<p>Java 客户端在本地算一下：Slot = 5000。</p>
+</li>
+<li>
+<p>查本地缓存：Slot 5000 -&gt; 节点 A。</p>
+</li>
+<li>
+<p>直接连接节点 A 发送请求。</p>
+<p>这避免了额外的网络跳转，效率最高。</p>
+</li>
+</ol>
+<hr>
+<h3 id="四-特殊情况hash-tag强制特定-key-去特定节点">四、 特殊情况：Hash Tag（强制特定 Key 去特定节点）
+</h3><p>面试高频考点：</p>
+<p>由于 CRC16 算法是随机的，user:1001 和 order:1001 很大概率会被分到不同的节点上。</p>
+<p>这就导致一个问题：如果你想在一个事务（Multi/Exec）里同时操作这两个 Key，或者用 Lua 脚本同时处理它们，会报错！ 因为 Redis 要求事务或脚本涉及的所有 Key 必须在同一个节点上。</p>
+<p>解决方案：Hash Tag {}</p>
+<p>你可以在 Key 中使用花括号 {}。Redis 计算 Hash 时，如果发现 Key 里有 {}，就只计算 {} 内部字符串的 Hash 值。</p>
+<ul>
+<li>
+<p>Key 1: <code>user:{1001}</code> -&gt; 计算 <code>CRC16(&quot;1001&quot;)</code></p>
+</li>
+<li>
+<p>Key 2: <code>order:{1001}</code> -&gt; 计算 <code>CRC16(&quot;1001&quot;)</code></p>
+</li>
+</ul>
+<p>因为 <code>{}</code> 里的内容一样，算出来的 Slot 肯定一样，它们就一定会落到同一个节点上。</p>
+<p>没有 Hash Tag 之前，Redis 的分拣员（CRC16 算法）是非常<strong>老实</strong>的，它会把 Key 的每一个字符都算进去。</p>
+<h3 id="1-没有-hash-tag老实模式">1. <strong>没有 Hash Tag（老实模式）</strong>
+</h3><p>分拣员看到什么就算什么，<strong>全名参与计算</strong>。</p>
+<ul>
+<li>
+<p><strong>Key A</strong>: <code>user:1001</code></p>
+<ul>
+<li>
+<p><strong>算法输入</strong>：<code>&quot;user:1001&quot;</code> (9 个字符)</p>
+</li>
+<li>
+<p><strong>结果</strong>：哈希值 X $\rightarrow$ 对应 <strong>Slot 500</strong></p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Key B</strong>: <code>order:1001</code></p>
+<ul>
+<li>
+<p><strong>算法输入</strong>：<code>&quot;order:1001&quot;</code> (10 个字符)</p>
+</li>
+<li>
+<p><strong>结果</strong>：哈希值 Y $\rightarrow$ 对应 <strong>Slot 8000</strong></p>
+</li>
+</ul>
+</li>
+</ul>
+<p>因为 <code>&quot;user:1001&quot;</code> 和 <code>&quot;order:1001&quot;</code> 是完全不同的两个字符串，算出来的结果自然千差万别，所以它们被分到了不同的节点。</p>
+<hr>
+<h3 id="2-有-hash-tag偷懒模式">2. <strong>有 Hash Tag（偷懒模式）</strong>
+</h3><p>分拣员一旦看到 <code>{}</code>，就<strong>只算花括号里面的内容</strong>，<strong>外面的前缀后缀全当看不见</strong>。</p>
+<ul>
+<li>
+<p><strong>Key A</strong>: <code>user:{1001}</code></p>
+<ul>
+<li>
+<p><strong>算法输入</strong>：<code>&quot;1001&quot;</code> (只算这 4 个数字)</p>
+</li>
+<li>
+<p><strong>结果</strong>：哈希值 Z $\rightarrow$ 对应 <strong>Slot 300</strong></p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Key B</strong>: <code>order:{1001}</code></p>
+<ul>
+<li>
+<p><strong>算法输入</strong>：<code>&quot;1001&quot;</code> (还是只算这 4 个数字)</p>
+</li>
+<li>
+<p><strong>结果</strong>：哈希值 Z $\rightarrow$ 对应 <strong>Slot 300</strong></p>
+</li>
+</ul>
+</li>
+</ul>
+<p>因为<strong>输入完全一样</strong>（都是 <code>&quot;1001&quot;</code>），所以<strong>算出来的 Slot 编号绝对一样</strong>，这两个 Key 就必定会去同一个节点“团聚”。</p>
+<h3 id="小贴士hash-tag使用风险">小贴士（Hash Tag使用风险）
+</h3><p>虽然 Hash Tag 很好用，但<strong>千万不要滥用</strong>。</p>
+<p>如果你把几百万个 Key 都加上同一个 Hash Tag（比如 <code>user:{beijing}</code>），那么这几百万个 Key 算出来的 Slot 全都一样，它们会全部挤到<strong>同一台机器</strong>上。</p>
+<p><strong>后果</strong>：
+这就导致了<strong>数据倾斜（Data Skew）</strong>—— 集群里的一台机器忙死（内存爆满、CPU 飙升），而其他机器闲死。</p>
+<h2 id="mysql三层b树能存储多少数据">MySQL三层B+树能存储多少数据?
+</h2><p>但在通常的估算标准下（主键为 BigInt，单行数据约 1KB），<strong>三层 B+ 树大约能存储 2000 万（2000w）条数据</strong>。</p>
+<h3 id="1-核心预设条件">1. 核心预设条件
+</h3><p>MySQL 的 InnoDB 存储引擎有以下几个默认属性，这是计算的基础：</p>
+<ul>
+<li>
+<p><strong>页大小 (Page Size)</strong>：默认是 <strong>16KB</strong> ($16384$ 字节)。</p>
+</li>
+<li>
+<p><strong>指针大小</strong>：InnoDB 页指针为 <strong>6 字节</strong>。</p>
+</li>
+<li>
+<p><strong>主键类型</strong>：通常假设为 <code>BigInt</code> (<strong>8 字节</strong>)。如果用 <code>Int</code> (<strong>4 字节</strong>)，存的更多。</p>
+</li>
+</ul>
+<h3 id="2-b-树结构拆解">2. B+ 树结构拆解
+</h3><p>B+ 树分为<strong>非叶子节点</strong>（存索引和指针）和<strong>叶子节点</strong>（存真实数据）。</p>
+<h4 id="第一步计算非叶子节点能存多少索引">第一步：计算非叶子节点能存多少索引？
+</h4><p>非叶子节点不存数据，只存“主键 + 指针”。</p>
+<ul>
+<li>
+<p><strong>单个索引项大小</strong> = 主键大小 (8B) + 指针大小 (6B) = <strong>14 字节</strong>。</p>
+</li>
+<li>
+<p><strong>单页可存索引数</strong> = 页大小 / 索引项大小 = $16384 / 14 \approx 1170$ 个。</p>
+</li>
+</ul>
+<p>这意味着，一个非叶子节点可以指向 <strong>1170</strong> 个下级节点。</p>
+<h4 id="第二步计算叶子节点能存多少数据">第二步：计算叶子节点能存多少数据？
+</h4><p>叶子节点存储真实的行数据。这里变量最大的就是“一行数据的大小”。</p>
+<ul>
+<li>
+<p><strong>假设 1</strong>：一行数据大小为 <strong>1KB</strong>（比较常见的预设）。</p>
+</li>
+<li>
+<p><strong>单页可存行数</strong> = $16384 / 1024 = 16$ 条。</p>
+</li>
+</ul>
+<h3 id="3-三层-b-树容量计算">3. 三层 B+ 树容量计算
+</h3><p>结构如下：</p>
+<ol>
+<li>
+<p><strong>根节点（第1层）</strong>：非叶子节点，指向 1170 个第2层节点。</p>
+</li>
+<li>
+<p><strong>分支节点（第2层）</strong>：非叶子节点，每个节点指向 1170 个叶子节点。总共有 $1170 \times 1170$ 个叶子节点。</p>
+</li>
+<li>
+<p><strong>叶子节点（第3层）</strong>：存数据。</p>
+</li>
+</ol>
+<p>计算公式：</p>
+<p>$\text{总记录数} = (\text{根节点指针数}) \times (\text{第二层指针数}) \times (\text{叶子节点单页行数})$</p>
+<p>代入数值（行数据 1KB）：</p>
+<p>$1170 \times 1170 \times 16 \approx \mathbf{21,902,400}$</p>
+<blockquote>
+<p><strong>结论 1：</strong> 如果一行数据是 1KB，三层能存约 <strong>2190 万</strong> 条数据。</p>
+</blockquote>
+<hr>
+<h3 id="4-如果数据行很小怎么办">4. 如果数据行很小怎么办？
+</h3><p>有些表可能只有几个字段，一行数据可能只有 <strong>100 字节</strong>。如果不算页分裂等损耗：</p>
+<ul>
+<li>
+<p><strong>单页可存行数</strong> = $16384 / 100 \approx 160$ 条。</p>
+</li>
+<li>
+<p><strong>总容量</strong> = $1170 \times 1170 \times 160 \approx \mathbf{2.19 亿}$。</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>结论 2：</strong> 数据行越小，三层 B+ 树能存的数据就越多，甚至能过亿。</p>
+</blockquote>
+<hr>
+<h3 id="5-现实中的误差fill-factor">5. 现实中的误差（Fill Factor）
+</h3><p>上面的计算是理论最大值（所有页都填满 100%）。但在实际运行中：</p>
+<ol>
+<li>
+<p><strong>页头页尾开销</strong>：每个页有 Header、Directory Slot 等元数据，大约占用几十到几百字节，不能全用来存数据。</p>
+</li>
+<li>
+<p><strong>页填充率</strong>：InnoDB 不会把页填得满满当当，为了减少页分裂，通常填充率在 <strong>1/2 到 15/16</strong> 之间。如果频繁随机插入，页碎片化会导致填充率下降。</p>
+</li>
+</ol>
+<p>如果按照 <strong>50%-75%</strong> 的利用率折算，通常认为三层树的舒适区确实就在 <strong>2000万</strong> 左右。一旦超过这个数量级，B+ 树可能分裂出第四层，导致磁盘 I/O 增加，查询性能轻微下降。</p>
+<h2 id="事务的四大特性acid">事务的四大特性（ACID）
+</h2><p>为了保证上述逻辑的严密性，数据库理论规定事务必须满足 ACID 四个特性，这经常在面试中被问到：</p>
+<ol>
+<li>
+<p><strong>A - 原子性 (Atomicity)</strong>：</p>
+<ul>
+<li>
+<p><strong>核心</strong>：要么全做，要么全不做。</p>
+</li>
+<li>
+<p><em>实现靠 Undo Log（回滚日志）。</em></p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>C - 一致性 (Consistency)</strong>：</p>
+<ul>
+<li><strong>核心</strong>：事务前后，数据必须符合逻辑（比如转账前后，两人的钱加起来总数不变）。</li>
+</ul>
+</li>
+<li>
+<p><strong>I - 隔离性 (Isolation)</strong>：</p>
+<ul>
+<li>
+<p><strong>核心</strong>：多个事务并发执行时，互不干扰（这就是我们之前讨论的 RR、RC 隔离级别）。</p>
+</li>
+<li>
+<p><em>实现靠 锁 + MVCC。</em></p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>D - 持久性 (Durability)</strong>：</p>
+<ul>
+<li>
+<p><strong>核心</strong>：事务一旦提交，数据就是永久的，哪怕下一秒服务器爆炸，重启后数据依然在。</p>
+</li>
+<li>
+<p><em>实现靠 Redo Log（重做日志）。</em></p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="mysql的事务隔离级别">MySQL的事务隔离级别
+</h2><h3 id="并发事务的三大问题">并发事务的三大问题
+</h3><ol>
+<li>
+<p><strong>脏读 (Dirty Read)</strong>：事务 A 读到了事务 B <strong>未提交</strong>的数据。如果 B 回滚，A 读到的就是脏数据。</p>
+</li>
+<li>
+<p><strong>不可重复读 (Non-repeatable Read)</strong>：事务 A 在同一个事务中两次读取同一行数据，结果不一样。这是因为在两次读取之间，事务 B <strong>修改或删除</strong>了该数据并提交了。</p>
+</li>
+<li>
+<p><strong>幻读 (Phantom Read)</strong>：事务 A 在同一个事务中两次查询同一个范围，第二次发现多了一些数据。这是因为在两次查询之间，事务 B <strong>插入</strong>了新数据并提交了。</p>
+</li>
+</ol>
+<h3 id="四种隔离级别详解">四种隔离级别详解
+</h3><p>按照隔离程度从低到高排序：</p>
+<h4 id="1-读未提交-read-uncommitted">1. 读未提交 (Read Uncommitted)
+</h4><ul>
+<li>
+<p><strong>描述</strong>：这是最低的隔离级别。一个事务可以读取到另一个事务<strong>未提交</strong>的修改。</p>
+</li>
+<li>
+<p><strong>现象</strong>：相当于“裸奔”，没有任何隔离。</p>
+</li>
+<li>
+<p><strong>存在问题</strong>：脏读、不可重复读、幻读都会发生。</p>
+</li>
+<li>
+<p><strong>应用场景</strong>：实际开发中极少使用。</p>
+</li>
+</ul>
+<h4 id="2-读已提交-read-committed---rc">2. 读已提交 (Read Committed - RC)
+</h4><ul>
+<li>
+<p><strong>描述</strong>：一个事务只能读取到已经<strong>提交</strong>的数据。</p>
+</li>
+<li>
+<p><strong>实现原理</strong>：<strong>MVCC（多版本并发控制）</strong>。每次执行 <code>SELECT</code> 语句时，都会重新生成一个 Read View（一致性视图）。</p>
+</li>
+<li>
+<p><strong>存在问题</strong>：解决了“脏读”，但可能发生“不可重复读”（因为每次 Select 都生成新视图，如果中间有人提交修改，你就能看到）。</p>
+</li>
+<li>
+<p><strong>备注</strong>：这是大多数主流数据库（如 Oracle, PostgreSQL, SQL Server）的默认隔离级别，但不是 MySQL 的默认值。</p>
+</li>
+</ul>
+<h4 id="3-可重复读-repeatable-read---rr--mysql-默认">3. 可重复读 (Repeatable Read - RR) —— <strong>MySQL 默认</strong>
+</h4><ul>
+<li>
+<p><strong>描述</strong>：确保在同一个事务中，多次读取同样的数据结果是一样的。</p>
+</li>
+<li>
+<p><strong>实现原理</strong>：<strong>MVCC</strong>。与 RC 不同的是，RR 级别下，Read View 是在<strong>事务启动后的第一次查询</strong>时生成的，之后一直复用这个视图。</p>
+</li>
+<li>
+<p><strong>存在问题</strong>：解决了“脏读”和“不可重复读”。</p>
+</li>
+<li>
+<p><strong>关于幻读</strong>：在标准 SQL 定义中，RR 是无法解决幻读的。但是，<strong>MySQL 的 InnoDB 引擎通过 MVCC + Next-Key Lock 技术，在 RR 级别下很大程度上避免了幻读</strong>（正如我上一个回答所解释的）。</p>
+</li>
+</ul>
+<h4 id="4-串行化-serializable">4. 串行化 (Serializable)
+</h4><ul>
+<li>
+<p><strong>描述</strong>：最高的隔离级别。它强制事务串行执行，通过强制对读取的数据行加锁（共享锁），避免了并发冲突。</p>
+</li>
+<li>
+<p><strong>存在问题</strong>：解决了所有问题（脏读、不可重复读、幻读）。</p>
+</li>
+<li>
+<p><strong>代价</strong>：并发性能极差，容易导致大量的超时和锁竞争。</p>
+</li>
+<li>
+<p><strong>应用场景</strong>：只有在对数据一致性要求极高且并发量很小的场景下才会使用。</p>
+</li>
+</ul>
+<hr>
+<h3 id="隔离级别对比总结表">隔离级别对比总结表
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>隔离级别</strong></th>
+          <th><strong>脏读</strong></th>
+          <th><strong>不可重复读</strong></th>
+          <th><strong>幻读</strong></th>
+          <th><strong>性能</strong></th>
+          <th><strong>备注</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Read Uncommitted</strong></td>
+          <td>✅ 可能</td>
+          <td>✅ 可能</td>
+          <td>✅ 可能</td>
+          <td>极高</td>
+          <td>极少使用</td>
+      </tr>
+      <tr>
+          <td><strong>Read Committed</strong> (RC)</td>
+          <td>❌ 无</td>
+          <td>✅ 可能</td>
+          <td>✅ 可能</td>
+          <td>高</td>
+          <td>Oracle/PG 默认</td>
+      </tr>
+      <tr>
+          <td><strong>Repeatable Read</strong> (RR)</td>
+          <td>❌ 无</td>
+          <td>❌ 无</td>
+          <td>❌ (大部分解决)</td>
+          <td>中</td>
+          <td><strong>MySQL 默认</strong></td>
+      </tr>
+      <tr>
+          <td><strong>Serializable</strong></td>
+          <td>❌ 无</td>
+          <td>❌ 无</td>
+          <td>❌ 无</td>
+          <td>低</td>
+          <td>强制排队，性能差</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="为什么可重复读的情况下不能避免幻读">为什么可重复读的情况下不能避免幻读
+</h2><p><strong>数据在被修改（Update/Delete）的时候，必须基于“最新”的版本进行，而不能基于“历史”版本。</strong></p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>时间点</strong></th>
+          <th><strong>事务 A</strong></th>
+          <th><strong>事务 B</strong></th>
+          <th><strong>现象/旁白</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td><code>BEGIN;</code> <br> <code>SELECT * FROM users WHERE id = 5;</code> <br> <strong>结果：Empty (空)</strong></td>
+          <td></td>
+          <td>事务 A 确认 id=5 还没人用。</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td></td>
+          <td><code>BEGIN;</code> <br> <code>INSERT INTO users (id, name) VALUES (5, '小明');</code> <br> <code>COMMIT;</code></td>
+          <td>事务 B 抢先插入了 id=5 并提交。</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td><code>SELECT * FROM users WHERE id = 5;</code> <br> <strong>结果：Empty (空)</strong></td>
+          <td></td>
+          <td><strong>MVCC 生效</strong>。事务 A 依然看不到小明。一切看似正常。</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td><code>UPDATE users SET name = '被修改' WHERE id = 5;</code> <br> <strong>结果：Query OK, 1 row affected</strong></td>
+          <td></td>
+          <td><strong>关键点来了！</strong> <br> Update 是“当前读”，它能看到最新的提交。它不仅修改成功了，还把这条记录的“版本号”改成了事务 A 自己的。</td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td><code>SELECT * FROM users WHERE id = 5;</code> <br> <strong>结果：id=5, name=&lsquo;被修改&rsquo;</strong></td>
+          <td></td>
+          <td><strong>【幻读发生】</strong><br> 事务 A 吓死了：“我刚才查还没有 id=5，怎么我一更新，它就突然冒出来，还被我改了？”</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>注意，在第二步的时候，事务2已经插入并且提交了，这个时候数据库的内容发生了变化，后续步骤4进行update的时候就得根据最新的数据进行update，然后更新成功，并且，</p>
+<p>假设：</p>
+<ul>
+<li>
+<p><strong>事务 A</strong> 的 ID = <strong>100</strong>。</p>
+</li>
+<li>
+<p><strong>事务 B</strong> 的 ID = <strong>200</strong>。</p>
+</li>
+</ul>
+<h3 id="幻读示例自己修改或插入的数据trx_id会变为自己的可见">幻读示例（自己修改或插入的数据，trx_id会变为自己的，可见）
+</h3><h4 id="阶段-1事务-a-开启生成-readview">阶段 1：事务 A 开启，生成 ReadView
+</h4><ul>
+<li>
+<p>事务 A 执行第一条 SELECT。</p>
+</li>
+<li>
+<p>生成 ReadView，记录当前活跃事务。此时系统里只有 A。</p>
+</li>
+<li>
+<p><strong>ReadView 只要生成了，在 RR 级别下就永远不会变了。</strong></p>
+</li>
+</ul>
+<h4 id="阶段-2事务-b-插入并提交">阶段 2：事务 B 插入并提交
+</h4><ul>
+<li>
+<p>事务 B 插入 <code>id=5</code>。</p>
+</li>
+<li>
+<p>这行数据现在的状态是：<code>{id: 5, name: '小明', trx_id: 200}</code>。</p>
+</li>
+<li>
+<p>事务 B 提交。</p>
+</li>
+</ul>
+<h4 id="阶段-3事务-a-第一次查询-id5">阶段 3：事务 A 第一次查询 <code>id=5</code>
+</h4><ul>
+<li>
+<p>事务 A 拿着 ReadView 来看这行数据。</p>
+</li>
+<li>
+<p>发现数据的 <code>trx_id</code> 是 <strong>200</strong>。</p>
+</li>
+<li>
+<p>ReadView 判断：200 是在我（100）开启之后才进来的“将来的人”。</p>
+</li>
+<li>
+<p><strong>结论</strong>：不可见。</p>
+</li>
+</ul>
+<h4 id="阶段-4事务-a-执行-update关键转折点">阶段 4：事务 A 执行 UPDATE（关键转折点！）
+</h4><ul>
+<li>
+<p><strong>动作</strong>：<code>UPDATE users SET name = '被修改' WHERE id = 5;</code></p>
+</li>
+<li>
+<p><strong>当前读</strong>：正如之前所说，UPDATE 也是一种读，但它是“当前读”。它不看 ReadView，直接看物理磁盘。它看到了 <code>trx_id=200</code> 的数据（因为 B 已经提交，物理上存在）。</p>
+</li>
+<li>
+<p><strong>修改数据</strong>：事务 A 把数据改了。</p>
+</li>
+<li>
+<p><strong>打标签</strong>：这是最重要的一步！<strong>事务 A 把这行数据的 <code>trx_id</code> 更新成了自己的 ID（100）。</strong></p>
+</li>
+<li>
+<p>现在的行数据变成了：<code>{id: 5, name: '被修改', trx_id: 100}</code>。</p>
+</li>
+</ul>
+<h4 id="阶段-5事务-a-第二次查询-id5">阶段 5：事务 A 第二次查询 <code>id=5</code>
+</h4><ul>
+<li>
+<p>事务 A 再次执行 SELECT。</p>
+</li>
+<li>
+<p><strong>ReadView 变了吗？</strong> 没有，还是那个旧的 ReadView。</p>
+</li>
+<li>
+<p><strong>数据变了吗？</strong> 变了。</p>
+</li>
+<li>
+<p>事务 A 再次检查可见性：</p>
+<ul>
+<li>
+<p>这行数据的 <code>trx_id</code> 是多少？ -&gt; <strong>100</strong>。</p>
+</li>
+<li>
+<p>当前事务 A 的 ID 是多少？ -&gt; <strong>100</strong>。</p>
+</li>
+<li>
+<p><strong>触发规则 1</strong>：<code>trx_id</code> 等于我自己。</p>
+</li>
+<li>
+<p><strong>结论</strong>：<strong>可见！</strong></p>
+</li>
+</ul>
+</li>
+</ul>
+<p>你之所以能看到，是因为你通过 <code>UPDATE</code> 操作，把这行数据的所有权**“抢”**过来了。</p>
+<ul>
+<li>
+<p><strong>修改前</strong>：这行数据属于事务 B（<code>trx_id=200</code>），对你是“未来数据”，不可见。</p>
+</li>
+<li>
+<p><strong>修改后</strong>：这行数据属于事务 A（<code>trx_id=100</code>），对你是“自家数据”，<strong>无条件可见</strong>。</p>
+</li>
+</ul>
+<h2 id="readview-到底存了什么">ReadView 到底存了什么？
+</h2><p>当你第一次执行 <code>SELECT * FROM user</code> 时，生成的 ReadView 是一张<strong>黑名单</strong>，长这样：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;m_ids&#34;</span><span class="p">:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">],</span>   <span class="c1">// 当前全数据库里，所有还没提交的事务 ID
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nt">&#34;min_trx_id&#34;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>          <span class="c1">// 最小活跃 ID
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nt">&#34;max_trx_id&#34;</span><span class="p">:</span> <span class="mi">103</span>           <span class="c1">// 下一个要分配的 ID（水位线）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
 </div>
+</div><p><strong>请注意：</strong> 这个列表里完全没有提 <code>user</code> 表或 <code>student</code> 表的名字。它只规定了<strong>谁是老数据（可见），谁是活跃数据（不可见）</strong>。</p>
+<p>这个规则对<strong>全库所有表</strong>通用。</p>
+<h3 id="mvcc简单的流程">MVCC简单的流程
+</h3><p>事务在第一次select的时候会去检查当前活跃事务，然后会查看下一个要分配的事务id，然后记录下来，后面查询的时候会先去查询当前行数据的trx_id，查看数据的trx_id如果小于当前事务的id就应该<strong>直接使用这条数据</strong>，如果大于自己的事务id，就去查undo log，顺着undolog版本链找到真正自己能看到的数据，然后修改查询得到的数据。</p>
+
 </section>
 
 

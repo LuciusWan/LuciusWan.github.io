@@ -6692,7 +6692,8 @@ InnoDB &lt;strong&gt;不能&lt;/strong&gt;直接跳到 &lt;code&gt;age=20&lt;/co
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;SQL 语句：&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;SQL&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
@@ -6701,11 +6702,11 @@ InnoDB &lt;strong&gt;不能&lt;/strong&gt;直接跳到 &lt;code&gt;age=20&lt;/co
 &lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
 &lt;td class=&#34;lntd&#34;&gt;
-&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;SELECT * FROM user 
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;WHERE name LIKE &amp;#39;王%&amp;#39;    -- 索引范围查询 (Range)
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  AND age = 20          -- 索引下推过滤 (ICP)
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  AND address = &amp;#39;北京&amp;#39;;  -- 普通条件 (Server 层过滤)
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;SELECT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;user&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;WHERE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;LIKE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;王%&amp;#39;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;-- 索引范围查询 (Range)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;AND&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;age&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;20&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;          &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;-- 索引下推过滤 (ICP)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;AND&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;address&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;北京&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;-- 普通条件 (Server 层过滤)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;/li&gt;
 &lt;/ul&gt;
@@ -6834,6 +6835,74 @@ InnoDB &lt;strong&gt;不能&lt;/strong&gt;直接跳到 &lt;code&gt;age=20&lt;/co
           &lt;td&gt;&lt;strong&gt;最终过滤&lt;/strong&gt;&lt;/td&gt;
           &lt;td&gt;检查 &lt;code&gt;address=&#39;北京&#39;&lt;/code&gt;&lt;/td&gt;
           &lt;td&gt;处理非索引列逻辑&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;priorityqueue的相关api&#34;&gt;PriorityQueue的相关API
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;&lt;strong&gt;操作&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;复杂度 (Time Complexity)&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;备注&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;offer() / add()&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;$O(\log N)$&lt;/td&gt;
+          &lt;td&gt;插入操作，需要维护堆的属性。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;poll() / remove()&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;$O(\log N)$&lt;/td&gt;
+          &lt;td&gt;移除最小/最大元素，需要重新堆化。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;peek() / element()&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;$O(1)$&lt;/td&gt;
+          &lt;td&gt;仅查看堆顶元素。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;remove(Object o)&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;$O(N)$&lt;/td&gt;
+          &lt;td&gt;移除任意元素，需要线性搜索。&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;&lt;strong&gt;方法&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;签名&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;描述&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;int size()&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;public int size()&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;返回队列中元素的数量。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;void clear()&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;public void clear()&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;移除队列中的所有元素。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;boolean isEmpty()&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;public boolean isEmpty()&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;如果队列不包含任何元素，则返回 &lt;code&gt;true&lt;/code&gt;。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;Comparator&amp;lt;? super E&amp;gt; comparator()&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;public Comparator&amp;lt;? super E&amp;gt; comparator()&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;返回用于对此队列中元素进行排序的比较器，或者返回 &lt;code&gt;null&lt;/code&gt;（如果使用自然顺序）。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;Object[] toArray()&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;public Object[] toArray()&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;返回包含队列中所有元素的数组。&lt;strong&gt;注意：返回的数组不保证是排序的。&lt;/strong&gt;&lt;/td&gt;
       &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;

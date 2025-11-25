@@ -558,6 +558,7 @@
         <li><a href="#3-流程总结图解">3. 流程总结图解</a></li>
       </ol>
     </li>
+    <li><a href="#priorityqueue的相关api">PriorityQueue的相关API</a></li>
   </ol>
 </nav>
         </div>
@@ -630,7 +631,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 54 分钟
+                    阅读时长: 55 分钟
                 </time>
             </div>
         
@@ -3877,7 +3878,8 @@ InnoDB <strong>不能</strong>直接跳到 <code>age=20</code> 的位置，只�
 </li>
 <li>
 <p><strong>SQL 语句：</strong></p>
-<p>SQL</p>
+</li>
+<li>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -3886,11 +3888,11 @@ InnoDB <strong>不能</strong>直接跳到 <code>age=20</code> 的位置，只�
 </span><span class="lnt">4
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">SELECT * FROM user 
-</span></span><span class="line"><span class="cl">WHERE name LIKE &#39;王%&#39;    -- 索引范围查询 (Range)
-</span></span><span class="line"><span class="cl">  AND age = 20          -- 索引下推过滤 (ICP)
-</span></span><span class="line"><span class="cl">  AND address = &#39;北京&#39;;  -- 普通条件 (Server 层过滤)
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">user</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;王%&#39;</span><span class="w">    </span><span class="c1">-- 索引范围查询 (Range)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="w">          </span><span class="c1">-- 索引下推过滤 (ICP)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;北京&#39;</span><span class="p">;</span><span class="w">  </span><span class="c1">-- 普通条件 (Server 层过滤)
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div></li>
 </ul>
@@ -4019,6 +4021,74 @@ InnoDB <strong>不能</strong>直接跳到 <code>age=20</code> 的位置，只�
           <td><strong>最终过滤</strong></td>
           <td>检查 <code>address='北京'</code></td>
           <td>处理非索引列逻辑</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="priorityqueue的相关api">PriorityQueue的相关API
+</h2><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>操作</strong></th>
+          <th><strong>复杂度 (Time Complexity)</strong></th>
+          <th><strong>备注</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>offer() / add()</code></td>
+          <td>$O(\log N)$</td>
+          <td>插入操作，需要维护堆的属性。</td>
+      </tr>
+      <tr>
+          <td><code>poll() / remove()</code></td>
+          <td>$O(\log N)$</td>
+          <td>移除最小/最大元素，需要重新堆化。</td>
+      </tr>
+      <tr>
+          <td><code>peek() / element()</code></td>
+          <td>$O(1)$</td>
+          <td>仅查看堆顶元素。</td>
+      </tr>
+      <tr>
+          <td><code>remove(Object o)</code></td>
+          <td>$O(N)$</td>
+          <td>移除任意元素，需要线性搜索。</td>
+      </tr>
+  </tbody>
+</table></div>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>方法</strong></th>
+          <th><strong>签名</strong></th>
+          <th><strong>描述</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>int size()</code></td>
+          <td><code>public int size()</code></td>
+          <td>返回队列中元素的数量。</td>
+      </tr>
+      <tr>
+          <td><code>void clear()</code></td>
+          <td><code>public void clear()</code></td>
+          <td>移除队列中的所有元素。</td>
+      </tr>
+      <tr>
+          <td><code>boolean isEmpty()</code></td>
+          <td><code>public boolean isEmpty()</code></td>
+          <td>如果队列不包含任何元素，则返回 <code>true</code>。</td>
+      </tr>
+      <tr>
+          <td><code>Comparator&lt;? super E&gt; comparator()</code></td>
+          <td><code>public Comparator&lt;? super E&gt; comparator()</code></td>
+          <td>返回用于对此队列中元素进行排序的比较器，或者返回 <code>null</code>（如果使用自然顺序）。</td>
+      </tr>
+      <tr>
+          <td><code>Object[] toArray()</code></td>
+          <td><code>public Object[] toArray()</code></td>
+          <td>返回包含队列中所有元素的数组。<strong>注意：返回的数组不保证是排序的。</strong></td>
       </tr>
   </tbody>
 </table></div>

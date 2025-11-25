@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="上一个太庞大了，新开一个（">
+<title>面试八股/场景2.0</title>
+
+<link rel='canonical' href='https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/%E5%9C%BA%E6%99%AF2.0/'>
+
+<link rel="stylesheet" href="/scss/style.min.6a692fd055deae459f2a9767f57f3855ba80cafd5041317f24f7360f6ca47cdf.css"><meta property='og:title' content="面试八股/场景2.0">
+<meta property='og:description' content="上一个太庞大了，新开一个（">
+<meta property='og:url' content='https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/%E5%9C%BA%E6%99%AF2.0/'>
+<meta property='og:site_name' content='LuciusWan'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-11-25T11:43:54&#43;08:00'/><meta property='article:modified_time' content='2025-11-25T11:43:54&#43;08:00'/>
+<meta name="twitter:title" content="面试八股/场景2.0">
+<meta name="twitter:description" content="上一个太庞大了，新开一个（">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_a00c4178710685fc.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🎇</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">LuciusWan</a></h1>
+            <h2 class="site-description">欢迎来到我的blog</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/440554295'
+                        target="_blank"
+                        title="Bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/LuciusWan'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#介绍一下rdb和aof">介绍一下RDB和AOF</a>
+      <ol>
+        <li><a href="#1-rdb-redis-database--快照模式">1. RDB (Redis Database) —— 快照模式</a>
+          <ol>
+            <li><a href="#工作原理"><strong>工作原理</strong></a></li>
+            <li><a href="#-优点"><strong>✅ 优点</strong></a></li>
+            <li><a href="#-缺点"><strong>❌ 缺点</strong></a></li>
+          </ol>
+        </li>
+        <li><a href="#2-aof-append-only-file--日志模式">2. AOF (Append Only File) —— 日志模式</a>
+          <ol>
+            <li><a href="#工作原理-1"><strong>工作原理</strong></a></li>
+            <li><a href="#-优点-1"><strong>✅ 优点</strong></a></li>
+            <li><a href="#-缺点-1"><strong>❌ 缺点</strong></a></li>
+          </ol>
+        </li>
+        <li><a href="#3-rdb-vs-aof-核心对比">3. RDB vs AOF 核心对比</a></li>
+        <li><a href="#1-rdb-redis-database--快照模式-1">1. RDB (Redis Database) —— 快照模式</a>
+          <ol>
+            <li><a href="#工作原理-2"><strong>工作原理</strong></a></li>
+            <li><a href="#-优点-2"><strong>✅ 优点</strong></a></li>
+            <li><a href="#-缺点-2"><strong>❌ 缺点</strong></a></li>
+          </ol>
+        </li>
+        <li><a href="#2-aof-append-only-file--日志模式-1">2. AOF (Append Only File) —— 日志模式</a>
+          <ol>
+            <li><a href="#工作原理-3"><strong>工作原理</strong></a></li>
+            <li><a href="#-优点-3"><strong>✅ 优点</strong></a></li>
+            <li><a href="#-缺点-3"><strong>❌ 缺点</strong></a></li>
+          </ol>
+        </li>
+        <li><a href="#3-rdb-vs-aof-核心对比-1">3. RDB vs AOF 核心对比</a></li>
+        <li><a href="#4-最佳实践混合持久化-redis-40">4. 最佳实践：混合持久化 (Redis 4.0+)</a></li>
+      </ol>
+    </li>
+    <li><a href="#进程和线程的区别">进程和线程的区别</a>
+      <ol>
+        <li><a href="#核心区别详解">核心区别详解</a>
+          <ol>
+            <li><a href="#1-资源的拥有权resource-ownership">1. 资源的拥有权（Resource Ownership）</a></li>
+            <li><a href="#2-调度与开销overhead--switching">2. 调度与开销（Overhead &amp; Switching）</a></li>
+            <li><a href="#3-通信方式communication">3. 通信方式（Communication）</a></li>
+            <li><a href="#4-健壮性与隔离性stability">4. 健壮性与隔离性（Stability）</a></li>
+          </ol>
+        </li>
+        <li><a href="#对比总结表">对比总结表</a></li>
+      </ol>
+    </li>
+    <li><a href="#redis的内存淘汰机制">Redis的内存淘汰机制</a>
+      <ol>
+        <li><a href="#1-两个核心维度">1. 两个核心维度</a></li>
+        <li><a href="#redis-的-lru-是真的-lru-吗">Redis 的 LRU 是真的 LRU 吗？</a></li>
+        <li><a href="#redis的各种淘汰策略">Redis的各种淘汰策略</a></li>
+      </ol>
+    </li>
+    <li><a href="#java的双亲委派模型是什么">Java的双亲委派模型是什么？</a>
+      <ol>
+        <li><a href="#1-谁是双亲类加载器的层级">1. 谁是“双亲”？（类加载器的层级）</a></li>
+        <li><a href="#1-谁是双亲类加载器的层级-1">1. 谁是“双亲”？（类加载器的层级）</a></li>
+        <li><a href="#2-委派流程怎么工作">2. 委派流程（怎么工作？）</a></li>
+        <li><a href="#3-为什么要这么设计核心作用">3. 为什么要这么设计？（核心作用）</a>
+          <ol>
+            <li><a href="#-1-安全性-security--防止核心-api-被篡改">✅ 1. 安全性 (Security) —— 防止核心 API 被篡改</a></li>
+            <li><a href="#-2-避免重复加载-uniqueness">✅ 2. 避免重复加载 (Uniqueness)</a></li>
+          </ol>
+        </li>
+        <li><a href="#4-什么时候需要打破双亲委派">4. 什么时候需要打破双亲委派？</a></li>
+      </ol>
+    </li>
+    <li><a href="#hashmap与concurenthashmap的区别">HashMap与ConcurentHashMap的区别</a>
+      <ol>
+        <li><a href="#核心区别详解-1">核心区别详解</a>
+          <ol>
+            <li><a href="#-线程安全性-thread-safety">① 线程安全性 (Thread Safety)</a></li>
+            <li><a href="#-锁的粒度-locking-granularity--性能的关键">② 锁的粒度 (Locking Granularity) —— 性能的关键</a></li>
+          </ol>
+        </li>
+        <li><a href="#1-cas-compare-and-swap--冲锋在前的轻骑兵">1. CAS (Compare And Swap) —— 冲锋在前的“轻骑兵”</a>
+          <ol>
+            <li><a href="#cas-在哪里用"><strong>CAS 在哪里用？</strong></a></li>
+            <li><a href="#cas-的潜在问题"><strong>CAS 的潜在问题：</strong></a></li>
+          </ol>
+        </li>
+        <li><a href="#2-synchronized--坐镇后方的重装卫士">2. Synchronized —— 坐镇后方的“重装卫士”</a>
+          <ol>
+            <li><a href="#synchronized-在哪里用"><strong>Synchronized 在哪里用？</strong></a></li>
+          </ol>
+        </li>
+        <li><a href="#底层实现深度对比-jdk-17-vs-jdk-18">底层实现深度对比 (JDK 1.7 vs JDK 1.8)</a>
+          <ol>
+            <li><a href="#hashmap">HashMap</a></li>
+            <li><a href="#concurrenthashmap-进化史">ConcurrentHashMap (进化史)</a></li>
+          </ol>
+        </li>
+        <li><a href="#3-总结对比表">3. 总结对比表</a></li>
+        <li><a href="#为什么要用synchronized去处理hash冲突">为什么要用synchronized去处理hash冲突</a>
+          <ol>
+            <li><a href="#cas-的射程只有-1-个变量-one-word">CAS 的“射程”只有 1 个变量 (One Word)</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#redis挂了rocketmq挂了都怎么处理">Redis挂了RocketMQ挂了都怎么处理</a>
+      <ol>
+        <li><a href="#redis-挂了怎么处理">Redis 挂了怎么处理？</a>
+          <ol>
+            <li><a href="#1-架构层面事前别让它挂">1. 架构层面（事前：别让它挂）</a></li>
+            <li><a href="#2-应用层面事中挂了怎么办">2. 应用层面（事中：挂了怎么办）</a></li>
+            <li><a href="#3-关于分布式锁">3. 关于分布式锁</a></li>
+          </ol>
+        </li>
+        <li><a href="#mq-消息队列-挂了怎么处理">MQ (消息队列) 挂了怎么处理？</a>
+          <ol>
+            <li><a href="#1-架构层面事前别让它挂-1">1. 架构层面（事前：别让它挂）</a></li>
+            <li><a href="#2-应用层面事中生产者发不出去怎么办">2. 应用层面（事中：生产者发不出去怎么办？）</a></li>
+            <li><a href="#3-应用层面事中消费者收不到怎么办">3. 应用层面（事中：消费者收不到怎么办？）</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#介绍tidb的计算与存储分离和mysql的区别是什么">介绍TiDB的计算与存储分离，和MySQL的区别是什么</a>
+      <ol>
+        <li><a href="#一-tidb-的计算与存储分离架构">一、 TiDB 的计算与存储分离架构</a>
+          <ol>
+            <li><a href="#1-计算层tidb-server无状态的大脑">1. 计算层：TiDB Server（无状态的“大脑”）</a></li>
+            <li><a href="#2-存储层tikv分布式的肚子">2. 存储层：TiKV（分布式的“肚子”）</a></li>
+            <li><a href="#3-调度层pd-placement-driver总指挥">3. 调度层：PD (Placement Driver)（“总指挥”）</a></li>
+          </ol>
+        </li>
+        <li><a href="#二-tidb-与-mysql-的核心区别">二、 TiDB 与 MySQL 的核心区别</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/%E5%9C%BA%E6%99%AF2.0/">面试八股/场景2.0</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            上一个太庞大了，新开一个（
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-11-25</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 23 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="面试八股场景20">面试八股/场景2.0
+</h1><h2 id="介绍一下rdb和aof">介绍一下RDB和AOF
+</h2><p>Redis 是一个基于内存的数据库，为了防止服务器宕机导致数据丢失，Redis 提供了两种主要的持久化机制：<strong>RDB (Redis Database)</strong> 和 <strong>AOF (Append Only File)</strong>。</p>
+<p>这两者分别代表了两种不同的思路：<strong>快照（Snapshotting）</strong> 和 <strong>日志（Logging）</strong>。</p>
+<h3 id="1-rdb-redis-database--快照模式">1. RDB (Redis Database) —— 快照模式
+</h3><p>RDB 是 Redis 默认的持久化方式。它会在指定的时间间隔内，将内存中的数据集快照写入磁盘。</p>
+<h4 id="工作原理"><strong>工作原理</strong>
+</h4><ul>
+<li>
+<p><strong>触发方式：</strong> 可以通过配置文件（如 <code>save 900 1</code>，表示900秒内有1个key变动则触发）自动触发，也可以手动执行 <code>SAVE</code> 或 <code>BGSAVE</code> 命令。</p>
+</li>
+<li>
+<p><strong>核心流程（BGSAVE）：</strong></p>
+<ol>
+<li>
+<p>Redis 主进程 <strong>fork</strong> 一个子进程。</p>
+</li>
+<li>
+<p>子进程共享主进程的内存数据（利用操作系统的 <strong>Copy-on-Write / 写时复制</strong> 技术）。</p>
+</li>
+<li>
+<p>子进程将数据写入到一个临时的 RDB 文件中。</p>
+</li>
+<li>
+<p>写入完成后，用新文件替换旧的 RDB 文件。</p>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="-优点"><strong>✅ 优点</strong>
+</h4><ul>
+<li>
+<p><strong>恢复速度快：</strong> RDB 是一个紧凑的二进制文件，非常适合用于灾难恢复和备份。Redis 加载 RDB 文件恢复数据的速度远快于 AOF。</p>
+</li>
+<li>
+<p><strong>文件体积小：</strong> 相比 AOF，RDB 文件更小，节省磁盘空间。</p>
+</li>
+<li>
+<p><strong>性能影响小：</strong> 父进程在 <code>fork</code> 子进程后继续处理请求，持久化工作由子进程完成，最大化了 Redis 的性能。</p>
+</li>
+</ul>
+<h4 id="-缺点"><strong>❌ 缺点</strong>
+</h4><ul>
+<li>
+<p><strong>数据丢失风险较高：</strong> RDB 是间隔执行的（例如每5分钟一次）。如果 Redis 在两次快照之间宕机，这期间产生的数据将会丢失。</p>
+</li>
+<li>
+<p><strong>大数据集下的停顿：</strong> 当数据集非常大（如几十 GB）时，<code>fork</code> 子进程的操作可能会比较耗时，导致 Redis 主进程出现毫秒级甚至秒级的阻塞。</p>
+</li>
+</ul>
+<h3 id="2-aof-append-only-file--日志模式">2. AOF (Append Only File) —— 日志模式
+</h3><p>AOF 记录了服务器接收到的每一个<strong>写操作</strong>（查询操作不记录）。服务器启动时，通过重新执行这些命令来还原数据。</p>
+<h4 id="工作原理-1"><strong>工作原理</strong>
+</h4><ul>
+<li>
+<p><strong>命令追加：</strong> 所有的写命令会先追加到 AOF 缓冲区。</p>
+</li>
+<li>
+<p><strong>同步策略（fsync）：</strong> 根据配置将缓冲区内容同步到磁盘：</p>
+<ul>
+<li>
+<p><code>appendfsync always</code>：每次写操作都同步（最安全，但性能最差）。</p>
+</li>
+<li>
+<p><code>appendfsync everysec</code>：每秒同步一次（<strong>默认推荐</strong>，兼顾性能与安全）。</p>
+</li>
+<li>
+<p><code>appendfsync no</code>：由操作系统决定何时同步（性能最好，但不可控）。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>AOF 重写（Rewrite）：</strong> 随着时间推移，AOF 文件会越来越大（例如：<code>SET a 1</code>, <code>SET a 2</code> 其实最终只是 <code>a=2</code>）。Redis 会在后台对 AOF 文件进行重写，只保留恢复当前数据所需的最小命令集。</p>
+</li>
+</ul>
+<h4 id="-优点-1"><strong>✅ 优点</strong>
+</h4><ul>
+<li>
+<p><strong>数据安全性高：</strong> 使用 <code>everysec</code> 策略，最坏情况下也只会丢失 1 秒的数据。</p>
+</li>
+<li>
+<p><strong>可读性强：</strong> AOF 文件是纯文本格式，如果误执行了 <code>FLUSHALL</code>，只要 AOF 文件未被重写，可以手动删掉文件末尾的该命令来挽救数据。</p>
+</li>
+</ul>
+<h4 id="-缺点-1"><strong>❌ 缺点</strong>
+</h4><ul>
+<li>
+<p><strong>文件体积大：</strong> 记录所有写命令，导致 AOF 文件通常比 RDB 文件大得多。</p>
+</li>
+<li>
+<p><strong>恢复速度慢：</strong> 恢复数据时需要“重放”所有命令，速度比加载 RDB 二进制快照要慢。</p>
+</li>
+<li>
+<p><strong>写性能稍低：</strong> 根据 fsync 策略，AOF 对写性能有一定影响（通常 <code>everysec</code> 影响很小）。</p>
+</li>
+</ul>
+<hr>
+<h3 id="3-rdb-vs-aof-核心对比">3. RDB vs AOF 核心对比
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>特性</strong></th>
+          <th><strong>RDB (快照)</strong></th>
+          <th><strong>AOF (日志)</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>数据安全性</strong></td>
+          <td>较低 (可能丢失最后几分钟数据)</td>
+          <td><strong>高</strong> (默认通常只丢1秒)</td>
+      </tr>
+      <tr>
+          <td><strong>恢复速度</strong></td>
+          <td><strong>非常快</strong></td>
+          <td>较慢 (需重放命令)</td>
+      </tr>
+      <tr>
+          <td><strong>文件体积</strong></td>
+          <td><strong>小 (二进制压缩)</strong></td>
+          <td>大 (文本记录)</td>
+      </tr>
+      <tr>
+          <td><strong>资源消耗</strong></td>
+          <td>CPU 高 (Fork 过程), I/O 低</td>
+          <td>CPU 低, I/O 高 (持续追加)</td>
+      </tr>
+      <tr>
+          <td><strong>启动优先级</strong></td>
+          <td>低 (若开启 AOF，优先加载 AOF)</td>
+          <td><strong>高</strong> (因为数据更全)</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>Redis 是一个基于内存的数据库，为了防止服务器宕机导致数据丢失，Redis 提供了两种主要的持久化机制：<strong>RDB (Redis Database)</strong> 和 <strong>AOF (Append Only File)</strong>。</p>
+<p>这两者分别代表了两种不同的思路：<strong>快照（Snapshotting）</strong> 和 <strong>日志（Logging）</strong>。</p>
+<p>以下是两者的详细对比与解析：</p>
+<hr>
+<h3 id="1-rdb-redis-database--快照模式-1">1. RDB (Redis Database) —— 快照模式
+</h3><p>RDB 是 Redis 默认的持久化方式。它会在指定的时间间隔内，将内存中的数据集快照写入磁盘。</p>
+<h4 id="工作原理-2"><strong>工作原理</strong>
+</h4><ul>
+<li>
+<p><strong>触发方式：</strong> 可以通过配置文件（如 <code>save 900 1</code>，表示900秒内有1个key变动则触发）自动触发，也可以手动执行 <code>SAVE</code> 或 <code>BGSAVE</code> 命令。</p>
+</li>
+<li>
+<p><strong>核心流程（BGSAVE）：</strong></p>
+<ol>
+<li>
+<p>Redis 主进程 <strong>fork</strong> 一个子进程。</p>
+</li>
+<li>
+<p>子进程共享主进程的内存数据（利用操作系统的 <strong>Copy-on-Write / 写时复制</strong> 技术）。</p>
+</li>
+<li>
+<p>子进程将数据写入到一个临时的 RDB 文件中。</p>
+</li>
+<li>
+<p>写入完成后，用新文件替换旧的 RDB 文件。</p>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="-优点-2"><strong>✅ 优点</strong>
+</h4><ul>
+<li>
+<p><strong>恢复速度快：</strong> RDB 是一个紧凑的二进制文件，非常适合用于灾难恢复和备份。Redis 加载 RDB 文件恢复数据的速度远快于 AOF。</p>
+</li>
+<li>
+<p><strong>文件体积小：</strong> 相比 AOF，RDB 文件更小，节省磁盘空间。</p>
+</li>
+<li>
+<p><strong>性能影响小：</strong> 父进程在 <code>fork</code> 子进程后继续处理请求，持久化工作由子进程完成，最大化了 Redis 的性能。</p>
+</li>
+</ul>
+<h4 id="-缺点-2"><strong>❌ 缺点</strong>
+</h4><ul>
+<li>
+<p><strong>数据丢失风险较高：</strong> RDB 是间隔执行的（例如每5分钟一次）。如果 Redis 在两次快照之间宕机，这期间产生的数据将会丢失。</p>
+</li>
+<li>
+<p><strong>大数据集下的停顿：</strong> 当数据集非常大（如几十 GB）时，<code>fork</code> 子进程的操作可能会比较耗时，导致 Redis 主进程出现毫秒级甚至秒级的阻塞。</p>
+</li>
+</ul>
+<hr>
+<h3 id="2-aof-append-only-file--日志模式-1">2. AOF (Append Only File) —— 日志模式
+</h3><p>AOF 记录了服务器接收到的每一个<strong>写操作</strong>（查询操作不记录）。服务器启动时，通过重新执行这些命令来还原数据。</p>
+<h4 id="工作原理-3"><strong>工作原理</strong>
+</h4><ul>
+<li>
+<p><strong>命令追加：</strong> 所有的写命令会先追加到 AOF 缓冲区。</p>
+</li>
+<li>
+<p><strong>同步策略（fsync）：</strong> 根据配置将缓冲区内容同步到磁盘：</p>
+<ul>
+<li>
+<p><code>appendfsync always</code>：每次写操作都同步（最安全，但性能最差）。</p>
+</li>
+<li>
+<p><code>appendfsync everysec</code>：每秒同步一次（<strong>默认推荐</strong>，兼顾性能与安全）。</p>
+</li>
+<li>
+<p><code>appendfsync no</code>：由操作系统决定何时同步（性能最好，但不可控）。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>AOF 重写（Rewrite）：</strong> 随着时间推移，AOF 文件会越来越大（例如：<code>SET a 1</code>, <code>SET a 2</code> 其实最终只是 <code>a=2</code>）。Redis 会在后台对 AOF 文件进行重写，只保留恢复当前数据所需的最小命令集。</p>
+</li>
+</ul>
+<h4 id="-优点-3"><strong>✅ 优点</strong>
+</h4><ul>
+<li>
+<p><strong>数据安全性高：</strong> 使用 <code>everysec</code> 策略，最坏情况下也只会丢失 1 秒的数据。</p>
+</li>
+<li>
+<p><strong>可读性强：</strong> AOF 文件是纯文本格式，如果误执行了 <code>FLUSHALL</code>，只要 AOF 文件未被重写，可以手动删掉文件末尾的该命令来挽救数据。</p>
+</li>
+</ul>
+<h4 id="-缺点-3"><strong>❌ 缺点</strong>
+</h4><ul>
+<li>
+<p><strong>文件体积大：</strong> 记录所有写命令，导致 AOF 文件通常比 RDB 文件大得多。</p>
+</li>
+<li>
+<p><strong>恢复速度慢：</strong> 恢复数据时需要“重放”所有命令，速度比加载 RDB 二进制快照要慢。</p>
+</li>
+<li>
+<p><strong>写性能稍低：</strong> 根据 fsync 策略，AOF 对写性能有一定影响（通常 <code>everysec</code> 影响很小）。</p>
+</li>
+</ul>
+<hr>
+<h3 id="3-rdb-vs-aof-核心对比-1">3. RDB vs AOF 核心对比
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>特性</strong></th>
+          <th><strong>RDB (快照)</strong></th>
+          <th><strong>AOF (日志)</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>数据安全性</strong></td>
+          <td>较低 (可能丢失最后几分钟数据)</td>
+          <td><strong>高</strong> (默认通常只丢1秒)</td>
+      </tr>
+      <tr>
+          <td><strong>恢复速度</strong></td>
+          <td><strong>非常快</strong></td>
+          <td>较慢 (需重放命令)</td>
+      </tr>
+      <tr>
+          <td><strong>文件体积</strong></td>
+          <td><strong>小 (二进制压缩)</strong></td>
+          <td>大 (文本记录)</td>
+      </tr>
+      <tr>
+          <td><strong>资源消耗</strong></td>
+          <td>CPU 高 (Fork 过程), I/O 低</td>
+          <td>CPU 低, I/O 高 (持续追加)</td>
+      </tr>
+      <tr>
+          <td><strong>启动优先级</strong></td>
+          <td>低 (若开启 AOF，优先加载 AOF)</td>
+          <td><strong>高</strong> (因为数据更全)</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="4-最佳实践混合持久化-redis-40">4. 最佳实践：混合持久化 (Redis 4.0+)
+</h3><p>在 Redis 4.0 之前，通常建议同时开启 RDB（做备份）和 AOF（保数据）。</p>
+<p>Redis 4.0 引入了混合持久化（Hybrid Persistence）：</p>
+<p>这是目前的推荐配置。它结合了 RDB 和 AOF 的优点：</p>
+<ul>
+<li>
+<p><strong>机制：</strong> 在进行 AOF 重写时，Redis 会将当前内存的数据以 <strong>RDB 格式</strong> 写入 AOF 文件的开头，随后的增量写操作继续以 <strong>AOF 文本格式</strong> 追加到文件末尾。</p>
+</li>
+<li>
+<p><strong>结果：</strong> AOF 文件前半部分是 RDB（加载快、体积小），后半部分是增量日志（数据全）。</p>
+</li>
+<li>
+<p><strong>效果：</strong> 既保证了快速启动（加载 RDB 部分），又保证了数据不丢失（加载 AOF 增量部分）。</p>
+</li>
+</ul>
+<h2 id="进程和线程的区别">进程和线程的区别
+</h2><p>用一句话概括：<strong>进程是资源分配的最小单位，线程是 CPU 调度的最小单位。</strong></p>
+<h3 id="核心区别详解">核心区别详解
+</h3><h4 id="1-资源的拥有权resource-ownership">1. 资源的拥有权（Resource Ownership）
+</h4><ul>
+<li>
+<p><strong>进程：</strong> 拥有独立的内存空间（代码段、数据段、堆等）和系统资源（文件描述符等）。不同进程之间的资源是隔离的。</p>
+</li>
+<li>
+<p><strong>线程：</strong> 线程本身不拥有系统资源，只拥有很少的运行中必不可少的资源（如<strong>程序计数器、栈、寄存器</strong>）。同一进程内的所有线程<strong>共享</strong>该进程的内存空间（堆、全局变量）和文件资源。</p>
+</li>
+</ul>
+<h4 id="2-调度与开销overhead--switching">2. 调度与开销（Overhead &amp; Switching）
+</h4><ul>
+<li>
+<p><strong>进程：</strong> 切换成本<strong>高</strong>。当操作系统切换进程时，需要保存当前进程的上下文（内存页表、CPU 状态等）并加载新进程的上下文，这会导致 CPU 缓存失效，开销较大。</p>
+</li>
+<li>
+<p><strong>线程：</strong> 切换成本<strong>低</strong>。同一进程内的线程切换，不需要切换内存页表，只需要保存和恢复少量的寄存器内容和栈信息，速度很快。</p>
+</li>
+</ul>
+<h4 id="3-通信方式communication">3. 通信方式（Communication）
+</h4><ul>
+<li>
+<p><strong>进程间通信 (IPC)：</strong> 困难。因为内存隔离，进程间需要通过特殊机制通信，如：管道 (Pipe)、消息队列、共享内存、信号量、Socket 等。</p>
+</li>
+<li>
+<p><strong>线程间通信：</strong> 容易。因为共享内存（堆），线程之间可以直接读写同一变量来进行通信。</p>
+<ul>
+<li><em>注意：</em> 虽然通信容易，但带来了**线程安全（同步）**问题，需要使用锁（Lock）或 CAS 等机制来防止数据错乱。</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-健壮性与隔离性stability">4. 健壮性与隔离性（Stability）
+</h4><ul>
+<li>
+<p><strong>进程：</strong> 健壮性强。一个进程崩溃通常<strong>不会</strong>影响其他进程（因为内存是隔离的）。例如：Chrome 浏览器的一个标签页（进程）崩了，通常不会导致整个浏览器崩溃。</p>
+</li>
+<li>
+<p><strong>线程：</strong> 健壮性弱。一个线程出现致命错误（如非法内存访问），可能会导致<strong>整个进程</strong>崩溃，进而导致该进程内的所有线程都挂掉。</p>
+</li>
+</ul>
+<hr>
+<h3 id="对比总结表">对比总结表
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>维度</strong></th>
+          <th><strong>进程 (Process)</strong></th>
+          <th><strong>线程 (Thread)</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>本质</strong></td>
+          <td><strong>资源分配</strong>的最小单位</td>
+          <td><strong>CPU 调度</strong>的最小单位</td>
+      </tr>
+      <tr>
+          <td><strong>内存空间</strong></td>
+          <td>独立（互不干扰）</td>
+          <td>共享（同一进程内）</td>
+      </tr>
+      <tr>
+          <td><strong>切换开销</strong></td>
+          <td>大 (涉及虚拟内存、页表切换)</td>
+          <td>小 (不涉及内存地址空间切换)</td>
+      </tr>
+      <tr>
+          <td><strong>通信难度</strong></td>
+          <td>难 (IPC：管道、Socket等)</td>
+          <td>易 (直接读写共享变量)</td>
+      </tr>
+      <tr>
+          <td><strong>稳定性</strong></td>
+          <td>进程间隔离，一个崩了不影响其他</td>
+          <td>一个线程崩了可能搞挂整个进程</td>
+      </tr>
+      <tr>
+          <td><strong>并发性</strong></td>
+          <td>也可以并发，但资源消耗大</td>
+          <td>并发性高，资源消耗小</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="redis的内存淘汰机制">Redis的内存淘汰机制
+</h2><p>当 Redis 的内存使用量达到在 <code>redis.conf</code> 中配置的 <code>maxmemory</code> 上限时，为了能继续接收新的写入请求，Redis 必须根据配置的策略删除一部分数据。这就是 <strong>Redis 的内存淘汰机制</strong>。</p>
+<p>Redis 提供了 <strong>8 种</strong> 淘汰策略（Redis 4.0 之后），我们可以从**“淘汰范围”<strong>和</strong>“淘汰算法”**两个维度来理解。</p>
+<hr>
+<h3 id="1-两个核心维度">1. 两个核心维度
+</h3><p>在记忆这些策略之前，先理解两个概念，这样就不需要死记硬背了：</p>
+<ol>
+<li>
+<p><strong>淘汰范围（也就是“去哪里选”）：</strong></p>
+<ul>
+<li>
+<p><strong><code>allkeys</code></strong>：从<strong>所有</strong>键中筛选（不管有没有设置过期时间）。通常用于把 Redis 当纯缓存用的场景。</p>
+</li>
+<li>
+<p><strong><code>volatile</code></strong>：只从**设置了过期时间（TTL）**的键中筛选。通常用于把 Redis 当数据库用，同时又想缓存一部分临时数据的场景。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>淘汰算法（也就是“怎么选”）：</strong></p>
+<ul>
+<li>
+<p><strong>LRU (Least Recently Used)</strong>：最近最少使用。</p>
+</li>
+<li>
+<p><strong>LFU (Least Frequently Used)</strong>：最不经常使用（Redis 4.0+）。</p>
+</li>
+<li>
+<p><strong>Random</strong>：随机。</p>
+</li>
+<li>
+<p><strong>TTL</strong>：快过期的。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="redis-的-lru-是真的-lru-吗">Redis 的 LRU 是真的 LRU 吗？
+</h3><p><strong>不是。</strong> Redis 使用的是<strong>近似 LRU 算法</strong>（Approximated LRU）。</p>
+<ul>
+<li>
+<p><strong>原因：</strong> 严格的 LRU 需要维护一个巨大的双向链表，每访问一次 key 就要移动节点，这非常消耗内存且影响性能。</p>
+</li>
+<li>
+<p><strong>实现：</strong> Redis 采用<strong>随机采样</strong>的方式。当需要淘汰时，它随机抽取 N 个 key（默认 5 个，由 <code>maxmemory-samples</code> 配置），然后淘汰这 N 个里面最久没被访问的那一个。</p>
+</li>
+<li>
+<p><strong>效果：</strong> 虽然是近似的，但在 Redis 3.0 优化后，效果已经非常接近严格 LRU 了。</p>
+</li>
+</ul>
+<h3 id="redis的各种淘汰策略">Redis的各种淘汰策略
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>策略前缀</strong></th>
+          <th><strong>策略后缀 (算法)</strong></th>
+          <th><strong>含义</strong></th>
+          <th><strong>适用场景</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>noeviction</strong></td>
+          <td>-</td>
+          <td><strong>不淘汰</strong>，写请求报错</td>
+          <td>纯数据存储，数据不能丢</td>
+      </tr>
+      <tr>
+          <td><strong>allkeys</strong></td>
+          <td><strong>-lru</strong></td>
+          <td>所有Key + 最近最少使用</td>
+          <td><strong>通用缓存 (推荐)</strong></td>
+      </tr>
+      <tr>
+          <td><strong>allkeys</strong></td>
+          <td><strong>-lfu</strong></td>
+          <td>所有Key + 最不经常使用</td>
+          <td>即使最近被访问过，总体访问频率低也被淘汰</td>
+      </tr>
+      <tr>
+          <td><strong>allkeys</strong></td>
+          <td><strong>-random</strong></td>
+          <td>所有Key + 随机</td>
+          <td>极少使用</td>
+      </tr>
+      <tr>
+          <td><strong>volatile</strong></td>
+          <td><strong>-lru</strong></td>
+          <td>过期Key + 最近最少使用</td>
+          <td>混合存储，只淘汰缓存部分</td>
+      </tr>
+      <tr>
+          <td><strong>volatile</strong></td>
+          <td><strong>-lfu</strong></td>
+          <td>过期Key + 最不经常使用</td>
+          <td>同上</td>
+      </tr>
+      <tr>
+          <td><strong>volatile</strong></td>
+          <td><strong>-random</strong></td>
+          <td>过期Key + 随机</td>
+          <td>极少使用</td>
+      </tr>
+      <tr>
+          <td><strong>volatile</strong></td>
+          <td><strong>-ttl</strong></td>
+          <td>过期Key + 剩余时间最短</td>
+          <td>让快过期的先走</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="java的双亲委派模型是什么">Java的双亲委派模型是什么？
+</h2><p><strong>双亲委派模型（Parent Delegation Model）</strong> 是 Java 类加载机制的核心设计思想。</p>
+<p><strong>双亲委派模型（Parent Delegation Model）</strong> 是 Java 类加载机制的核心设计思想。</p>
+<p>虽然名字听起来有点高大上（甚至有点拗口），但它的核心逻辑非常简单，用一句话概括就是：<strong>“这也是为了你好：有事儿先找你爹，你爹搞不定你再自己来。”</strong></p>
+<p>下面我从<strong>结构、流程、作用</strong>和<strong>例外</strong>四个方面为你拆解。</p>
+<hr>
+<h3 id="1-谁是双亲类加载器的层级">1. 谁是“双亲”？（类加载器的层级）
+</h3><p>在 Java 中，类加载器（ClassLoader）是有层级关系的。并不是真的有两个亲戚（“双亲”这个翻译其实有点误导，它指的是 Parent，即<strong>父级</strong>）。</p>
+<p>主要的类加载器有三层：</p>
+<ol>
+<li>
+<p><strong>启动类加载器 (Bootstrap ClassLoader)</strong></p>
+<ul>
+<li>
+<p><strong>地位：</strong> 老祖宗，最顶层。</p>
+</li>
+<li>
+<p><strong>职责：</strong> 负责加载 Java 的核心类库（如 <code>java.lang.String</code>, <code>rt.jar</code> 等）。它是用 C++ 写的，在 Java 代码里拿不到它的引用（也就是 <code>null</code>）。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>扩展类加载器 (Extension ClassLoader)</strong></p>
+<ul>
+<li>
+<p><strong>地位：</strong> 中间层。</p>
+</li>
+<li>
+<p><strong>职责：</strong> 负责加载 Java 的扩展库（<code>JAVA_HOME/lib/ext</code> 目录下的 jar 包）。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>应用程序类加载器 (Application ClassLoader)</strong></p>
+<ul>
+<li>
+<p><strong>地位：</strong> 最底层（系统默认）。</p>
+</li>
+<li>
+<p><strong>职责：</strong> 负责加载我们自己写的代码（<code>ClassPath</code> 下的类）和第三方 Jar 包。</p>
+</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p><em>此外，还可以有<strong>自定义类加载器 (Custom ClassLoader)</strong>，挂在应用程序类加载器下面。</em></p>
+</blockquote>
+<p><strong>双亲委派模型（Parent Delegation Model）</strong> 是 Java 类加载机制的核心设计思想。</p>
+<p>虽然名字听起来有点高大上（甚至有点拗口），但它的核心逻辑非常简单，用一句话概括就是：<strong>“这也是为了你好：有事儿先找你爹，你爹搞不定你再自己来。”</strong></p>
+<p>下面我从<strong>结构、流程、作用</strong>和<strong>例外</strong>四个方面为你拆解。</p>
+<hr>
+<h3 id="1-谁是双亲类加载器的层级-1">1. 谁是“双亲”？（类加载器的层级）
+</h3><p>在 Java 中，类加载器（ClassLoader）是有层级关系的。并不是真的有两个亲戚（“双亲”这个翻译其实有点误导，它指的是 Parent，即<strong>父级</strong>）。</p>
+<p>主要的类加载器有三层：</p>
+<ol>
+<li>
+<p><strong>启动类加载器 (Bootstrap ClassLoader)</strong></p>
+<ul>
+<li>
+<p><strong>地位：</strong> 老祖宗，最顶层。</p>
+</li>
+<li>
+<p><strong>职责：</strong> 负责加载 Java 的核心类库（如 <code>java.lang.String</code>, <code>rt.jar</code> 等）。它是用 C++ 写的，在 Java 代码里拿不到它的引用（也就是 <code>null</code>）。</p>
+</li>
+<li>
+<p>它负责加载 Java 运行时环境（JRE）中最核心的库。这些类位于 <code>$JAVA_HOME/jre/lib</code> 目录下，通常打包在 <code>rt.jar</code> (Runtime Jar) 中。</p>
+<p><strong>💡 具体例子：</strong> 只要是 <code>java.*</code> 开头的几乎都是它加载的。</p>
+<ul>
+<li>
+<p><strong>基础类型包装类：</strong> <code>java.lang.Integer</code>, <code>java.lang.Double</code>, <code>java.lang.String</code></p>
+</li>
+<li>
+<p><strong>集合框架：</strong> <code>java.util.ArrayList</code>, <code>java.util.HashMap</code>, <code>java.util.HashSet</code></p>
+</li>
+<li>
+<p><strong>IO 流：</strong> <code>java.io.File</code>, <code>java.io.FileInputStream</code></p>
+</li>
+<li>
+<p><strong>并发包：</strong> <code>java.util.concurrent.ConcurrentHashMap</code></p>
+</li>
+<li>
+<p><strong>线程：</strong> <code>java.lang.Thread</code></p>
+</li>
+</ul>
+<p><strong>🧐 现象：</strong> 如果你在代码里打印 <code>String.class.getClassLoader()</code>，你会得到 <strong><code>null</code></strong>。这不是因为没加载，而是因为 Bootstrap 是用 C++ 写的，Java 代码无法获取它的引用。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>扩展类加载器 (Extension ClassLoader)</strong></p>
+<ul>
+<li>
+<p><strong>地位：</strong> 中间层。</p>
+</li>
+<li>
+<p><strong>职责：</strong> 负责加载 Java 的扩展库（<code>JAVA_HOME/lib/ext</code> 目录下的 jar 包）。</p>
+</li>
+<li>
+<p>它负责加载 <code>$JAVA_HOME/jre/lib/ext</code> 目录下的类库，或者被 <code>java.ext.dirs</code> 系统变量所指定的路径。它是对 Java 核心功能的补充。</p>
+<p><strong>💡 具体例子：</strong> 这些类通常平时用得少一点，多涉及一些加密、特殊网络协议或 XML 解析等。</p>
+<ul>
+<li>
+<p><strong>加密库：</strong> <code>com.sun.crypto.provider.SunJCE</code> (Java 加密扩展，做 AES/DES 加密时会用到)</p>
+</li>
+<li>
+<p><strong>DNS 相关：</strong> <code>sun.net.spi.nameservice.dns.DNSNameService</code> (某些 JDK 版本下的 DNS 解析服务)</p>
+</li>
+<li>
+<p><strong>JavaScript 引擎：</strong> <code>jdk.nashorn.api.scripting.NashornScriptEngine</code> (Java 8 中内置的 JS 引擎)</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>应用程序类加载器 (Application ClassLoader)</strong></p>
+<ul>
+<li>
+<p><strong>地位：</strong> 最底层（系统默认）。</p>
+</li>
+<li>
+<p><strong>职责：</strong> 负责加载我们自己写的代码（<code>ClassPath</code> 下的类）和第三方 Jar 包。</p>
+</li>
+<li>
+<p>这是我们接触最多的加载器。它负责加载 <code>CLASSPATH</code> 环境变量或系统属性 <code>java.class.path</code> 指定的类库。</p>
+<p><strong>💡 具体例子：</strong> 凡是你自己在工程里写的，或者在 <code>pom.xml</code> / <code>build.gradle</code> 里引用的，都归它管。</p>
+<ol>
+<li>
+<p><strong>你写的业务代码：</strong></p>
+<ul>
+<li>
+<p><code>com.example.project.UserController</code></p>
+</li>
+<li>
+<p><code>com.example.project.MyUtils</code></p>
+</li>
+<li>
+<p>你的 <code>Main</code> 启动类</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>第三方开源框架（Maven 依赖）：</strong></p>
+<ul>
+<li>
+<p><strong>Spring 全家桶：</strong> <code>org.springframework.boot.SpringApplication</code>, <code>org.springframework.context.ApplicationContext</code></p>
+</li>
+<li>
+<p><strong>数据库驱动：</strong> <code>com.mysql.cj.jdbc.Driver</code> (注意：虽然 Driver 接口是核心的，但 MySQL 的实现类是 App 加载的)</p>
+</li>
+<li>
+<p><strong>中间件客户端：</strong> <code>org.apache.rocketmq.client.producer.DefaultMQProducer</code> (RocketMQ), <code>com.alibaba.dubbo.config.ApplicationConfig</code> (Dubbo)</p>
+</li>
+<li>
+<p><strong>工具类：</strong> <code>com.alibaba.fastjson.JSON</code>, <code>org.apache.commons.lang3.StringUtils</code></p>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p><em>此外，还可以有<strong>自定义类加载器 (Custom ClassLoader)</strong>，挂在应用程序类加载器下面。</em></p>
+</blockquote>
+<hr>
+<h3 id="2-委派流程怎么工作">2. 委派流程（怎么工作？）
+</h3><p>当一个类加载器收到了类加载的请求时，它<strong>不会</strong>自己立即去加载，而是遵循以下步骤：</p>
+<ol>
+<li>
+<p><strong>向上委托：</strong> 它会把这个请求委托给<strong>父类加载器</strong>去执行。</p>
+</li>
+<li>
+<p><strong>层层传递：</strong> 父类加载器如果还有父类，就继续向上委托，直到传到最顶层的 <strong>Bootstrap ClassLoader</strong>。</p>
+</li>
+<li>
+<p><strong>向下尝试：</strong></p>
+<ul>
+<li>
+<p><strong>Bootstrap</strong> 尝试加载，如果找到了（比如是 <code>String</code>），就直接返回。</p>
+</li>
+<li>
+<p>如果 <strong>Bootstrap</strong> 没找到（也就是它管辖的范围里没有这个类），就告诉子类（Extension）：“我搞不定，你来吧”。</p>
+</li>
+<li>
+<p><strong>Extension</strong> 尝试加载，如果没找到，再往下交给 <strong>Application</strong>。</p>
+</li>
+<li>
+<p><strong>Application</strong> 尝试加载，如果也没找到，就会抛出 <code>ClassNotFoundException</code>。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-为什么要这么设计核心作用">3. 为什么要这么设计？（核心作用）
+</h3><p>双亲委派模型主要解决了两个大问题：</p>
+<h4 id="-1-安全性-security--防止核心-api-被篡改">✅ 1. 安全性 (Security) —— 防止核心 API 被篡改
+</h4><p>假设黑客写了一个恶意的类，名字也叫 <code>java.lang.String</code>，并且放在了你的 ClassPath 下。
+如果没有双亲委派，系统就会加载这个恶意的 <code>String</code> 类，你的密码、数据全都会被黑客截获。 <strong>有了双亲委派：</strong> 系统在加载 <code>String</code> 时，会一直往上找，最终由 <strong>Bootstrap ClassLoader</strong> 加载了 JDK 自带的那个正版 <code>String</code>。黑客写的那个类永远没有机会被加载。</p>
+<h4 id="-2-避免重复加载-uniqueness">✅ 2. 避免重复加载 (Uniqueness)
+</h4><p>Java 类在内存中的唯一性是由 <strong>“类加载器 + 类全名”</strong> 共同决定的。
+如果同一个 <code>System</code> 类被两个不同的加载器各加载了一次，JVM 会认为它们是两个完全不同的类，这会导致类型转换异常，系统会乱套。
+双亲委派保证了核心类永远只由顶层的加载器加载一次。</p>
+<h3 id="4-什么时候需要打破双亲委派">4. 什么时候需要打破双亲委派？
+</h3><p>虽然双亲委派很好，但在某些特殊场景下，它反而成了阻碍，我们需要“打破”它（即：不让父类先加载，而是自己先加载，或者绕过父类）。</p>
+<p><strong>经典案例：</strong></p>
+<ol>
+<li>
+<p><strong>Tomcat (Web 容器)：</strong></p>
+<ul>
+<li>
+<p>Tomcat 上可能部署了两个 Web 应用，一个用 Spring 4，一个用 Spring 5。</p>
+</li>
+<li>
+<p>如果用默认的双亲委派，Spring 类库只能加载一份，会导致冲突。</p>
+</li>
+<li>
+<p><strong>解决：</strong> Tomcat 自定义了类加载器，优先加载 Web 应用自己 <code>WEB-INF/lib</code> 下的类，<strong>打破了“向上委托”的规则</strong>（先自己找，找不到再问爸爸）。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>JDBC (SPI 机制)：</strong></p>
+<ul>
+<li>
+<p>Java 核心包提供了 <code>java.sql.Driver</code> 接口（在 Bootstrap 层加载）。</p>
+</li>
+<li>
+<p>但是具体的实现（如 MySQL 驱动）是第三方厂商提供的（在 ClassPath 下，由 App 层加载）。</p>
+</li>
+<li>
+<p>这里出现了一个悖论：<strong>Bootstrap 层的代码需要去调用 App 层的代码</strong>。父加载器是看不到子加载器的类的。</p>
+</li>
+<li>
+<p><strong>解决：</strong> 使用 <strong>线程上下文类加载器 (Thread Context ClassLoader)</strong>，让父级加载器“走后门”拿到子级加载器去加载类。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="hashmap与concurenthashmap的区别">HashMap与ConcurentHashMap的区别
+</h2><p><strong>HashMap</strong> 和 <strong>ConcurrentHashMap (CHM)</strong> 的核心区别在于：<strong>线程安全性</strong>和<strong>底层实现机制</strong></p>
+<p>简单来说：</p>
+<ul>
+<li>
+<p><strong>HashMap</strong> 是<strong>非线程安全</strong>的，性能极高，适合单线程。</p>
+</li>
+<li>
+<p><strong>ConcurrentHashMap</strong> 是<strong>线程安全</strong>的，高并发下性能依然优秀，适合多线程。</p>
+</li>
+</ul>
+<h3 id="核心区别详解-1">核心区别详解
+</h3><h4 id="-线程安全性-thread-safety">① 线程安全性 (Thread Safety)
+</h4><ul>
+<li>
+<p><strong>HashMap:</strong></p>
+<ul>
+<li>
+<p><strong>不安全。</strong> 如果多个线程同时写入 HashMap，可能会导致数据覆盖（Data Race）。</p>
+</li>
+<li>
+<p><strong>严重问题：</strong> 在 JDK 1.7 中，多线程并发扩容（Resize）时甚至会导致链表成环，造成 <code>Infinite Loop</code>（死循环），CPU 飙升 100%。虽然 JDK 1.8 修复了死循环问题，但依然会有数据丢失风险。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>ConcurrentHashMap:</strong></p>
+<ul>
+<li><strong>安全。</strong> 它是专门为并发设计的。内部使用了非常精妙的锁机制和 CAS 操作，保证了多线程下的数据一致性。</li>
+</ul>
+</li>
+</ul>
+<h4 id="-锁的粒度-locking-granularity--性能的关键">② 锁的粒度 (Locking Granularity) —— 性能的关键
+</h4><ul>
+<li>
+<p><strong>HashMap:</strong> 没有锁。</p>
+</li>
+<li>
+<p><strong>Hashtable (反面教材):</strong> 使用 <code>synchronized</code> 锁住<strong>整个</strong> Map（一把大锁）。只要有一个线程在写，其他线程无论是读还是写都得排队，效率极低。</p>
+</li>
+<li>
+<p><strong>ConcurrentHashMap:</strong></p>
+<ul>
+<li>
+<p><strong>JDK 1.7:</strong> 使用 <strong>分段锁 (Segment Locking)</strong>。将数据分成一段一段（默认 16 段），每次只锁住被修改的那一段。</p>
+</li>
+<li>
+<p><strong>JDK 1.8 (优化):</strong> 抛弃了分段锁，采用 <strong>CAS + <code>synchronized</code></strong>。锁的粒度更细，只锁住<strong>哈希桶的头节点</strong>。这意味着只要两个线程操作的 Key 不在同一个桶（Hash冲突），它们就可以完全并行，互不干扰！</p>
+</li>
+<li>
+<p><strong>能用无锁（CAS）解决的就用无锁，解决不了的再用锁（synchronized），而且锁本身也做了巨大的优化</strong></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-cas-compare-and-swap--冲锋在前的轻骑兵">1. CAS (Compare And Swap) —— 冲锋在前的“轻骑兵”
+</h3><p>CAS 是一种<strong>乐观锁</strong>机制。它的核心思想是：“我认为没人跟我抢，所以我直接尝试更新。如果真的有人抢（比较失败），我再重试或放弃。”</p>
+<p>在 JDK 1.8 的 CHM 中，CAS 主要用于<strong>无竞争场景</strong>和<strong>状态设置</strong>，它的速度非常快，因为它直接对应 CPU 的一条原子指令（<code>cmpxchg</code>）。</p>
+<h4 id="cas-在哪里用"><strong>CAS 在哪里用？</strong>
+</h4><ol>
+<li>
+<p><strong>插入新节点（最关键的路径）：</strong> 当 <code>put</code> 一个数据时，如果计算出的 Hash 槽位（Bucket）是<strong>空</strong>的（没有发生哈希冲突），CHM <strong>不会加锁</strong>，而是直接用 CAS 尝试把新节点放入该位置。</p>
+<ul>
+<li>
+<p><strong>代码逻辑：</strong> <code>casTabAt(tab, i, null, new Node(...))</code></p>
+</li>
+<li>
+<p><strong>优势：</strong> 这种情况在哈希散列良好的情况下非常常见，完全避免了加锁的开销。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>初始化数组：</strong> 在 <code>initTable</code> 方法中，通过 CAS 修改 <code>sizeCtl</code> 变量（将其设为 -1），来抢占“初始化数组”的权利。只有一个线程能 CAS 成功，其他的线程会 <code>yield</code> 让出 CPU。</p>
+</li>
+<li>
+<p><strong>计数更新：</strong> 在 <code>addCount</code> 方法中，利用类似 <code>LongAdder</code> 的机制（<code>Cells</code> 数组），通过 CAS 累加元素的数量。</p>
+</li>
+</ol>
+<h4 id="cas-的潜在问题"><strong>CAS 的潜在问题：</strong>
+</h4><ul>
+<li>
+<p><strong>ABA 问题：</strong>（虽然在 CHM 的节点插入中通常不涉及，但在其他并发场景需注意）。</p>
+</li>
+<li>
+<p><strong>自旋开销：</strong> 如果竞争太激烈，CAS 一直失败重试（自旋），会白白浪费 CPU 资源。</p>
+</li>
+</ul>
+<hr>
+<h3 id="2-synchronized--坐镇后方的重装卫士">2. Synchronized —— 坐镇后方的“重装卫士”
+</h3><p>在 JDK 1.6 之前，<code>synchronized</code> 是重量级锁，性能很差。但在 JDK 1.8 中，它是经过武装牙齿的“新式重甲”。</p>
+<h4 id="synchronized-在哪里用"><strong>Synchronized 在哪里用？</strong>
+</h4><p><strong>仅在发生哈希冲突时使用。</strong></p>
+<p>当 <code>put</code> 数据时，如果发现目标槽位<strong>已经有节点了</strong>（Hash 冲突），CAS 就搞不定了（因为要操作链表或红黑树，涉及多个指针的变动，CAS 很难保证原子性）。
+此时，CHM 会用 <code>synchronized</code> <strong>锁住该槽位的头节点</strong>。</p>
+<h3 id="底层实现深度对比-jdk-17-vs-jdk-18">底层实现深度对比 (JDK 1.7 vs JDK 1.8)
+</h3><p>这是面试中最能体现深度的部分，重点关注 ConcurrentHashMap 的演进。</p>
+<h4 id="hashmap">HashMap
+</h4><ul>
+<li>
+<p><strong>JDK 1.7:</strong> 数组 + 链表。</p>
+</li>
+<li>
+<p><strong>JDK 1.8:</strong> 数组 + 链表 + <strong>红黑树</strong>。当链表长度 &gt; 8 且数组长度 &gt; 64 时，链表会转为红黑树，将查询复杂度从 $O(n)$ 优化到 $O(\log n)$。</p>
+</li>
+</ul>
+<h4 id="concurrenthashmap-进化史">ConcurrentHashMap (进化史)
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>特性</strong></th>
+          <th><strong>JDK 1.7 (分段锁)</strong></th>
+          <th><strong>JDK 1.8 (CAS + Synchronized)</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>核心结构</strong></td>
+          <td><strong>Segment 数组 + HashEntry 数组 + 链表</strong></td>
+          <td><strong>Node 数组 + 链表 + 红黑树</strong></td>
+      </tr>
+      <tr>
+          <td><strong>锁机制</strong></td>
+          <td><strong>ReentrantLock (Segment 继承自它)</strong></td>
+          <td><strong>CAS (乐观锁) + synchronized</strong></td>
+      </tr>
+      <tr>
+          <td><strong>锁粒度</strong></td>
+          <td>粗。锁住一个 Segment (默认含多个 Hash 桶)</td>
+          <td>细。只锁住当前 Hash 桶的<strong>头节点</strong></td>
+      </tr>
+      <tr>
+          <td><strong>并发度</strong></td>
+          <td>受限于 Segment 个数 (默认 16)</td>
+          <td>理论上等于 Hash 桶的数量 (数组长度)</td>
+      </tr>
+      <tr>
+          <td><strong>读操作</strong></td>
+          <td><code>volatile</code> 保证可见性，<strong>无锁</strong></td>
+          <td><code>volatile</code> 保证可见性，<strong>无锁</strong></td>
+      </tr>
+  </tbody>
+</table></div>
+<p><strong>JDK 1.8 为什么要放弃分段锁？</strong></p>
+<ol>
+<li>
+<p><strong>内存占用：</strong> 每个 Segment 都要继承 ReentrantLock，通过 AQS 维护队列，内存开销大。</p>
+</li>
+<li>
+<p><strong>锁粒度不够细：</strong> 即使分了 16 段，依然可能存在多个线程竞争同一个段的情况。</p>
+</li>
+<li>
+<p><strong>效率提升：</strong> JDK 1.6 之后 JVM 对 <code>synchronized</code> 做了大量优化（偏向锁、轻量级锁），在低竞争下性能已经非常好了，没必要维护复杂的 ReentrantLock。</p>
+</li>
+</ol>
+<hr>
+<h3 id="3-总结对比表">3. 总结对比表
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>维度</strong></th>
+          <th><strong>HashMap</strong></th>
+          <th><strong>ConcurrentHashMap</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>线程安全</strong></td>
+          <td>❌ 否</td>
+          <td>✅ 是</td>
+      </tr>
+      <tr>
+          <td><strong>Null Key/Value</strong></td>
+          <td>✅ 允许</td>
+          <td>❌ 不允许</td>
+      </tr>
+      <tr>
+          <td><strong>原理 (JDK8)</strong></td>
+          <td>数组 + 链表 + 红黑树</td>
+          <td>数组 + 链表 + 红黑树 + CAS + synchronized</td>
+      </tr>
+      <tr>
+          <td><strong>扩容机制</strong></td>
+          <td>新建数组 -&gt; 迁移数据</td>
+          <td>能够支持<strong>多线程并发协助扩容</strong> (这是 CHM 1.8 的黑科技)</td>
+      </tr>
+      <tr>
+          <td><strong>应用场景</strong></td>
+          <td>局部变量、单线程环境</td>
+          <td>全局缓存、高并发环境</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="为什么要用synchronized去处理hash冲突">为什么要用synchronized去处理hash冲突
+</h3><h4 id="cas-的射程只有-1-个变量-one-word">CAS 的“射程”只有 1 个变量 (One Word)
+</h4><p>这是核心原因。 <strong>CAS 只能保证对“内存中某一个地址”的更新是原子的。</strong></p>
+<ul>
+<li>
+<p><strong>没有冲突时（put 到空槽位）：</strong> 只需要把 <code>Node</code> 放入数组的 <code>tab[i]</code> 位置。这就只涉及<strong>一个变量</strong>（数组的一个坑位）的修改。</p>
+<ul>
+<li><code>CAS(tab, i, null, newNode)</code> -&gt; <strong>搞得定！</strong> ✅</li>
+</ul>
+</li>
+<li>
+<p><strong>有冲突时（链表/红黑树）：</strong> 这就不是改一个变量的事了，这是一个<strong>复合操作（Compound Operation）</strong>。</p>
+<ul>
+<li>
+<p><strong>场景一：链表追加</strong> 你需要先遍历链表找到最后一个节点 <code>Tail</code>，然后把 <code>Tail.next</code> 指向 <code>NewNode</code>。
+看似只改了 <code>Tail.next</code> 一个变量，但在并发环境下，你必须保证<strong>从你找到 Tail 到你修改 Tail 的这段时间里，Tail 没有被别人删掉，也没有别人在后面先插了一脚</strong>。如果要用 CAS 解决这个问题，必须极其复杂的自旋重试，代码复杂度指数级上升。</p>
+</li>
+<li>
+<p><strong>场景二：红黑树旋转 (最致命的)</strong> 红黑树插入节点后，为了保持平衡，可能需要<strong>变色</strong>和<strong>旋转</strong>。
+一次旋转（左旋/右旋）往往涉及到 <strong>3 到 5 个指针</strong>的同时修改（父节点指向子节点、子节点指向孙节点、父节点指向新的子节点&hellip;）。 <strong>CAS 一次只能改 1 个指针，无法同时原子性地修改 3 个指针。</strong> 如果你用 3 次 CAS 分别去改，那在第 1 次和第 2 次之间，树的结构是<strong>断裂</strong>的。其他线程读到这个断裂的树，程序直接崩了。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>结论：</strong> <code>synchronized</code> 锁住的是**“一段代码逻辑”<strong>（原子性范围大），而 CAS 锁住的是</strong>“一个变量”**（原子性范围小）。处理复杂数据结构变动，必须用大范围的锁。</p>
+<h2 id="redis挂了rocketmq挂了都怎么处理">Redis挂了RocketMQ挂了都怎么处理
+</h2><h3 id="redis-挂了怎么处理">Redis 挂了怎么处理？
+</h3><p>Redis 挂了，最大的风险是<strong>大量流量瞬间击穿缓存，直接打到数据库（MySQL）</strong>，导致数据库宕机，引发“缓存雪崩”。</p>
+<h4 id="1-架构层面事前别让它挂">1. 架构层面（事前：别让它挂）
+</h4><p>生产环境绝对不能用单机版（Standalone）Redis。</p>
+<ul>
+<li>
+<p><strong>哨兵模式 (Sentinel)：</strong> 此时如果主节点挂了，哨兵会自动选举一个从节点变成主节点。业务层感知很小。</p>
+</li>
+<li>
+<p><strong>集群模式 (Cluster)：</strong> 数据分片。某一个分片的主节点挂了，该分片的从节点上位。</p>
+</li>
+</ul>
+<h4 id="2-应用层面事中挂了怎么办">2. 应用层面（事中：挂了怎么办）
+</h4><p>这是开发最需要关心的。如果 Redis 真的全挂了，代码必须有<strong>降级策略</strong>。</p>
+<ul>
+<li>
+<p><strong>方案 A：二级缓存（本地缓存）兜底</strong></p>
+<ul>
+<li>
+<p><strong>策略：</strong> 请求先查 Redis -&gt; Redis 挂了/没数据 -&gt; 查本地缓存 (如 Caffeine/Guava) -&gt; 本地也没 -&gt; 查数据库。</p>
+</li>
+<li>
+<p><strong>作用：</strong> 本地缓存虽然容量小，但能扛住短期的高热点流量，给数据库争取喘息时间。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>方案 B：熔断与限流（Circuit Breaker &amp; Rate Limiting）</strong></p>
+<ul>
+<li>
+<p><strong>工具：</strong> Sentinel (阿里), Hystrix, Resilience4j。</p>
+</li>
+<li>
+<p><strong>逻辑：</strong> 当监测到访问 Redis 的异常率飙升（比如连接超时），直接<strong>熔断</strong> Redis 调用。</p>
+</li>
+<li>
+<p><strong>后续：</strong> 请求不再去连 Redis（防止卡死线程），而是直接<strong>限流</strong>访问数据库。比如平时 10000 QPS，Redis 挂了，限制只有 200 QPS 能打到数据库，剩下的请求直接报错或返回默认值。</p>
+</li>
+<li>
+<p><strong>目的：</strong> <strong>保住数据库！</strong> 只要数据库还活着，服务就还有救；数据库挂了，整个系统就完了。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>方案 C：服务降级</strong></p>
+<ul>
+<li>如果是非核心业务（比如“猜你喜欢”、“热搜榜”），Redis 挂了直接返回空数据或静态的默认数据，不要去查数据库。</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-关于分布式锁">3. 关于分布式锁
+</h4><ul>
+<li>
+<p>如果你的系统依赖 Redis 做分布式锁（Redisson），Redis 挂了会导致锁失效或无法加锁。</p>
+</li>
+<li>
+<p><strong>处理：</strong> 这种情况下通常需要业务报错（Fail Fast），或者降级为数据库乐观锁（Version字段），但并发性能会大打折扣。</p>
+</li>
+</ul>
+<h3 id="mq-消息队列-挂了怎么处理">MQ (消息队列) 挂了怎么处理？
+</h3><p>MQ (如 RocketMQ, Kafka, RabbitMQ) 挂了，最大的风险是<strong>上下游解耦失败，导致核心链路断开（如下单成功了，但扣库存/发积分的消息发不出去了）</strong>，或者<strong>数据丢失</strong>。</p>
+<h4 id="1-架构层面事前别让它挂-1">1. 架构层面（事前：别让它挂）
+</h4><ul>
+<li>
+<p><strong>集群部署：</strong> 无论是 Kafka 还是 RocketMQ，都是主从/多副本机制。</p>
+</li>
+<li>
+<p><strong>多机房/多Broker：</strong> 确保一个 Broker 挂了，Producer 可以自动重连到其他 Broker 发送消息。</p>
+</li>
+</ul>
+<h4 id="2-应用层面事中生产者发不出去怎么办">2. 应用层面（事中：生产者发不出去怎么办？）
+</h4><p>这是最关键的。如果 MQ 彻底连不上了，生产者（Producer）必须有备选方案。</p>
+<ul>
+<li>
+<p><strong>方案 A：本地消息表（Local Message Table）—— 最稳妥方案</strong></p>
+<ul>
+<li>
+<p><strong>原理：</strong> 既然 MQ 连不上，那就把消息写到<strong>本地数据库</strong>的一张表里（和业务数据在同一个事务中）。</p>
+</li>
+<li>
+<p><strong>流程：</strong></p>
+<ol>
+<li>
+<p>开启数据库事务。</p>
+</li>
+<li>
+<p>执行业务 SQL（如下单）。</p>
+</li>
+<li>
+<p>执行插入 SQL：<code>INSERT INTO local_msg_table ... status='PENDING'</code>。</p>
+</li>
+<li>
+<p>提交事务。</p>
+</li>
+</ol>
+</li>
+<li>
+<p><strong>恢复：</strong> 启动一个定时任务（Timer），轮询这张本地消息表，把状态是 &lsquo;PENDING&rsquo; 的消息尝试重新发给 MQ。一旦发送成功，从表中删除或更新状态。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>方案 B：写入本地磁盘/文件</strong></p>
+<ul>
+<li>
+<p><strong>原理：</strong> 如果数据库压力也很大，可以将消息内容追加写入服务器的本地日志文件。</p>
+</li>
+<li>
+<p><strong>恢复：</strong> 后续写个脚本读取日志文件，重新灌入 MQ。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>方案 C：同步直连（极端降级）</strong></p>
+<ul>
+<li>
+<p>如果业务允许，当 MQ 挂了，消费者（Consumer）提供一个 HTTP/RPC 接口。生产者发现 MQ 发送失败，直接调用消费者的 RPC 接口（将异步变同步）。</p>
+</li>
+<li>
+<p><em>缺点：</em> 失去了削峰填谷的作用，消费者可能扛不住压力。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-应用层面事中消费者收不到怎么办">3. 应用层面（事中：消费者收不到怎么办？）
+</h4><ul>
+<li>
+<p><strong>积压处理：</strong> MQ 挂了期间，消息无法消费。等 MQ 恢复后，可能会有海量消息涌入。</p>
+</li>
+<li>
+<p><strong>策略：</strong> 消费者需要评估是否增加线程数，或者临时起一套只负责“搬运”的消费者，把消息快速落库，然后再慢慢处理，防止消费者被压垮。</p>
+</li>
+</ul>
+<h2 id="介绍tidb的计算与存储分离和mysql的区别是什么">介绍TiDB的计算与存储分离，和MySQL的区别是什么
+</h2><p>一句话概括：<strong>TiDB 把“处理 SQL 的脑子”和“存数据的肚子”彻底分开了，中间通过网络（RPC）通信。</strong></p>
+<hr>
+<h3 id="一-tidb-的计算与存储分离架构">一、 TiDB 的计算与存储分离架构
+</h3><p>TiDB 的架构主要由三大组件组成，完美体现了这种分离：</p>
+<h4 id="1-计算层tidb-server无状态的大脑">1. 计算层：TiDB Server（无状态的“大脑”）
+</h4><ul>
+<li>
+<p><strong>职责：</strong> 负责接收客户端的 SQL 请求，进行 SQL 解析、语法检查、制定查询计划（Optimizer）、生成执行器。</p>
+</li>
+<li>
+<p><strong>特点：</strong> <strong>它是无状态的（Stateless）。</strong> 它不存储任何实际的数据。</p>
+</li>
+<li>
+<p><strong>扩展性：</strong> 如果你发现 SQL 解析慢了，或者并发连接数太高了，只需要加几台 TiDB Server 机器就行，完全不需要进行数据迁移。</p>
+</li>
+</ul>
+<h4 id="2-存储层tikv分布式的肚子">2. 存储层：TiKV（分布式的“肚子”）
+</h4><ul>
+<li>
+<p><strong>职责：</strong> 负责存储真正的数据。底层是一个巨大的、分布式的、有序的 Key-Value Map。</p>
+</li>
+<li>
+<p><strong>实现：</strong> 内部使用 <strong>RocksDB</strong> 存储引擎。数据被切分成很多个 <strong>Region</strong>（默认 96MB），通过 <strong>Raft 协议</strong>（类似 Paxos）保证多副本一致性。</p>
+</li>
+<li>
+<p><strong>扩展性：</strong> 如果你发现硬盘满了，或者磁盘 I/O 扛不住了，只需要加几台 TiKV 机器，数据会自动均衡过去。</p>
+</li>
+</ul>
+<h4 id="3-调度层pd-placement-driver总指挥">3. 调度层：PD (Placement Driver)（“总指挥”）
+</h4><ul>
+<li><strong>职责：</strong> 存储元数据（哪个 Key 在哪个 TiKV 上），负责给 TiDB Server 提供路由信息，同时指挥 TiKV 进行数据搬迁和负载均衡。</li>
+</ul>
+<hr>
+<h3 id="二-tidb-与-mysql-的核心区别">二、 TiDB 与 MySQL 的核心区别
+</h3><p>我们将传统 MySQL（单机或主从架构）与 TiDB 进行深度对比：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>维度</strong></th>
+          <th><strong>MySQL (传统架构)</strong></th>
+          <th><strong>TiDB (存算分离架构)</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>架构模式</strong></td>
+          <td><strong>紧耦合 (Monolithic)</strong></td>
+          <td><strong>松耦合 (Microservices-like)</strong></td>
+      </tr>
+      <tr>
+          <td><strong>进程结构</strong></td>
+          <td>SQL 解析器和 InnoDB 引擎在<strong>同一个进程</strong> (<code>mysqld</code>) 中。</td>
+          <td>SQL 解析在 <code>TiDB</code> 进程，数据存储在 <code>TiKV</code> 进程，通常部署在不同机器上。</td>
+      </tr>
+      <tr>
+          <td><strong>通信方式</strong></td>
+          <td>内存函数调用 (Function Call)，极快。</td>
+          <td><strong>网络 RPC 调用 (gRPC)</strong>，有网络延迟开销。</td>
+      </tr>
+      <tr>
+          <td><strong>扩展能力 (Scaling)</strong></td>
+          <td><strong>垂直扩展 (Vertical)</strong>：买更好的 CPU/内存。<br><strong>分库分表</strong>：需要中间件，运维极其痛苦。</td>
+          <td><strong>水平扩展 (Horizontal)</strong>：计算不足加 TiDB，存储不足加 TiKV，<strong>完全透明</strong>，业务无感知。</td>
+      </tr>
+      <tr>
+          <td><strong>查询执行</strong></td>
+          <td>数据在哪，计算就在哪。</td>
+          <td><strong>分布式计算</strong>：TiDB 生成计划，分发给多个 TiKV 并行处理。</td>
+      </tr>
+      <tr>
+          <td><strong>事务限制</strong></td>
+          <td>受限于单机内存和磁盘，大事务容易导致主从延迟。</td>
+          <td>基于 <strong>Percolator 模型</strong> (Google) 的两阶段提交 (2PC)，支持跨行跨表分布式事务。</td>
+      </tr>
+      <tr>
+          <td><strong>高可用</strong></td>
+          <td>需依赖 MHA/Orchestrator，主从切换可能丢数据或需人工介入。</td>
+          <td>基于 <strong>Raft 协议</strong>，自动选主，强一致性，RPO = 0（数据不丢）。</td>
+      </tr>
+  </tbody>
+</table></div>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 LuciusWan
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

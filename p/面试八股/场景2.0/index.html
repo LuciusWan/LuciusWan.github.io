@@ -449,7 +449,7 @@
         </li>
       </ol>
     </li>
-    <li><a href="#selectpollepoll">select，poll，epoll</a>
+    <li><a href="#操作系统的io多路复用selectpollepoll">操作系统的IO多路复用select，poll，epoll</a>
       <ol>
         <li>
           <ol>
@@ -2120,7 +2120,7 @@
 <p>等下次内核告诉 Redis “这个 Socket 可以写了”，Redis 再继续把剩下的数据发完。</p>
 </li>
 </ol>
-<h2 id="selectpollepoll">select，poll，epoll
+<h2 id="操作系统的io多路复用selectpollepoll">操作系统的IO多路复用select，poll，epoll
 </h2><p>poll和 select 并没有太大的本质区别，都是使用「线性结构」存储进程关注的 Socket 集合，<strong>因此都需要遍历文件描述符集合来找到可读或可写的 Socket</strong>，时间复杂度为 O(n)，而且也需要在用户态与内核态之间拷贝文件描述符集合，这种方式随着并发数上来，性能的损耗会呈指数级增长。</p>
 <ul>
 <li>

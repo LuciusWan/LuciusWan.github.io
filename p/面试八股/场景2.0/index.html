@@ -451,13 +451,48 @@
     </li>
     <li><a href="#操作系统的io多路复用selectpollepoll">操作系统的IO多路复用select，poll，epoll</a>
       <ol>
-        <li>
+        <li><a href="#1-物理位置">1. 物理位置</a></li>
+        <li><a href="#2-发送过程-write">2. 发送过程 (write)</a></li>
+        <li><a href="#3-接收过程-read">3. 接收过程 (read)</a></li>
+      </ol>
+    </li>
+    <li><a href="#内核内存和socket是什么">内核内存和Socket是什么？</a>
+      <ol>
+        <li><a href="#内核内存-kernel-memory--皇宫禁地">内核内存 (Kernel Memory) —— “皇宫禁地”</a></li>
+        <li><a href="#socket-是什么-插座与缓冲区">Socket 是什么？—— “插座与缓冲区”</a></li>
+      </ol>
+    </li>
+    <li><a href="#传统的java17是用户级线程和内核级线程一对一处理">传统的Java17，是用户级线程和内核级线程一对一处理</a>
+      <ol>
+        <li><a href="#一-核心关系傀儡与真身">一、 核心关系：傀儡与真身</a></li>
+        <li><a href="#二-它们怎么通信控制权传递">二、 它们怎么“通信”？（控制权传递）</a>
           <ol>
-            <li><a href="#1-物理位置">1. 物理位置</a></li>
-            <li><a href="#2-发送过程-write">2. 发送过程 (write)</a></li>
-            <li><a href="#3-接收过程-read">3. 接收过程 (read)</a></li>
+            <li><a href="#1-启动指令start">1. 启动指令：<code>start()</code></a></li>
+            <li><a href="#2-行为控制sleep--yield--park">2. 行为控制：<code>sleep()</code> / <code>yield()</code> / <code>park()</code></a></li>
+            <li><a href="#3-阻塞同步io-操作">3. 阻塞同步：IO 操作</a></li>
           </ol>
         </li>
+        <li><a href="#三-它们怎么调度谁说了算">三、 它们怎么调度？（谁说了算？）</a>
+          <ol>
+            <li><a href="#1-调度者os-调度器比如-linux-的-cfs">1. 调度者：OS 调度器（比如 Linux 的 CFS）</a></li>
+            <li><a href="#2-调度方式抢占式-preemptive">2. 调度方式：抢占式 (Preemptive)</a></li>
+            <li><a href="#3-java-优先级的尴尬">3. Java 优先级的尴尬</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#synchronized的底层原理">synchronized的底层原理</a>
+      <ol>
+        <li><a href="#第一层数据结构层--mark-word-的比特位舞步">第一层：数据结构层 —— Mark Word 的比特位舞步</a></li>
+        <li><a href="#第二层栈帧层--lock-record-锁记录">第二层：栈帧层 —— Lock Record (锁记录)</a></li>
+        <li><a href="#第三层jvm-实现层--c-里的-objectmonitor">第三层：JVM 实现层 —— C++ 里的 ObjectMonitor</a></li>
+        <li><a href="#第四层操作系统与硬件层--futex-与-内存屏障">第四层：操作系统与硬件层 —— Futex 与 内存屏障</a>
+          <ol>
+            <li><a href="#1-操作系统mutex-与-futex">1. 操作系统：Mutex 与 Futex</a></li>
+            <li><a href="#2-cpu-硬件内存语义-jmm">2. CPU 硬件：内存语义 (JMM)</a></li>
+          </ol>
+        </li>
+        <li><a href="#总结一条线程的黑化之路">总结：一条线程的“黑化”之路</a></li>
       </ol>
     </li>
   </ol>
@@ -520,7 +555,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 34 分钟
+                    阅读时长: 42 分钟
                 </time>
             </div>
         
@@ -2131,8 +2166,8 @@
 </li>
 </ul>
 <p>我们来看一个最经典的场景：<strong>Redis 怎么把数据发给客户端？</strong> 假设 Redis 要发送字符串 <code>&quot;Hello&quot;</code>。</p>
-<h4 id="1-物理位置">1. 物理位置
-</h4><ul>
+<h3 id="1-物理位置">1. 物理位置
+</h3><ul>
 <li>
 <p><strong>字符串 &ldquo;Hello&rdquo;</strong>：一开始在 Redis 的<strong>用户内存</strong>里。</p>
 </li>
@@ -2140,8 +2175,8 @@
 <p><strong>Socket 对象</strong>：在操作系统的<strong>内核内存</strong>里。</p>
 </li>
 </ul>
-<h4 id="2-发送过程-write">2. 发送过程 (write)
-</h4><p>Redis 调用 <code>write(fd, &quot;Hello&quot;)</code> 系统调用。</p>
+<h3 id="2-发送过程-write">2. 发送过程 (write)
+</h3><p>Redis 调用 <code>write(fd, &quot;Hello&quot;)</code> 系统调用。</p>
 <ul>
 <li>
 <p><strong>步骤 A：跨界拷贝（CPU Copy）</strong> CPU 暂停 Redis 的用户态运行，切换到内核态。
@@ -2153,8 +2188,8 @@ CPU 把 &ldquo;Hello&rdquo; 从 <strong>Redis 的用户内存</strong> 复制到
 网卡的 DMA 控制器直接把数据从<strong>内核内存</strong>搬运到<strong>网卡硬件</strong>上，然后变成电信号发走。</p>
 </li>
 </ul>
-<h4 id="3-接收过程-read">3. 接收过程 (read)
-</h4><p>客户端发来了一条命令 <code>&quot;GET&quot;</code>。</p>
+<h3 id="3-接收过程-read">3. 接收过程 (read)
+</h3><p>客户端发来了一条命令 <code>&quot;GET&quot;</code>。</p>
 <ul>
 <li>
 <p><strong>步骤 A：硬件接收</strong> 网卡收到电信号，转成数据包，通过 DMA 搬运到 <strong>Socket 的接收缓冲区（内核内存）</strong>。 <em>此时，Redis 还不知道数据来了。</em></p>
@@ -2168,6 +2203,455 @@ CPU 把数据从 <strong>Socket 的接收缓冲区（内核内存）</strong> �
 现在，Redis 终于可以在自己的变量里看到 <code>&quot;GET&quot;</code> 这三个字母了。</p>
 </li>
 </ul>
+<h2 id="内核内存和socket是什么">内核内存和Socket是什么？
+</h2><h3 id="内核内存-kernel-memory--皇宫禁地">内核内存 (Kernel Memory) —— “皇宫禁地”
+</h3><p>在 Linux 操作系统中，物理内存（RAM）被逻辑上划分为两块：</p>
+<ol>
+<li>
+<p><strong>用户空间 (User Space)</strong>：</p>
+<ul>
+<li>
+<p><strong>谁在住？</strong> 你的 Java 程序、Chrome 浏览器、QQ 等所有应用程序。</p>
+</li>
+<li>
+<p><strong>地位</strong>：平民百姓。权力有限，想干大事（读硬盘、发网络包）必须打报告（系统调用）。</p>
+</li>
+<li>
+<p><strong>特点</strong>：如果你的 Java 程序崩了，只是这块地盘乱了，不会影响整个电脑。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>内核空间 (Kernel Space) / 内核内存</strong>：</p>
+<ul>
+<li>
+<p><strong>谁在住？</strong> 操作系统内核（Linux Kernel）、硬件驱动程序。</p>
+</li>
+<li>
+<p><strong>地位</strong>：皇宫禁地（VIP）。拥有最高权限，可以随意操作 CPU、硬盘、网卡。</p>
+</li>
+<li>
+<p><strong>特点</strong>：<strong>Socket 就存放在这里！</strong> 还有页表、进程表等核心数据。如果这里崩了，电脑直接蓝屏或重启。</p>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>为什么要有“内核内存”？</strong> 主要是为了<strong>安全</strong>和<strong>隔离</strong>。防止你写了一个只有 bug 的代码，直接把操作系统的核心数据给改了，导致系统瘫痪。</p>
+<h3 id="socket-是什么-插座与缓冲区">Socket 是什么？—— “插座与缓冲区”
+</h3><p>“Socket” 翻译过来叫“插座”或“套接字”。
+但这个翻译太抽象了。在<strong>内核内存</strong>的视角里，Socket 到底是什么？</p>
+<p><strong>本质上，Socket 就是内核内存里的两个缓冲区（Buffer）结构体。</strong></p>
+<p>当你用 Java <code>new Socket()</code> 创建一个连接时，内核会在<strong>内核内存</strong>里划出一小块地盘，专门维护这个连接。这块地盘里主要包含两部分：</p>
+<ol>
+<li>
+<p><strong>接收缓冲区 (Recv Buffer)</strong>：</p>
+<ul>
+<li>
+<p>像一个<strong>收件箱</strong>。</p>
+</li>
+<li>
+<p>网卡收到网线传来的数据，会先扔进这个箱子，等着你的 Java 程序来取。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>发送缓冲区 (Send Buffer)</strong>：</p>
+<ul>
+<li>
+<p>像一个<strong>发件箱</strong>。</p>
+</li>
+<li>
+<p>你的 Java 程序想发数据，先把数据扔进这个箱子，然后由操作系统择机发给网卡。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="传统的java17是用户级线程和内核级线程一对一处理">传统的Java17，是用户级线程和内核级线程一对一处理
+</h2><p>在 Java 19（虚拟线程/协程）普及之前，Java 17 及更早版本，采用的确实是经典的 <strong>1:1 线程模型</strong>。</p>
+<p>这意味着：<strong>每一个 Java 线程（User Thread），在底层都死死绑定着一个操作系统的内核线程（Kernel Thread）。</strong></p>
+<h3 id="一-核心关系傀儡与真身">一、 核心关系：傀儡与真身
+</h3><p>在 1:1 模型中，Java 线程和内核线程的关系，就像是 <strong>“皮影戏的傀儡”</strong> 和 <strong>“幕后的操纵者”</strong>。</p>
+<ol>
+<li>
+<p><strong>Java 线程 (User Thread)</strong>：</p>
+<ul>
+<li>
+<p>这是你在代码里 <code>new Thread()</code> 创建出来的对象。</p>
+</li>
+<li>
+<p>它只是一个<strong>傀儡（皮影）</strong>。它有名字、有属性（ID、Priority），但它自己是没有生命的，动不起来。</p>
+</li>
+<li>
+<p>它生活在 <strong>JVM 的堆内存</strong> 里（用户态）。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>内核线程 (Kernel Thread / KLT)</strong>：</p>
+<ul>
+<li>
+<p>这是操作系统（Linux/Windows）真正创建出来的<strong>工人</strong>。</p>
+</li>
+<li>
+<p>它是<strong>幕后的操纵者</strong>。只有它才能被 CPU 调度，只有它才有资格进 CPU 干活。</p>
+</li>
+<li>
+<p>它生活在 <strong>内核空间</strong> 里。</p>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>所谓 1:1 映射</strong>：就是当你调用 <code>thread.start()</code> 时，JVM 会通过系统调用（System Call），向操作系统申请一个内核线程，然后把这个 Java 线程对象和那个内核线程**“绑死”**在一起。此后，这个 Java 线程的一举一动，其实都是那个内核线程在干活。</p>
+<hr>
+<h3 id="二-它们怎么通信控制权传递">二、 它们怎么“通信”？（控制权传递）
+</h3><p>你问的“通信”，其实不是像发微信那样发消息，而是<strong>指令下达</strong>和<strong>状态同步</strong>。这一切都是通过 <strong>JNI (Java Native Interface)</strong> 和 <strong>系统调用 (System Call)</strong> 完成的。</p>
+<p>我们可以把这想象成<strong>牵线</strong>的过程。</p>
+<h4 id="1-启动指令start">1. 启动指令：<code>start()</code>
+</h4><ul>
+<li>
+<p><strong>Java 层</strong>：你喊了一句 <code>t1.start()</code>。</p>
+</li>
+<li>
+<p><strong>通信过程</strong>：</p>
+<ol>
+<li>
+<p>Java 方法调用 <code>private native void start0()</code>。</p>
+</li>
+<li>
+<p>这就触碰到了 JVM 的 C++ 代码。</p>
+</li>
+<li>
+<p>JVM 向操作系统发起系统调用：<code>clone()</code> (Linux) 或 <code>CreateThread</code> (Windows)。</p>
+</li>
+<li>
+<p><strong>操作系统</strong>：收到请求，创建一个真正的内核线程。</p>
+</li>
+<li>
+<p><strong>绑定</strong>：JVM 把这个内核线程的 ID 记在 Java 线程对象里（建立了 1:1 关系）。</p>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="2-行为控制sleep--yield--park">2. 行为控制：<code>sleep()</code> / <code>yield()</code> / <code>park()</code>
+</h4><ul>
+<li>
+<p><strong>场景</strong>：你在 Java 代码里写了 <code>Thread.sleep(1000)</code>。</p>
+</li>
+<li>
+<p><strong>通信过程</strong>：</p>
+<ol>
+<li>
+<p>Java 线程（傀儡）说：“我要睡一秒。”</p>
+</li>
+<li>
+<p>JVM 识别到这是个 Native 方法。</p>
+</li>
+<li>
+<p>JVM 发起系统调用，告诉内核：“喂，把你手里控制这个 Java 线程的那个内核线程挂起（Suspend）1秒。”</p>
+</li>
+<li>
+<p><strong>操作系统</strong>：把对应的内核线程从 CPU 上也就是“运行队列”里拿下来，扔到“等待队列”里。</p>
+</li>
+<li>
+<p><strong>结果</strong>：Java 线程看起来停了，其实是背后的内核线程停了。</p>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="3-阻塞同步io-操作">3. 阻塞同步：IO 操作
+</h4><ul>
+<li>
+<p><strong>场景</strong>：你读取文件 <code>fis.read()</code>。</p>
+</li>
+<li>
+<p><strong>通信过程</strong>：</p>
+<ol>
+<li>
+<p>Java 代码执行到读取指令。</p>
+</li>
+<li>
+<p>因为读取硬盘是特权操作，Java 线程自己干不了，必须陷入<strong>内核态</strong>。</p>
+</li>
+<li>
+<p>对应的内核线程发起 IO 请求，然后被操作系统<strong>阻塞</strong>（因为它要等硬盘转圈圈）。</p>
+</li>
+<li>
+<p><strong>反馈</strong>：内核线程不动了，Java 线程的状态也就变成了 <code>BLOCKED</code> 或 <code>RUNNABLE</code> (但在等待 syscall 返回)。</p>
+</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h3 id="三-它们怎么调度谁说了算">三、 它们怎么调度？（谁说了算？）
+</h3><p>这是最关键的：<strong>JVM 完全不管调度！JVM 是没有资格分配 CPU 时间片的。</strong></p>
+<p>在 1:1 模型下，Java 线程的调度<strong>完全</strong>交给操作系统的<strong>调度器（Scheduler）</strong>。</p>
+<h4 id="1-调度者os-调度器比如-linux-的-cfs">1. 调度者：OS 调度器（比如 Linux 的 CFS）
+</h4><p>JVM 就像一个劳务派遣公司，它把人（线程）招进来，交给政府（OS）去管理。至于谁先干活、谁后干活、干多久，全看政府的心情。</p>
+<h4 id="2-调度方式抢占式-preemptive">2. 调度方式：抢占式 (Preemptive)
+</h4><p>操作系统是个独裁者，它采用**“抢占式”**调度。</p>
+<ul>
+<li>
+<p><strong>时间片（Time Slice）</strong>：</p>
+<ul>
+<li>
+<p>OS 给每个内核线程分配一小段 CPU 时间（比如 10ms - 100ms）。</p>
+</li>
+<li>
+<p>时间一到，CPU 内部的时钟中断响铃。</p>
+</li>
+<li>
+<p>OS 强行把当前线程踢下来（哪怕你代码还没跑完），换下一个线程上。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>上下文切换 (Context Switch) —— 昂贵的代价</strong>：
+这就是 1:1 模型最大的痛点。当 OS 决定切换线程时：</p>
+<ol>
+<li>
+<p><strong>保存现场</strong>：把当前内核线程的寄存器值、程序计数器（跑到哪一行了）全部存回内存。</p>
+</li>
+<li>
+<p><strong>刷新缓存</strong>：因为换人了，CPU L1/L2 缓存里的数据大部分都废了，需要重新加载。</p>
+</li>
+<li>
+<p><strong>恢复现场</strong>：把下一个要运行的内核线程的信息读进寄存器。</p>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="3-java-优先级的尴尬">3. Java 优先级的尴尬
+</h4><p>Java 里有 <code>Thread.setPriority(1-10)</code>。</p>
+<ul>
+<li>
+<p><strong>现实</strong>：这玩意儿基本是个<strong>心理安慰</strong>。</p>
+</li>
+<li>
+<p><strong>原因</strong>：Java 的优先级只是给 OS 一个“建议”。由于不同操作系统对优先级的定义不同（Linux 甚至可能忽略它），JVM 传过去之后，OS 可能会说：“好的我知道了，但我还是按我的规则办。”</p>
+</li>
+</ul>
+<h2 id="synchronized的底层原理">synchronized的底层原理
+</h2><h3 id="第一层数据结构层--mark-word-的比特位舞步">第一层：数据结构层 —— Mark Word 的比特位舞步
+</h3><p>在 64 位 JVM 中，对象头（Object Header）里的 <strong>Mark Word</strong> 是 8 个字节（64 bit）。<code>synchronized</code> 的所有状态流转，本质上就是<strong>在修改这 64 个 bit</strong>。</p>
+<p>我们需要关注最后 2 位（锁标志位）和倒数第 3 位（偏向锁位）：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>锁状态</strong></th>
+          <th><strong>25 bit (未使用)</strong></th>
+          <th><strong>31 bit (HashCode)</strong></th>
+          <th><strong>1 bit (未用)</strong></th>
+          <th><strong>4 bit (分代年龄)</strong></th>
+          <th><strong>1 bit (偏向锁位)</strong></th>
+          <th><strong>2 bit (锁标志位)</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>无锁</strong></td>
+          <td>&hellip;</td>
+          <td>HashCode</td>
+          <td>0</td>
+          <td>age</td>
+          <td>0</td>
+          <td><strong>01</strong></td>
+      </tr>
+      <tr>
+          <td><strong>偏向锁</strong></td>
+          <td>ThreadID (54bit)</td>
+          <td>Epoch (2bit)</td>
+          <td>&hellip;</td>
+          <td>age</td>
+          <td><strong>1</strong></td>
+          <td><strong>01</strong></td>
+      </tr>
+      <tr>
+          <td><strong>轻量级锁</strong></td>
+          <td>指向栈中 Lock Record 的指针 (62bit)</td>
+          <td>&hellip;</td>
+          <td>&hellip;</td>
+          <td>&hellip;</td>
+          <td>&hellip;</td>
+          <td><strong>00</strong></td>
+      </tr>
+      <tr>
+          <td><strong>重量级锁</strong></td>
+          <td>指向互斥量（Monitor）的指针 (62bit)</td>
+          <td>&hellip;</td>
+          <td>&hellip;</td>
+          <td>&hellip;</td>
+          <td>&hellip;</td>
+          <td><strong>10</strong></td>
+      </tr>
+      <tr>
+          <td><strong>GC 标记</strong></td>
+          <td>&hellip;</td>
+          <td>&hellip;</td>
+          <td>&hellip;</td>
+          <td>&hellip;</td>
+          <td>&hellip;</td>
+          <td><strong>11</strong></td>
+      </tr>
+  </tbody>
+</table></div>
+<ul>
+<li>
+<p><strong>底层细节</strong>：</p>
+<ul>
+<li>
+<p>当锁是 <strong>轻量级锁 (00)</strong> 时，前 62 位不再存 HashCode，而是存一个<strong>内存地址指针</strong>，指向持有锁线程的<strong>栈帧</strong>。</p>
+</li>
+<li>
+<p>当锁是 <strong>重量级锁 (10)</strong> 时，前 62 位指向<strong>堆内存</strong>中 C++ 定义的 <code>ObjectMonitor</code> 对象。</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="第二层栈帧层--lock-record-锁记录">第二层：栈帧层 —— Lock Record (锁记录)
+</h3><p>在<strong>轻量级锁</strong>阶段，JVM 并不想直接请求操作系统，它玩了一个“偷梁换柱”的把戏。</p>
+<ol>
+<li>
+<p><strong>开辟空间</strong>：当代码进入 <code>synchronized</code> 块，如果当前是无锁状态，JVM 会在当前线程的<strong>栈帧</strong>中创建一个名为 <code>Lock Record</code> 的空间。</p>
+</li>
+<li>
+<p><strong>Displaced Mark Word</strong>：JVM 把对象头里原本的 Mark Word 拷贝一份到这个 <code>Lock Record</code> 中（为了保存原本的 HashCode 和分代年龄，等锁释放了还得还回去）。</p>
+</li>
+<li>
+<p><strong>CAS 争抢</strong>：JVM 尝试用 <strong>CAS (Compare And Swap)</strong> 指令，将对象头里的 Mark Word 替换为指向 <code>Lock Record</code> 的指针。</p>
+<ul>
+<li>
+<p><strong>成功</strong>：对象头变成了“指针 + 00”，代表抢锁成功。</p>
+</li>
+<li>
+<p><strong>失败</strong>：说明有竞争，或者已经锁了。JVM 会检查对象头的指针是不是指向我自己的栈？如果是，说明是<strong>重入锁</strong>，只需在栈里再放一个空的 Lock Record 记录重入次数即可。</p>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="第三层jvm-实现层--c-里的-objectmonitor">第三层：JVM 实现层 —— C++ 里的 ObjectMonitor
+</h3><p>当竞争升级为重量级锁，JVM 会去堆中申请一个 C++ 对象：ObjectMonitor。</p>
+<p>在 OpenJDK 的 HotSpot 源码中 (src/share/vm/runtime/objectMonitor.hpp)，它的核心结构如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">ObjectMonitor</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="p">...</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">void</span> <span class="o">*</span> <span class="k">volatile</span> <span class="n">_owner</span><span class="p">;</span>      <span class="c1">// 指向当前持有锁的线程 (The King)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">volatile</span> <span class="n">jlong</span>  <span class="n">_recursions</span><span class="p">;</span>  <span class="c1">// 锁的重入次数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">volatile</span> <span class="kt">int</span>    <span class="n">_count</span><span class="p">;</span>       <span class="c1">// 抢锁计数器
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 核心等待队列
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">ObjectWaiter</span> <span class="o">*</span> <span class="k">volatile</span> <span class="n">_cxq</span><span class="p">;</span>       <span class="c1">// (Contention Queue) 竞争队列，单向链表
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">ObjectWaiter</span> <span class="o">*</span> <span class="k">volatile</span> <span class="n">_EntryList</span><span class="p">;</span> <span class="c1">// 等待队列，双向链表 (阻塞状态的线程)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">ObjectWaiter</span> <span class="o">*</span> <span class="k">volatile</span> <span class="n">_WaitSet</span><span class="p">;</span>   <span class="c1">// 等待集合 (调用wait()后的线程)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>底层竞争流程（硬核版）：</strong></p>
+<ol>
+<li>
+<p><strong>CAS 抢占</strong>：线程尝试通过 CAS 将 <code>_owner</code> 指针指向自己。成功则执行。</p>
+</li>
+<li>
+<p><strong>自旋失败，入队</strong>：如果抢不到，线程被封装成 <code>ObjectWaiter</code> 对象。</p>
+</li>
+<li>
+<p><strong>进入 cxq</strong>：线程首先通过 CAS 尝试把节点插入 <code>_cxq</code> 队列的头部（LIFO 策略，为了减少尾部维护开销）。</p>
+</li>
+<li>
+<p><strong>OnDeck 机制</strong>：JVM 不会把所有人都唤醒，而是通过策略挑选一个继承人（Heir），称为 <code>OnDeck</code>，只有这个线程会去竞争锁，避免“惊群效应”。</p>
+</li>
+</ol>
+<hr>
+<h3 id="第四层操作系统与硬件层--futex-与-内存屏障">第四层：操作系统与硬件层 —— Futex 与 内存屏障
+</h3><p>这是最底下的地基，也是为什么重量级锁慢的原因。</p>
+<h4 id="1-操作系统mutex-与-futex">1. 操作系统：Mutex 与 Futex
+</h4><p>当线程在 <code>ObjectMonitor</code> 里抢不到锁，需要“阻塞（Block）”时，JVM 会调用操作系统的内核函数。</p>
+<ul>
+<li>
+<p><strong>Linux 环境下</strong>：</p>
+<ul>
+<li>
+<p>早期：直接用 <code>pthread_mutex_lock</code>，这需要从<strong>用户态（User Mode）切换到内核态（Kernel Mode）</strong>。这个切换涉及到保存 CPU 寄存器上下文、刷新 CPU 缓存（L1/L2 Cache 失效）等，开销极大。</p>
+</li>
+<li>
+<p><strong>现代优化 (Futex)</strong>：Linux 提供了 <code>futex</code> (Fast Userspace muTEX)。</p>
+<ul>
+<li>
+<p>它先在<strong>用户态</strong>尝试通过 CAS 修改一个整数。</p>
+</li>
+<li>
+<p>只有当 CAS 失败（确实有竞争），才会调用系统调用（System Call）陷入内核态去执行 <code>sem_wait</code> 让线程挂起。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>park()</strong>：Java 中的 <code>LockSupport.park()</code> 底层就是调用了 <code>futex</code> 相关的系统调用。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-cpu-硬件内存语义-jmm">2. CPU 硬件：内存语义 (JMM)
+</h4><p><code>synchronized</code> 不仅仅是锁，它还保证了 <strong>内存可见性</strong>。</p>
+<ul>
+<li>
+<p><strong>Lock (monitorenter)</strong>：</p>
+<ul>
+<li>
+<p>底层会插入一个 <strong>LoadBarrier</strong>（或类似的刷新指令）。</p>
+</li>
+<li>
+<p>强制让当前线程的工作内存（CPU Cache）失效，必须从主内存重新读取变量。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Unlock (monitorexit)</strong>：</p>
+<ul>
+<li>
+<p>底层会插入一个 <strong>StoreBarrier</strong>（写屏障）。</p>
+</li>
+<li>
+<p>强制将工作内存中的最新修改立即刷新回主内存，确保别的线程能看到。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>确保每次都能读到业务的最新的缓存信息，比如剩余票数还剩1个，把之前获取锁之前获取到的2给删了，重新更新为最新值，然后在把剩余票数变为0个。</p>
+</li>
+</ul>
+<h3 id="总结一条线程的黑化之路">总结：一条线程的“黑化”之路
+</h3><p>如果一个 Java 线程去抢 <code>synchronized</code>：</p>
+<ol>
+<li>
+<p><strong>CPU 指令层</strong>：先尝试 <strong>CAS</strong> 修改对象头。</p>
+</li>
+<li>
+<p><strong>栈帧层</strong>：如果失败，检查是否是自己锁的（重入），或者尝试把 Mark Word 复制到自己栈帧（轻量级锁）。</p>
+</li>
+<li>
+<p><strong>C++ 对象层</strong>：还失败？去堆里找 <code>ObjectMonitor</code>，把自己包装成 <code>ObjectWaiter</code> 节点，拼命往 <code>_cxq</code> 队列头挤。</p>
+</li>
+<li>
+<p><strong>OS 内核层</strong>：挤不进去？调用 <code>futex</code> 系统调用，请求操作系统把自己挂起（Sleep），交出 CPU 时间片，从用户态跌落内核态，等待被唤醒。</p>
+</li>
+</ol>
 
 </section>
 

@@ -5056,8 +5056,8 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;我们来看一个最经典的场景：&lt;strong&gt;Redis 怎么把数据发给客户端？&lt;/strong&gt; 假设 Redis 要发送字符串 &lt;code&gt;&amp;quot;Hello&amp;quot;&lt;/code&gt;。&lt;/p&gt;
-&lt;h4 id=&#34;1-物理位置&#34;&gt;1. 物理位置
-&lt;/h4&gt;&lt;ul&gt;
+&lt;h3 id=&#34;1-物理位置&#34;&gt;1. 物理位置
+&lt;/h3&gt;&lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;字符串 &amp;ldquo;Hello&amp;rdquo;&lt;/strong&gt;：一开始在 Redis 的&lt;strong&gt;用户内存&lt;/strong&gt;里。&lt;/p&gt;
 &lt;/li&gt;
@@ -5065,8 +5065,8 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 &lt;p&gt;&lt;strong&gt;Socket 对象&lt;/strong&gt;：在操作系统的&lt;strong&gt;内核内存&lt;/strong&gt;里。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4 id=&#34;2-发送过程-write&#34;&gt;2. 发送过程 (write)
-&lt;/h4&gt;&lt;p&gt;Redis 调用 &lt;code&gt;write(fd, &amp;quot;Hello&amp;quot;)&lt;/code&gt; 系统调用。&lt;/p&gt;
+&lt;h3 id=&#34;2-发送过程-write&#34;&gt;2. 发送过程 (write)
+&lt;/h3&gt;&lt;p&gt;Redis 调用 &lt;code&gt;write(fd, &amp;quot;Hello&amp;quot;)&lt;/code&gt; 系统调用。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;步骤 A：跨界拷贝（CPU Copy）&lt;/strong&gt; CPU 暂停 Redis 的用户态运行，切换到内核态。
@@ -5078,8 +5078,8 @@ CPU 把 &amp;ldquo;Hello&amp;rdquo; 从 &lt;strong&gt;Redis 的用户内存&lt;/
 网卡的 DMA 控制器直接把数据从&lt;strong&gt;内核内存&lt;/strong&gt;搬运到&lt;strong&gt;网卡硬件&lt;/strong&gt;上，然后变成电信号发走。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4 id=&#34;3-接收过程-read&#34;&gt;3. 接收过程 (read)
-&lt;/h4&gt;&lt;p&gt;客户端发来了一条命令 &lt;code&gt;&amp;quot;GET&amp;quot;&lt;/code&gt;。&lt;/p&gt;
+&lt;h3 id=&#34;3-接收过程-read&#34;&gt;3. 接收过程 (read)
+&lt;/h3&gt;&lt;p&gt;客户端发来了一条命令 &lt;code&gt;&amp;quot;GET&amp;quot;&lt;/code&gt;。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;步骤 A：硬件接收&lt;/strong&gt; 网卡收到电信号，转成数据包，通过 DMA 搬运到 &lt;strong&gt;Socket 的接收缓冲区（内核内存）&lt;/strong&gt;。 &lt;em&gt;此时，Redis 还不知道数据来了。&lt;/em&gt;&lt;/p&gt;
@@ -5093,6 +5093,455 @@ CPU 把数据从 &lt;strong&gt;Socket 的接收缓冲区（内核内存）&lt;/s
 现在，Redis 终于可以在自己的变量里看到 &lt;code&gt;&amp;quot;GET&amp;quot;&lt;/code&gt; 这三个字母了。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
+&lt;h2 id=&#34;内核内存和socket是什么&#34;&gt;内核内存和Socket是什么？
+&lt;/h2&gt;&lt;h3 id=&#34;内核内存-kernel-memory--皇宫禁地&#34;&gt;内核内存 (Kernel Memory) —— “皇宫禁地”
+&lt;/h3&gt;&lt;p&gt;在 Linux 操作系统中，物理内存（RAM）被逻辑上划分为两块：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;用户空间 (User Space)&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;谁在住？&lt;/strong&gt; 你的 Java 程序、Chrome 浏览器、QQ 等所有应用程序。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;地位&lt;/strong&gt;：平民百姓。权力有限，想干大事（读硬盘、发网络包）必须打报告（系统调用）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;特点&lt;/strong&gt;：如果你的 Java 程序崩了，只是这块地盘乱了，不会影响整个电脑。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;内核空间 (Kernel Space) / 内核内存&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;谁在住？&lt;/strong&gt; 操作系统内核（Linux Kernel）、硬件驱动程序。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;地位&lt;/strong&gt;：皇宫禁地（VIP）。拥有最高权限，可以随意操作 CPU、硬盘、网卡。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;特点&lt;/strong&gt;：&lt;strong&gt;Socket 就存放在这里！&lt;/strong&gt; 还有页表、进程表等核心数据。如果这里崩了，电脑直接蓝屏或重启。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;为什么要有“内核内存”？&lt;/strong&gt; 主要是为了&lt;strong&gt;安全&lt;/strong&gt;和&lt;strong&gt;隔离&lt;/strong&gt;。防止你写了一个只有 bug 的代码，直接把操作系统的核心数据给改了，导致系统瘫痪。&lt;/p&gt;
+&lt;h3 id=&#34;socket-是什么-插座与缓冲区&#34;&gt;Socket 是什么？—— “插座与缓冲区”
+&lt;/h3&gt;&lt;p&gt;“Socket” 翻译过来叫“插座”或“套接字”。
+但这个翻译太抽象了。在&lt;strong&gt;内核内存&lt;/strong&gt;的视角里，Socket 到底是什么？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;本质上，Socket 就是内核内存里的两个缓冲区（Buffer）结构体。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;当你用 Java &lt;code&gt;new Socket()&lt;/code&gt; 创建一个连接时，内核会在&lt;strong&gt;内核内存&lt;/strong&gt;里划出一小块地盘，专门维护这个连接。这块地盘里主要包含两部分：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;接收缓冲区 (Recv Buffer)&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;像一个&lt;strong&gt;收件箱&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;网卡收到网线传来的数据，会先扔进这个箱子，等着你的 Java 程序来取。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;发送缓冲区 (Send Buffer)&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;像一个&lt;strong&gt;发件箱&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;你的 Java 程序想发数据，先把数据扔进这个箱子，然后由操作系统择机发给网卡。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;传统的java17是用户级线程和内核级线程一对一处理&#34;&gt;传统的Java17，是用户级线程和内核级线程一对一处理
+&lt;/h2&gt;&lt;p&gt;在 Java 19（虚拟线程/协程）普及之前，Java 17 及更早版本，采用的确实是经典的 &lt;strong&gt;1:1 线程模型&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;这意味着：&lt;strong&gt;每一个 Java 线程（User Thread），在底层都死死绑定着一个操作系统的内核线程（Kernel Thread）。&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id=&#34;一-核心关系傀儡与真身&#34;&gt;一、 核心关系：傀儡与真身
+&lt;/h3&gt;&lt;p&gt;在 1:1 模型中，Java 线程和内核线程的关系，就像是 &lt;strong&gt;“皮影戏的傀儡”&lt;/strong&gt; 和 &lt;strong&gt;“幕后的操纵者”&lt;/strong&gt;。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Java 线程 (User Thread)&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;这是你在代码里 &lt;code&gt;new Thread()&lt;/code&gt; 创建出来的对象。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;它只是一个&lt;strong&gt;傀儡（皮影）&lt;/strong&gt;。它有名字、有属性（ID、Priority），但它自己是没有生命的，动不起来。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;它生活在 &lt;strong&gt;JVM 的堆内存&lt;/strong&gt; 里（用户态）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;内核线程 (Kernel Thread / KLT)&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;这是操作系统（Linux/Windows）真正创建出来的&lt;strong&gt;工人&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;它是&lt;strong&gt;幕后的操纵者&lt;/strong&gt;。只有它才能被 CPU 调度，只有它才有资格进 CPU 干活。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;它生活在 &lt;strong&gt;内核空间&lt;/strong&gt; 里。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;所谓 1:1 映射&lt;/strong&gt;：就是当你调用 &lt;code&gt;thread.start()&lt;/code&gt; 时，JVM 会通过系统调用（System Call），向操作系统申请一个内核线程，然后把这个 Java 线程对象和那个内核线程**“绑死”**在一起。此后，这个 Java 线程的一举一动，其实都是那个内核线程在干活。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;二-它们怎么通信控制权传递&#34;&gt;二、 它们怎么“通信”？（控制权传递）
+&lt;/h3&gt;&lt;p&gt;你问的“通信”，其实不是像发微信那样发消息，而是&lt;strong&gt;指令下达&lt;/strong&gt;和&lt;strong&gt;状态同步&lt;/strong&gt;。这一切都是通过 &lt;strong&gt;JNI (Java Native Interface)&lt;/strong&gt; 和 &lt;strong&gt;系统调用 (System Call)&lt;/strong&gt; 完成的。&lt;/p&gt;
+&lt;p&gt;我们可以把这想象成&lt;strong&gt;牵线&lt;/strong&gt;的过程。&lt;/p&gt;
+&lt;h4 id=&#34;1-启动指令start&#34;&gt;1. 启动指令：&lt;code&gt;start()&lt;/code&gt;
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Java 层&lt;/strong&gt;：你喊了一句 &lt;code&gt;t1.start()&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;通信过程&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Java 方法调用 &lt;code&gt;private native void start0()&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;这就触碰到了 JVM 的 C++ 代码。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;JVM 向操作系统发起系统调用：&lt;code&gt;clone()&lt;/code&gt; (Linux) 或 &lt;code&gt;CreateThread&lt;/code&gt; (Windows)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;操作系统&lt;/strong&gt;：收到请求，创建一个真正的内核线程。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;绑定&lt;/strong&gt;：JVM 把这个内核线程的 ID 记在 Java 线程对象里（建立了 1:1 关系）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-行为控制sleep--yield--park&#34;&gt;2. 行为控制：&lt;code&gt;sleep()&lt;/code&gt; / &lt;code&gt;yield()&lt;/code&gt; / &lt;code&gt;park()&lt;/code&gt;
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;场景&lt;/strong&gt;：你在 Java 代码里写了 &lt;code&gt;Thread.sleep(1000)&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;通信过程&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Java 线程（傀儡）说：“我要睡一秒。”&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;JVM 识别到这是个 Native 方法。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;JVM 发起系统调用，告诉内核：“喂，把你手里控制这个 Java 线程的那个内核线程挂起（Suspend）1秒。”&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;操作系统&lt;/strong&gt;：把对应的内核线程从 CPU 上也就是“运行队列”里拿下来，扔到“等待队列”里。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;结果&lt;/strong&gt;：Java 线程看起来停了，其实是背后的内核线程停了。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;3-阻塞同步io-操作&#34;&gt;3. 阻塞同步：IO 操作
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;场景&lt;/strong&gt;：你读取文件 &lt;code&gt;fis.read()&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;通信过程&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Java 代码执行到读取指令。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;因为读取硬盘是特权操作，Java 线程自己干不了，必须陷入&lt;strong&gt;内核态&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对应的内核线程发起 IO 请求，然后被操作系统&lt;strong&gt;阻塞&lt;/strong&gt;（因为它要等硬盘转圈圈）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;反馈&lt;/strong&gt;：内核线程不动了，Java 线程的状态也就变成了 &lt;code&gt;BLOCKED&lt;/code&gt; 或 &lt;code&gt;RUNNABLE&lt;/code&gt; (但在等待 syscall 返回)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;三-它们怎么调度谁说了算&#34;&gt;三、 它们怎么调度？（谁说了算？）
+&lt;/h3&gt;&lt;p&gt;这是最关键的：&lt;strong&gt;JVM 完全不管调度！JVM 是没有资格分配 CPU 时间片的。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在 1:1 模型下，Java 线程的调度&lt;strong&gt;完全&lt;/strong&gt;交给操作系统的&lt;strong&gt;调度器（Scheduler）&lt;/strong&gt;。&lt;/p&gt;
+&lt;h4 id=&#34;1-调度者os-调度器比如-linux-的-cfs&#34;&gt;1. 调度者：OS 调度器（比如 Linux 的 CFS）
+&lt;/h4&gt;&lt;p&gt;JVM 就像一个劳务派遣公司，它把人（线程）招进来，交给政府（OS）去管理。至于谁先干活、谁后干活、干多久，全看政府的心情。&lt;/p&gt;
+&lt;h4 id=&#34;2-调度方式抢占式-preemptive&#34;&gt;2. 调度方式：抢占式 (Preemptive)
+&lt;/h4&gt;&lt;p&gt;操作系统是个独裁者，它采用**“抢占式”**调度。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;时间片（Time Slice）&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;OS 给每个内核线程分配一小段 CPU 时间（比如 10ms - 100ms）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;时间一到，CPU 内部的时钟中断响铃。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;OS 强行把当前线程踢下来（哪怕你代码还没跑完），换下一个线程上。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;上下文切换 (Context Switch) —— 昂贵的代价&lt;/strong&gt;：
+这就是 1:1 模型最大的痛点。当 OS 决定切换线程时：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;保存现场&lt;/strong&gt;：把当前内核线程的寄存器值、程序计数器（跑到哪一行了）全部存回内存。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;刷新缓存&lt;/strong&gt;：因为换人了，CPU L1/L2 缓存里的数据大部分都废了，需要重新加载。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;恢复现场&lt;/strong&gt;：把下一个要运行的内核线程的信息读进寄存器。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;3-java-优先级的尴尬&#34;&gt;3. Java 优先级的尴尬
+&lt;/h4&gt;&lt;p&gt;Java 里有 &lt;code&gt;Thread.setPriority(1-10)&lt;/code&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;现实&lt;/strong&gt;：这玩意儿基本是个&lt;strong&gt;心理安慰&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;原因&lt;/strong&gt;：Java 的优先级只是给 OS 一个“建议”。由于不同操作系统对优先级的定义不同（Linux 甚至可能忽略它），JVM 传过去之后，OS 可能会说：“好的我知道了，但我还是按我的规则办。”&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;synchronized的底层原理&#34;&gt;synchronized的底层原理
+&lt;/h2&gt;&lt;h3 id=&#34;第一层数据结构层--mark-word-的比特位舞步&#34;&gt;第一层：数据结构层 —— Mark Word 的比特位舞步
+&lt;/h3&gt;&lt;p&gt;在 64 位 JVM 中，对象头（Object Header）里的 &lt;strong&gt;Mark Word&lt;/strong&gt; 是 8 个字节（64 bit）。&lt;code&gt;synchronized&lt;/code&gt; 的所有状态流转，本质上就是&lt;strong&gt;在修改这 64 个 bit&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;我们需要关注最后 2 位（锁标志位）和倒数第 3 位（偏向锁位）：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;&lt;strong&gt;锁状态&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;25 bit (未使用)&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;31 bit (HashCode)&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;1 bit (未用)&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;4 bit (分代年龄)&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;1 bit (偏向锁位)&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;2 bit (锁标志位)&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;无锁&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&amp;hellip;&lt;/td&gt;
+          &lt;td&gt;HashCode&lt;/td&gt;
+          &lt;td&gt;0&lt;/td&gt;
+          &lt;td&gt;age&lt;/td&gt;
+          &lt;td&gt;0&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;01&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;偏向锁&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;ThreadID (54bit)&lt;/td&gt;
+          &lt;td&gt;Epoch (2bit)&lt;/td&gt;
+          &lt;td&gt;&amp;hellip;&lt;/td&gt;
+          &lt;td&gt;age&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;1&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;01&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;轻量级锁&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;指向栈中 Lock Record 的指针 (62bit)&lt;/td&gt;
+          &lt;td&gt;&amp;hellip;&lt;/td&gt;
+          &lt;td&gt;&amp;hellip;&lt;/td&gt;
+          &lt;td&gt;&amp;hellip;&lt;/td&gt;
+          &lt;td&gt;&amp;hellip;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;00&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;重量级锁&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;指向互斥量（Monitor）的指针 (62bit)&lt;/td&gt;
+          &lt;td&gt;&amp;hellip;&lt;/td&gt;
+          &lt;td&gt;&amp;hellip;&lt;/td&gt;
+          &lt;td&gt;&amp;hellip;&lt;/td&gt;
+          &lt;td&gt;&amp;hellip;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;10&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;GC 标记&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&amp;hellip;&lt;/td&gt;
+          &lt;td&gt;&amp;hellip;&lt;/td&gt;
+          &lt;td&gt;&amp;hellip;&lt;/td&gt;
+          &lt;td&gt;&amp;hellip;&lt;/td&gt;
+          &lt;td&gt;&amp;hellip;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;11&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;底层细节&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;当锁是 &lt;strong&gt;轻量级锁 (00)&lt;/strong&gt; 时，前 62 位不再存 HashCode，而是存一个&lt;strong&gt;内存地址指针&lt;/strong&gt;，指向持有锁线程的&lt;strong&gt;栈帧&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;当锁是 &lt;strong&gt;重量级锁 (10)&lt;/strong&gt; 时，前 62 位指向&lt;strong&gt;堆内存&lt;/strong&gt;中 C++ 定义的 &lt;code&gt;ObjectMonitor&lt;/code&gt; 对象。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;第二层栈帧层--lock-record-锁记录&#34;&gt;第二层：栈帧层 —— Lock Record (锁记录)
+&lt;/h3&gt;&lt;p&gt;在&lt;strong&gt;轻量级锁&lt;/strong&gt;阶段，JVM 并不想直接请求操作系统，它玩了一个“偷梁换柱”的把戏。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;开辟空间&lt;/strong&gt;：当代码进入 &lt;code&gt;synchronized&lt;/code&gt; 块，如果当前是无锁状态，JVM 会在当前线程的&lt;strong&gt;栈帧&lt;/strong&gt;中创建一个名为 &lt;code&gt;Lock Record&lt;/code&gt; 的空间。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Displaced Mark Word&lt;/strong&gt;：JVM 把对象头里原本的 Mark Word 拷贝一份到这个 &lt;code&gt;Lock Record&lt;/code&gt; 中（为了保存原本的 HashCode 和分代年龄，等锁释放了还得还回去）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;CAS 争抢&lt;/strong&gt;：JVM 尝试用 &lt;strong&gt;CAS (Compare And Swap)&lt;/strong&gt; 指令，将对象头里的 Mark Word 替换为指向 &lt;code&gt;Lock Record&lt;/code&gt; 的指针。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;成功&lt;/strong&gt;：对象头变成了“指针 + 00”，代表抢锁成功。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;失败&lt;/strong&gt;：说明有竞争，或者已经锁了。JVM 会检查对象头的指针是不是指向我自己的栈？如果是，说明是&lt;strong&gt;重入锁&lt;/strong&gt;，只需在栈里再放一个空的 Lock Record 记录重入次数即可。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;第三层jvm-实现层--c-里的-objectmonitor&#34;&gt;第三层：JVM 实现层 —— C++ 里的 ObjectMonitor
+&lt;/h3&gt;&lt;p&gt;当竞争升级为重量级锁，JVM 会去堆中申请一个 C++ 对象：ObjectMonitor。&lt;/p&gt;
+&lt;p&gt;在 OpenJDK 的 HotSpot 源码中 (src/share/vm/runtime/objectMonitor.hpp)，它的核心结构如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;ObjectMonitor&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;p&#34;&gt;...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;kt&#34;&gt;void&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;volatile&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;_owner&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;      &lt;span class=&#34;c1&#34;&gt;// 指向当前持有锁的线程 (The King)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;k&#34;&gt;volatile&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;jlong&lt;/span&gt;  &lt;span class=&#34;n&#34;&gt;_recursions&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;// 锁的重入次数
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;k&#34;&gt;volatile&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;    &lt;span class=&#34;n&#34;&gt;_count&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;       &lt;span class=&#34;c1&#34;&gt;// 抢锁计数器
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;c1&#34;&gt;// 核心等待队列
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;n&#34;&gt;ObjectWaiter&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;volatile&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;_cxq&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;       &lt;span class=&#34;c1&#34;&gt;// (Contention Queue) 竞争队列，单向链表
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;n&#34;&gt;ObjectWaiter&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;volatile&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;_EntryList&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 等待队列，双向链表 (阻塞状态的线程)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;n&#34;&gt;ObjectWaiter&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;volatile&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;_WaitSet&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;   &lt;span class=&#34;c1&#34;&gt;// 等待集合 (调用wait()后的线程)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;  &lt;span class=&#34;p&#34;&gt;...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;底层竞争流程（硬核版）：&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;CAS 抢占&lt;/strong&gt;：线程尝试通过 CAS 将 &lt;code&gt;_owner&lt;/code&gt; 指针指向自己。成功则执行。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;自旋失败，入队&lt;/strong&gt;：如果抢不到，线程被封装成 &lt;code&gt;ObjectWaiter&lt;/code&gt; 对象。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;进入 cxq&lt;/strong&gt;：线程首先通过 CAS 尝试把节点插入 &lt;code&gt;_cxq&lt;/code&gt; 队列的头部（LIFO 策略，为了减少尾部维护开销）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;OnDeck 机制&lt;/strong&gt;：JVM 不会把所有人都唤醒，而是通过策略挑选一个继承人（Heir），称为 &lt;code&gt;OnDeck&lt;/code&gt;，只有这个线程会去竞争锁，避免“惊群效应”。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;第四层操作系统与硬件层--futex-与-内存屏障&#34;&gt;第四层：操作系统与硬件层 —— Futex 与 内存屏障
+&lt;/h3&gt;&lt;p&gt;这是最底下的地基，也是为什么重量级锁慢的原因。&lt;/p&gt;
+&lt;h4 id=&#34;1-操作系统mutex-与-futex&#34;&gt;1. 操作系统：Mutex 与 Futex
+&lt;/h4&gt;&lt;p&gt;当线程在 &lt;code&gt;ObjectMonitor&lt;/code&gt; 里抢不到锁，需要“阻塞（Block）”时，JVM 会调用操作系统的内核函数。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Linux 环境下&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;早期：直接用 &lt;code&gt;pthread_mutex_lock&lt;/code&gt;，这需要从&lt;strong&gt;用户态（User Mode）切换到内核态（Kernel Mode）&lt;/strong&gt;。这个切换涉及到保存 CPU 寄存器上下文、刷新 CPU 缓存（L1/L2 Cache 失效）等，开销极大。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;现代优化 (Futex)&lt;/strong&gt;：Linux 提供了 &lt;code&gt;futex&lt;/code&gt; (Fast Userspace muTEX)。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;它先在&lt;strong&gt;用户态&lt;/strong&gt;尝试通过 CAS 修改一个整数。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;只有当 CAS 失败（确实有竞争），才会调用系统调用（System Call）陷入内核态去执行 &lt;code&gt;sem_wait&lt;/code&gt; 让线程挂起。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;park()&lt;/strong&gt;：Java 中的 &lt;code&gt;LockSupport.park()&lt;/code&gt; 底层就是调用了 &lt;code&gt;futex&lt;/code&gt; 相关的系统调用。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-cpu-硬件内存语义-jmm&#34;&gt;2. CPU 硬件：内存语义 (JMM)
+&lt;/h4&gt;&lt;p&gt;&lt;code&gt;synchronized&lt;/code&gt; 不仅仅是锁，它还保证了 &lt;strong&gt;内存可见性&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Lock (monitorenter)&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;底层会插入一个 &lt;strong&gt;LoadBarrier&lt;/strong&gt;（或类似的刷新指令）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;强制让当前线程的工作内存（CPU Cache）失效，必须从主内存重新读取变量。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Unlock (monitorexit)&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;底层会插入一个 &lt;strong&gt;StoreBarrier&lt;/strong&gt;（写屏障）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;强制将工作内存中的最新修改立即刷新回主内存，确保别的线程能看到。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;确保每次都能读到业务的最新的缓存信息，比如剩余票数还剩1个，把之前获取锁之前获取到的2给删了，重新更新为最新值，然后在把剩余票数变为0个。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;总结一条线程的黑化之路&#34;&gt;总结：一条线程的“黑化”之路
+&lt;/h3&gt;&lt;p&gt;如果一个 Java 线程去抢 &lt;code&gt;synchronized&lt;/code&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;CPU 指令层&lt;/strong&gt;：先尝试 &lt;strong&gt;CAS&lt;/strong&gt; 修改对象头。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;栈帧层&lt;/strong&gt;：如果失败，检查是否是自己锁的（重入），或者尝试把 Mark Word 复制到自己栈帧（轻量级锁）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;C++ 对象层&lt;/strong&gt;：还失败？去堆里找 &lt;code&gt;ObjectMonitor&lt;/code&gt;，把自己包装成 &lt;code&gt;ObjectWaiter&lt;/code&gt; 节点，拼命往 &lt;code&gt;_cxq&lt;/code&gt; 队列头挤。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;OS 内核层&lt;/strong&gt;：挤不进去？调用 &lt;code&gt;futex&lt;/code&gt; 系统调用，请求操作系统把自己挂起（Sleep），交出 CPU 时间片，从用户态跌落内核态，等待被唤醒。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
 </description>
         </item>
         <item>

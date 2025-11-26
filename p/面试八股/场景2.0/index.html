@@ -319,7 +319,6 @@
     <li><a href="#java的双亲委派模型是什么">Java的双亲委派模型是什么？</a>
       <ol>
         <li><a href="#1-谁是双亲类加载器的层级">1. 谁是“双亲”？（类加载器的层级）</a></li>
-        <li><a href="#1-谁是双亲类加载器的层级-1">1. 谁是“双亲”？（类加载器的层级）</a></li>
         <li><a href="#2-委派流程怎么工作">2. 委派流程（怎么工作？）</a></li>
         <li><a href="#3-为什么要这么设计核心作用">3. 为什么要这么设计？（核心作用）</a>
           <ol>
@@ -393,6 +392,74 @@
         <li><a href="#二-tidb-与-mysql-的核心区别">二、 TiDB 与 MySQL 的核心区别</a></li>
       </ol>
     </li>
+    <li><a href="#为什么lua脚本能保证原子性">为什么lua脚本能保证原子性？</a>
+      <ol>
+        <li><a href="#1-核心机制单线程--独占模式">1. 核心机制：单线程 + 独占模式</a></li>
+        <li><a href="#面试高阶陷阱此原子性非彼原子性">面试高阶陷阱：此“原子性”非彼“原子性”</a></li>
+        <li><a href="#为什么这比-redis原生事务更强">为什么这比 Redis原生事务更强？</a></li>
+      </ol>
+    </li>
+    <li><a href="#介绍一下虚拟内存">介绍一下虚拟内存</a>
+      <ol>
+        <li><a href="#二-虚拟内存的机制怎么圆这个谎">二、 虚拟内存的机制（怎么圆这个谎？）</a>
+          <ol>
+            <li><a href="#1-核心道具页表-page-table--mmu">1. 核心道具：页表 (Page Table) &amp; MMU</a></li>
+            <li><a href="#2-工作流程">2. 工作流程</a></li>
+            <li><a href="#缺页中断-page-fault--空手套白狼">缺页中断 (Page Fault) —— “空手套白狼”</a></li>
+            <li><a href="#交换-swap--硬盘来凑数">交换 (Swap) —— 硬盘来凑数</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#进程切换和线程切换的区别">进程切换和线程切换的区别?</a></li>
+    <li><a href="#线程切换为什么比进程切换快节省了什么资源">线程切换为什么比进程切换快，节省了什么资源?</a></li>
+    <li><a href="#jni是什么">JNI 是什么？</a>
+      <ol>
+        <li><a href="#jni-的核心概念与作用">JNI 的核心概念与作用</a>
+          <ol>
+            <li><a href="#1-核心定义">1. 核心定义</a></li>
+            <li><a href="#2-主要作用">2. 主要作用</a></li>
+          </ol>
+        </li>
+        <li><a href="#jni-的缺点">JNI 的缺点</a></li>
+      </ol>
+    </li>
+    <li><a href="#springboot程序的jdbc连接到了mysql用的是uds请问流程是什么">SpringBoot程序的JDBC连接到了MySQL，用的是UDS，请问流程是什么</a>
+      <ol>
+        <li><a href="#场景准备">场景准备</a></li>
+        <li><a href="#二-详细连接流程从发起请求到拿到数据">二、 详细连接流程（从发起请求到拿到数据）</a>
+          <ol>
+            <li><a href="#第一阶段建立连接握手">第一阶段：建立连接（握手）</a></li>
+            <li><a href="#第二阶段发送-sql写数据">第二阶段：发送 SQL（写数据）</a></li>
+            <li><a href="#第三阶段返回结果读数据">第三阶段：返回结果（读数据）</a></li>
+          </ol>
+        </li>
+        <li><a href="#如果用-tcp-127001-流程有啥区别">如果用 TCP (127.0.0.1) 流程有啥区别？</a></li>
+      </ol>
+    </li>
+    <li><a href="#redis把数据从内核内存区拷贝到用户内存的过程">Redis把数据从内核内存区拷贝到用户内存的过程</a>
+      <ol>
+        <li><a href="#详细流程图解从-socket-到-redis">详细流程图解（从 Socket 到 Redis）</a>
+          <ol>
+            <li><a href="#第一步数据到达内核">第一步：数据到达内核</a></li>
+            <li><a href="#第二步redis-醒来">第二步：Redis 醒来</a></li>
+            <li><a href="#第三步读取与执行">第三步：读取与执行</a></li>
+            <li><a href="#第四步回复客户端">第四步：回复客户端</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#selectpollepoll">select，poll，epoll</a>
+      <ol>
+        <li>
+          <ol>
+            <li><a href="#1-物理位置">1. 物理位置</a></li>
+            <li><a href="#2-发送过程-write">2. 发送过程 (write)</a></li>
+            <li><a href="#3-接收过程-read">3. 接收过程 (read)</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -453,7 +520,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 23 分钟
+                    阅读时长: 34 分钟
                 </time>
             </div>
         
@@ -950,56 +1017,10 @@
 </table></div>
 <h2 id="java的双亲委派模型是什么">Java的双亲委派模型是什么？
 </h2><p><strong>双亲委派模型（Parent Delegation Model）</strong> 是 Java 类加载机制的核心设计思想。</p>
-<p><strong>双亲委派模型（Parent Delegation Model）</strong> 是 Java 类加载机制的核心设计思想。</p>
 <p>虽然名字听起来有点高大上（甚至有点拗口），但它的核心逻辑非常简单，用一句话概括就是：<strong>“这也是为了你好：有事儿先找你爹，你爹搞不定你再自己来。”</strong></p>
 <p>下面我从<strong>结构、流程、作用</strong>和<strong>例外</strong>四个方面为你拆解。</p>
 <hr>
 <h3 id="1-谁是双亲类加载器的层级">1. 谁是“双亲”？（类加载器的层级）
-</h3><p>在 Java 中，类加载器（ClassLoader）是有层级关系的。并不是真的有两个亲戚（“双亲”这个翻译其实有点误导，它指的是 Parent，即<strong>父级</strong>）。</p>
-<p>主要的类加载器有三层：</p>
-<ol>
-<li>
-<p><strong>启动类加载器 (Bootstrap ClassLoader)</strong></p>
-<ul>
-<li>
-<p><strong>地位：</strong> 老祖宗，最顶层。</p>
-</li>
-<li>
-<p><strong>职责：</strong> 负责加载 Java 的核心类库（如 <code>java.lang.String</code>, <code>rt.jar</code> 等）。它是用 C++ 写的，在 Java 代码里拿不到它的引用（也就是 <code>null</code>）。</p>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>扩展类加载器 (Extension ClassLoader)</strong></p>
-<ul>
-<li>
-<p><strong>地位：</strong> 中间层。</p>
-</li>
-<li>
-<p><strong>职责：</strong> 负责加载 Java 的扩展库（<code>JAVA_HOME/lib/ext</code> 目录下的 jar 包）。</p>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>应用程序类加载器 (Application ClassLoader)</strong></p>
-<ul>
-<li>
-<p><strong>地位：</strong> 最底层（系统默认）。</p>
-</li>
-<li>
-<p><strong>职责：</strong> 负责加载我们自己写的代码（<code>ClassPath</code> 下的类）和第三方 Jar 包。</p>
-</li>
-</ul>
-</li>
-</ol>
-<blockquote>
-<p><em>此外，还可以有<strong>自定义类加载器 (Custom ClassLoader)</strong>，挂在应用程序类加载器下面。</em></p>
-</blockquote>
-<p><strong>双亲委派模型（Parent Delegation Model）</strong> 是 Java 类加载机制的核心设计思想。</p>
-<p>虽然名字听起来有点高大上（甚至有点拗口），但它的核心逻辑非常简单，用一句话概括就是：<strong>“这也是为了你好：有事儿先找你爹，你爹搞不定你再自己来。”</strong></p>
-<p>下面我从<strong>结构、流程、作用</strong>和<strong>例外</strong>四个方面为你拆解。</p>
-<hr>
-<h3 id="1-谁是双亲类加载器的层级-1">1. 谁是“双亲”？（类加载器的层级）
 </h3><p>在 Java 中，类加载器（ClassLoader）是有层级关系的。并不是真的有两个亲戚（“双亲”这个翻译其实有点误导，它指的是 Parent，即<strong>父级</strong>）。</p>
 <p>主要的类加载器有三层：</p>
 <ol>
@@ -1620,6 +1641,533 @@
       </tr>
   </tbody>
 </table></div>
+<h2 id="为什么lua脚本能保证原子性">为什么lua脚本能保证原子性？
+</h2><p>简单直接的答案是：<strong>因为 Redis 的主工作线程是单线程的，且 Lua 脚本在执行时是“排他”的。</strong></p>
+<p>我们可以把 Redis 想象成一个<strong>只开了一个窗口的办事大厅</strong>，而 Lua 脚本就是一份<strong>必须一次性办完的复杂文件</strong>。</p>
+<p>以下是深度的技术原理拆解，帮助你在面试中不仅能答对，还能答出深度：</p>
+<h3 id="1-核心机制单线程--独占模式">1. 核心机制：单线程 + 独占模式
+</h3><p>Redis 的核心命令执行器是<strong>单线程</strong>的（Event Loop）。</p>
+<ul>
+<li>
+<p><strong>普通命令（如 SET/GET）：</strong> Redis 会从队列里一个个取出来执行。A 客户端发一个 SET，B 客户端发一个 GET，它们是排队轮流执行的。</p>
+</li>
+<li>
+<p><strong>Lua 脚本（EVAL）：</strong> 当 Redis 读到 <code>EVAL</code> 命令（执行 Lua 脚本）时，它会进入一种<strong>独占模式</strong>。</p>
+<ul>
+<li>
+<p>Redis 会暂停处理所有其他客户端发来的请求。</p>
+</li>
+<li>
+<p>它把整个 Lua 脚本作为一个<strong>整体</strong>交给 Lua 解释器执行。</p>
+</li>
+<li>
+<p>只有当脚本执行结束（或者超时），Redis 才会恢复去处理请求队列里排队的下一个命令。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>结论：</strong> 在 Lua 脚本执行期间，<strong>绝对不会</strong>有其他客户端的命令插队。这就从物理上保证了脚本内的操作是不可分割的（Indivisible），也就是<strong>原子性</strong>。</p>
+<h3 id="面试高阶陷阱此原子性非彼原子性">面试高阶陷阱：此“原子性”非彼“原子性”
+</h3><p>这是面试官最喜欢挖的坑，一定要主动指出来：</p>
+<p><strong>Redis Lua 脚本的“原子性”是指“隔离性 (Isolation)”，而不是数据库事务中的“原子性 (Atomicity，要么全做要么全不做)”。</strong></p>
+<ul>
+<li>
+<p><strong>SQL 事务：</strong> 如果中间报错，会<strong>回滚 (Rollback)</strong>，像什么都没发生过一样。</p>
+</li>
+<li>
+<p><strong>Redis Lua：</strong> 如果脚本里有 3 条命令，执行到第 2 条报错了：</p>
+<ul>
+<li>
+<p>第 1 条已经生效的数据<strong>不会回滚</strong>！</p>
+</li>
+<li>
+<p>第 2 条报错停止。</p>
+</li>
+<li>
+<p>第 3 条不会执行。</p>
+</li>
+<li>
+<p>脚本结束。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>面试话术：</strong></p>
+<blockquote>
+<p>“Redis 的 Lua 脚本保证的是<strong>执行过程不被其他客户端打断</strong>，保证了操作的<strong>原子隔离性</strong>。但是，Redis <strong>不支持回滚 (Rollback)</strong>。如果脚本内部逻辑抛出错误，之前执行成功的写操作是无法撤销的。所以在编写 Lua 脚本时，必须保证代码逻辑的健壮性。”</p>
+</blockquote>
+<p>我的简历中使用了 <strong>Redisson 的 RRateLimiter</strong> ，这个组件的底层就是纯 Lua 脚本实现的。</p>
+<p>可以这样举例：</p>
+<blockquote>
+<p>“比如我在项目中使用的令牌桶限流。</p>
+<ol>
+<li>
+<p>我需要查询当前令牌够不够（GET）。</p>
+</li>
+<li>
+<p>如果够，我就要扣减一个令牌（DECR）。</p>
+</li>
+</ol>
+<p>这两个操作如果分开执行，在高并发下会出现‘超卖’（两个线程同时看到令牌剩余 1 个，结果都扣减了，变成 -1）。
+而 Redisson 将这两个动作封装在一个 Lua 脚本里发给 Redis，因为 Lua 的原子性，这两个动作瞬间完成，中间没缝隙，绝对不会出现超卖。”</p>
+</blockquote>
+<h3 id="为什么这比-redis原生事务更强">为什么这比 Redis原生事务更强？
+</h3><p>Redis 原生事务（MULTI/EXEC）存在一个痛点：<strong>CAS (Check-And-Set) 问题。</strong></p>
+<ul>
+<li>
+<p><strong>Redis 事务流程：</strong> 你必须先 <code>GET</code> 一个值到客户端，判断一下（Check），然后再发 <code>SET</code> 命令（Set）。</p>
+</li>
+<li>
+<p><strong>竞态条件：</strong> 在你 <code>GET</code> 之后、<code>SET</code> 之前，因为网络延迟，另一个客户端可能修改了这个值。虽然 <code>WATCH</code> 可以监控变化并取消事务，但这意味着你需要写重试逻辑，高并发下失败率极高。</p>
+</li>
+<li>
+<p><strong>Lua 的优势：</strong> 逻辑直接在服务端运行。<code>GET</code> 和 <code>SET</code> 之间没有网络通信延迟，且中间没有其他命令插入。你可以放心地读取一个值，修改它，再写回去，完全不用担心期间被别人改了。</p>
+</li>
+</ul>
+<h2 id="介绍一下虚拟内存">介绍一下虚拟内存
+</h2><p><strong>虚拟内存 (Virtual Memory)</strong>，一言以蔽之，是<strong>操作系统对所有进程撒的一个弥天大谎</strong>。</p>
+<p>它给每个进程（比如你的 Java 程序）营造了一个<strong>美丽的幻觉</strong>：</p>
+<blockquote>
+<p>“兄弟，这整个电脑的内存全是你的！是连续的！是独占的！你想怎么用怎么用，不用管别人。”</p>
+</blockquote>
+<p>但实际上，物理内存（RAM）可能早就被碎尸万段，甚至塞满了，部分数据都被赶到硬盘上去了。</p>
+<p>在很久以前（DOS 时代），确实没有虚拟内存。程序直接操作<strong>物理地址</strong>。
+这会导致三个严重问题：</p>
+<ol>
+<li>
+<p><strong>打架（地址冲突）</strong>：</p>
+<ul>
+<li>
+<p>QQ 说：“我要住 101 号房间。”</p>
+</li>
+<li>
+<p>微信说：“我也要住 101 号房间。”</p>
+</li>
+<li>
+<p><strong>崩了</strong>。程序员必须小心翼翼地规划，谁用哪块地。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>偷窥（不安全）</strong>：</p>
+<ul>
+<li>
+<p>QQ 住 101，微信住 102。</p>
+</li>
+<li>
+<p>微信稍微伸个头，就能看到 QQ 在 101 房间里的隐私（读取内存数据）。恶意程序可以随意修改操作系统的核心数据。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>不够用（内存不足）</strong>：</p>
+<ul>
+<li>你有 4GB 内存，GTA5 游戏要 8GB。直接报错退出，玩不了。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="二-虚拟内存的机制怎么圆这个谎">二、 虚拟内存的机制（怎么圆这个谎？）
+</h3><p>为了解决上面的问题，操作系统引入了<strong>中间商</strong>。</p>
+<h4 id="1-核心道具页表-page-table--mmu">1. 核心道具：页表 (Page Table) &amp; MMU
+</h4><ul>
+<li>
+<p><strong>虚拟地址 (Virtual Address)</strong>：进程手里拿到的房卡号（比如 0x001）。这是假的。</p>
+</li>
+<li>
+<p><strong>物理地址 (Physical Address)</strong>：内存条上真正的存储单元地址（比如 0x8F3）。这是真的。</p>
+</li>
+<li>
+<p><strong>映射表 (Page Table)</strong>：记录“假房号”对应“真房号”的小本本。</p>
+</li>
+<li>
+<p><strong>MMU (Memory Management Unit)</strong>：CPU 里专门负责查表的一个硬件单元。</p>
+</li>
+</ul>
+<h4 id="2-工作流程">2. 工作流程
+</h4><p>当你的 Java 程序执行指令 <code>int a = 10</code> (假设要把 10 写到地址 0x001)：</p>
+<ol>
+<li>
+<p><strong>进程发出指令</strong>：“我要往 <strong>0x001</strong> 写数据！”（这是虚拟地址）。</p>
+</li>
+<li>
+<p><strong>MMU 拦截</strong>：“稍等，我查一下表。”</p>
+<ul>
+<li>MMU 查页表发现：进程 A 的 <strong>0x001</strong> 对应物理内存的 <strong>0x8F3</strong>。</li>
+</ul>
+</li>
+<li>
+<p><strong>硬件执行</strong>：CPU 把数据写到了物理内存的 <strong>0x8F3</strong>。</p>
+</li>
+</ol>
+<p><strong>妙在哪里？</strong></p>
+<ul>
+<li>
+<p><strong>QQ</strong> 往 <strong>0x001</strong> 写数据 -&gt; 映射到物理地址 <strong>0x800</strong>。</p>
+</li>
+<li>
+<p><strong>微信</strong> 往 <strong>0x001</strong> 写数据 -&gt; 映射到物理地址 <strong>0x900</strong>。</p>
+</li>
+<li>
+<p>虽然他们用的虚拟地址一样，但物理上完全隔离，互不干扰！</p>
+</li>
+</ul>
+<h4 id="缺页中断-page-fault--空手套白狼">缺页中断 (Page Fault) —— “空手套白狼”
+</h4><p>这是虚拟内存最骚的操作。
+你的 Java 程序申请了 1GB 内存（比如 <code>new byte[1024*1024*1024]</code>）。
+操作系统直接答应：“好，给你 1GB！”（虚拟内存里划给你了）。 <strong>但实际上，物理内存里 1KB 都没给你分配。</strong></p>
+<ul>
+<li>
+<p><strong>当你真正开始写数据时</strong>：</p>
+<ol>
+<li>
+<p>CPU 拿着虚拟地址去查表。</p>
+</li>
+<li>
+<p>MMU 发现：<strong>“夷？这个页在物理内存里不存在（Valid 位是 0）。”</strong></p>
+</li>
+<li>
+<p>触发 <strong>缺页中断 (Page Fault)</strong>。</p>
+</li>
+<li>
+<p>操作系统内核醒来：“哎呀，这小子来真的了。”</p>
+</li>
+<li>
+<p>操作系统赶紧找一块空闲的物理内存，分配给这个页，更新映射表。</p>
+</li>
+<li>
+<p>让 CPU 重新执行刚才的写入指令。</p>
+</li>
+</ol>
+</li>
+</ul>
+<p>这就是为什么 Java 启动时申请大内存很快，但实际占用（RES）是随着运行慢慢涨上去的。</p>
+<h4 id="交换-swap--硬盘来凑数">交换 (Swap) —— 硬盘来凑数
+</h4><p>如果物理内存真满了（比如开了几十个 Chrome 标签页），怎么办？</p>
+<ul>
+<li>
+<p><strong>动作</strong>：操作系统会把那些<strong>很久没用的页</strong>（冷数据），从物理内存里踢出来，写到<strong>硬盘</strong>上（Swap 分区 / pagefile.sys）。</p>
+</li>
+<li>
+<p><strong>腾地</strong>：物理内存腾出来了，给当前急用的程序用。</p>
+</li>
+<li>
+<p><strong>换回</strong>：当你突然切回那个很久没用的 Chrome 标签页，操作系统会再触发缺页中断，把硬盘里的数据读回物理内存（这时候你会感觉电脑卡了一下，硬盘灯狂闪）。</p>
+</li>
+</ul>
+<p>操作系统中有很多内存淘汰策略，比如LRU，LFU，CLOCK，增强CLOCK等</p>
+<h2 id="进程切换和线程切换的区别">进程切换和线程切换的区别?
+</h2><p>1.进程切换:进程切换涉及到更多的内容，包括整个进程的地址空间、全局变量、文件描述符等。因此，进程切换的开销通常比线程切换大。
+2.线程切换:线程切换只涉及到线程的堆栈、寄存器和程序计数器等，不涉及进程级别的资源，因此线程切换的开销较小。</p>
+<h2 id="线程切换为什么比进程切换快节省了什么资源">线程切换为什么比进程切换快，节省了什么资源?
+</h2><p>线程切换比进程切换快是因为线程共享同一进程的地址空间和资源，线程切换时只需切换堆栈和程序计数器等少量信息，而不需要切换地址空间，避免了进程切换时需要切换内存映射表等大量资源的开销，从而节省了时间和系统资源。</p>
+<h2 id="jni是什么">JNI 是什么？
+</h2><p>它在 Java 编程中是一个非常重要的机制，主要用于解决 Java 应用程序需要与本地代码（Native Code）交互的问题。</p>
+<hr>
+<h3 id="jni-的核心概念与作用">JNI 的核心概念与作用
+</h3><h4 id="1-核心定义">1. 核心定义
+</h4><p>JNI 是一套编程接口，它允许运行在 <strong>Java 虚拟机（JVM）</strong> 上的 Java 代码与用其他语言（如 <strong>C、C++</strong> 等）编写的本地应用程序和库进行交互。</p>
+<h4 id="2-主要作用">2. 主要作用
+</h4><ul>
+<li>
+<p><strong>调用本地库 (Calling Native Libraries):</strong> 允许 Java 程序调用操作系统底层功能、硬件设备驱动程序，或者使用已经存在的、用 C/C++ 等语言编写的高性能库。</p>
+</li>
+<li>
+<p><strong>提高性能 (Performance Enhancement):</strong> 对于对性能要求极高或需要直接操作硬件的代码块，可以将其用 C/C++ 实现，并通过 JNI 在 Java 中调用，以提升执行效率。</p>
+</li>
+<li>
+<p><strong>复用现有代码 (Reusing Existing Code):</strong> 允许开发者在 Java 项目中重用大量的现有 C/C++ 代码库，而无需将其完全重写成 Java。</p>
+</li>
+</ul>
+<h3 id="jni-的缺点">JNI 的缺点
+</h3><p>虽然 JNI 很强大，但它也有一些缺点：</p>
+<ul>
+<li>
+<p><strong>失去跨平台性：</strong> 一旦使用 JNI，你的 Java 程序就依赖于特定的本地库文件，从而失去了 Java <strong>“一次编译，到处运行”</strong> 的跨平台优势。</p>
+</li>
+<li>
+<p><strong>开发复杂性：</strong> JNI 的开发过程比纯 Java 复杂，需要处理 C/C++ 代码、头文件生成、本地内存管理和垃圾回收的交互等问题。</p>
+</li>
+<li>
+<p><strong>安全和稳定性风险：</strong> 本地代码不受 JVM 内存管理和安全机制的保护。如果本地代码有内存泄漏或越界访问等错误，可能导致整个 JVM 崩溃。</p>
+</li>
+</ul>
+<h2 id="springboot程序的jdbc连接到了mysql用的是uds请问流程是什么">SpringBoot程序的JDBC连接到了MySQL，用的是UDS，请问流程是什么
+</h2><h3 id="场景准备">场景准备
+</h3><ol>
+<li>
+<p><strong>主角 A (Spring Boot)</strong>：位于 Linux 系统的一个进程（假设 PID=100）。</p>
+</li>
+<li>
+<p><strong>主角 B (MySQL)</strong>：位于 Linux 系统的另一个进程（假设 PID=200）。</p>
+</li>
+<li>
+<p><strong>秘密通道 (UDS 文件)</strong>：MySQL 在启动时，会在硬盘上创建一个特殊文件，通常位于 <code>/var/lib/mysql/mysql.sock</code>（这个路径在 <code>my.cnf</code> 里配置）。</p>
+</li>
+</ol>
+<p><strong>配置上的不同（这是关键第一步）：</strong> 平时你连数据库，URL 写的是 <code>jdbc:mysql://127.0.0.1:3306/...</code>。
+用 UDS 时，你的 JDBC URL 会变得很奇怪，大概长这样（取决于具体的驱动实现，通常需要引入 <code>junixsocket</code> 等库配合）：</p>
+<p>Properties</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="c1"># 意思就是：别走 TCP 了，帮我去连这个文件！</span>
+</span></span><span class="line"><span class="cl"><span class="n">jdbc</span><span class="p">:</span><span class="n">mysql</span><span class="p">:</span><span class="o">///</span><span class="err">?</span><span class="n">socketFactory</span><span class="o">=</span><span class="n">org</span><span class="o">.</span><span class="n">newsclub</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">mysql</span><span class="o">.</span><span class="n">AFUNIXDatabaseSocketFactory</span><span class="o">&amp;</span><span class="n">socket</span><span class="o">=/</span><span class="k">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">mysql</span><span class="o">/</span><span class="n">mysql</span><span class="o">.</span><span class="n">sock</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><hr>
+<h3 id="二-详细连接流程从发起请求到拿到数据">二、 详细连接流程（从发起请求到拿到数据）
+</h3><p>假设你的 Controller 收到一个请求，要查 <code>SELECT * FROM users</code>。</p>
+<h4 id="第一阶段建立连接握手">第一阶段：建立连接（握手）
+</h4><ol>
+<li>
+<p><strong>Java 发起系统调用</strong>：</p>
+<ul>
+<li>
+<p>Spring Boot (JDBC 驱动) 解析 URL，发现要用 UDS。</p>
+</li>
+<li>
+<p>它不再调用 TCP 的 <code>connect(ip, port)</code>，而是调用针对文件的系统调用 <strong><code>socket(AF_UNIX, ...)</code></strong> 和 <strong><code>connect(&quot;/var/lib/mysql/mysql.sock&quot;)</code></strong>。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>操作系统（内核）介入</strong>：</p>
+<ul>
+<li>
+<p>内核看到 Java 想连 <code>/var/lib/mysql/mysql.sock</code>。</p>
+</li>
+<li>
+<p><strong>权限检查</strong>：内核检查运行 Java 进程的用户（比如 <code>app_user</code>）有没有对这个 sock 文件的<strong>读写权限</strong>。如果没有，直接报错 <code>Permission denied</code>。</p>
+</li>
+<li>
+<p><strong>查找绑定</strong>：内核查看记录表，发现这个 sock 文件正被 <strong>PID=200 (MySQL)</strong> 监听（Listen）着。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>建立通道</strong>：</p>
+<ul>
+<li>
+<p>内核在内存里，直接在 PID=100 (Java) 和 PID=200 (MySQL) 之间搭了一根“虚拟管子”。</p>
+</li>
+<li>
+<p><strong>分配句柄</strong>：</p>
+<ul>
+<li>
+<p>给 Java 进程发一个文件句柄（FD），比如 <strong>FD=8</strong>。</p>
+</li>
+<li>
+<p>给 MySQL 进程发一个文件句柄（FD），比如 <strong>FD=12</strong>。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>此时，<strong>连接建立完成</strong>。不需要 TCP 的三次握手（SYN, SYN-ACK, ACK），只有文件系统的查找开销。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="第二阶段发送-sql写数据">第二阶段：发送 SQL（写数据）
+</h4><ol>
+<li>
+<p><strong>Java 写数据</strong>：</p>
+<ul>
+<li>
+<p>Spring Boot 把 SQL 语句 <code>SELECT * FROM users</code> 转成字节流。</p>
+</li>
+<li>
+<p>调用系统调用 <strong><code>write(FD=8, &quot;SELECT...&quot;)</code></strong>。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>内核搬运（最快的部分）</strong>：</p>
+<ul>
+<li>
+<p><strong>没有协议栈</strong>：内核<strong>不需要</strong>给数据包加 TCP 头、IP 头、不需要算校验和，也不需要路由查找。</p>
+</li>
+<li>
+<p><strong>直接拷贝</strong>：内核直接把 Java 进程 <strong>发送缓冲区</strong> 里的数据，拷贝到 MySQL 进程的 <strong>接收缓冲区</strong> 里。</p>
+</li>
+<li>
+<p>MySQL 那个监听的 FD=12 变得“可读”。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>MySQL 读数据</strong>：</p>
+<ul>
+<li>MySQL 被唤醒，调用 <code>read(FD=12)</code>，拿到了 SQL 语句。</li>
+</ul>
+</li>
+</ol>
+<h4 id="第三阶段返回结果读数据">第三阶段：返回结果（读数据）
+</h4><ol>
+<li>
+<p><strong>MySQL 处理</strong>：</p>
+<ul>
+<li>MySQL 解析 SQL，查自己的 B+ 树，找到了 10 条用户数据。</li>
+</ul>
+</li>
+<li>
+<p><strong>MySQL 写回</strong>：</p>
+<ul>
+<li>MySQL 调用 <code>write(FD=12, [用户数据])</code>。</li>
+</ul>
+</li>
+<li>
+<p><strong>内核再次搬运</strong>：</p>
+<ul>
+<li>内核把数据直接从 MySQL 的内存搬运到 Java 的内存缓冲区。</li>
+</ul>
+</li>
+<li>
+<p><strong>Java 拿到结果</strong>：</p>
+<ul>
+<li>Spring Boot 从 <code>read(FD=8)</code> 中苏醒，拿到 ResultSet，封装成对象返回给 Controller。</li>
+</ul>
+</li>
+</ol>
+<h3 id="如果用-tcp-127001-流程有啥区别">如果用 TCP (127.0.0.1) 流程有啥区别？
+</h3><p>为了让你更直观地看到 UDS 省了啥，我们看看<strong>普通的 Localhost TCP 连接</strong>多了哪些步骤：</p>
+<ol>
+<li>
+<p><strong>打包</strong>：Java 把 SQL 加上 TCP 头（源端口、目标端口）、IP 头（源IP 127.0.0.1、目标IP 127.0.0.1）。</p>
+</li>
+<li>
+<p><strong>计算</strong>：CPU 计算 TCP 校验和。</p>
+</li>
+<li>
+<p><strong>路由</strong>：内核网络层查路由表，发现是回环地址（Loopback）。</p>
+</li>
+<li>
+<p><strong>伪装发送</strong>：数据包虽然不出网卡，但要在内核的协议栈里走一圈“虚拟出网再入网”的流程（MTU检查、防火墙规则检查 iptables 等）。</p>
+</li>
+<li>
+<p><strong>拆包</strong>：MySQL 端收到后，去掉 IP 头、去掉 TCP 头，校验数据的完整性。</p>
+</li>
+</ol>
+<p><strong>总结差异</strong>：</p>
+<ul>
+<li>
+<p><strong>TCP 方式</strong>：就像你写了一封信，虽然寄给同一个办公室的同事，但你还是把它扔进了楼下的邮局信箱。邮局（内核网络栈）盖戳、分拣、再投递回同一个办公室。</p>
+</li>
+<li>
+<p><strong>UDS 方式</strong>：你直接站起来，把信放在了同事的桌子上。</p>
+</li>
+</ul>
+<h2 id="redis把数据从内核内存区拷贝到用户内存的过程">Redis把数据从内核内存区拷贝到用户内存的过程
+</h2><h3 id="详细流程图解从-socket-到-redis">详细流程图解（从 Socket 到 Redis）
+</h3><p>假设一个客户端发来了 <code>GET user:1</code>。</p>
+<h4 id="第一步数据到达内核">第一步：数据到达内核
+</h4><ol>
+<li>
+<p><strong>网卡</strong>接收到光信号/电信号，转成数据包。</p>
+</li>
+<li>
+<p><strong>DMA (直接内存访问)</strong> 把数据包拷贝到内核的内存（Socket 接收缓冲区）。</p>
+</li>
+<li>
+<p><strong>内核</strong>检查这根 Socket 对应的句柄（FD），发现 Redis 之前通过 <code>epoll_ctl</code> 关注了它的“可读事件”。</p>
+</li>
+<li>
+<p><strong>内核动作</strong>：把这个 FD 加入到 <strong>就绪链表 (Ready List)</strong> 中。</p>
+</li>
+</ol>
+<h4 id="第二步redis-醒来">第二步：Redis 醒来
+</h4><ol>
+<li>
+<p>Redis 主线程一直在跑一个死循环（<code>aeMain</code>）。</p>
+</li>
+<li>
+<p>循环里调用了 <code>epoll_wait</code>。</p>
+</li>
+<li>
+<p>刚才数据一到，<code>epoll_wait</code> 立刻返回，告诉 Redis：“嘿，FD=5 是<strong>可读</strong>的！”</p>
+</li>
+</ol>
+<h4 id="第三步读取与执行">第三步：读取与执行
+</h4><ol>
+<li>
+<p>Redis 根据 FD=5，找到对应的<strong>处理函数</strong>（通常是 <code>readQueryFromClient</code>）。</p>
+</li>
+<li>
+<p><strong>系统调用 <code>read</code></strong>：把数据从内核搬运到 Redis 的用户态 Buffer。</p>
+</li>
+<li>
+<p><strong>协议解析</strong>：解析 RESP 协议，知道你要执行 <code>GET</code>。</p>
+</li>
+<li>
+<p><strong>查字典</strong>：在内存的 HashMap 里找到 <code>user:1</code> 的值。</p>
+</li>
+<li>
+<p><strong>准备回复</strong>：把结果写入到客户端对象的<strong>发送缓冲区</strong>。</p>
+</li>
+</ol>
+<h4 id="第四步回复客户端">第四步：回复客户端
+</h4><ol>
+<li>
+<p>如果发送缓冲区很小，Redis 直接当场就调用 <code>write</code> 发回去了。</p>
+</li>
+<li>
+<p>如果发送缓冲区满了（或者内核的写缓冲区满了），Redis 会向 epoll 注册一个 <strong>“写事件”</strong>。</p>
+</li>
+<li>
+<p>等下次内核告诉 Redis “这个 Socket 可以写了”，Redis 再继续把剩下的数据发完。</p>
+</li>
+</ol>
+<h2 id="selectpollepoll">select，poll，epoll
+</h2><p>poll和 select 并没有太大的本质区别，都是使用「线性结构」存储进程关注的 Socket 集合，<strong>因此都需要遍历文件描述符集合来找到可读或可写的 Socket</strong>，时间复杂度为 O(n)，而且也需要在用户态与内核态之间拷贝文件描述符集合，这种方式随着并发数上来，性能的损耗会呈指数级增长。</p>
+<ul>
+<li>
+<p>epoll 在内核里使用红黑树来跟踪进程所有待检测的文件描述字，把需要监控的 socket 通过epoll_ctl0 函数加入内核中的红黑树里，红黑树是个高效的数据结构，增删改一般时间复杂度是O(logn)。而 select/poll 内核里没有类似 epol 红黑树这种保存所有待检测的 socket 的数据结构，所以select/pol 每次操作时都传入整个 socket 集合给内核，而 epoll 因为在内核维护了红黑树，可以保存所有待检测的 socket ，所以只需要传入一个待检测的 socket，减少了内核和用户空间大量的数据拷贝和内存分配。</p>
+</li>
+<li>
+<p><strong>epoll 使用事件驱动的机制，内核里维护了一个链表来记录就绪事件，当某个 socket 有事件发生时，通过回调函数内核会将其加入到这个就绪事件列表中</strong>，当用户调用 epoll_wait0 函数时，只会返回有事件发生的文件描述符的个数，不需要像 select/poll 那样轮询扫描整个 socket 集合，大大提高了检测的效率。</p>
+</li>
+</ul>
+<p>我们来看一个最经典的场景：<strong>Redis 怎么把数据发给客户端？</strong> 假设 Redis 要发送字符串 <code>&quot;Hello&quot;</code>。</p>
+<h4 id="1-物理位置">1. 物理位置
+</h4><ul>
+<li>
+<p><strong>字符串 &ldquo;Hello&rdquo;</strong>：一开始在 Redis 的<strong>用户内存</strong>里。</p>
+</li>
+<li>
+<p><strong>Socket 对象</strong>：在操作系统的<strong>内核内存</strong>里。</p>
+</li>
+</ul>
+<h4 id="2-发送过程-write">2. 发送过程 (write)
+</h4><p>Redis 调用 <code>write(fd, &quot;Hello&quot;)</code> 系统调用。</p>
+<ul>
+<li>
+<p><strong>步骤 A：跨界拷贝（CPU Copy）</strong> CPU 暂停 Redis 的用户态运行，切换到内核态。
+CPU 把 &ldquo;Hello&rdquo; 从 <strong>Redis 的用户内存</strong> 复制到 <strong>Socket 的发送缓冲区（内核内存）</strong>。 <em>注意：这时候数据其实还在内存里，没出去呢！</em></p>
+</li>
+<li>
+<p><strong>步骤 B：DMA 拷贝</strong> 操作系统看“发送缓冲区”里有货了，就命令 <strong>网卡</strong>（硬件）：
+“喂，把这块内存里的数据拿走发出去。”
+网卡的 DMA 控制器直接把数据从<strong>内核内存</strong>搬运到<strong>网卡硬件</strong>上，然后变成电信号发走。</p>
+</li>
+</ul>
+<h4 id="3-接收过程-read">3. 接收过程 (read)
+</h4><p>客户端发来了一条命令 <code>&quot;GET&quot;</code>。</p>
+<ul>
+<li>
+<p><strong>步骤 A：硬件接收</strong> 网卡收到电信号，转成数据包，通过 DMA 搬运到 <strong>Socket 的接收缓冲区（内核内存）</strong>。 <em>此时，Redis 还不知道数据来了。</em></p>
+</li>
+<li>
+<p><strong>步骤 B：通知与唤醒 (Epoll)</strong> 内核发现这个 Socket 的接收缓冲区有数据了，于是通过 Epoll 告诉 Redis：“FD=5 有读事件了！”</p>
+</li>
+<li>
+<p><strong>步骤 C：跨界拷贝（CPU Copy）</strong> Redis 醒来，调用 <code>read(fd)</code>。
+CPU 把数据从 <strong>Socket 的接收缓冲区（内核内存）</strong> 复制到 <strong>Redis 的用户内存</strong>。
+现在，Redis 终于可以在自己的变量里看到 <code>&quot;GET&quot;</code> 这三个字母了。</p>
+</li>
+</ul>
 
 </section>
 

@@ -495,6 +495,49 @@
         <li><a href="#总结一条线程的黑化之路">总结：一条线程的“黑化”之路</a></li>
       </ol>
     </li>
+    <li><a href="#介绍一下java里的volatile">介绍一下Java里的volatile</a>
+      <ol>
+        <li><a href="#1-核心特性">1. 核心特性</a>
+          <ol>
+            <li><a href="#a-保证可见性-visibility">A. 保证可见性 (Visibility)</a></li>
+            <li><a href="#b-禁止指令重排序-ordering">B. 禁止指令重排序 (Ordering)</a></li>
+            <li><a href="#c-不保证原子性-no-atomicity">C. 不保证原子性 (No Atomicity)</a></li>
+          </ol>
+        </li>
+        <li><a href="#3-什么时候使用-volatile">3. 什么时候使用 volatile？</a>
+          <ol>
+            <li><a href="#常见场景-1状态标记量-flag">常见场景 1：状态标记量 (Flag)</a></li>
+            <li><a href="#常见场景-2单例模式-double-checked-locking">常见场景 2：单例模式 (Double-Checked Locking)</a></li>
+          </ol>
+        </li>
+        <li><a href="#4-总结volatile-vs-synchronized">4. 总结：volatile vs synchronized</a></li>
+        <li><a href="#它保证的顺序禁止内部瞎优化指令重排">它保证的“顺序”：禁止<strong>内部</strong>瞎优化（指令重排）</a></li>
+        <li><a href="#2-它无法改变的并发无法阻止外部线程的插队">2. 它无法改变的“并发”：无法阻止<strong>外部</strong>线程的“插队”</a></li>
+      </ol>
+    </li>
+    <li><a href="#讲解java的threadlocal">讲解Java的ThreadLocal</a>
+      <ol>
+        <li><a href="#1-核心概念">1. 核心概念</a></li>
+        <li><a href="#2-核心应用场景">2. 核心应用场景</a></li>
+        <li><a href="#3-底层原理重点threadlocalmap">3. 底层原理（重点：ThreadLocalMap）</a>
+          <ol>
+            <li><a href="#31-真实的存储结构">3.1 真实的存储结构</a></li>
+            <li><a href="#32-引用关系图">3.2 引用关系图</a></li>
+            <li><a href="#33-hash-冲突解决">3.3 Hash 冲突解决</a></li>
+          </ol>
+        </li>
+        <li><a href="#4-著名的内存泄漏问题">4. 著名的内存泄漏问题</a>
+          <ol>
+            <li><a href="#41-为什么会泄漏">4.1 为什么会泄漏？</a></li>
+            <li><a href="#42-各种补救措施探测式清理">4.2 各种补救措施（探测式清理）</a></li>
+            <li><a href="#43-终极解决方案">4.3 终极解决方案</a></li>
+          </ol>
+        </li>
+        <li><a href="#5-最佳实践代码示例">5. 最佳实践代码示例</a></li>
+        <li><a href="#6-父子线程传递-inheritablethreadlocal">6. 父子线程传递 (<code>InheritableThreadLocal</code>)</a></li>
+        <li><a href="#总结">总结</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -555,7 +598,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 42 分钟
+                    阅读时长: 49 分钟
                 </time>
             </div>
         
@@ -2650,6 +2693,482 @@ CPU 把数据从 <strong>Socket 的接收缓冲区（内核内存）</strong> �
 </li>
 <li>
 <p><strong>OS 内核层</strong>：挤不进去？调用 <code>futex</code> 系统调用，请求操作系统把自己挂起（Sleep），交出 CPU 时间片，从用户态跌落内核态，等待被唤醒。</p>
+</li>
+</ol>
+<h2 id="介绍一下java里的volatile">介绍一下Java里的volatile
+</h2><p><code>volatile</code> 是 Java 虚拟机（JVM）提供的一种<strong>轻量级的同步机制</strong>。在并发编程中，它通常被用来修饰变量。</p>
+<p>理解 <code>volatile</code>，核心要抓住这三大特性：<strong>可见性</strong>、<strong>有序性</strong>，以及它<strong>不保证原子性</strong>。</p>
+<p>以下是详细的拆解：</p>
+<hr>
+<h3 id="1-核心特性">1. 核心特性
+</h3><h4 id="a-保证可见性-visibility">A. 保证可见性 (Visibility)
+</h4><p>这是 <code>volatile</code> 最主要的作用。</p>
+<ul>
+<li>
+<p><strong>问题背景：</strong> 在 Java 内存模型 (JMM) 中，每个线程都有自己的<strong>工作内存</strong> (Working Memory，对应 CPU 缓存)，变量存储在<strong>主内存</strong> (Main Memory) 中。线程操作变量时，会先将变量从主内存拷贝到自己的工作内存中。如果线程 A 修改了变量，线程 B 可能还在读取自己缓存中的旧值，导致数据不一致。</p>
+</li>
+<li>
+<p><strong>volatile 的作用：</strong></p>
+<ol>
+<li>
+<p>当一个线程修改了 <code>volatile</code> 变量的值，新值会<strong>立即刷新</strong>到主内存。</p>
+</li>
+<li>
+<p>同时，会强制让其他线程工作内存中该变量的缓存<strong>失效</strong>。</p>
+</li>
+<li>
+<p>当其他线程需要读取该变量时，必须重新从主内存读取最新值。</p>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="b-禁止指令重排序-ordering">B. 禁止指令重排序 (Ordering)
+</h4><ul>
+<li>
+<p><strong>问题背景：</strong> 为了提高性能，编译器和处理器通常会对指令进行重排序（即代码执行顺序可能与编写顺序不同），只要不影响单线程下的结果即可。但在多线程环境下，重排序可能导致严重的逻辑错误（例如：对象初始化了一半就被另一个线程使用了）。</p>
+</li>
+<li>
+<p><strong>volatile 的作用：</strong> JVM 会通过插入<strong>内存屏障 (Memory Barrier)</strong> 来禁止特定类型的指令重排序，从而保证有序性。</p>
+<ul>
+<li><em>经典案例：</em> 单例模式的“双重检查锁”（Double-Checked Locking）。如果不加 <code>volatile</code>，可能导致拿到一个未完全初始化的对象。</li>
+</ul>
+</li>
+</ul>
+<h4 id="c-不保证原子性-no-atomicity">C. 不保证原子性 (No Atomicity)
+</h4><p>这是面试和开发中最大的坑。</p>
+<ul>
+<li>
+<p><strong>现象：</strong> <code>volatile</code> 不能替代 <code>synchronized</code> 或 <code>Lock</code>。</p>
+</li>
+<li>
+<p><strong>例子：</strong> 对一个 <code>volatile int count</code> 执行 <code>count++</code> 操作。</p>
+<ul>
+<li>
+<p><code>count++</code> 包含三个步骤：读值 -&gt; 加 1 -&gt; 写回。</p>
+</li>
+<li>
+<p>如果两个线程同时读到了 100，都加 1，然后都写回 101。最终结果是 101，而不是期望的 102。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>结论：</strong> 对于复合操作（Read-Modify-Write），<code>volatile</code> 无法保证线程安全。</p>
+</li>
+</ul>
+<h3 id="3-什么时候使用-volatile">3. 什么时候使用 volatile？
+</h3><p>由于 <code>volatile</code> 比 <code>synchronized</code> 开销小（因为它不会引起线程上下文切换），在满足以下两个条件时，推荐使用：</p>
+<ol>
+<li>
+<p><strong>对变量的写操作不依赖于当前值</strong>（例如：不是 <code>i++</code>，而是 <code>flag = true</code>）。</p>
+</li>
+<li>
+<p><strong>该变量没有包含在具有其他变量的不变式中</strong>。</p>
+</li>
+</ol>
+<h4 id="常见场景-1状态标记量-flag">常见场景 1：状态标记量 (Flag)
+</h4><p>用于控制线程停止或状态切换。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">volatile</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="n">shutdownRequested</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">shutdown</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">shutdownRequested</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">doWork</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">shutdownRequested</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 执行业务逻辑</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="常见场景-2单例模式-double-checked-locking">常见场景 2：单例模式 (Double-Checked Locking)
+</h4><p>这是 <code>volatile</code> 防重排最经典的应用。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Singleton</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 必须加 volatile，防止指令重排导致 instance 指向未初始化的内存</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">volatile</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Singleton</span><span class="w"> </span><span class="n">instance</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="nf">Singleton</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Singleton</span><span class="w"> </span><span class="nf">getInstance</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">instance</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">synchronized</span><span class="w"> </span><span class="p">(</span><span class="n">Singleton</span><span class="p">.</span><span class="na">class</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">instance</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">instance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Singleton</span><span class="p">();</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="c1">// new 操作并非原子，分为3步：</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="c1">// 1. 分配内存</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="c1">// 2. 初始化对象</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="c1">// 3. 将 instance 指向内存地址</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="c1">// 若发生重排(1-&gt;3-&gt;2)，其他线程可能拿到非空的但未初始化的对象。</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">instance</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><hr>
+<h3 id="4-总结volatile-vs-synchronized">4. 总结：volatile vs synchronized
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>特性</strong></th>
+          <th><strong>volatile</strong></th>
+          <th><strong>synchronized</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>可见性</strong></td>
+          <td>保证</td>
+          <td>保证</td>
+      </tr>
+      <tr>
+          <td><strong>有序性</strong></td>
+          <td>保证</td>
+          <td>保证</td>
+      </tr>
+      <tr>
+          <td><strong>原子性</strong></td>
+          <td><strong>不保证</strong></td>
+          <td>保证</td>
+      </tr>
+      <tr>
+          <td><strong>线程阻塞</strong></td>
+          <td>不会阻塞线程</td>
+          <td>会阻塞线程</td>
+      </tr>
+      <tr>
+          <td><strong>适用范围</strong></td>
+          <td>仅变量</td>
+          <td>方法、代码块</td>
+      </tr>
+      <tr>
+          <td><strong>性能</strong></td>
+          <td>较高 (轻量级)</td>
+          <td>较低 (重量级，尽管已有优化)</td>
+      </tr>
+  </tbody>
+</table></div>
+<p><strong>一句话总结：</strong> <code>volatile</code> 是 Java 提供的轻量级同步机制，它主要用于保证多线程下的<strong>变量可见性</strong>和<strong>禁止指令重排</strong>，但它<strong>不能保证原子性</strong>，因此不能完全替代锁。</p>
+<h3 id="它保证的顺序禁止内部瞎优化指令重排">它保证的“顺序”：禁止<strong>内部</strong>瞎优化（指令重排）
+</h3><p>CPU 和编译器为了快，有时候会把你写的代码顺序打乱（只要单线程下逻辑通顺就行）。</p>
+<ul>
+<li>
+<p><strong>Volatile 的作用：</strong> 告诉 CPU，“这行代码很关键，别给我乱动位置”。</p>
+</li>
+<li>
+<p><strong>例子：</strong></p>
+<ul>
+<li>
+<p>你写的是：<code>步骤1 -&gt; 步骤2 -&gt; volatile写</code></p>
+</li>
+<li>
+<p>CPU 不允许优化成：<code>volatile写 -&gt; 步骤1 -&gt; 步骤2</code></p>
+</li>
+<li>
+<p><strong>这就是你说的“保证代码执行顺序不改变”。</strong></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-它无法改变的并发无法阻止外部线程的插队">2. 它无法改变的“并发”：无法阻止<strong>外部</strong>线程的“插队”
+</h3><p>这正是你后半句说的重点。<code>volatile</code> <strong>不是锁</strong>。</p>
+<ul>
+<li>
+<p><strong>没有排他性：</strong> 它不能像 <code>synchronized</code> 那样让线程排队（Serial Execution）。</p>
+</li>
+<li>
+<p><strong>现象：</strong> 线程 A 和线程 B 可以<strong>同时</strong>去修改这个 <code>volatile</code> 变量。</p>
+</li>
+<li>
+<p><strong>后果：</strong> 如果操作不是原子的（比如 <code>i++</code>），大家还是会“撞车”。</p>
+</li>
+</ul>
+<h2 id="讲解java的threadlocal">讲解Java的ThreadLocal
+</h2><p><code>ThreadLocal</code> 是 Java 中一个非常重要且高频面试的并发工具类。它的核心思想是 <strong>“空间换时间”</strong>，为每个线程提供独立的变量副本，从而实现线程隔离。</p>
+<p>以下我将从<strong>核心概念、应用场景、底层原理（源码级别）、内存泄漏问题</strong>以及<strong>最佳实践</strong>五个维度为你详细讲解。</p>
+<hr>
+<h3 id="1-核心概念">1. 核心概念
+</h3><p><strong>ThreadLocal</strong>（线程局部变量）提供了线程本地变量。当你在代码中创建一个 <code>ThreadLocal</code> 变量时，访问这个变量的每个线程都会拥有一个<strong>独立的、自己的本地副本</strong>。</p>
+<ul>
+<li>
+<p><strong>它的作用：</strong> 它是为了解决多线程并发访问共享变量时的线程安全问题，但它不是通过加锁（<code>synchronized</code>）来实现的，而是通过让每个线程自己玩自己的，互不干扰。</p>
+</li>
+<li>
+<p><strong>比喻：</strong></p>
+<ul>
+<li>
+<p><code>synchronized</code> 就像只有一个厕所，大家需要排队（锁），同一时间只能一个人用。</p>
+</li>
+<li>
+<p><code>ThreadLocal</code> 就像给每个人发了一个专用的移动厕所，大家互不影响，不需要排队。</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="2-核心应用场景">2. 核心应用场景
+</h3><p><code>ThreadLocal</code> 主要有两个经典的使用场景：</p>
+<ol>
+<li>
+<p><strong>线程隔离（每个线程需要一个独享的对象）：</strong></p>
+<ul>
+<li>
+<p><strong>典型案例：</strong> <code>SimpleDateFormat</code>。它是线程不安全的，如果把它定义为 <code>static</code> 并在多线程中共用，会报错。</p>
+</li>
+<li>
+<p><strong>解法：</strong> 使用 <code>ThreadLocal</code> 为每个线程创建一个单独的 <code>SimpleDateFormat</code> 副本。</p>
+</li>
+<li>
+<p><strong>案例：</strong> 数据库连接（Connection）、Session 管理。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>上下文传递（跨方法传递参数）：</strong></p>
+<ul>
+<li>
+<p><strong>场景：</strong> 在一个 Web 请求中，从 Controller -&gt; Service -&gt; DAO，我们需要传递用户信息（User ID）。</p>
+</li>
+<li>
+<p><strong>问题：</strong> 如果每个方法都加一个 <code>userId</code> 参数，代码会非常臃肿。</p>
+</li>
+<li>
+<p><strong>解法：</strong> 在拦截器处将 User ID 存入 <code>ThreadLocal</code>，后续任何地方都可以直接取出来使用，无需层层传参。</p>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="3-底层原理重点threadlocalmap">3. 底层原理（重点：ThreadLocalMap）
+</h3><p>这是理解 <code>ThreadLocal</code> 的关键。很多人误以为 <code>ThreadLocal</code> 内部维护了一个 Map，Key 是线程，Value 是值。<strong>其实恰恰相反。</strong></p>
+<h4 id="31-真实的存储结构">3.1 真实的存储结构
+</h4><ul>
+<li>
+<p><strong>Thread 类中：</strong> 每个 <code>Thread</code> 对象内部维护了一个成员变量 <code>threadLocals</code>。</p>
+<p>Java</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">// Thread.java 源码片段
+</span></span><span class="line"><span class="cl">ThreadLocal.ThreadLocalMap threadLocals = null;
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p><strong>ThreadLocalMap：</strong> 这是一个类似于 <code>HashMap</code> 的结构，但它是 <code>ThreadLocal</code> 的静态内部类。</p>
+</li>
+<li>
+<p><strong>Key 和 Value：</strong></p>
+<ul>
+<li>
+<p><strong>Key：</strong> 是当前的 <strong><code>ThreadLocal</code> 对象实例本身</strong>（而且是弱引用，WeakReference）。</p>
+</li>
+<li>
+<p><strong>Value：</strong> 是我们 <code>set</code> 进去的具体值。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="32-引用关系图">3.2 引用关系图
+</h4><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">Thread (当前线程)
+</span></span><span class="line"><span class="cl">  └── threadLocals (ThreadLocalMap)
+</span></span><span class="line"><span class="cl">       └── Entry[] (数组)
+</span></span><span class="line"><span class="cl">            └── Entry (继承自 WeakReference)
+</span></span><span class="line"><span class="cl">                 ├── Key (弱引用) ──&gt; ThreadLocal 实例
+</span></span><span class="line"><span class="cl">                 └── Value (强引用) ──&gt; 具体对象 (如 Connection)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>结论：</strong> 数据其实是存放在<strong>线程对象（Thread）自己的堆内存里的，<code>ThreadLocal</code> 仅仅是一个访问入口</strong>（Key）。</p>
+<h4 id="33-hash-冲突解决">3.3 Hash 冲突解决
+</h4><p>与 <code>HashMap</code> 使用链表法/红黑树不同，<code>ThreadLocalMap</code> 使用的是 <strong>线性探测法 (Linear Probing)</strong>。</p>
+<ul>
+<li>
+<p>如果计算出的槽位（slot）已经被占用了，它就往后找下一个空位存放。</p>
+</li>
+<li>
+<p>这也意味着 <code>ThreadLocal</code> 不适合存储极其大量的数据，否则检索效率会下降。</p>
+</li>
+</ul>
+<hr>
+<h3 id="4-著名的内存泄漏问题">4. 著名的内存泄漏问题
+</h3><p>这是 <code>ThreadLocal</code> 最致命的坑，也是面试必问点。</p>
+<h4 id="41-为什么会泄漏">4.1 为什么会泄漏？
+</h4><p><code>ThreadLocalMap</code> 的 Entry 对 Key（ThreadLocal） 是<strong>弱引用</strong>，但对 Value 是<strong>强引用</strong>。</p>
+<ol>
+<li>
+<p><strong>Key 被回收：</strong> 如果外界没有 <code>ThreadLocal</code> 的强引用了，在下一次 GC 时，Key 会被回收，Entry 中的 Key 变成了 <code>null</code>。</p>
+</li>
+<li>
+<p><strong>Value 还在：</strong> 但是，Value 是强引用，只要 Current Thread 还在运行（比如线程池中的核心线程，生命周期很长），这个 Value 就会一直存在于内存中，无法被回收。</p>
+</li>
+<li>
+<p><strong>结果：</strong> 出现了一条 <code>Current Thread -&gt; ThreadLocalMap -&gt; Entry -&gt; Value</code> 的强引用链，导致 Value 占用的内存无法释放，形成内存泄漏。</p>
+</li>
+</ol>
+<h4 id="42-各种补救措施探测式清理">4.2 各种补救措施（探测式清理）
+</h4><p>Java 的设计者也想到了这点。<code>ThreadLocalMap</code> 在调用 <code>set()</code>、<code>get()</code>、<code>remove()</code> 方法时，会顺便检查 Key 为 <code>null</code> 的 Entry，并将对应的 Value 清除。</p>
+<h4 id="43-终极解决方案">4.3 终极解决方案
+</h4><p><strong>必须在使用完后，手动调用 <code>remove()</code> 方法。</strong></p>
+<hr>
+<h3 id="5-最佳实践代码示例">5. 最佳实践代码示例
+</h3><p>无论是在 Spring 的拦截器中，还是日常开发，请务必遵循 <code>try-finally</code> 模式：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">UserContext</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 1. 定义 ThreadLocal，通常建议配合 static final 修饰</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">UserInfo</span><span class="o">&gt;</span><span class="w"> </span><span class="n">userHolder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ThreadLocal</span><span class="o">&lt;&gt;</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 2. 设置值</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">setUser</span><span class="p">(</span><span class="n">UserInfo</span><span class="w"> </span><span class="n">user</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">userHolder</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">user</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 3. 获取值</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">UserInfo</span><span class="w"> </span><span class="nf">getUser</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">userHolder</span><span class="p">.</span><span class="na">get</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 4. 清除值 (至关重要)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">remove</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">userHolder</span><span class="p">.</span><span class="na">remove</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 业务使用伪代码</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">doBusiness</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">UserContext</span><span class="p">.</span><span class="na">setUser</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">UserInfo</span><span class="p">(</span><span class="s">&#34;Gemini&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">1</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 执行业务逻辑...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">serviceLayer</span><span class="p">.</span><span class="na">process</span><span class="p">();</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 5. 必须在 finally 中清除，防止内存泄漏和线程复用导致的数据污染</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">UserContext</span><span class="p">.</span><span class="na">remove</span><span class="p">();</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="6-父子线程传递-inheritablethreadlocal">6. 父子线程传递 (<code>InheritableThreadLocal</code>)
+</h3><p>普通的 <code>ThreadLocal</code> 无法在子线程中获取父线程设置的值。如果需要传递，可以使用 <code>InheritableThreadLocal</code>。</p>
+<ul>
+<li>
+<p><strong>原理：</strong> 在创建子线程（Thread 构造函数）时，会自动把父线程的 <code>inheritableThreadLocals</code> Map 中的数据复制一份给子线程。</p>
+</li>
+<li>
+<p><strong>注意：</strong> 仅限创建时复制，后续父线程修改，子线程不可见（拷贝的是引用）。</p>
+</li>
+</ul>
+<hr>
+<h3 id="总结">总结
+</h3><ol>
+<li>
+<p><strong>用途：</strong> 线程隔离（每个线程一份）和 上下文传递（透传参数）。</p>
+</li>
+<li>
+<p><strong>原理：</strong> 每个 <code>Thread</code> 内部维护一个 <code>ThreadLocalMap</code>，Key 是 <code>ThreadLocal</code> 实例本身。</p>
+</li>
+<li>
+<p><strong>坑：</strong></p>
+<ul>
+<li>
+<p><strong>内存泄漏：</strong> 弱引用 Key 导致 Value 滞留。</p>
+</li>
+<li>
+<p><strong>数据污染：</strong> 线程池复用线程时，如果没清理，下一个任务会读到上一个任务的数据。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>铁律：</strong> 用完必须 <code>remove()</code>。</p>
 </li>
 </ol>
 

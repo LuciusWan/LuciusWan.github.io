@@ -1,0 +1,2352 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="EduAgentX 项目面试话术指南 一、项目整体介绍（30秒版本） &ldquo;我做的是一个智能教育管理系统 EduAgentX，核心功能包括 AI 智能题目生成、高并发抢课系统 和 RAG 知识库检索。技术栈是 Spring Boot 3 + Spring AI + Redis + RocketMQ，同时我还完成了从单体到微服务的架构演进，使用 Spring Cloud Alibaba + Dubbo + Nacos + Higress 网关。项目中我重点解决了三个技术难题：抢课系统的高并发防超卖、AI 工作流的流式输出、以及 热点数据的缓存优化。&rdquo;\n">
+<title>面试话术</title>
+
+<link rel='canonical' href='https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E8%AF%9D%E6%9C%AF/'>
+
+<link rel="stylesheet" href="/scss/style.min.6a692fd055deae459f2a9767f57f3855ba80cafd5041317f24f7360f6ca47cdf.css"><meta property='og:title' content="面试话术">
+<meta property='og:description' content="EduAgentX 项目面试话术指南 一、项目整体介绍（30秒版本） &ldquo;我做的是一个智能教育管理系统 EduAgentX，核心功能包括 AI 智能题目生成、高并发抢课系统 和 RAG 知识库检索。技术栈是 Spring Boot 3 + Spring AI + Redis + RocketMQ，同时我还完成了从单体到微服务的架构演进，使用 Spring Cloud Alibaba + Dubbo + Nacos + Higress 网关。项目中我重点解决了三个技术难题：抢课系统的高并发防超卖、AI 工作流的流式输出、以及 热点数据的缓存优化。&rdquo;\n">
+<meta property='og:url' content='https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E8%AF%9D%E6%9C%AF/'>
+<meta property='og:site_name' content='LuciusWan'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-11-27T20:08:45&#43;08:00'/><meta property='article:modified_time' content='2025-11-27T20:08:45&#43;08:00'/>
+<meta name="twitter:title" content="面试话术">
+<meta name="twitter:description" content="EduAgentX 项目面试话术指南 一、项目整体介绍（30秒版本） &ldquo;我做的是一个智能教育管理系统 EduAgentX，核心功能包括 AI 智能题目生成、高并发抢课系统 和 RAG 知识库检索。技术栈是 Spring Boot 3 + Spring AI + Redis + RocketMQ，同时我还完成了从单体到微服务的架构演进，使用 Spring Cloud Alibaba + Dubbo + Nacos + Higress 网关。项目中我重点解决了三个技术难题：抢课系统的高并发防超卖、AI 工作流的流式输出、以及 热点数据的缓存优化。&rdquo;\n">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_a00c4178710685fc.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🎇</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">LuciusWan</a></h1>
+            <h2 class="site-description">欢迎来到我的blog</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/440554295'
+                        target="_blank"
+                        title="Bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/LuciusWan'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#一项目整体介绍30秒版本">一、项目整体介绍（30秒版本）</a></li>
+    <li><a href="#零八股文融合速查表">零、八股文融合速查表</a></li>
+    <li><a href="#二核心亮点详细话术融合八股版">二、核心亮点详细话术（融合八股版）</a>
+      <ol>
+        <li><a href="#亮点一高并发抢课系统redis--lua--rocketmq">亮点一：高并发抢课系统（Redis + Lua + RocketMQ）</a>
+          <ol>
+            <li><a href="#问题背景">问题背景</a></li>
+            <li><a href="#技术方案">技术方案</a></li>
+            <li><a href="#代码亮点可以主动提">代码亮点（可以主动提）</a></li>
+            <li><a href="#性能数据">性能数据</a></li>
+            <li><a href="#-融合八股redis-单线程模型">🎯 融合八股：Redis 单线程模型</a></li>
+            <li><a href="#-融合八股redis-数据结构选择">🎯 融合八股：Redis 数据结构选择</a></li>
+            <li><a href="#-融合八股消息队列对比">🎯 融合八股：消息队列对比</a></li>
+            <li><a href="#-融合八股mysql-悲观锁-vs-乐观锁">🎯 融合八股：MySQL 悲观锁 vs 乐观锁</a></li>
+          </ol>
+        </li>
+        <li><a href="#亮点二ai-工作流引擎langgraph4j--sse-流式输出">亮点二：AI 工作流引擎（LangGraph4j + SSE 流式输出）</a>
+          <ol>
+            <li><a href="#问题背景-1">问题背景</a></li>
+            <li><a href="#技术方案-1">技术方案</a></li>
+            <li><a href="#代码亮点">代码亮点</a></li>
+            <li><a href="#设计模式应用">设计模式应用</a></li>
+            <li><a href="#-融合八股threadlocal-原理与内存泄漏">🎯 融合八股：ThreadLocal 原理与内存泄漏</a></li>
+            <li><a href="#-融合八股线程池参数配置">🎯 融合八股：线程池参数配置</a></li>
+            <li><a href="#-融合八股设计模式详解">🎯 融合八股：设计模式详解</a></li>
+          </ol>
+        </li>
+        <li><a href="#亮点三热点数据缓存优化heavykeeper--二级缓存">亮点三：热点数据缓存优化（HeavyKeeper + 二级缓存）</a>
+          <ol>
+            <li><a href="#问题背景-2">问题背景</a></li>
+            <li><a href="#技术方案-2">技术方案</a></li>
+            <li><a href="#关键设计决策">关键设计决策</a></li>
+            <li><a href="#-融合八股concurrenthashmap-原理">🎯 融合八股：ConcurrentHashMap 原理</a></li>
+            <li><a href="#-融合八股cas-与原子类">🎯 融合八股：CAS 与原子类</a></li>
+            <li><a href="#-融合八股阻塞队列选择">🎯 融合八股：阻塞队列选择</a></li>
+          </ol>
+        </li>
+        <li><a href="#亮点四微服务架构演进">亮点四：微服务架构演进</a>
+          <ol>
+            <li><a href="#问题背景-3">问题背景</a></li>
+            <li><a href="#技术方案-3">技术方案</a></li>
+            <li><a href="#为什么选择-dubbo-而不是-feign">为什么选择 Dubbo 而不是 Feign？</a></li>
+            <li><a href="#-融合八股spring-事务传播机制">🎯 融合八股：Spring 事务传播机制</a></li>
+            <li><a href="#-融合八股分布式事务-seata">🎯 融合八股：分布式事务 Seata</a></li>
+            <li><a href="#-融合八股cap-理论">🎯 融合八股：CAP 理论</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#三常见追问及回答">三、常见追问及回答</a>
+      <ol>
+        <li><a href="#q1-redis-和-mysql-数据一致性怎么保证">Q1: Redis 和 MySQL 数据一致性怎么保证？</a></li>
+        <li><a href="#q2-如果-rocketmq-消息丢失怎么办">Q2: 如果 RocketMQ 消息丢失怎么办？</a></li>
+        <li><a href="#q3-lua-脚本为什么能保证原子性">Q3: Lua 脚本为什么能保证原子性？</a></li>
+        <li><a href="#q4-为什么用-sse-而不是-websocket">Q4: 为什么用 SSE 而不是 WebSocket？</a></li>
+        <li><a href="#q5-heavykeeper-算法原理是什么">Q5: HeavyKeeper 算法原理是什么？</a></li>
+        <li><a href="#q6-微服务拆分的原则是什么">Q6: 微服务拆分的原则是什么？</a></li>
+      </ol>
+    </li>
+    <li><a href="#四项目难点与解决方案总结">四、项目难点与解决方案总结</a></li>
+    <li><a href="#五面试加分项">五、面试加分项</a>
+      <ol>
+        <li><a href="#1-主动提及的技术深度">1. 主动提及的技术深度</a></li>
+        <li><a href="#2-可以展示的监控意识">2. 可以展示的监控意识</a></li>
+        <li><a href="#3-可以提及的扩展思考">3. 可以提及的扩展思考</a></li>
+      </ol>
+    </li>
+    <li><a href="#六更多八股融合场景">六、更多八股融合场景</a>
+      <ol>
+        <li><a href="#-aop-原理限流切面">🎯 AOP 原理（限流切面）</a></li>
+        <li><a href="#-限流算法滑动窗口">🎯 限流算法（滑动窗口）</a></li>
+        <li><a href="#-mysql-索引优化">🎯 MySQL 索引优化</a></li>
+        <li><a href="#-redis-序列化问题">🎯 Redis 序列化问题</a></li>
+        <li><a href="#-spring-bean-生命周期">🎯 Spring Bean 生命周期</a></li>
+        <li><a href="#-jvm-内存模型与可见性">🎯 JVM 内存模型与可见性</a></li>
+      </ol>
+    </li>
+    <li><a href="#七一句话总结">七、一句话总结</a></li>
+    <li><a href="#八面试话术模板">八、面试话术模板</a>
+      <ol>
+        <li><a href="#开场白">开场白</a></li>
+        <li><a href="#引出八股的过渡句">引出八股的过渡句</a></li>
+        <li><a href="#展示深度的句式">展示深度的句式</a></li>
+        <li><a href="#结束语">结束语</a></li>
+      </ol>
+    </li>
+    <li><a href="#九口语化面试话术完整版">九、口语化面试话术（完整版）</a>
+      <ol>
+        <li><a href="#话术一高并发抢课系统">【话术一】高并发抢课系统</a>
+          <ol>
+            <li><a href="#1-业务背景30秒">1️⃣ 业务背景（30秒）</a></li>
+            <li><a href="#2-技术选型原因1分钟">2️⃣ 技术选型原因（1分钟）</a></li>
+            <li><a href="#3-核心难点实现2分钟可手撕">3️⃣ 核心难点实现（2分钟，可手撕）</a></li>
+            <li><a href="#4-遇到的坑与解决1分钟">4️⃣ 遇到的坑与解决（1分钟）</a></li>
+            <li><a href="#5-未来优化方向30秒">5️⃣ 未来优化方向（30秒）</a></li>
+          </ol>
+        </li>
+        <li><a href="#话术二ai-智能题目生成">【话术二】AI 智能题目生成</a>
+          <ol>
+            <li><a href="#1-业务背景30秒-1">1️⃣ 业务背景（30秒）</a></li>
+            <li><a href="#2-技术选型原因1分钟-1">2️⃣ 技术选型原因（1分钟）</a></li>
+            <li><a href="#3-核心难点实现2分钟">3️⃣ 核心难点实现（2分钟）</a></li>
+            <li><a href="#4-遇到的坑与解决1分钟-1">4️⃣ 遇到的坑与解决（1分钟）</a></li>
+            <li><a href="#5-未来优化方向30秒-1">5️⃣ 未来优化方向（30秒）</a></li>
+          </ol>
+        </li>
+        <li><a href="#话术三微服务架构演进">【话术三】微服务架构演进</a>
+          <ol>
+            <li><a href="#1-业务背景30秒-2">1️⃣ 业务背景（30秒）</a></li>
+            <li><a href="#2-技术选型原因1分钟-2">2️⃣ 技术选型原因（1分钟）</a></li>
+            <li><a href="#3-核心难点实现1分钟">3️⃣ 核心难点实现（1分钟）</a></li>
+            <li><a href="#4-遇到的坑与解决1分钟-2">4️⃣ 遇到的坑与解决（1分钟）</a></li>
+            <li><a href="#5-未来优化方向30秒-2">5️⃣ 未来优化方向（30秒）</a></li>
+          </ol>
+        </li>
+        <li><a href="#话术四热点缓存优化">【话术四】热点缓存优化</a>
+          <ol>
+            <li><a href="#1-业务背景30秒-3">1️⃣ 业务背景（30秒）</a></li>
+            <li><a href="#2-技术选型原因30秒">2️⃣ 技术选型原因（30秒）</a></li>
+            <li><a href="#3-核心难点实现1分钟-1">3️⃣ 核心难点实现（1分钟）</a></li>
+            <li><a href="#4-遇到的坑与解决30秒">4️⃣ 遇到的坑与解决（30秒）</a></li>
+            <li><a href="#5-未来优化方向30秒-3">5️⃣ 未来优化方向（30秒）</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#十万能应对话术">十、万能应对话术</a>
+      <ol>
+        <li><a href="#当面试官问还有什么要补充的吗">当面试官问「还有什么要补充的吗」</a></li>
+        <li><a href="#当面试官问这个项目有什么不足">当面试官问「这个项目有什么不足」</a></li>
+        <li><a href="#当面试官问你在团队中的角色">当面试官问「你在团队中的角色」</a></li>
+        <li><a href="#当面试官深挖某个技术细节你不太确定时">当面试官深挖某个技术细节你不太确定时</a></li>
+      </ol>
+    </li>
+    <li><a href="#十一面试前-checklist">十一、面试前 Checklist</a>
+      <ol>
+        <li><a href="#必须能脱口而出的">必须能脱口而出的</a></li>
+        <li><a href="#最好能说清楚的">最好能说清楚的</a></li>
+        <li><a href="#加分项">加分项</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E9%9D%A2%E8%AF%95%E8%AF%9D%E6%9C%AF/">面试话术</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-11-27</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 32 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="eduagentx-项目面试话术指南">EduAgentX 项目面试话术指南
+</h1><h2 id="一项目整体介绍30秒版本">一、项目整体介绍（30秒版本）
+</h2><blockquote>
+<p>&ldquo;我做的是一个智能教育管理系统 EduAgentX，核心功能包括 <strong>AI 智能题目生成</strong>、<strong>高并发抢课系统</strong> 和 <strong>RAG 知识库检索</strong>。技术栈是 Spring Boot 3 + Spring AI + Redis + RocketMQ，同时我还完成了从单体到微服务的架构演进，使用 Spring Cloud Alibaba + Dubbo + Nacos + Higress 网关。项目中我重点解决了三个技术难题：<strong>抢课系统的高并发防超卖</strong>、<strong>AI 工作流的流式输出</strong>、以及 <strong>热点数据的缓存优化</strong>。&rdquo;</p>
+</blockquote>
+<hr>
+<h2 id="零八股文融合速查表">零、八股文融合速查表
+</h2><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>八股知识点</th>
+          <th>项目中的应用场景</th>
+          <th>引出话术</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Redis 单线程模型</strong></td>
+          <td>Lua 脚本原子性</td>
+          <td>&ldquo;Lua 能保证原子性是因为 Redis 单线程&hellip;&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>Redis 数据结构</strong></td>
+          <td>Hash 存储库存/抢课状态</td>
+          <td>&ldquo;我用 Hash 而不是 String，因为&hellip;&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>Redis 持久化</strong></td>
+          <td>抢课数据可靠性</td>
+          <td>&ldquo;我配置了 AOF 持久化，防止宕机丢数据&hellip;&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>线程池参数</strong></td>
+          <td>异步工作流执行</td>
+          <td>&ldquo;我自定义了线程池，核心线程数设置为&hellip;&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>CAS 与原子类</strong></td>
+          <td>HeavyKeeper 计数器</td>
+          <td>&ldquo;我用 AtomicInteger 保证计数的线程安全&hellip;&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>ConcurrentHashMap</strong></td>
+          <td>热点 Key 存储</td>
+          <td>&ldquo;我用 ConcurrentHashMap 而不是 HashMap&hellip;&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>阻塞队列</strong></td>
+          <td>消息缓冲区</td>
+          <td>&ldquo;我用 ConcurrentLinkedQueue 无锁队列&hellip;&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>AOP 原理</strong></td>
+          <td>限流切面、性能监控</td>
+          <td>&ldquo;我用 AOP 实现了限流，原理是动态代理&hellip;&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>Spring 事务</strong></td>
+          <td>批量写入数据库</td>
+          <td>&ldquo;我用 TransactionTemplate 编程式事务&hellip;&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>MySQL 索引</strong></td>
+          <td>抢课记录查询优化</td>
+          <td>&ldquo;我给 student_id + subject_id 建了联合索引&hellip;&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>MySQL 锁</strong></td>
+          <td>纯 MySQL 抢课方案</td>
+          <td>&ldquo;我还实现了一版用悲观锁的方案&hellip;&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>消息队列</strong></td>
+          <td>异步削峰</td>
+          <td>&ldquo;我用 RocketMQ 实现异步，选它是因为&hellip;&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>设计模式</strong></td>
+          <td>题目生成模块</td>
+          <td>&ldquo;我用了策略模式、模板方法、工厂模式&hellip;&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>JVM 内存模型</strong></td>
+          <td>ThreadLocal 存储 SSE</td>
+          <td>&ldquo;我用 ThreadLocal 存储 Emitter，避免&hellip;&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>序列化</strong></td>
+          <td>Redis 序列化配置</td>
+          <td>&ldquo;我配置了 Jackson 序列化，解决了&hellip;&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>分布式锁</strong></td>
+          <td>防止重复抢课</td>
+          <td>&ldquo;除了 Lua，我还可以用 Redisson 分布式锁&hellip;&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>CAP 理论</strong></td>
+          <td>缓存一致性策略</td>
+          <td>&ldquo;我选择了 AP，保证可用性，最终一致&hellip;&rdquo;</td>
+      </tr>
+      <tr>
+          <td><strong>限流算法</strong></td>
+          <td>滑动窗口限流</td>
+          <td>&ldquo;我实现了滑动窗口限流，用 Redis ZSet&hellip;&rdquo;</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h2 id="二核心亮点详细话术融合八股版">二、核心亮点详细话术（融合八股版）
+</h2><h3 id="亮点一高并发抢课系统redis--lua--rocketmq">亮点一：高并发抢课系统（Redis + Lua + RocketMQ）
+</h3><h4 id="问题背景">问题背景
+</h4><blockquote>
+<p>&ldquo;在抢课场景下，我们面临的核心问题是 <strong>高并发下的库存超卖</strong> 和 <strong>数据库压力过大</strong>。比如一门课只有100个名额，但可能有1000个学生同时点击抢课，如果处理不当就会出现超卖，或者数据库直接被打挂。&rdquo;</p>
+</blockquote>
+<h4 id="技术方案">技术方案
+</h4><blockquote>
+<p>&ldquo;我的解决方案分三层：</p>
+<p><strong>第一层：Redis + Lua 脚本保证原子性</strong></p>
+<ul>
+<li>把课程库存预热到 Redis 的 Hash 结构中</li>
+<li>使用 Lua 脚本实现原子性的「检查库存 → 扣减库存 → 记录抢课状态」</li>
+<li>这样即使万级并发，也不会出现超卖</li>
+</ul>
+<p><strong>第二层：RocketMQ 异步削峰</strong></p>
+<ul>
+<li>Redis 操作成功后，不直接写数据库，而是发送消息到 RocketMQ</li>
+<li>消费者批量消费（每批1000条或10秒），批量写入 MySQL</li>
+<li>这样把瞬时高并发转化为平稳的数据库写入</li>
+</ul>
+<p><strong>第三层：失败回滚机制</strong></p>
+<ul>
+<li>如果消息发送失败，立即执行 Redis 回滚脚本</li>
+<li>保证 Redis 和最终数据库的数据一致性&rdquo;</li>
+</ul>
+</blockquote>
+<h4 id="代码亮点可以主动提">代码亮点（可以主动提）
+</h4><blockquote>
+<p>&ldquo;Lua 脚本的核心逻辑是这样的：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-lua" data-lang="lua"><span class="line"><span class="cl"><span class="c1">-- 1. 检查是否已抢课</span>
+</span></span><span class="line"><span class="cl"><span class="kr">if</span> <span class="n">redis.call</span><span class="p">(</span><span class="s1">&#39;HEXISTS&#39;</span><span class="p">,</span> <span class="n">studentSnatchKey</span><span class="p">,</span> <span class="n">subjectId</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="kr">then</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">return</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1">-- 已抢课</span>
+</span></span><span class="line"><span class="cl"><span class="kr">end</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 2. 检查并扣减库存（原子操作）</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">capacity</span> <span class="o">=</span> <span class="n">redis.call</span><span class="p">(</span><span class="s1">&#39;HINCRBY&#39;</span><span class="p">,</span> <span class="n">capacityKey</span><span class="p">,</span> <span class="n">subjectId</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">if</span> <span class="n">capacity</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="kr">then</span>
+</span></span><span class="line"><span class="cl">    <span class="n">redis.call</span><span class="p">(</span><span class="s1">&#39;HINCRBY&#39;</span><span class="p">,</span> <span class="n">capacityKey</span><span class="p">,</span> <span class="n">subjectId</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1">-- 回滚</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">return</span> <span class="o">-</span><span class="mi">2</span>  <span class="c1">-- 库存不足</span>
+</span></span><span class="line"><span class="cl"><span class="kr">end</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 3. 记录抢课状态</span>
+</span></span><span class="line"><span class="cl"><span class="n">redis.call</span><span class="p">(</span><span class="s1">&#39;HSET&#39;</span><span class="p">,</span> <span class="n">studentSnatchKey</span><span class="p">,</span> <span class="n">subjectId</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">return</span> <span class="mi">1</span>  <span class="c1">-- 成功</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>整个过程在 Redis 单线程中执行，天然保证原子性。&rdquo;</p>
+</blockquote>
+<h4 id="性能数据">性能数据
+</h4><blockquote>
+<p>&ldquo;优化后，抢课接口的 QPS 从原来纯 MySQL 的 500 提升到 2000+，响应时间从 200ms 降到 50ms 以内。&rdquo;</p>
+</blockquote>
+<h4 id="-融合八股redis-单线程模型">🎯 融合八股：Redis 单线程模型
+</h4><blockquote>
+<p><strong>面试官追问</strong>：为什么 Lua 脚本能保证原子性？</p>
+<p><strong>回答</strong>：&ldquo;这要从 Redis 的线程模型说起。Redis 6.0 之前是纯单线程模型，所有命令都在一个线程中串行执行。虽然 6.0 引入了 <strong>IO 多线程</strong>（处理网络读写），但<strong>命令执行仍然是单线程</strong>的。</p>
+<p>Lua 脚本在执行期间，Redis 不会执行其他命令，相当于把多个操作打包成一个原子操作。这和数据库事务不同——数据库是通过<strong>锁</strong>来保证隔离性，而 Redis 是通过<strong>单线程串行执行</strong>来保证原子性。</p>
+<p>需要注意 Lua 脚本不能太长，否则会阻塞其他请求。我的脚本只有几行，执行时间在微秒级。&rdquo;</p>
+</blockquote>
+<h4 id="-融合八股redis-数据结构选择">🎯 融合八股：Redis 数据结构选择
+</h4><blockquote>
+<p><strong>面试官追问</strong>：为什么用 Hash 存储库存，而不是 String？</p>
+<p><strong>回答</strong>：&ldquo;我用 Hash 有几个考虑：</p>
+<ol>
+<li>
+<p><strong>内存效率</strong>：如果用 String，每个课程一个 Key（如 <code>capacity:1</code>、<code>capacity:2</code>），会有大量的 Key 元数据开销。用 Hash（<code>subject:capacity</code> → <code>{1: 100, 2: 50}</code>），多个字段共享一个 Key 的元数据，内存更省。</p>
+</li>
+<li>
+<p><strong>原子操作</strong>：<code>HINCRBY</code> 可以原子性地对某个字段加减，配合 Lua 脚本很方便。</p>
+</li>
+<li>
+<p><strong>批量操作</strong>：<code>HGETALL</code> 可以一次获取所有课程的库存，方便做缓存预热。</p>
+</li>
+</ol>
+<p>Redis 的 Hash 底层是 <strong>ziplist</strong>（小数据量）或 <strong>hashtable</strong>（大数据量），当字段数超过 <code>hash-max-ziplist-entries</code>（默认512）时会转换。我的场景课程数不多，用 ziplist 更省内存。&rdquo;</p>
+</blockquote>
+<h4 id="-融合八股消息队列对比">🎯 融合八股：消息队列对比
+</h4><blockquote>
+<p><strong>面试官追问</strong>：为什么选 RocketMQ 而不是 Kafka？</p>
+<p><strong>回答</strong>：&ldquo;我对比了几个主流消息队列：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>特性</th>
+          <th>RocketMQ</th>
+          <th>Kafka</th>
+          <th>RabbitMQ</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>吞吐量</td>
+          <td>10万级</td>
+          <td>百万级</td>
+          <td>万级</td>
+      </tr>
+      <tr>
+          <td>延迟</td>
+          <td>ms级</td>
+          <td>ms级</td>
+          <td>us级</td>
+      </tr>
+      <tr>
+          <td>事务消息</td>
+          <td>✅ 支持</td>
+          <td>❌ 不支持</td>
+          <td>❌ 不支持</td>
+      </tr>
+      <tr>
+          <td>延迟消息</td>
+          <td>✅ 支持</td>
+          <td>❌ 不支持</td>
+          <td>✅ 插件支持</td>
+      </tr>
+      <tr>
+          <td>消息回溯</td>
+          <td>✅ 支持</td>
+          <td>✅ 支持</td>
+          <td>❌ 不支持</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>选择 RocketMQ 的原因：</p>
+<ol>
+<li><strong>事务消息</strong>：可以保证本地事务和消息发送的一致性</li>
+<li><strong>延迟消息</strong>：未来可以做延迟退课提醒</li>
+<li><strong>消息回溯</strong>：出问题时可以重新消费历史消息</li>
+<li><strong>阿里生态</strong>：和 Spring Cloud Alibaba 集成更好&rdquo;</li>
+</ol>
+</blockquote>
+<h4 id="-融合八股mysql-悲观锁-vs-乐观锁">🎯 融合八股：MySQL 悲观锁 vs 乐观锁
+</h4><blockquote>
+<p><strong>面试官追问</strong>：如果不用 Redis，纯 MySQL 怎么实现？</p>
+<p><strong>回答</strong>：&ldquo;我其实还实现了一版纯 MySQL 的方案，用的是<strong>悲观锁</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 悲观锁：SELECT FOR UPDATE
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">snatch_subject</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">subject_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="k">UPDATE</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">-- 检查库存后更新
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">snatch_subject</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">stock_remain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stock_remain</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">subject_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">?</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>悲观锁 vs 乐观锁的选择：</p>
+<ul>
+<li><strong>悲观锁</strong>：适合写多读少、冲突概率高的场景，但会阻塞其他事务</li>
+<li><strong>乐观锁</strong>：适合读多写少、冲突概率低的场景，通过版本号实现</li>
+</ul>
+<p>抢课场景冲突概率高，所以用悲观锁更合适。但悲观锁的问题是<strong>性能差</strong>（QPS 只有 500），所以最终选择了 Redis 方案。&rdquo;</p>
+</blockquote>
+<hr>
+<h3 id="亮点二ai-工作流引擎langgraph4j--sse-流式输出">亮点二：AI 工作流引擎（LangGraph4j + SSE 流式输出）
+</h3><h4 id="问题背景-1">问题背景
+</h4><blockquote>
+<p>&ldquo;AI 生成题目是一个耗时操作，可能需要 10-30 秒。如果用传统的同步请求，用户体验很差，而且容易超时。另外，题目生成涉及多个步骤：知识检索 → 任务拆分 → 题目生成 → 质量检查，需要一个灵活的工作流来编排。&rdquo;</p>
+</blockquote>
+<h4 id="技术方案-1">技术方案
+</h4><blockquote>
+<p>&ldquo;我使用了 <strong>LangGraph4j</strong> 作为工作流引擎，配合 <strong>SSE（Server-Sent Events）</strong> 实现流式输出：</p>
+<p><strong>工作流设计</strong>：</p>
+<ol>
+<li><strong>RAG 知识检索节点</strong> - 从向量数据库检索相关知识点</li>
+<li><strong>任务列表节点</strong> - 根据题目数量创建生成任务队列</li>
+<li><strong>题目生成节点</strong> - 调用大模型生成题目</li>
+<li><strong>质量检查节点</strong> - 验证题目格式和逻辑</li>
+<li><strong>条件路由</strong> - 质检不通过则重新生成，通过则继续下一题</li>
+</ol>
+<p><strong>流式输出实现</strong>：</p>
+<ul>
+<li>使用 ThreadLocal 存储 SseEmitter，避免序列化问题</li>
+<li>工作流异步执行，每个节点完成后实时推送结果</li>
+<li>前端通过 EventSource 监听，实时展示生成进度&rdquo;</li>
+</ul>
+</blockquote>
+<h4 id="代码亮点">代码亮点
+</h4><blockquote>
+<p>&ldquo;条件路由的实现是这样的：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="p">.</span><span class="na">addConditionalEdges</span><span class="p">(</span><span class="s">&#34;ques_parse_check_node&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">edge_async</span><span class="p">(</span><span class="k">this</span><span class="p">::</span><span class="n">routeAfterCheck</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Map</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="err">\</span><span class="s">&#34;continue_generate\&#34;, \&#34;ques_generate_node\&#34;,  // 继续生成下一题
+</span></span></span><span class="line"><span class="cl"><span class="s">        \&#34;retry_generate\&#34;, \&#34;ques_generate_node\&#34;,     // 重新生成当前题
+</span></span></span><span class="line"><span class="cl"><span class="s">        \&#34;finish\&#34;, END                                 // 完成
+</span></span></span><span class="line"><span class="cl"><span class="s">    ))
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>这样就实现了一个带重试机制的循环工作流。&rdquo;</p>
+</blockquote>
+<h4 id="设计模式应用">设计模式应用
+</h4><blockquote>
+<p>&ldquo;在题目生成模块，我还应用了多种设计模式：</p>
+<ul>
+<li><strong>策略模式</strong>：不同题型（选择题、填空题、大题）使用不同的生成策略</li>
+<li><strong>模板方法模式</strong>：题目存储流程统一，但具体存储逻辑由子类实现</li>
+<li><strong>工厂模式</strong>：根据题型创建对应的生成器</li>
+<li><strong>门面模式</strong>：AIQuestionFacade 统一对外接口&rdquo;</li>
+</ul>
+</blockquote>
+<h4 id="-融合八股threadlocal-原理与内存泄漏">🎯 融合八股：ThreadLocal 原理与内存泄漏
+</h4><blockquote>
+<p><strong>面试官追问</strong>：为什么用 ThreadLocal 存储 SseEmitter？</p>
+<p><strong>回答</strong>：&ldquo;因为 SseEmitter 不能序列化，不能放到工作流上下文中传递。我用 ThreadLocal 存储，每个线程有自己的副本。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">ThreadLocal</span><span class="o">&lt;</span><span class="n">SseEmitter</span><span class="o">&gt;</span><span class="w"> </span><span class="n">SSE_EMITTER_HOLDER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ThreadLocal</span><span class="o">&lt;&gt;</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 异步执行前设置</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">SSE_EMITTER_HOLDER</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">emitter</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 执行完毕后清理（重要！）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">SSE_EMITTER_HOLDER</span><span class="p">.</span><span class="na">remove</span><span class="p">();</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>ThreadLocal 原理</strong>：每个 Thread 内部有一个 ThreadLocalMap，Key 是 ThreadLocal 对象（弱引用），Value 是存储的值。</p>
+<p><strong>内存泄漏问题</strong>：如果不调用 <code>remove()</code>，在线程池场景下，线程会被复用，ThreadLocalMap 中的 Entry 不会被清理，导致内存泄漏。所以我在 finally 块中一定会调用 <code>remove()</code>。&rdquo;</p>
+</blockquote>
+<h4 id="-融合八股线程池参数配置">🎯 融合八股：线程池参数配置
+</h4><blockquote>
+<p><strong>面试官追问</strong>：异步执行用的什么线程池？</p>
+<p><strong>回答</strong>：&ldquo;我用的是 <code>CompletableFuture.runAsync()</code>，默认使用 ForkJoinPool.commonPool()。但在生产环境，我会自定义线程池：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">ThreadPoolExecutor</span><span class="w"> </span><span class="n">executor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">4</span><span class="p">,</span><span class="w">                      </span><span class="c1">// 核心线程数 = CPU核心数</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">8</span><span class="p">,</span><span class="w">                      </span><span class="c1">// 最大线程数 = 2 * CPU核心数</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">60</span><span class="p">,</span><span class="w"> </span><span class="n">TimeUnit</span><span class="p">.</span><span class="na">SECONDS</span><span class="p">,</span><span class="w">   </span><span class="c1">// 空闲线程存活时间</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">LinkedBlockingQueue</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="n">1000</span><span class="p">),</span><span class="w">  </span><span class="c1">// 有界队列，防止OOM</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">ThreadFactoryBuilder</span><span class="p">().</span><span class="na">setNameFormat</span><span class="p">(</span><span class="err">\</span><span class="s">&#34;ai-workflow-%d\&#34;).build(),
+</span></span></span><span class="line"><span class="cl"><span class="s">    new CallerRunsPolicy()  // 拒绝策略：调用者执行
+</span></span></span><span class="line"><span class="cl"><span class="s">);
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>参数设置原则</strong>：</p>
+<ul>
+<li><strong>CPU 密集型</strong>：核心线程数 = CPU 核心数</li>
+<li><strong>IO 密集型</strong>：核心线程数 = CPU 核心数 * 2（或更多）</li>
+<li>AI 生成是 IO 密集型（等待 API 响应），所以可以设置多一些线程</li>
+</ul>
+<p><strong>拒绝策略选择</strong>：</p>
+<ul>
+<li><code>AbortPolicy</code>：直接抛异常（默认）</li>
+<li><code>CallerRunsPolicy</code>：调用者线程执行（我选这个，保证任务不丢失）</li>
+<li><code>DiscardPolicy</code>：静默丢弃</li>
+<li><code>DiscardOldestPolicy</code>：丢弃最老的任务&rdquo;</li>
+</ul>
+</blockquote>
+<h4 id="-融合八股设计模式详解">🎯 融合八股：设计模式详解
+</h4><blockquote>
+<p><strong>面试官追问</strong>：能详细说说策略模式怎么用的吗？</p>
+<p><strong>回答</strong>：&ldquo;以题目生成为例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 1. 策略接口</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">QuestionGenerator</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Question</span><span class="w"> </span><span class="nf">generate</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">knowledge</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">difficulty</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 2. 具体策略</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Component</span><span class="p">(</span><span class="err">\</span><span class="s">&#34;multipleChoice\&#34;)
+</span></span></span><span class="line"><span class="cl"><span class="s">public class MultipleChoiceGenerator implements QuestionGenerator { ... }
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">@Component(\&#34;fillBlank\&#34;)
+</span></span></span><span class="line"><span class="cl"><span class="s">public class FillBlankGenerator implements QuestionGenerator { ... }
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">// 3. 策略选择（配合 Spring 容器）
+</span></span></span><span class="line"><span class="cl"><span class="s">@Resource
+</span></span></span><span class="line"><span class="cl"><span class="s">private Map&lt;String, QuestionGenerator&gt; generatorMap;  // Spring 自动注入所有实现
+</span></span></span><span class="line"><span class="cl"><span class="s">
+</span></span></span><span class="line"><span class="cl"><span class="s">public Question generate(String type, String knowledge) {
+</span></span></span><span class="line"><span class="cl"><span class="s">    QuestionGenerator generator = generatorMap.get(type);
+</span></span></span><span class="line"><span class="cl"><span class="s">    return generator.generate(knowledge, difficulty);
+</span></span></span><span class="line"><span class="cl"><span class="s">}
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>策略模式的好处</strong>：</p>
+<ol>
+<li><strong>开闭原则</strong>：新增题型只需添加新的策略类，不修改原有代码</li>
+<li><strong>消除 if-else</strong>：避免大量的条件判断</li>
+<li><strong>易于测试</strong>：每个策略可以独立测试&rdquo;</li>
+</ol>
+</blockquote>
+<hr>
+<h3 id="亮点三热点数据缓存优化heavykeeper--二级缓存">亮点三：热点数据缓存优化（HeavyKeeper + 二级缓存）
+</h3><h4 id="问题背景-2">问题背景
+</h4><blockquote>
+<p>&ldquo;在抢课高峰期，某些热门课程会被大量访问，形成热点 Key。如果每次都访问 Redis，会造成 Redis 压力过大，响应时间从正常的 5ms 飙升到 200ms+。&rdquo;</p>
+</blockquote>
+<h4 id="技术方案-2">技术方案
+</h4><blockquote>
+<p>&ldquo;我实现了一套 <strong>热点检测 + 二级缓存</strong> 的方案：</p>
+<p><strong>热点检测（AsyncHeavyKeeper）</strong>：</p>
+<ul>
+<li>使用 HeavyKeeper 算法实时检测 Top K 热点 Key</li>
+<li>核心优化：将耗时操作异步化，add() 方法耗时从 5ms 降到 &lt;1ms</li>
+<li>使用 ConcurrentLinkedQueue 无锁队列，后台线程批量处理</li>
+</ul>
+<p><strong>二级缓存架构</strong>：</p>
+<ul>
+<li>L1 缓存：Caffeine 本地缓存，容量 10000，过期时间 60 秒</li>
+<li>L2 缓存：Redis 分布式缓存</li>
+<li>读操作：先查 L1 → 未命中查 L2 → 写入 L1</li>
+<li>写操作：直接写 Redis（保证一致性），不走本地缓存&rdquo;</li>
+</ul>
+</blockquote>
+<h4 id="关键设计决策">关键设计决策
+</h4><blockquote>
+<p>&ldquo;这里有一个重要的设计决策：<strong>写操作不使用本地缓存</strong>。</p>
+<p>原因是：抢课是写操作，需要强一致性。如果用本地缓存，在分布式环境下会出现数据不一致。比如 A 服务器的本地缓存显示还有库存，但实际 Redis 中已经没了。</p>
+<p>所以我的策略是：</p>
+<ul>
+<li>写操作（抢课/退课）：直接走 Redis Lua 脚本</li>
+<li>读操作（查询库存/状态）：走二级缓存，提升性能&rdquo;</li>
+</ul>
+</blockquote>
+<h4 id="-融合八股concurrenthashmap-原理">🎯 融合八股：ConcurrentHashMap 原理
+</h4><blockquote>
+<p><strong>面试官追问</strong>：热点 Key 存储为什么用 ConcurrentHashMap？</p>
+<p><strong>回答</strong>：&ldquo;因为热点检测是多线程并发访问的场景。</p>
+<p><strong>HashMap 的问题</strong>：</p>
+<ul>
+<li>非线程安全，多线程 put 可能导致死循环（JDK7 的头插法）或数据丢失</li>
+</ul>
+<p><strong>ConcurrentHashMap 的优势</strong>（JDK8+）：</p>
+<ul>
+<li>使用 <strong>CAS + synchronized</strong> 保证线程安全</li>
+<li>锁粒度是<strong>单个 Node</strong>，而不是整个 Map</li>
+<li>读操作完全无锁（volatile 保证可见性）</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 我的代码中</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">ConcurrentHashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">AtomicInteger</span><span class="o">&gt;</span><span class="w"> </span><span class="n">hotKeyMap</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// computeIfAbsent 是原子操作</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">AtomicInteger</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hotKeyMap</span><span class="p">.</span><span class="na">computeIfAbsent</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AtomicInteger</span><span class="p">(</span><span class="n">0</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">counter</span><span class="p">.</span><span class="na">addAndGet</span><span class="p">(</span><span class="n">increment</span><span class="p">);</span><span class="w">  </span><span class="c1">// AtomicInteger 也是线程安全的</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>为什么不用 Hashtable？</strong></p>
+<ul>
+<li>Hashtable 用 synchronized 锁整个表，性能差</li>
+<li>ConcurrentHashMap 锁粒度更细，并发性能更好&rdquo;</li>
+</ul>
+</blockquote>
+<h4 id="-融合八股cas-与原子类">🎯 融合八股：CAS 与原子类
+</h4><blockquote>
+<p><strong>面试官追问</strong>：AtomicInteger 怎么保证线程安全的？</p>
+<p><strong>回答</strong>：&ldquo;AtomicInteger 底层使用 <strong>CAS（Compare And Swap）</strong> 实现：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// AtomicInteger.addAndGet 的底层实现</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">addAndGet</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">U</span><span class="p">.</span><span class="na">getAndAddInt</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="n">VALUE</span><span class="p">,</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">delta</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// Unsafe.getAndAddInt</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">getAndAddInt</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">o</span><span class="p">,</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">offset</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">do</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getIntVolatile</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="w"> </span><span class="n">offset</span><span class="p">);</span><span class="w">  </span><span class="c1">// 读取当前值</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">compareAndSwapInt</span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="w"> </span><span class="n">offset</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">delta</span><span class="p">));</span><span class="w">  </span><span class="c1">// CAS 更新</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">v</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>CAS 原理</strong>：比较内存值和预期值，相等则更新，不相等则重试。</p>
+<p><strong>CAS 的问题</strong>：</p>
+<ol>
+<li><strong>ABA 问题</strong>：值从 A→B→A，CAS 认为没变化。解决：AtomicStampedReference（带版本号）</li>
+<li><strong>自旋开销</strong>：高并发时大量线程自旋，CPU 开销大</li>
+<li><strong>只能保证单个变量</strong>：多个变量需要用锁</li>
+</ol>
+<p>在我的场景中，计数器更新冲突概率不高，CAS 很合适。&rdquo;</p>
+</blockquote>
+<h4 id="-融合八股阻塞队列选择">🎯 融合八股：阻塞队列选择
+</h4><blockquote>
+<p><strong>面试官追问</strong>：为什么用 ConcurrentLinkedQueue 而不是 LinkedBlockingQueue？</p>
+<p><strong>回答</strong>：&ldquo;两者的区别：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>特性</th>
+          <th>ConcurrentLinkedQueue</th>
+          <th>LinkedBlockingQueue</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>实现</td>
+          <td>CAS 无锁</td>
+          <td>ReentrantLock 加锁</td>
+      </tr>
+      <tr>
+          <td>阻塞</td>
+          <td>非阻塞</td>
+          <td>支持阻塞</td>
+      </tr>
+      <tr>
+          <td>容量</td>
+          <td>无界</td>
+          <td>可设置有界</td>
+      </tr>
+      <tr>
+          <td>性能</td>
+          <td>高并发下更好</td>
+          <td>中等</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>我选择 ConcurrentLinkedQueue 的原因：</p>
+<ol>
+<li><strong>生产者不阻塞</strong>：add() 方法要求极快返回，不能等待</li>
+<li><strong>高并发</strong>：无锁实现，性能更好</li>
+<li><strong>消费者轮询</strong>：后台线程用 poll() 非阻塞获取，配合 sleep 避免空转</li>
+</ol>
+<p>如果需要阻塞等待，比如生产者-消费者模式，我会用 LinkedBlockingQueue。&rdquo;</p>
+</blockquote>
+<hr>
+<h3 id="亮点四微服务架构演进">亮点四：微服务架构演进
+</h3><h4 id="问题背景-3">问题背景
+</h4><blockquote>
+<p>&ldquo;随着业务发展，单体应用出现了几个问题：</p>
+<ol>
+<li>AI 生成任务占用大量资源，影响其他业务</li>
+<li>抢课高并发场景无法独立扩展</li>
+<li>部署时间长，发布风险高&rdquo;</li>
+</ol>
+</blockquote>
+<h4 id="技术方案-3">技术方案
+</h4><blockquote>
+<p>&ldquo;我完成了从单体到微服务的架构演进：</p>
+<p><strong>服务拆分</strong>（7个微服务）：</p>
+<ul>
+<li>User Service - 用户认证</li>
+<li>Course Service - 课程管理</li>
+<li>Snatch Service - 抢课服务（独立扩展）</li>
+<li>Question Service - 题目管理</li>
+<li>File Service - 文件存储</li>
+<li>RAG Service - 知识库检索</li>
+<li>AI-Workflow Service - AI 工作流（独立部署，可配 GPU）</li>
+</ul>
+<p><strong>技术选型</strong>：</p>
+<ul>
+<li>服务注册与配置：Nacos</li>
+<li>服务间调用：Dubbo（Triple 协议，性能比 HTTP 高 10 倍）</li>
+<li>API 网关：Higress（基于 Envoy，支持 Dubbo 协议转换）</li>
+<li>消息队列：RocketMQ</li>
+<li>分布式事务：Seata（Saga 模式）</li>
+<li>Session 共享：Spring Session + Redis&rdquo;</li>
+</ul>
+</blockquote>
+<h4 id="为什么选择-dubbo-而不是-feign">为什么选择 Dubbo 而不是 Feign？
+</h4><blockquote>
+<p>&ldquo;主要是性能考虑。Feign 基于 HTTP，每次调用都要经过 HTTP 协议栈，序列化/反序列化开销大。Dubbo 使用 Triple 协议（兼容 gRPC），基于 HTTP/2，支持多路复用，性能是 Feign 的 10 倍以上。</p>
+<p>在抢课这种高并发场景下，服务间调用的性能差异会被放大，所以选择 Dubbo 更合适。&rdquo;</p>
+</blockquote>
+<h4 id="-融合八股spring-事务传播机制">🎯 融合八股：Spring 事务传播机制
+</h4><blockquote>
+<p><strong>面试官追问</strong>：批量写入数据库的事务怎么处理的？</p>
+<p><strong>回答</strong>：&ldquo;我用的是 <strong>TransactionTemplate 编程式事务</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Resource</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">private</span><span class="w"> </span><span class="n">TransactionTemplate</span><span class="w"> </span><span class="n">transactionTemplate</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">private</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">batchHandleSnatchEvents</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">SnatchEvent</span><span class="o">&gt;</span><span class="w"> </span><span class="n">events</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">transactionTemplate</span><span class="p">.</span><span class="na">execute</span><span class="p">(</span><span class="n">status</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// 1. 批量插入抢课记录</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">snatchMapper</span><span class="p">.</span><span class="na">batchInsertSnatch</span><span class="p">(</span><span class="n">snatchList</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// 2. 批量更新课程容量</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">snatchSubjectMapper</span><span class="p">.</span><span class="na">decrementCapacityBatch</span><span class="p">(</span><span class="n">subjectId</span><span class="p">,</span><span class="w"> </span><span class="n">count</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">status</span><span class="p">.</span><span class="na">setRollbackOnly</span><span class="p">();</span><span class="w">  </span><span class="c1">// 手动回滚</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">e</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>为什么用编程式事务而不是 @Transactional？</strong></p>
+<ol>
+<li>消费者方法不是 Spring 代理调用，@Transactional 可能失效</li>
+<li>编程式事务更灵活，可以精确控制事务边界</li>
+</ol>
+<p><strong>事务传播机制</strong>（常问）：</p>
+<ul>
+<li><code>REQUIRED</code>（默认）：有事务就加入，没有就新建</li>
+<li><code>REQUIRES_NEW</code>：总是新建事务，挂起当前事务</li>
+<li><code>NESTED</code>：嵌套事务，可以独立回滚</li>
+<li><code>SUPPORTS</code>：有事务就加入，没有就非事务执行&rdquo;</li>
+</ul>
+</blockquote>
+<h4 id="-融合八股分布式事务-seata">🎯 融合八股：分布式事务 Seata
+</h4><blockquote>
+<p><strong>面试官追问</strong>：跨服务的事务怎么处理？</p>
+<p><strong>回答</strong>：&ldquo;我用的是 <strong>Seata 的 Saga 模式</strong>：</p>
+<p><strong>Seata 的几种模式</strong>：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>模式</th>
+          <th>原理</th>
+          <th>优点</th>
+          <th>缺点</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>AT</td>
+          <td>自动补偿，基于 undo_log</td>
+          <td>无侵入</td>
+          <td>需要数据库支持</td>
+      </tr>
+      <tr>
+          <td>TCC</td>
+          <td>Try-Confirm-Cancel</td>
+          <td>性能好</td>
+          <td>侵入性强，需要写三个方法</td>
+      </tr>
+      <tr>
+          <td>Saga</td>
+          <td>正向操作 + 补偿操作</td>
+          <td>长事务友好</td>
+          <td>最终一致性</td>
+      </tr>
+      <tr>
+          <td>XA</td>
+          <td>两阶段提交</td>
+          <td>强一致</td>
+          <td>性能差</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>我选择 Saga 的原因：</p>
+<ol>
+<li>抢课流程是长事务（Redis → MQ → MySQL）</li>
+<li>可以接受最终一致性</li>
+<li>补偿逻辑简单（回滚 Redis 操作）</li>
+</ol>
+<p><strong>Saga 的实现</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 正向操作</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">redisService</span><span class="p">.</span><span class="na">decrStock</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">mqService</span><span class="p">.</span><span class="na">sendMessage</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 补偿操作（失败时调用）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">redisService</span><span class="p">.</span><span class="na">incrStock</span><span class="p">();</span><span class="w">  </span><span class="c1">// 回滚库存</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="err">```</span><span class="s">&#34;
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<h4 id="-融合八股cap-理论">🎯 融合八股：CAP 理论
+</h4><blockquote>
+<p><strong>面试官追问</strong>：你的系统是 CP 还是 AP？</p>
+<p><strong>回答</strong>：&ldquo;我的系统选择了 <strong>AP（可用性 + 分区容错性）</strong>，牺牲强一致性，保证最终一致性。</p>
+<p><strong>CAP 理论</strong>：</p>
+<ul>
+<li><strong>C（Consistency）</strong>：所有节点数据一致</li>
+<li><strong>A（Availability）</strong>：每个请求都能得到响应</li>
+<li><strong>P（Partition tolerance）</strong>：网络分区时系统仍能工作</li>
+</ul>
+<p>分布式系统必须保证 P，所以只能在 C 和 A 之间选择。</p>
+<p><strong>我的选择</strong>：</p>
+<ul>
+<li>抢课场景对<strong>可用性</strong>要求高（用户不能等太久）</li>
+<li>可以接受<strong>最终一致性</strong>（Redis 和 MySQL 短暂不一致）</li>
+<li>通过补偿机制保证数据最终一致</li>
+</ul>
+<p><strong>如果选择 CP</strong>：</p>
+<ul>
+<li>每次抢课都要等 MySQL 写入成功才返回</li>
+<li>性能会很差，用户体验不好&rdquo;</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="三常见追问及回答">三、常见追问及回答
+</h2><h3 id="q1-redis-和-mysql-数据一致性怎么保证">Q1: Redis 和 MySQL 数据一致性怎么保证？
+</h3><blockquote>
+<p>&ldquo;我采用的是 <strong>最终一致性</strong> 方案：</p>
+<ol>
+<li><strong>Redis 先行</strong>：抢课操作先在 Redis 完成，保证高性能</li>
+<li><strong>消息队列异步同步</strong>：成功后发送 RocketMQ 消息</li>
+<li><strong>批量写入 MySQL</strong>：消费者批量消费，写入数据库</li>
+<li><strong>失败回滚</strong>：消息发送失败时，立即回滚 Redis</li>
+<li><strong>补偿机制</strong>：定时任务对比 Redis 和 MySQL 数据，修复不一致</li>
+</ol>
+<p>这样既保证了高性能，又保证了最终数据一致。&rdquo;</p>
+</blockquote>
+<h3 id="q2-如果-rocketmq-消息丢失怎么办">Q2: 如果 RocketMQ 消息丢失怎么办？
+</h3><blockquote>
+<p>&ldquo;我做了多层保障：</p>
+<ol>
+<li><strong>生产者确认</strong>：使用同步发送，确保消息到达 Broker</li>
+<li><strong>消息持久化</strong>：RocketMQ 配置同步刷盘</li>
+<li><strong>消费者确认</strong>：处理成功后才 ACK，失败会重试</li>
+<li><strong>补偿任务</strong>：定时任务扫描 Redis 中的抢课记录，对比 MySQL，补偿漏掉的数据</li>
+</ol>
+<p>即使极端情况下消息丢失，补偿任务也能保证数据最终一致。&rdquo;</p>
+</blockquote>
+<h3 id="q3-lua-脚本为什么能保证原子性">Q3: Lua 脚本为什么能保证原子性？
+</h3><blockquote>
+<p>&ldquo;Redis 是单线程模型，所有命令都是串行执行的。Lua 脚本在执行期间，不会被其他命令打断，相当于一个原子操作。</p>
+<p>这和数据库的事务不同，数据库事务是通过锁来保证隔离性，而 Redis Lua 是通过单线程串行执行来保证原子性。</p>
+<p>需要注意的是，Lua 脚本不能太长，否则会阻塞其他请求。我的脚本只有几行，执行时间在微秒级。&rdquo;</p>
+</blockquote>
+<h3 id="q4-为什么用-sse-而不是-websocket">Q4: 为什么用 SSE 而不是 WebSocket？
+</h3><blockquote>
+<p>&ldquo;SSE 和 WebSocket 的选择取决于场景：</p>
+<ul>
+<li><strong>SSE</strong>：单向通信（服务器 → 客户端），基于 HTTP，实现简单，自动重连</li>
+<li><strong>WebSocket</strong>：双向通信，需要额外的握手和心跳机制</li>
+</ul>
+<p>AI 生成场景是典型的单向推送，用户发起请求后，服务器持续推送生成结果，不需要客户端再发消息。所以 SSE 更合适，实现也更简单。&rdquo;</p>
+</blockquote>
+<h3 id="q5-heavykeeper-算法原理是什么">Q5: HeavyKeeper 算法原理是什么？
+</h3><blockquote>
+<p>&ldquo;HeavyKeeper 是一种概率数据结构，用于在有限内存下找出 Top K 热点元素。</p>
+<p>核心思想是：</p>
+<ol>
+<li>使用多层 Bucket 数组，每层用不同的 Hash 函数</li>
+<li>每个 Bucket 存储一个 Key 的指纹和计数</li>
+<li>新元素到来时，如果指纹匹配则计数+1，否则以一定概率衰减原计数</li>
+<li>衰减到 0 时，用新元素替换</li>
+</ol>
+<p>这样高频元素会稳定占据 Bucket，低频元素会被逐渐淘汰。</p>
+<p>我的优化是把计数更新和清理操作异步化，主线程只做快速的 Bucket 更新，耗时操作放到后台线程。&rdquo;</p>
+</blockquote>
+<h3 id="q6-微服务拆分的原则是什么">Q6: 微服务拆分的原则是什么？
+</h3><blockquote>
+<p>&ldquo;我遵循的原则是：</p>
+<ol>
+<li><strong>业务边界清晰</strong>：按领域划分，用户、课程、抢课各自独立</li>
+<li><strong>高内聚低耦合</strong>：服务内部高内聚，服务间通过接口通信</li>
+<li><strong>独立部署</strong>：每个服务可以独立部署和扩展</li>
+<li><strong>数据独立</strong>：每个服务有自己的数据库，避免跨库查询</li>
+<li><strong>渐进式拆分</strong>：先拆独立性高的服务（用户、文件），再拆有依赖的服务</li>
+</ol>
+<p>比如抢课服务，它是高并发场景，需要独立扩展，所以单独拆出来。AI 服务是计算密集型，可能需要 GPU，也单独拆出来。&rdquo;</p>
+</blockquote>
+<hr>
+<h2 id="四项目难点与解决方案总结">四、项目难点与解决方案总结
+</h2><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>难点</th>
+          <th>问题描述</th>
+          <th>解决方案</th>
+          <th>效果</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>高并发超卖</td>
+          <td>1000人同时抢100个名额</td>
+          <td>Redis Lua 原子操作</td>
+          <td>零超卖</td>
+      </tr>
+      <tr>
+          <td>数据库压力</td>
+          <td>瞬时高并发写入</td>
+          <td>RocketMQ 异步削峰</td>
+          <td>数据库 QPS 降低 90%</td>
+      </tr>
+      <tr>
+          <td>AI 生成超时</td>
+          <td>生成耗时 10-30 秒</td>
+          <td>SSE 流式输出 + 异步工作流</td>
+          <td>用户实时看到进度</td>
+      </tr>
+      <tr>
+          <td>热点 Key</td>
+          <td>Redis 响应从 5ms 飙到 200ms</td>
+          <td>HeavyKeeper + 二级缓存</td>
+          <td>响应稳定在 10ms</td>
+      </tr>
+      <tr>
+          <td>单体瓶颈</td>
+          <td>无法独立扩展</td>
+          <td>微服务拆分</td>
+          <td>抢课服务可独立扩容</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h2 id="五面试加分项">五、面试加分项
+</h2><h3 id="1-主动提及的技术深度">1. 主动提及的技术深度
+</h3><ul>
+<li>&ldquo;我还研究了Redis 的 IO 多线程优化，在 Redis 6.0+ 可以配置 <code>io-threads</code> 提升性能&rdquo;</li>
+<li>&ldquo;Lua 脚本我做了优化，把多次 Redis 操作合并，减少网络往返&rdquo;</li>
+<li>&ldquo;消息队列我对比了 RocketMQ 和 Kafka，选择 RocketMQ 是因为它支持事务消息和延迟消息&rdquo;</li>
+</ul>
+<h3 id="2-可以展示的监控意识">2. 可以展示的监控意识
+</h3><ul>
+<li>&ldquo;我在关键路径加了性能监控切面，记录每个方法的执行时间&rdquo;</li>
+<li>&ldquo;Redis 慢查询我配置了告警，超过 50ms 就会记录日志&rdquo;</li>
+<li>&ldquo;消息队列的消费延迟我也做了监控，防止消息堆积&rdquo;</li>
+</ul>
+<h3 id="3-可以提及的扩展思考">3. 可以提及的扩展思考
+</h3><ul>
+<li>&ldquo;如果并发量再大 10 倍，我会考虑 Redis Cluster 分片&rdquo;</li>
+<li>&ldquo;如果要支持秒杀场景，可以加入令牌桶限流&rdquo;</li>
+<li>&ldquo;未来可以考虑用 Serverless 部署 AI 服务，按需扩缩容&rdquo;</li>
+</ul>
+<hr>
+<h2 id="六更多八股融合场景">六、更多八股融合场景
+</h2><h3 id="-aop-原理限流切面">🎯 AOP 原理（限流切面）
+</h3><blockquote>
+<p><strong>项目应用</strong>：我用 AOP 实现了接口限流</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Aspect</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Component</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">RateLimitAspect</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Around</span><span class="p">(</span><span class="s">&#34;@annotation(rateLimit)&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="nf">around</span><span class="p">(</span><span class="n">ProceedingJoinPoint</span><span class="w"> </span><span class="n">point</span><span class="p">,</span><span class="w"> </span><span class="n">RateLimit</span><span class="w"> </span><span class="n">rateLimit</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 滑动窗口限流（Redis ZSet 实现）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Long</span><span class="w"> </span><span class="n">remaining</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">redisTemplate</span><span class="p">.</span><span class="na">execute</span><span class="p">(</span><span class="n">RATE_LIMIT_SCRIPT</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">remaining</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BusinessException</span><span class="p">(</span><span class="s">&#34;操作过于频繁&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">point</span><span class="p">.</span><span class="na">proceed</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>AOP 原理</strong>：</p>
+<ul>
+<li>Spring AOP 基于<strong>动态代理</strong>实现</li>
+<li>JDK 动态代理：目标类实现接口时使用，基于反射</li>
+<li>CGLIB 代理：目标类没有接口时使用，基于字节码生成子类</li>
+</ul>
+<p><strong>@Around 的执行顺序</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">@Around 前置逻辑
+</span></span><span class="line"><span class="cl">  → @Before
+</span></span><span class="line"><span class="cl">    → 目标方法
+</span></span><span class="line"><span class="cl">  → @AfterReturning / @AfterThrowing
+</span></span><span class="line"><span class="cl">→ @Around 后置逻辑
+</span></span><span class="line"><span class="cl">→ @After
+</span></span></code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<h3 id="-限流算法滑动窗口">🎯 限流算法（滑动窗口）
+</h3><blockquote>
+<p><strong>项目应用</strong>：我实现了滑动窗口限流</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-lua" data-lang="lua"><span class="line"><span class="cl"><span class="c1">-- Redis ZSet 实现滑动窗口</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">key</span> <span class="o">=</span> <span class="n">KEYS</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">window</span> <span class="o">=</span> <span class="n">ARGV</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1">-- 窗口大小（秒）</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">limit</span> <span class="o">=</span> <span class="n">ARGV</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>   <span class="c1">-- 限制次数</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">now</span> <span class="o">=</span> <span class="n">ARGV</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>     <span class="c1">-- 当前时间戳</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- 移除窗口外的请求</span>
+</span></span><span class="line"><span class="cl"><span class="n">redis.call</span><span class="p">(</span><span class="s1">&#39;ZREMRANGEBYSCORE&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">now</span> <span class="o">-</span> <span class="n">window</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- 统计窗口内的请求数</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">count</span> <span class="o">=</span> <span class="n">redis.call</span><span class="p">(</span><span class="s1">&#39;ZCARD&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">if</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="n">limit</span> <span class="kr">then</span>
+</span></span><span class="line"><span class="cl">    <span class="n">redis.call</span><span class="p">(</span><span class="s1">&#39;ZADD&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">now</span><span class="p">,</span> <span class="n">now</span><span class="p">)</span>  <span class="c1">-- 记录本次请求</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">return</span> <span class="n">limit</span> <span class="o">-</span> <span class="n">count</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1">-- 返回剩余次数</span>
+</span></span><span class="line"><span class="cl"><span class="kr">else</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">return</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1">-- 限流</span>
+</span></span><span class="line"><span class="cl"><span class="kr">end</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>常见限流算法对比</strong>：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>算法</th>
+          <th>原理</th>
+          <th>优点</th>
+          <th>缺点</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>固定窗口</td>
+          <td>固定时间段计数</td>
+          <td>简单</td>
+          <td>临界问题（窗口边界突发）</td>
+      </tr>
+      <tr>
+          <td>滑动窗口</td>
+          <td>滑动时间段计数</td>
+          <td>平滑</td>
+          <td>内存占用大</td>
+      </tr>
+      <tr>
+          <td>漏桶</td>
+          <td>固定速率流出</td>
+          <td>平滑流量</td>
+          <td>无法应对突发</td>
+      </tr>
+      <tr>
+          <td>令牌桶</td>
+          <td>固定速率生成令牌</td>
+          <td>允许突发</td>
+          <td>实现复杂</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>我选择滑动窗口是因为它能<strong>平滑限流</strong>，避免固定窗口的临界问题。</p>
+</blockquote>
+<h3 id="-mysql-索引优化">🎯 MySQL 索引优化
+</h3><blockquote>
+<p><strong>项目应用</strong>：抢课记录查询优化</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 查询某学生是否抢过某课程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">snatch</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">student_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">subject_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">?</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">-- 我建了联合索引
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_student_subject</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">snatch</span><span class="p">(</span><span class="n">student_id</span><span class="p">,</span><span class="w"> </span><span class="n">subject_id</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>索引原理</strong>（B+ 树）：</p>
+<ul>
+<li>非叶子节点只存索引，叶子节点存数据</li>
+<li>叶子节点用链表连接，支持范围查询</li>
+<li>树高一般 3-4 层，查询复杂度 O(log n)</li>
+</ul>
+<p><strong>联合索引的最左前缀原则</strong>：</p>
+<ul>
+<li><code>(student_id, subject_id)</code> 索引可以支持：
+<ul>
+<li><code>WHERE student_id = ?</code> ✅</li>
+<li><code>WHERE student_id = ? AND subject_id = ?</code> ✅</li>
+<li><code>WHERE subject_id = ?</code> ❌（不走索引）</li>
+</ul>
+</li>
+</ul>
+<p><strong>索引失效场景</strong>：</p>
+<ul>
+<li>对索引列使用函数：<code>WHERE YEAR(create_time) = 2024</code></li>
+<li>隐式类型转换：<code>WHERE student_id = '123'</code>（student_id 是 int）</li>
+<li>LIKE 左模糊：<code>WHERE name LIKE '%张'</code></li>
+<li>OR 条件：<code>WHERE student_id = 1 OR name = '张三'</code></li>
+</ul>
+</blockquote>
+<h3 id="-redis-序列化问题">🎯 Redis 序列化问题
+</h3><blockquote>
+<p><strong>项目应用</strong>：我配置了两个 RedisTemplate</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 1. 通用 RedisTemplate（Jackson 序列化）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Bean</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">RedisTemplate</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Object</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">redisTemplate</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">template</span><span class="p">.</span><span class="na">setValueSerializer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Jackson2JsonRedisSerializer</span><span class="o">&lt;&gt;</span><span class="p">(...));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">template</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 2. Lua 专用 RedisTemplate（String 序列化）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Bean</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">RedisTemplate</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">luaRedisTemplate</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">template</span><span class="p">.</span><span class="na">setValueSerializer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">StringRedisSerializer</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">template</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>为什么要两个？</strong></p>
+<ul>
+<li>Jackson 序列化会在值前面加类型信息，Lua 脚本处理不了</li>
+<li>Lua 脚本需要纯字符串，所以用 StringRedisSerializer</li>
+</ul>
+<p><strong>常见序列化方式</strong>：</p>
+<ul>
+<li><code>JdkSerializationRedisSerializer</code>：Java 原生序列化，可读性差</li>
+<li><code>StringRedisSerializer</code>：字符串，简单但只能存字符串</li>
+<li><code>Jackson2JsonRedisSerializer</code>：JSON，可读性好，需要配置类型信息</li>
+<li><code>GenericJackson2JsonRedisSerializer</code>：JSON + 类型信息，通用性好</li>
+</ul>
+</blockquote>
+<h3 id="-spring-bean-生命周期">🎯 Spring Bean 生命周期
+</h3><blockquote>
+<p><strong>项目应用</strong>：消费者启动和关闭</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Component</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SnatchEventConsumer</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@PostConstruct</span><span class="w">  </span><span class="c1">// Bean 初始化后执行</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">start</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 启动消费线程</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">Thread</span><span class="p">(</span><span class="k">this</span><span class="p">::</span><span class="n">consumeLoop</span><span class="p">).</span><span class="na">start</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@PreDestroy</span><span class="w">  </span><span class="c1">// Bean 销毁前执行</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">shutdown</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 优雅关闭：处理完剩余消息</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">flushBatch</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">scheduler</span><span class="p">.</span><span class="na">shutdown</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>Bean 生命周期</strong>：</p>
+<ol>
+<li>实例化（new）</li>
+<li>属性注入（@Autowired）</li>
+<li>Aware 接口回调（BeanNameAware、ApplicationContextAware）</li>
+<li>BeanPostProcessor.postProcessBeforeInitialization</li>
+<li><strong>@PostConstruct</strong></li>
+<li>InitializingBean.afterPropertiesSet</li>
+<li>init-method</li>
+<li>BeanPostProcessor.postProcessAfterInitialization</li>
+<li>使用中&hellip;</li>
+<li><strong>@PreDestroy</strong></li>
+<li>DisposableBean.destroy</li>
+<li>destroy-method</li>
+</ol>
+</blockquote>
+<h3 id="-jvm-内存模型与可见性">🎯 JVM 内存模型与可见性
+</h3><blockquote>
+<p><strong>项目应用</strong>：后台线程的停止标志</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">AtomicBoolean</span><span class="w"> </span><span class="n">running</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AtomicBoolean</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 后台线程</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">private</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">processQueue</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">running</span><span class="p">.</span><span class="na">get</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="c1">// 需要保证可见性</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 处理逻辑</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 关闭方法</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">shutdown</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">running</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w">  </span><span class="c1">// 其他线程能立即看到</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>为什么用 AtomicBoolean 而不是普通 boolean？</strong></p>
+<ul>
+<li>普通 boolean 没有可见性保证，其他线程可能看不到修改</li>
+<li>AtomicBoolean 底层用 volatile，保证可见性</li>
+</ul>
+<p><strong>volatile 的作用</strong>：</p>
+<ol>
+<li><strong>可见性</strong>：一个线程修改后，其他线程立即可见</li>
+<li><strong>禁止指令重排序</strong>：防止编译器和 CPU 优化导致的乱序</li>
+</ol>
+<p><strong>volatile 不能保证原子性</strong>：</p>
+<ul>
+<li><code>count++</code> 不是原子操作（读-改-写）</li>
+<li>需要原子性用 AtomicInteger 或 synchronized</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="七一句话总结">七、一句话总结
+</h2><blockquote>
+<p>&ldquo;这个项目让我深入理解了 <strong>高并发系统设计</strong>（Redis + Lua + MQ）、<strong>AI 应用开发</strong>（LangGraph4j + RAG + SSE）、以及 <strong>微服务架构演进</strong>（Spring Cloud Alibaba + Dubbo）。最大的收获是学会了如何在 <strong>性能、一致性、可用性</strong> 之间做权衡。&rdquo;</p>
+</blockquote>
+<hr>
+<h2 id="八面试话术模板">八、面试话术模板
+</h2><h3 id="开场白">开场白
+</h3><blockquote>
+<p>&ldquo;我做的是一个智能教育管理系统，主要有三个技术亮点：高并发抢课、AI 工作流、微服务架构。您想先听哪个？&rdquo;</p>
+</blockquote>
+<h3 id="引出八股的过渡句">引出八股的过渡句
+</h3><blockquote>
+<ul>
+<li>&ldquo;说到这个，其实涉及到 Redis 的单线程模型&hellip;&rdquo;</li>
+<li>&ldquo;这里我用了 ConcurrentHashMap，它的原理是&hellip;&rdquo;</li>
+<li>&ldquo;为了保证线程安全，我用了 AtomicInteger，它底层是 CAS&hellip;&rdquo;</li>
+<li>&ldquo;事务这块我用的是编程式事务，因为 @Transactional 有个坑&hellip;&rdquo;</li>
+</ul>
+</blockquote>
+<h3 id="展示深度的句式">展示深度的句式
+</h3><blockquote>
+<ul>
+<li>&ldquo;我还对比了几种方案&hellip;&rdquo;</li>
+<li>&ldquo;这里有个细节需要注意&hellip;&rdquo;</li>
+<li>&ldquo;我踩过一个坑是&hellip;&rdquo;</li>
+<li>&ldquo;如果并发量再大 10 倍，我会考虑&hellip;&rdquo;</li>
+</ul>
+</blockquote>
+<h3 id="结束语">结束语
+</h3><blockquote>
+<p>&ldquo;这个项目让我对高并发和分布式有了更深的理解，也让我养成了从性能、一致性、可用性多角度思考问题的习惯。&rdquo;</p>
+</blockquote>
+<hr>
+<h2 id="九口语化面试话术完整版">九、口语化面试话术（完整版）
+</h2><blockquote>
+<p><strong>公式</strong>：业务背景 → 技术选型原因 → 核心难点实现（手撕逻辑） → 遇到的坑与解决 → 未来优化方向</p>
+</blockquote>
+<hr>
+<h3 id="话术一高并发抢课系统">【话术一】高并发抢课系统
+</h3><h4 id="1-业务背景30秒">1️⃣ 业务背景（30秒）
+</h4><p>&ldquo;我们这个系统有一个抢课功能，就是学生选课的时候，热门课程可能几百上千人同时抢。</p>
+<p><strong>核心问题有两个</strong>：</p>
+<ul>
+<li>第一是<strong>超卖</strong>，比如课程只有100个名额，结果抢了120个人，这肯定不行</li>
+<li>第二是<strong>数据库扛不住</strong>，如果每个请求都直接打到MySQL，瞬时1000个并发，数据库直接就挂了</li>
+</ul>
+<p>所以我需要设计一个既能防超卖、又能扛住高并发的方案。&rdquo;</p>
+<h4 id="2-技术选型原因1分钟">2️⃣ 技术选型原因（1分钟）
+</h4><p>&ldquo;我调研了几种方案：</p>
+<p><strong>方案一：纯MySQL + 悲观锁</strong></p>
+<ul>
+<li>用 <code>SELECT FOR UPDATE</code> 锁住库存记录</li>
+<li>问题是性能太差，测下来只有500 QPS，而且锁竞争严重</li>
+</ul>
+<p><strong>方案二：MySQL + 乐观锁</strong></p>
+<ul>
+<li>用版本号控制，<code>UPDATE ... WHERE version = ?</code></li>
+<li>问题是高并发下大量重试，成功率低</li>
+</ul>
+<p><strong>方案三：Redis + Lua + 消息队列</strong>（我最终选的）</p>
+<ul>
+<li>Redis 单线程，天然防并发问题</li>
+<li>Lua 脚本保证原子性，不会超卖</li>
+<li>消息队列异步写数据库，削峰填谷</li>
+</ul>
+<p>选 Redis 的核心原因是：<strong>它的单线程模型天然保证了操作的原子性</strong>，不需要加锁就能防止并发问题。&rdquo;</p>
+<h4 id="3-核心难点实现2分钟可手撕">3️⃣ 核心难点实现（2分钟，可手撕）
+</h4><p>&ldquo;核心就是这个 Lua 脚本，我给您讲一下逻辑：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-lua" data-lang="lua"><span class="line"><span class="cl"><span class="c1">-- 第一步：检查这个学生是不是已经抢过了</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">hasSnatch</span> <span class="o">=</span> <span class="n">redis.call</span><span class="p">(</span><span class="s1">&#39;HEXISTS&#39;</span><span class="p">,</span> <span class="n">studentKey</span><span class="p">,</span> <span class="n">subjectId</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">if</span> <span class="n">hasSnatch</span> <span class="o">==</span> <span class="mi">1</span> <span class="kr">then</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">return</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1">-- 已经抢过，直接返回</span>
+</span></span><span class="line"><span class="cl"><span class="kr">end</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- 第二步：扣减库存（原子操作）</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">newCapacity</span> <span class="o">=</span> <span class="n">redis.call</span><span class="p">(</span><span class="s1">&#39;HINCRBY&#39;</span><span class="p">,</span> <span class="n">capacityKey</span><span class="p">,</span> <span class="n">subjectId</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">if</span> <span class="n">newCapacity</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="kr">then</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">-- 库存不够，要回滚</span>
+</span></span><span class="line"><span class="cl">    <span class="n">redis.call</span><span class="p">(</span><span class="s1">&#39;HINCRBY&#39;</span><span class="p">,</span> <span class="n">capacityKey</span><span class="p">,</span> <span class="n">subjectId</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">return</span> <span class="o">-</span><span class="mi">2</span>  <span class="c1">-- 库存不足</span>
+</span></span><span class="line"><span class="cl"><span class="kr">end</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- 第三步：记录抢课状态</span>
+</span></span><span class="line"><span class="cl"><span class="n">redis.call</span><span class="p">(</span><span class="s1">&#39;HSET&#39;</span><span class="p">,</span> <span class="n">studentKey</span><span class="p">,</span> <span class="n">subjectId</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">return</span> <span class="mi">1</span>  <span class="c1">-- 成功</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>为什么能防超卖？</strong></p>
+<p>关键在于 Redis 是单线程执行命令的。这个 Lua 脚本在执行期间，不会有其他命令插进来。所以「检查库存 → 扣减库存 → 记录状态」这三步是一个原子操作，不可能出现两个人同时扣减最后一个库存的情况。</p>
+<p><strong>数据怎么落库？</strong></p>
+<p>Redis 操作成功后，我不是直接写 MySQL，而是发一条消息到 RocketMQ。消费者那边批量消费，比如攒够1000条或者等10秒，然后批量 INSERT。这样数据库的压力就从瞬时1000 QPS 变成了平稳的每秒几十次批量写入。&rdquo;</p>
+<h4 id="4-遇到的坑与解决1分钟">4️⃣ 遇到的坑与解决（1分钟）
+</h4><p>&ldquo;我踩过几个坑：</p>
+<p><strong>坑一：Redis 序列化问题</strong></p>
+<p>一开始我用 Jackson 序列化，结果 Lua 脚本执行报错。因为 Jackson 会在值前面加类型信息，Lua 处理不了。</p>
+<p><strong>解决</strong>：我配了两个 RedisTemplate，一个用 Jackson 给业务用，一个用纯 String 序列化专门给 Lua 脚本用。</p>
+<p><strong>坑二：消息发送失败数据不一致</strong></p>
+<p>Redis 扣减成功了，但是消息发送失败了，这时候 Redis 和 MySQL 数据就不一致了。</p>
+<p><strong>解决</strong>：我加了回滚机制。消息发送失败时，立即执行一个回滚的 Lua 脚本，把库存加回去，把抢课状态删掉。</p>
+<p><strong>坑三：热点 Key 导致 Redis 响应变慢</strong></p>
+<p>压测的时候发现，热门课程的 Key 被大量访问，Redis 响应时间从5ms飙到200ms。</p>
+<p><strong>解决</strong>：我实现了一个热点检测 + 本地缓存的方案。用 HeavyKeeper 算法检测热点 Key，检测到之后把数据缓存到本地 Caffeine，减少 Redis 访问。&rdquo;</p>
+<h4 id="5-未来优化方向30秒">5️⃣ 未来优化方向（30秒）
+</h4><p>&ldquo;如果并发量再大10倍，我会考虑：</p>
+<ol>
+<li><strong>Redis Cluster 分片</strong>：把不同课程的库存分散到不同节点，避免单点瓶颈</li>
+<li><strong>令牌桶预热</strong>：抢课开始前，先发放令牌，没有令牌的请求直接拒绝，减少无效请求</li>
+<li><strong>本地预扣减</strong>：在应用层先做一次本地库存预扣减，过滤掉大部分请求，只有预扣减成功的才去访问 Redis&rdquo;</li>
+</ol>
+<hr>
+<h3 id="话术二ai-智能题目生成">【话术二】AI 智能题目生成
+</h3><h4 id="1-业务背景30秒-1">1️⃣ 业务背景（30秒）
+</h4><p>&ldquo;我们系统有一个 AI 出题功能，老师输入知识点和题目数量，系统自动生成选择题、填空题、大题。</p>
+<p><strong>核心问题</strong>：</p>
+<ul>
+<li>AI 生成很慢，一道题可能要5-10秒，生成10道题就要1-2分钟</li>
+<li>如果用传统的同步请求，用户要等很久，体验很差，而且容易超时</li>
+<li>生成的题目质量参差不齐，需要有质检和重试机制&rdquo;</li>
+</ul>
+<h4 id="2-技术选型原因1分钟-1">2️⃣ 技术选型原因（1分钟）
+</h4><p>&ldquo;我选了 <strong>LangGraph4j + SSE 流式输出</strong> 的方案：</p>
+<p><strong>为什么用 LangGraph4j？</strong></p>
+<ul>
+<li>它是一个工作流引擎，可以把复杂的 AI 任务拆成多个节点</li>
+<li>支持条件路由，比如质检不通过可以自动重试</li>
+<li>节点之间可以传递上下文，方便管理状态</li>
+</ul>
+<p><strong>为什么用 SSE 而不是 WebSocket？</strong></p>
+<ul>
+<li>SSE 是单向通信，服务器推送给客户端，正好符合我的场景</li>
+<li>基于 HTTP，实现简单，不需要额外的握手和心跳</li>
+<li>自动重连，断了会自己连回来</li>
+</ul>
+<p><strong>为什么不用轮询？</strong></p>
+<ul>
+<li>轮询会产生大量无效请求</li>
+<li>实时性差，用户体验不好&rdquo;</li>
+</ul>
+<h4 id="3-核心难点实现2分钟">3️⃣ 核心难点实现（2分钟）
+</h4><p>&ldquo;我设计了一个四节点的工作流：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">开始 → RAG知识检索 → 任务拆分 → 题目生成 → 质量检查 → 结束
+</span></span><span class="line"><span class="cl">                                    ↑         ↓
+</span></span><span class="line"><span class="cl">                                    ←← 重试 ←←←
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>节点一：RAG 知识检索</strong></p>
+<ul>
+<li>根据老师输入的知识点，从向量数据库检索相关的教学文档</li>
+<li>这样生成的题目更贴合教材内容</li>
+</ul>
+<p><strong>节点二：任务拆分</strong></p>
+<ul>
+<li>把「生成10道选择题」拆成10个独立的任务</li>
+<li>每个任务生成一道题</li>
+</ul>
+<p><strong>节点三：题目生成</strong></p>
+<ul>
+<li>调用大模型，传入知识点和检索到的文档</li>
+<li>生成题目、选项、答案、解析</li>
+</ul>
+<p><strong>节点四：质量检查</strong></p>
+<ul>
+<li>检查 JSON 格式是否正确</li>
+<li>检查选项数量是否符合要求</li>
+<li>检查答案是否在选项中</li>
+</ul>
+<p><strong>条件路由的实现</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="p">.</span><span class="na">addConditionalEdges</span><span class="p">(</span><span class="s">&#34;质检节点&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">edge_async</span><span class="p">(</span><span class="k">this</span><span class="p">::</span><span class="n">routeAfterCheck</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Map</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="s">&#34;continue&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;生成节点&#34;</span><span class="p">,</span><span class="w">  </span><span class="c1">// 质检通过，继续下一题</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="s">&#34;retry&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;生成节点&#34;</span><span class="p">,</span><span class="w">     </span><span class="c1">// 质检失败，重新生成</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="s">&#34;finish&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">END</span><span class="w">            </span><span class="c1">// 全部完成</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">))</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>SSE 流式输出</strong>：</p>
+<p>每生成一道题，就立即推送给前端，用户可以实时看到进度。我用 ThreadLocal 存储 SseEmitter，避免序列化问题。&rdquo;</p>
+<h4 id="4-遇到的坑与解决1分钟-1">4️⃣ 遇到的坑与解决（1分钟）
+</h4><p>&ldquo;<strong>坑一：ThreadLocal 内存泄漏</strong></p>
+<p>一开始我忘了清理 ThreadLocal，结果在线程池场景下，线程被复用，ThreadLocal 里的对象一直不释放，内存越来越大。</p>
+<p><strong>解决</strong>：在 finally 块里一定要调用 <code>remove()</code>。</p>
+<p><strong>坑二：异步线程拿不到 ThreadLocal</strong></p>
+<p>工作流是异步执行的，但是异步线程和主线程不是同一个，拿不到主线程的 ThreadLocal。</p>
+<p><strong>解决</strong>：在异步任务开始时，重新 set 一次 SseEmitter。</p>
+<p><strong>坑三：大模型返回格式不稳定</strong></p>
+<p>有时候大模型返回的 JSON 格式不对，解析失败。</p>
+<p><strong>解决</strong>：我在 prompt 里加了严格的格式要求，并且在质检节点做了格式校验，不通过就重试，最多重试3次。&rdquo;</p>
+<h4 id="5-未来优化方向30秒-1">5️⃣ 未来优化方向（30秒）
+</h4><p>&ldquo;1. <strong>并行生成</strong>：现在是串行生成10道题，可以改成并行，开10个线程同时生成
+2. <strong>缓存相似题目</strong>：如果知识点相似，可以从缓存里取，不用每次都调大模型
+3. <strong>模型微调</strong>：用我们自己的题库数据微调模型，提高生成质量&rdquo;</p>
+<hr>
+<h3 id="话术三微服务架构演进">【话术三】微服务架构演进
+</h3><h4 id="1-业务背景30秒-2">1️⃣ 业务背景（30秒）
+</h4><p>&ldquo;项目一开始是单体架构，后来遇到了几个问题：</p>
+<ol>
+<li><strong>资源竞争</strong>：AI 生成任务很吃 CPU 和内存，一跑起来其他接口都变慢了</li>
+<li><strong>无法独立扩展</strong>：抢课高峰期，只有抢课模块需要扩容，但单体架构只能整体扩容，浪费资源</li>
+<li><strong>发布风险高</strong>：改一行代码要重新部署整个应用，万一出问题影响所有功能</li>
+</ol>
+<p>所以我决定做微服务拆分。&rdquo;</p>
+<h4 id="2-技术选型原因1分钟-2">2️⃣ 技术选型原因（1分钟）
+</h4><p>&ldquo;我选的是 <strong>Spring Cloud Alibaba + Dubbo + Nacos + Higress</strong> 这套：</p>
+<p><strong>为什么选 Dubbo 而不是 Feign？</strong></p>
+<ul>
+<li>Feign 基于 HTTP，每次调用都要经过完整的 HTTP 协议栈，开销大</li>
+<li>Dubbo 用的是 Triple 协议，基于 HTTP/2，支持多路复用，性能是 Feign 的10倍</li>
+<li>在抢课这种高并发场景，服务间调用的性能差异会被放大</li>
+</ul>
+<p><strong>为什么选 Nacos？</strong></p>
+<ul>
+<li>同时支持服务注册和配置中心，不用部署两套</li>
+<li>和 Spring Cloud Alibaba 生态集成好</li>
+<li>性能比 Eureka 和 Consul 都好</li>
+</ul>
+<p><strong>为什么选 Higress 网关？</strong></p>
+<ul>
+<li>基于 Envoy，性能很高</li>
+<li>原生支持 Dubbo 协议转换，外部 HTTP 请求可以直接转成 Dubbo 调用</li>
+<li>和 Nacos 无缝集成&rdquo;</li>
+</ul>
+<h4 id="3-核心难点实现1分钟">3️⃣ 核心难点实现（1分钟）
+</h4><p>&ldquo;我拆成了7个服务：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>服务</th>
+          <th>职责</th>
+          <th>为什么单独拆</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>User</td>
+          <td>用户认证</td>
+          <td>基础服务，被所有服务依赖</td>
+      </tr>
+      <tr>
+          <td>Course</td>
+          <td>课程管理</td>
+          <td>业务独立</td>
+      </tr>
+      <tr>
+          <td>Snatch</td>
+          <td>抢课</td>
+          <td>高并发，需要独立扩展</td>
+      </tr>
+      <tr>
+          <td>Question</td>
+          <td>题目管理</td>
+          <td>业务独立</td>
+      </tr>
+      <tr>
+          <td>File</td>
+          <td>文件存储</td>
+          <td>IO 密集，独立部署</td>
+      </tr>
+      <tr>
+          <td>RAG</td>
+          <td>知识库检索</td>
+          <td>向量计算，资源隔离</td>
+      </tr>
+      <tr>
+          <td>AI-Workflow</td>
+          <td>AI 工作流</td>
+          <td>CPU 密集，可能要 GPU</td>
+      </tr>
+  </tbody>
+</table></div>
+<p><strong>服务间调用</strong>：用 Dubbo RPC，定义了统一的接口模块 <code>EduAgentX-Client</code>，所有服务都依赖它。</p>
+<p><strong>Session 共享</strong>：用 Spring Session + Redis，所有服务共享同一个 Session 存储。&rdquo;</p>
+<h4 id="4-遇到的坑与解决1分钟-2">4️⃣ 遇到的坑与解决（1分钟）
+</h4><p>&ldquo;<strong>坑一：循环依赖</strong></p>
+<p>Course 服务要调用 User 服务获取教师信息，User 服务又要调用 Course 服务获取用户的课程列表，形成了循环依赖。</p>
+<p><strong>解决</strong>：重新梳理服务边界，把「用户的课程列表」这个功能放到 Course 服务，User 服务只负责用户基本信息。</p>
+<p><strong>坑二：分布式事务</strong></p>
+<p>抢课成功后要同时更新 Redis、发消息、写数据库，跨了多个服务。</p>
+<p><strong>解决</strong>：用 Seata 的 Saga 模式，定义正向操作和补偿操作。失败时自动执行补偿，保证最终一致性。</p>
+<p><strong>坑三：服务调用超时</strong></p>
+<p>AI 服务生成题目很慢，默认的 Dubbo 超时时间是3秒，经常超时。</p>
+<p><strong>解决</strong>：针对 AI 服务单独配置超时时间为60秒，其他服务保持3秒。&rdquo;</p>
+<h4 id="5-未来优化方向30秒-2">5️⃣ 未来优化方向（30秒）
+</h4><p>&ldquo;1. <strong>服务网格</strong>：引入 Istio，把服务治理下沉到基础设施层
+2. <strong>容器化</strong>：用 Kubernetes 部署，实现自动扩缩容
+3. <strong>Serverless</strong>：AI 服务可以用 Serverless 部署，按调用量付费，降低成本&rdquo;</p>
+<hr>
+<h3 id="话术四热点缓存优化">【话术四】热点缓存优化
+</h3><h4 id="1-业务背景30秒-3">1️⃣ 业务背景（30秒）
+</h4><p>&ldquo;压测的时候发现一个问题：热门课程被大量访问，Redis 响应时间从正常的5ms飙升到200ms，严重影响了抢课接口的性能。</p>
+<p>分析原因是：所有请求都打到 Redis 的同一个 Key 上，形成了热点 Key，Redis 单线程处理不过来。&rdquo;</p>
+<h4 id="2-技术选型原因30秒">2️⃣ 技术选型原因（30秒）
+</h4><p>&ldquo;我的方案是 <strong>热点检测 + 本地缓存</strong>：</p>
+<ol>
+<li>用 <strong>HeavyKeeper 算法</strong> 实时检测哪些 Key 是热点</li>
+<li>检测到热点后，把数据缓存到本地 <strong>Caffeine</strong></li>
+<li>后续请求先查本地缓存，命中就不用访问 Redis 了</li>
+</ol>
+<p>为什么用 HeavyKeeper？因为它是概率数据结构，内存占用小，可以在有限内存下找出 Top K 热点元素。&rdquo;</p>
+<h4 id="3-核心难点实现1分钟-1">3️⃣ 核心难点实现（1分钟）
+</h4><p>&ldquo;HeavyKeeper 的原理是：</p>
+<ol>
+<li>维护一个多层的 Bucket 数组</li>
+<li>每个 Bucket 存一个 Key 的指纹和计数</li>
+<li>新请求来了，如果指纹匹配就计数+1</li>
+<li>如果不匹配，以一定概率衰减原来的计数</li>
+<li>衰减到0就用新 Key 替换</li>
+</ol>
+<p><strong>我做的优化</strong>：</p>
+<p>原始实现的 <code>add()</code> 方法要5ms，太慢了。我改成了异步版本：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="n">AddResult</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">increment</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 1. 快速更新 Bucket（分段锁，&lt;1ms）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">maxCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">updateBuckets</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">increment</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 2. 如果是热点，放入队列（不阻塞）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">maxCount</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">threshold</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">updateQueue</span><span class="p">.</span><span class="na">offer</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">UpdateTask</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">maxCount</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>耗时操作（清理过期数据、统计 Top K）都放到后台线程异步处理，主线程只做快速的计数更新。优化后 <code>add()</code> 耗时从5ms降到了0.1ms。&rdquo;</p>
+<h4 id="4-遇到的坑与解决30秒">4️⃣ 遇到的坑与解决（30秒）
+</h4><p>&ldquo;<strong>坑：本地缓存数据不一致</strong></p>
+<p>本地缓存和 Redis 数据可能不一致，比如 A 服务器的本地缓存显示还有库存，但 Redis 里已经没了。</p>
+<p><strong>解决</strong>：我的策略是<strong>写操作不走本地缓存</strong>。抢课、退课这种写操作，直接走 Redis Lua 脚本。本地缓存只用于读操作（查询库存、查询状态），而且设置了60秒过期时间，保证最终一致性。&rdquo;</p>
+<h4 id="5-未来优化方向30秒-3">5️⃣ 未来优化方向（30秒）
+</h4><p>&ldquo;1. <strong>多级缓存</strong>：可以再加一层进程内缓存，形成 L1（进程内）→ L2（本地 Caffeine）→ L3（Redis）的三级缓存
+2. <strong>缓存预热</strong>：抢课开始前，提前把热门课程的数据加载到本地缓存
+3. <strong>Redis Cluster</strong>：如果热点 Key 太多，可以用 Redis Cluster 分散到多个节点&rdquo;</p>
+<hr>
+<h2 id="十万能应对话术">十、万能应对话术
+</h2><h3 id="当面试官问还有什么要补充的吗">当面试官问「还有什么要补充的吗」
+</h3><p>&ldquo;我想补充一点，这个项目让我最大的收获不是学会了某个技术，而是学会了<strong>怎么做技术选型</strong>。</p>
+<p>比如抢课系统，我一开始想用分布式锁，后来发现 Lua 脚本更简单高效；消息队列我对比了 Kafka 和 RocketMQ，最后选了 RocketMQ 因为它支持事务消息。</p>
+<p>我觉得做技术选型最重要的是<strong>理解每个方案的优缺点和适用场景</strong>，而不是盲目追求新技术。&rdquo;</p>
+<h3 id="当面试官问这个项目有什么不足">当面试官问「这个项目有什么不足」
+</h3><p>&ldquo;有几个地方我觉得可以做得更好：</p>
+<ol>
+<li><strong>监控不够完善</strong>：目前只有基础的日志，缺少完整的链路追踪和性能监控大盘</li>
+<li><strong>测试覆盖率不够</strong>：单元测试写得比较少，主要靠手工测试</li>
+<li><strong>文档不够完善</strong>：接口文档有，但是架构设计文档和运维文档比较欠缺</li>
+</ol>
+<p>如果有机会重新做，我会在项目初期就把这些基础设施搭建好。&rdquo;</p>
+<h3 id="当面试官问你在团队中的角色">当面试官问「你在团队中的角色」
+</h3><p>&ldquo;我是这个项目的<strong>主要开发者</strong>，负责核心模块的设计和实现：</p>
+<ul>
+<li>抢课系统的高并发方案是我设计的</li>
+<li>AI 工作流引擎是我从零搭建的</li>
+<li>微服务拆分的架构设计也是我主导的</li>
+</ul>
+<p>遇到技术难题时，我会先自己调研，然后和团队讨论，最后形成方案文档，评审通过后再实施。&rdquo;</p>
+<h3 id="当面试官深挖某个技术细节你不太确定时">当面试官深挖某个技术细节你不太确定时
+</h3><p>&ldquo;这个细节我不太确定，但是我的理解是&hellip;（说你的理解）。回去之后我会再深入研究一下，确认一下是不是这样。&rdquo;</p>
+<p><strong>千万不要</strong>：</p>
+<ul>
+<li>瞎编一个答案</li>
+<li>说「我不知道」然后沉默</li>
+</ul>
+<hr>
+<h2 id="十一面试前-checklist">十一、面试前 Checklist
+</h2><h3 id="必须能脱口而出的">必须能脱口而出的
+</h3><ul>
+<li><input disabled="" type="checkbox"> 项目30秒介绍</li>
+<li><input disabled="" type="checkbox"> 三个核心亮点的业务背景</li>
+<li><input disabled="" type="checkbox"> Lua 脚本的核心逻辑（能手写）</li>
+<li><input disabled="" type="checkbox"> 为什么选 Redis 不选 MySQL</li>
+<li><input disabled="" type="checkbox"> 为什么选 RocketMQ 不选 Kafka</li>
+<li><input disabled="" type="checkbox"> 为什么选 Dubbo 不选 Feign</li>
+<li><input disabled="" type="checkbox"> ThreadLocal 内存泄漏怎么解决</li>
+<li><input disabled="" type="checkbox"> 分布式事务用的什么方案</li>
+</ul>
+<h3 id="最好能说清楚的">最好能说清楚的
+</h3><ul>
+<li><input disabled="" type="checkbox"> Redis 单线程模型</li>
+<li><input disabled="" type="checkbox"> ConcurrentHashMap 原理</li>
+<li><input disabled="" type="checkbox"> 线程池参数怎么配置</li>
+<li><input disabled="" type="checkbox"> AOP 的实现原理</li>
+<li><input disabled="" type="checkbox"> Spring 事务传播机制</li>
+<li><input disabled="" type="checkbox"> CAP 理论，你的系统是 CP 还是 AP</li>
+</ul>
+<h3 id="加分项">加分项
+</h3><ul>
+<li><input disabled="" type="checkbox"> 性能优化的具体数据（QPS 从多少到多少）</li>
+<li><input disabled="" type="checkbox"> 踩过的坑和解决方案</li>
+<li><input disabled="" type="checkbox"> 未来的优化方向</li>
+<li><input disabled="" type="checkbox"> 对比过哪些技术方案</li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 LuciusWan
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

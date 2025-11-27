@@ -300,6 +300,10 @@
         <li><a href="#第二部分树的优缺点与对比">第二部分：树的优缺点与对比</a></li>
         <li><a href="#第三部分装袋法-bagging-与-随机森林-random-forest">第三部分：装袋法 (Bagging) 与 随机森林 (Random Forest)</a></li>
         <li><a href="#第四部分提升法-boosting">第四部分：提升法 (Boosting)</a></li>
+        <li><a href="#第一部分基础概念与最大间隔分类器-mmc">第一部分：基础概念与最大间隔分类器 (MMC)</a></li>
+        <li><a href="#第二部分软间隔与支持向量分类器-svc">第二部分：软间隔与支持向量分类器 (SVC)</a></li>
+        <li><a href="#第三部分支持向量机-svm-与-核函数">第三部分：支持向量机 (SVM) 与 核函数</a></li>
+        <li><a href="#第四部分多分类与参数-multi-class--cost">第四部分：多分类与参数 (Multi-class &amp; Cost)</a></li>
       </ol>
     </li>
   </ol>
@@ -358,7 +362,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 26 分钟
+                    阅读时长: 28 分钟
                 </time>
             </div>
         
@@ -422,10 +426,10 @@
 <p>E(Y - \hat{Y})^2 = [f(X) - \hat{f}(X)]^2 + Var(\epsilon)</p>
 <ul>
 <li>
-<p><strong>[f(X) - \hat{f}(X)]^2</strong>：这是<strong>可约误差</strong>（即偏差和方差的组合）。</p>
+<p><strong>$[f(X) - \hat{f}(X)]^2$</strong>：这是<strong>可约误差</strong>（即偏差和方差的组合）。</p>
 </li>
 <li>
-<p><strong>Var(\epsilon)</strong>：这是<strong>不可约误差</strong>（数据的固有噪声）。</p>
+<p><strong>$Var(\epsilon)$</strong>：这是<strong>不可约误差</strong>（数据的固有噪声）。</p>
 </li>
 </ul>
 <h3 id="6-估计-f-的方法有哪些">6. 估计 f 的方法有哪些？
@@ -1637,6 +1641,197 @@ $$\text{Minimize } \sum_{m=1}^{|T|} \sum_{i \in R_m} (y_i - \hat{y}_{R_m})^2 + \
 </li>
 <li>
 <p>通过将每一步的学习结果乘以 \lambda，让模型一点一点地从残差中提取信息，而不是一次性拟合所有数据。这使得模型在预测时更稳健。</p>
+</li>
+</ul>
+<h3 id="第一部分基础概念与最大间隔分类器-mmc">第一部分：基础概念与最大间隔分类器 (MMC)
+</h3><p><strong>1. 超平面 (Hyperplane) 是如何定义的？</strong></p>
+<ul>
+<li>
+<p>在 $p$ 维空间中，超平面是一个 <strong>$p-1$ 维</strong> 的平坦仿射子空间。</p>
+</li>
+<li>
+<p>数学定义：满足以下方程的点 $X = (X_1, \dots, X_p)^T$ 的集合：</p>
+$$\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_p X_p = 0$$</li>
+</ul>
+<p><strong>2. 对于分隔超平面，其具有哪些性质？</strong></p>
+<ul>
+<li>
+<p>它将空间一分为二。</p>
+</li>
+<li>
+<p><strong>符号性质</strong>：</p>
+<ul>
+<li>
+<p>如果观测点 $x_i$ 属于第一类 ($y_i = 1$)，则 $f(x_i) &gt; 0$。</p>
+</li>
+<li>
+<p>如果观测点 $x_i$ 属于第二类 ($y_i = -1$)，则 $f(x_i) &lt; 0$。</p>
+</li>
+<li>
+<p>即 $y_i \cdot (\beta_0 + \beta_1 x_{i1} + \dots) &gt; 0$ 对所有观测成立。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>3. 如何构造最大分类器 (Maximal Margin Classifier)？即它的约束条件有哪些？</strong></p>
+<ul>
+<li>
+<p><strong>目标</strong>：寻找一个超平面，使得数据点到平面的<strong>最小距离（间隔 Margin, $M$）最大化</strong>。</p>
+</li>
+<li>
+<p><strong>优化问题</strong>：</p>
+<ol>
+<li>
+<p>最大化 $M$。</p>
+</li>
+<li>
+<p><strong>约束 1 (单位向量)</strong>：$\sum_{j=1}^{p} \beta_j^2 = 1$（为了确定系数的尺度）。</p>
+</li>
+<li>
+<p><strong>约束 2 (正确分类且在间隔外)</strong>：$y_i(\beta_0 + \beta_1 x_{i1} + \dots + \beta_p x_{ip}) \ge M$。</p>
+</li>
+</ol>
+</li>
+<li>
+<p>这意味着所有点不仅要在正确的一侧，而且距离超平面的距离至少为 $M$。</p>
+</li>
+</ul>
+<hr>
+<h3 id="第二部分软间隔与支持向量分类器-svc">第二部分：软间隔与支持向量分类器 (SVC)
+</h3><p><strong>4. 什么是软间隔 (Soft Margin)？</strong></p>
+<ul>
+<li>
+<p><strong>背景</strong>：现实数据通常是<strong>线性不可分</strong>的，或者即使分开，受个别噪声点影响，最大间隔会很窄且不稳定。</p>
+</li>
+<li>
+<p><strong>定义</strong>：我们允许<strong>部分</strong>观测点违反间隔限制（即落在间隔内部，甚至落在错误的一侧）。这被称为“软”间隔。</p>
+</li>
+<li>
+<p>引入<strong>松弛变量 (Slack Variables, $\epsilon_i$)</strong> 来量化这种违反程度。</p>
+</li>
+</ul>
+<p><strong>5. 最大分类器和支持向量分类器 (Support Vector Classifier) 的支持向量相同吗？为什么？</strong></p>
+<ul>
+<li>
+<p><strong>不相同</strong>。</p>
+</li>
+<li>
+<p><strong>最大间隔分类器</strong>：支持向量<strong>仅</strong>是那些<strong>正好落在间隔边界上</strong>的点（数量通常很少）。</p>
+</li>
+<li>
+<p><strong>支持向量分类器</strong>：支持向量包括：</p>
+<ol>
+<li>
+<p>正好在间隔边界上的点。</p>
+</li>
+<li>
+<p><strong>违反间隔的点</strong>（落在间隔内部或错误一侧的点）。</p>
+</li>
+</ol>
+</li>
+<li>
+<p><strong>为什么</strong>：因为 SVC 的超平面位置是由这些“难分类”的点决定的，所有违反间隔的点都会对超平面产生影响，所以它们也是支持向量。</p>
+</li>
+</ul>
+<ol start="6">
+<li>如何区分最大间隔分类器、支持向量分类器以及支持向量机？(核心考点)</li>
+</ol>
+<p>这是一个层层递进的关系：</p>
+<ol>
+<li>
+<p><strong>最大间隔分类器 (MMC)</strong>：</p>
+<ul>
+<li>
+<p><strong>线性</strong>边界。</p>
+</li>
+<li>
+<p><strong>硬间隔</strong> (Hard Margin)：不允许任何错误，要求数据线性可分。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>支持向量分类器 (SVC)</strong>：</p>
+<ul>
+<li>
+<p><strong>线性</strong>边界。</p>
+</li>
+<li>
+<p><strong>软间隔</strong> (Soft Margin)：允许部分错误，适用于线性不可分或有噪声的数据。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>支持向量机 (SVM)</strong>：</p>
+<ul>
+<li>
+<p><strong>非线性</strong>边界。</p>
+</li>
+<li>
+<p>通过<strong>核函数 (Kernel)</strong> 扩展了 SVC。</p>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="第三部分支持向量机-svm-与-核函数">第三部分：支持向量机 (SVM) 与 核函数
+</h3><p><strong>7. 对于非线性分类情况，如何利用支持向量机进行分类？</strong></p>
+<ul>
+<li>
+<p>利用 <strong>核技巧 (Kernel Trick)</strong>。</p>
+</li>
+<li>
+<p>我们不直接在原始空间计算，而是将特征空间<strong>升维</strong>（例如引入 $X^2, X^3$），在高维空间中寻找线性超平面。</p>
+</li>
+<li>
+<p>在计算时，我们不需要真的算出高维坐标，只需计算样本间的内积 $K(x_i, x_i&rsquo;)$。</p>
+</li>
+<li>
+<p>常用核函数：<strong>多项式核 (Polynomial Kernel)</strong> 和 <strong>径向基核 (Radial Kernel / RBF)</strong>。</p>
+</li>
+</ul>
+<hr>
+<h3 id="第四部分多分类与参数-multi-class--cost">第四部分：多分类与参数 (Multi-class &amp; Cost)
+</h3><ol start="8">
+<li>支持向量机如何处理多分类问题？</li>
+</ol>
+<p>SVM 本质上是二分类器。处理多分类 ($K&gt;2$) 主要有两种策略：</p>
+<ol>
+<li>
+<p><strong>一对一 (One-versus-One, OVO)</strong>。</p>
+</li>
+<li>
+<p><strong>一对多 (One-versus-All, OVA)</strong>。</p>
+</li>
+</ol>
+<p><strong>9. 一对一、一对多分别需要多少模型参与？具体的实现过程是怎样的呢？</strong></p>
+<ul>
+<li>
+<p><strong>一对一 (One-versus-One)</strong>：</p>
+<ul>
+<li>
+<p><strong>模型数量</strong>：$\binom{K}{2} = \frac{K(K-1)}{2}$ 个（两两组合）。</p>
+</li>
+<li>
+<p><strong>过程</strong>：比如有 3 类，我们训练“1 vs 2”、“1 vs 3”、“2 vs 3”。</p>
+</li>
+<li>
+<p><strong>预测</strong>：将新数据放入所有模型，看哪个类别得票最多。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>一对多 (One-versus-All)</strong>：</p>
+<ul>
+<li>
+<p><strong>模型数量</strong>：$K$ 个。</p>
+</li>
+<li>
+<p><strong>过程</strong>：训练“第 1 类 vs 其他”、“第 2 类 vs 其他”&hellip;</p>
+</li>
+<li>
+<p><strong>预测</strong>：将新数据放入 $K$ 个模型，计算 $f(x)$ 的值，选取<strong>值最大</strong>（即距离超平面最远且为正）的那个类别。</p>
+</li>
+</ul>
 </li>
 </ul>
 

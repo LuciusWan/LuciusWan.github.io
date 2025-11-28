@@ -538,6 +538,48 @@
         <li><a href="#总结">总结</a></li>
       </ol>
     </li>
+    <li><a href="#redo-log是什么">Redo Log是什么</a>
+      <ol>
+        <li><a href="#1-为什么需要-redo-log">1. 为什么需要 Redo Log？</a></li>
+        <li><a href="#2-redo-log-的工作原理">2. Redo Log 的工作原理</a>
+          <ol>
+            <li><a href="#物理结构">物理结构</a></li>
+            <li><a href="#写入流程-循环写入">写入流程 (循环写入)</a></li>
+          </ol>
+        </li>
+        <li><a href="#3-关键参数innodb_flush_log_at_trx_commit">3. 关键参数：innodb_flush_log_at_trx_commit</a></li>
+        <li><a href="#4-重点区分redo-log-vs-binlog">4. 重点区分：Redo Log vs Binlog</a></li>
+        <li><a href="#5-总结">5. 总结</a></li>
+      </ol>
+    </li>
+    <li><a href="#bin-log是什么">Bin Log是什么</a>
+      <ol>
+        <li><a href="#1-核心作用">1. 核心作用</a></li>
+        <li><a href="#2-记录格式-binlog_format">2. 记录格式 (binlog_format)</a></li>
+        <li><a href="#3-写入机制-append-only">3. 写入机制 (Append Only)</a></li>
+        <li><a href="#4-关键参数sync_binlog">4. 关键参数：sync_binlog</a></li>
+        <li><a href="#5-再次对比redo-log-vs-binlog">5. 再次对比：Redo Log vs Binlog</a></li>
+        <li><a href="#6-一个经典问题为什么需要两份日志">6. 一个经典问题：为什么需要两份日志？</a></li>
+      </ol>
+    </li>
+    <li><a href="#介绍一下kafka和rocketmq的刷盘策略">介绍一下kafka和RocketMQ的刷盘策略</a>
+      <ol>
+        <li><a href="#1-rocketmq-的刷盘策略">1. RocketMQ 的刷盘策略</a>
+          <ol>
+            <li><a href="#a-异步刷盘-async_flush--默认策略">A. 异步刷盘 (ASYNC_FLUSH) —— <strong>默认策略</strong></a></li>
+            <li><a href="#b-同步刷盘-sync_flush">B. 同步刷盘 (SYNC_FLUSH)</a></li>
+          </ol>
+        </li>
+        <li><a href="#2-kafka-的刷盘策略">2. Kafka 的刷盘策略</a>
+          <ol>
+            <li><a href="#a-异步刷盘-依赖-os-page-cache--核心策略">A. 异步刷盘 (依赖 OS Page Cache) —— <strong>核心策略</strong></a></li>
+            <li><a href="#b-同步刷盘-可配置但很少用">B. 同步刷盘 (可配置，但很少用)</a></li>
+          </ol>
+        </li>
+        <li><a href="#3-横向对比总结-面试必杀技">3. 横向对比总结 (面试必杀技)</a></li>
+        <li><a href="#4-深度思考为什么-kafka-敢不刷盘">4. 深度思考：为什么 Kafka 敢不刷盘？</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -598,7 +640,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 50 分钟
+                    阅读时长: 58 分钟
                 </time>
             </div>
         
@@ -3184,6 +3226,413 @@ CPU 把数据从 <strong>Socket 的接收缓冲区（内核内存）</strong> �
 	
 ></p>
 <p>如果不主动区remove()，那么这个threadLocal内部的key-value就会在下一次调用这个线程的时候访问到，产生内存泄漏。</p>
+<h2 id="redo-log是什么">Redo Log是什么
+</h2><p><strong>Redo Log</strong>（重做日志）是 MySQL 中 <strong>InnoDB 存储引擎</strong>特有的一种物理日志。</p>
+<p>简单来说，它的核心作用是<strong>确保事务的持久性（Durability）</strong>，即防止数据库在发生故障（如断电、宕机）时丢失数据。它是实现 ACID 中 &ldquo;D&rdquo; 的关键。</p>
+<p>为了帮助你透彻理解（特别是应对面试），我们可以从以下几个维度来解析：</p>
+<hr>
+<h3 id="1-为什么需要-redo-log">1. 为什么需要 Redo Log？
+</h3><p>在 MySQL 中，数据是存在磁盘上的，但为了性能，更新操作通常是在内存（Buffer Pool）中完成的。</p>
+<ul>
+<li>
+<p><strong>问题：</strong> 如果每次更新数据都直接写回磁盘的数据页（Page），因为数据页在磁盘上是随机分布的，这会产生大量的<strong>随机 I/O</strong>，性能非常差。</p>
+</li>
+<li>
+<p><strong>解决：</strong> 既然直接写数据页太慢，InnoDB 采用了一种策略：当有记录需要更新时，先更新内存，然后<strong>把“在某个数据页上做了什么修改”记录到 Redo Log 中</strong>。</p>
+</li>
+<li>
+<p><strong>优势：</strong> 写 Redo Log 是<strong>顺序 I/O</strong>（追加写入），速度非常快。</p>
+</li>
+</ul>
+<p>这种技术被称为 <strong>WAL (Write-Ahead Logging)</strong>，即“先写日志，再写磁盘”。</p>
+<blockquote>
+<p><strong>核心场景：</strong> 如果 MySQL 突然宕机，内存中的脏页（修改过但还没写回磁盘的数据）会丢失。重启时，MySQL 可以利用磁盘上的 Redo Log 把这些丢失的修改“重做”一遍，从而恢复数据。</p>
+</blockquote>
+<hr>
+<h3 id="2-redo-log-的工作原理">2. Redo Log 的工作原理
+</h3><h4 id="物理结构">物理结构
+</h4><p><strong>Redo Log 记录的是物理修改。例如：“在第 10 号表空间的第 50 号页面的偏移量 200 处，将值由 A 改为 B”。</strong></p>
+<h4 id="写入流程-循环写入">写入流程 (循环写入)
+</h4><p>Redo Log 的文件大小是固定的（例如配置了 4 个文件，每个 1GB）。InnoDB 使用<strong>循环写入</strong>（Circular Buffer）的方式来使用这些文件。</p>
+<p>想象一个圆形的缓冲区：</p>
+<ol>
+<li>
+<p><strong><code>write pos</code> (当前写入点)：</strong> 随着事务的执行，不断向前移动，写入新的日志。</p>
+</li>
+<li>
+<p><strong><code>checkpoint</code> (擦除点/安全点)：</strong> 也是向前移动。当数据页被真正刷入磁盘后，对应的 Redo Log 就不需要了，可以被覆盖（擦除）。</p>
+</li>
+</ol>
+<ul>
+<li><strong>如果 <code>write pos</code> 追上了 <code>checkpoint</code>：</strong> 说明 Redo Log 满了。此时 MySQL 必须暂停更新操作，强制把内存中的脏页刷到磁盘中，以推进 <code>checkpoint</code>，腾出空间。</li>
+</ul>
+<hr>
+<h3 id="3-关键参数innodb_flush_log_at_trx_commit">3. 关键参数：innodb_flush_log_at_trx_commit
+</h3><p>这是面试中常考的配置项，决定了 Redo Log 何时从内存缓冲区（Redo Log Buffer）刷入磁盘文件。</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>值</strong></th>
+          <th><strong>行为描述</strong></th>
+          <th><strong>安全性</strong></th>
+          <th><strong>性能</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>0</strong></td>
+          <td>每秒将日志写入磁盘一次。事务提交时不强制刷盘。</td>
+          <td>低（崩溃可能丢失1秒数据）</td>
+          <td>最高</td>
+      </tr>
+      <tr>
+          <td><strong>1</strong></td>
+          <td><strong>(默认)</strong> 每次事务提交时，都将日志强制写入磁盘。</td>
+          <td><strong>高（最安全，保证 ACID）</strong></td>
+          <td>一般</td>
+      </tr>
+      <tr>
+          <td><strong>2</strong></td>
+          <td>每次事务提交时写到操作系统缓存（OS Cache），由 OS 每秒刷盘一次。</td>
+          <td>中（MySQL挂了没事，OS挂了会丢数据）</td>
+          <td>高</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="4-重点区分redo-log-vs-binlog">4. 重点区分：Redo Log vs Binlog
+</h3><p>这是面试中最容易混淆的点，必须清晰区分：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>特性</strong></th>
+          <th><strong>Redo Log (重做日志)</strong></th>
+          <th><strong>Binlog (归档日志)</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>所属层级</strong></td>
+          <td><strong>InnoDB 存储引擎层</strong> (特有)</td>
+          <td><strong>MySQL Server 层</strong> (所有引擎通用)</td>
+      </tr>
+      <tr>
+          <td><strong>记录内容</strong></td>
+          <td><strong>物理日志</strong> (在某页做了某修改)</td>
+          <td><strong>逻辑日志</strong> (SQL 语句或行数据的变更)</td>
+      </tr>
+      <tr>
+          <td><strong>写入方式</strong></td>
+          <td><strong>循环写</strong> (空间固定，会覆盖)</td>
+          <td><strong>追加写</strong> (写满一个文件切换下一个，不覆盖)</td>
+      </tr>
+      <tr>
+          <td><strong>核心作用</strong></td>
+          <td><strong>崩溃恢复 (Crash-Safe)</strong></td>
+          <td><strong>主从复制</strong>、数据备份/恢复</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="5-总结">5. 总结
+</h3><p>如果把 MySQL 比如一本账本：</p>
+<ul>
+<li>
+<p><strong>数据文件 (ibd)</strong> 是厚重的总账本，整理起来很慢。</p>
+</li>
+<li>
+<p><strong>Redo Log</strong> 是手边的<strong>粉板（或记事贴）</strong>。</p>
+</li>
+</ul>
+<h2 id="bin-log是什么">Bin Log是什么
+</h2><p><strong>Binlog</strong>（Binary Log，二进制日志）是 MySQL <strong>Server 层</strong>（即通用层，不依赖于存储引擎）维护的一种日志文件。</p>
+<p>如果说 Redo Log 是 InnoDB 引擎的“救命稻草”（用于崩溃恢复），那么 Binlog 就是 MySQL 的**“历史档案”**。</p>
+<p>以下是关于 Binlog 的核心知识点，覆盖了原理、用途和常见的面试考点：</p>
+<hr>
+<h3 id="1-核心作用">1. 核心作用
+</h3><p><strong>Binlog 记录了数据库中所有修改数据的操作（如 <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, <code>CREATE</code>, <code>DROP</code> 等），不包括查询（<code>SELECT</code>, <code>SHOW</code>）。</strong></p>
+<p>它的主要用途有两个：</p>
+<ol>
+<li>
+<p><strong>主从复制 (Master-Slave Replication)：</strong></p>
+<ul>
+<li>这是最常见的用途。Master 节点把它的 Binlog 传递给 Slave 节点，Slave 接收并重放这些日志，从而保证主从数据一致。</li>
+</ul>
+</li>
+<li>
+<p><strong>数据恢复 (Point-in-Time Recovery)：</strong></p>
+<ul>
+<li>如果数据库误删了数据，可以使用最近的一次全量备份（Full Backup）恢复到某个时间点，然后通过重放 Binlog，把数据恢复到误操作的前一秒。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="2-记录格式-binlog_format">2. 记录格式 (binlog_format)
+</h3><p>这是面试中的高频考点。Binlog 有三种记录模式，各有优劣：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>格式</strong></th>
+          <th><strong>描述</strong></th>
+          <th><strong>优点</strong></th>
+          <th><strong>缺点</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>STATEMENT</strong></td>
+          <td>记录执行的 <strong>SQL 语句原文</strong>（如 <code>UPDATE t SET a=1 WHERE id=10</code>）。</td>
+          <td>日志文件小，网络传输快，IO 压力小。</td>
+          <td><strong>存在数据不一致风险</strong>。如果 SQL 中包含 <code>NOW()</code>、<code>UUID()</code> 等函数，在从库执行时结果可能与主库不同。</td>
+      </tr>
+      <tr>
+          <td><strong>ROW</strong></td>
+          <td>记录<strong>每一行数据被修改成的样子</strong>（物理变更）。</td>
+          <td><strong>非常安全</strong>，严格保证数据一致性。</td>
+          <td>日志文件非常大（特别是批量 <code>UPDATE</code> 或 <code>DELETE</code> 时），消耗网络 bandwidth。</td>
+      </tr>
+      <tr>
+          <td><strong>MIXED</strong></td>
+          <td>混合模式。</td>
+          <td>一般用 Statement，遇到可能导致不一致的 SQL（如用到系统变量）时自动切换为 Row。</td>
+          <td>试图平衡两者，但有时难以预测 MySQL 的选择。</td>
+      </tr>
+  </tbody>
+</table></div>
+<blockquote>
+<p><strong>最佳实践：</strong> 目前生产环境（特别是涉及金钱或核心数据时）推荐使用 <strong><code>ROW</code></strong> 格式，虽然空间占用大，但能保证数据的绝对一致性。</p>
+</blockquote>
+<hr>
+<h3 id="3-写入机制-append-only">3. 写入机制 (Append Only)
+</h3><p>与 Redo Log 的“循环写”（写满覆盖）不同，Binlog 是<strong>追加写</strong>（Append Only）。</p>
+<ul>
+<li>
+<p>当一个 Binlog 文件写到一定大小（由 <code>max_binlog_size</code> 控制）后，会切换创建一个新的文件（例如 <code>mysql-bin.000001</code>, <code>mysql-bin.000002</code>）。</p>
+</li>
+<li>
+<p>之前的日志<strong>不会被覆盖</strong>，除非你手动清理或设置了过期时间。</p>
+</li>
+</ul>
+<hr>
+<h3 id="4-关键参数sync_binlog">4. 关键参数：sync_binlog
+</h3><p>这个参数控制 Binlog 什么时候刷入磁盘，与性能和安全息息相关：</p>
+<ul>
+<li>
+<p><strong><code>sync_binlog = 0</code></strong>：MySQL 每次将 Binlog 写入 OS Cache，由操作系统决定何时刷盘。性能好，但机器宕机可能丢数据。</p>
+</li>
+<li>
+<p><strong><code>sync_binlog = 1</code></strong>：每次事务提交都强制刷盘。<strong>最安全</strong>，但性能损耗最大。</p>
+</li>
+<li>
+<p><strong><code>sync_binlog = N</code></strong>：每 N 次事务提交刷盘一次。</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>双 1 配置：</strong> 在要求数据严谨的生产环境，通常建议 <code>sync_binlog = 1</code> 配合 <code>innodb_flush_log_at_trx_commit = 1</code>，这就是常说的“双 1 配置”，能最大程度保证数据不丢失。</p>
+</blockquote>
+<hr>
+<h3 id="5-再次对比redo-log-vs-binlog">5. 再次对比：Redo Log vs Binlog
+</h3><p>为了加深记忆，这里再次从另一个角度对比这两个日志：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>特征</strong></th>
+          <th><strong>Redo Log (重做日志)</strong></th>
+          <th><strong>Binlog (归档日志)</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>生动比喻</strong></td>
+          <td><strong>草稿纸/记事贴</strong> (用完即丢)</td>
+          <td><strong>历史档案馆/录像带</strong> (永久保存)</td>
+      </tr>
+      <tr>
+          <td><strong>产生者</strong></td>
+          <td>InnoDB 引擎特有</td>
+          <td>MySQL Server 层 (所有引擎都有)</td>
+      </tr>
+      <tr>
+          <td><strong>内容形式</strong></td>
+          <td>物理日志 (&ldquo;在某页改了某值&rdquo;)</td>
+          <td>逻辑日志 (&ldquo;执行了某SQL&rdquo; 或 &ldquo;某行变为了X&rdquo;)</td>
+      </tr>
+      <tr>
+          <td><strong>主要场景</strong></td>
+          <td>宕机恢复 (Crash Safe)</td>
+          <td>主从复制、数据恢复</td>
+      </tr>
+      <tr>
+          <td><strong>事务性</strong></td>
+          <td>事务执行过程中不断写入</td>
+          <td>事务<strong>提交时</strong>一次性写入</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="6-一个经典问题为什么需要两份日志">6. 一个经典问题：为什么需要两份日志？
+</h3><p>你可能会问：<em>既然 Binlog 也有数据记录，为什么 InnoDB 还需要 Redo Log？</em></p>
+<ol>
+<li>
+<p><strong>历史原因：</strong> MySQL 最早只有 Binlog（Server层），没有 Crash-safe 能力。后来引入 InnoDB 引擎，InnoDB 为了实现 ACID 中的持久性，自己搞了一套 Redo Log。</p>
+</li>
+<li>
+<p><strong>效率原因：</strong> Binlog 是逻辑日志，恢复速度慢（需要重新执行 SQL 或重放行变更）；Redo Log 是物理日志，直接映射磁盘位置，恢复速度极快。</p>
+</li>
+</ol>
+<h2 id="介绍一下kafka和rocketmq的刷盘策略">介绍一下kafka和RocketMQ的刷盘策略
+</h2><p>这是一个非常经典的中间件对比问题。刷盘策略（Flushing Strategy）直接决定了消息队列（MQ）的<strong>吞吐量（Performance）和数据可靠性（Reliability）</strong>。</p>
+<p>Kafka 和 RocketMQ 在这方面的设计理念有明显的区别：</p>
+<ul>
+<li>
+<p><strong>RocketMQ：</strong> 提供了灵活的选择，由用户决定是追求极致性能还是极致数据安全。</p>
+</li>
+<li>
+<p><strong>Kafka：</strong> 倾向于极致的吞吐量，将“数据可靠性”交给多副本复制（Replication）机制，而不是单机的强刷盘。</p>
+</li>
+</ul>
+<p>以下是详细对比：</p>
+<hr>
+<h3 id="1-rocketmq-的刷盘策略">1. RocketMQ 的刷盘策略
+</h3><p>RocketMQ 在 Broker 的配置文件中，通过 <code>flushDiskType</code> 参数提供了两种明确的策略。它的设计思路很像 MySQL 的配置，让用户自己权衡。</p>
+<h4 id="a-异步刷盘-async_flush--默认策略">A. 异步刷盘 (ASYNC_FLUSH) —— <strong>默认策略</strong>
+</h4><ul>
+<li>
+<p><strong>机制：</strong> 生产者发送消息后，Broker 只要把消息写入内存（Page Cache / MappedByteBuffer）就立刻返回“发送成功”。</p>
+</li>
+<li>
+<p><strong>刷盘时机：</strong> 后台有一个线程会定时（通常每隔几毫秒）把内存中的数据刷入磁盘。</p>
+</li>
+<li>
+<p><strong>优缺点：</strong></p>
+<ul>
+<li>
+<p>✅ <strong>吞吐量高</strong>，延迟低。</p>
+</li>
+<li>
+<p>⚠️ <strong>有数据丢失风险</strong>：如果服务器突然断电（宕机），内存中未刷盘的消息会丢失。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="b-同步刷盘-sync_flush">B. 同步刷盘 (SYNC_FLUSH)
+</h4><ul>
+<li>
+<p><strong>机制：</strong> 生产者发送消息后，Broker 必须先把消息写入内存，<strong>并且强制调用 <code>fsync</code> 刷入磁盘后</strong>，才返回“发送成功”。</p>
+</li>
+<li>
+<p><strong>优化（Group Commit）：</strong> 为了不让性能太差，RocketMQ 实现了**Group Commit（组提交）**机制。它不会每来一条消息就刷一次盘，而是攒一小批消息（微秒级等待），一次性 <code>fsync</code>，类似 MySQL 的机制。</p>
+</li>
+<li>
+<p><strong>优缺点：</strong></p>
+<ul>
+<li>
+<p>✅ <strong>数据绝对安全</strong>，断电不丢数据。</p>
+</li>
+<li>
+<p>⚠️ <strong>吞吐量下降</strong>，延迟变高。</p>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><strong>适用场景：</strong> 金融、交易链路等对数据丢失“零容忍”的场景，必须用 <strong>SYNC_FLUSH</strong>。</p>
+</blockquote>
+<hr>
+<h3 id="2-kafka-的刷盘策略">2. Kafka 的刷盘策略
+</h3><p>Kafka 的设计哲学完全不同。它官方<strong>强烈不推荐</strong>用户强制控制刷盘，而是把这个工作完全交给<strong>操作系统</strong>。</p>
+<h4 id="a-异步刷盘-依赖-os-page-cache--核心策略">A. 异步刷盘 (依赖 OS Page Cache) —— <strong>核心策略</strong>
+</h4><ul>
+<li>
+<p><strong>机制：</strong> Kafka 收到消息后，通过 <code>write()</code> 系统调用把数据写入文件系统的 Page Cache（页缓存），然后立刻返回。</p>
+</li>
+<li>
+<p><strong>刷盘时机：</strong> Kafka <strong>不主动</strong>调用 <code>fsync</code>。它依赖 Linux 系统的后台线程（pdflush/flush）根据系统的脏页策略（<code>vm.dirty_background_ratio</code> 等）自动将数据刷入磁盘。</p>
+</li>
+<li>
+<p><strong>为什么这么设计？</strong></p>
+<ul>
+<li>
+<p>Kafka 认为在分布式系统中，单机的持久化并不能保证绝对安全（硬盘坏了照样丢）。</p>
+</li>
+<li>
+<p>Kafka 的安全性是通过 <strong>多副本机制 (Replication)</strong> 来保证的。只要消息被写入了多个副本（ISR 集合），即使主节点宕机且数据未刷盘，数据也可以从其他副本恢复。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="b-同步刷盘-可配置但很少用">B. 同步刷盘 (可配置，但很少用)
+</h4><ul>
+<li>
+<p>虽然 Kafka 提供了 <code>log.flush.interval.messages</code>（每多少条刷一次）和 <code>log.flush.interval.ms</code>（每多少毫秒刷一次）参数，但官方建议保持默认值（即不配置，无限大），交给 OS 管理。</p>
+</li>
+<li>
+<p>频繁调用 <code>fsync</code> 会极大地破坏 Kafka 的高吞吐特性。</p>
+</li>
+</ul>
+<hr>
+<h3 id="3-横向对比总结-面试必杀技">3. 横向对比总结 (面试必杀技)
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>特性</strong></th>
+          <th><strong>RocketMQ</strong></th>
+          <th><strong>Kafka</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>主要刷盘方式</strong></td>
+          <td><strong>支持同步 &amp; 异步</strong></td>
+          <td><strong>几乎全靠异步 (OS Page Cache)</strong></td>
+      </tr>
+      <tr>
+          <td><strong>配置参数</strong></td>
+          <td><code>flushDiskType</code> (SYNC_FLUSH / ASYNC_FLUSH)</td>
+          <td><code>log.flush.interval</code> (建议忽略)</td>
+      </tr>
+      <tr>
+          <td><strong>数据安全性保障</strong></td>
+          <td><strong>单机层面</strong>：靠同步刷盘保证。<br><strong>集群层面</strong>：靠主从复制。</td>
+          <td><strong>完全依赖集群层面</strong>的副本复制机制 (Replication / ISR)。</td>
+      </tr>
+      <tr>
+          <td><strong>设计哲学</strong></td>
+          <td>像传统数据库，提供“金融级”的单机可靠性选项。</td>
+          <td>追求极致吞吐，相信操作系统和集群副本。</td>
+      </tr>
+      <tr>
+          <td><strong>性能</strong></td>
+          <td>异步刷盘极快；同步刷盘较慢（但有组提交优化）。</td>
+          <td>极快（因为本质上是写内存）。</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="4-深度思考为什么-kafka-敢不刷盘">4. 深度思考：为什么 Kafka 敢不刷盘？
+</h3><p>这往往是面试官的追问：<em>“Kafka 异步刷盘，万一掉电了怎么办？”</em></p>
+<p>回答的关键在于 <strong><code>acks</code> 参数</strong>：</p>
+<ul>
+<li>
+<p>如果设置 <code>acks=all</code> (或 <code>-1</code>)：</p>
+<ul>
+<li>
+<p>Kafka 会确保消息不仅写入了 Leader 的内存，还同步到了所有 ISR（In-Sync Replicas）节点的内存中，才会告诉生产者“成功”。</p>
+</li>
+<li>
+<p><strong>容灾逻辑：</strong> 即使 Leader 突然断电且未刷盘，只要集群中还有一个 ISR 节点活着，数据就不会丢。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>结论：</strong></p>
+<ul>
+<li>
+<p><strong>RocketMQ</strong> 的同步刷盘是<strong>物理层面的</strong>（写进硬盘才算完）。</p>
+</li>
+<li>
+<p><strong>Kafka</strong> 的安全是<strong>逻辑层面的</strong>（复制到多台机器的内存才算完）。</p>
+</li>
+</ul>
 
 </section>
 

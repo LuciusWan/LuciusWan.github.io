@@ -10554,6 +10554,113 @@ CPU 把数据从 &lt;strong&gt;Socket 的接收缓冲区（内核内存）&lt;/s
 &lt;p&gt;&lt;strong&gt;Kafka&lt;/strong&gt; 的安全是&lt;strong&gt;逻辑层面的&lt;/strong&gt;（复制到多台机器的内存才算完）。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
+&lt;h2 id=&#34;page-cache是什么&#34;&gt;Page Cache是什么？
+&lt;/h2&gt;&lt;p&gt;简单一句话总结：&lt;strong&gt;Page Cache（页缓存）就是操作系统拿出一部分内存（RAM），专门用来给硬盘（Disk）“加速”的。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;我们从“在哪里”和“干什么”两个方面来拆解：&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;1-存储在哪里&#34;&gt;1. 存储在哪里？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;它就在你的内存条里（RAM）。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Page Cache 不是什么特殊的硬件，也不是硬盘里的一部分。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;当你买了一台服务器，比如有 32GB 内存。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;你的 Java 程序只用了 4GB。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;剩下的 28GB 内存闲着也是闲着，&lt;strong&gt;操作系统（Linux）就会毫不客气地把这些空闲内存征用&lt;/strong&gt;，当作 Page Cache 使用。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;注意：&lt;/strong&gt; 它是&lt;strong&gt;易失性&lt;/strong&gt;的。既然是在内存里，一旦断电或者重启，Page Cache 里的东西瞬间就没了。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;2-它是干啥的为什么要用它&#34;&gt;2. 它是干啥的？（为什么要用它？）
+&lt;/h3&gt;&lt;p&gt;核心原因只有一个：&lt;strong&gt;硬盘太慢了，内存太快了。&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;内存（RAM）&lt;/strong&gt; 的速度像&lt;strong&gt;法拉利&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;硬盘（Disk）&lt;/strong&gt; 的速度像&lt;strong&gt;蜗牛&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果 CPU 每次读写数据都要等着硬盘（蜗牛）慢慢爬，那 CPU（法拉利）大部分时间都在“发呆”等待。为了解决这个速度不匹配的问题，Linux 引入了 Page Cache 当作“中间商”。&lt;/p&gt;
+&lt;h4 id=&#34;a-写操作write的加速-骗你写完了&#34;&gt;A. 写操作（Write）的加速： “骗”你写完了
+&lt;/h4&gt;&lt;p&gt;当 Kafka 说“我要把消息写到硬盘”时：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;操作系统直接把数据丢进 &lt;strong&gt;Page Cache（内存）&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;操作系统立刻告诉 Kafka：“写完了，你走吧！”（其实还没进硬盘）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;结果：&lt;/strong&gt; Kafka 觉得写硬盘飞快（其实是写了内存），吞吐量极高。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;后续：&lt;/strong&gt; 操作系统会在后台，找个空闲时间，慢慢把 Page Cache 里的数据搬运到硬盘里（这个过程叫 &lt;strong&gt;Flush/刷盘&lt;/strong&gt;）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;比喻：&lt;/strong&gt; 你去图书馆还书（写数据）。
+如果没有 Page Cache，你得自己跑进库房把书插回架子上（写磁盘），很慢。
+有了 Page Cache，前台放了一个&lt;strong&gt;还书箱（内存）&lt;/strong&gt;，你把书往箱子里一扔就走了（瞬间完成）。管理员晚点再把箱子里的书摆回架子。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&#34;b-读操作read的加速-猜你会再用&#34;&gt;B. 读操作（Read）的加速： “猜”你会再用
+&lt;/h4&gt;&lt;p&gt;当你要从硬盘读取一个文件时：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;操作系统把文件从硬盘读出来。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;先在 &lt;strong&gt;Page Cache（内存）&lt;/strong&gt; 里留一份备份，然后再给你。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;结果：&lt;/strong&gt; 下次你（或者别人）再来读同一个文件时，操作系统直接从内存里拿给你，完全不需要动硬盘。速度提升几百倍。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;3-一个直观的现象linux-内存占用&#34;&gt;3. 一个直观的现象（Linux 内存占用）
+&lt;/h3&gt;&lt;p&gt;很多新手在用 Linux 时会发现一个“奇怪”的现象：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;我看机器空闲着，没跑什么程序。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;但用 &lt;code&gt;free&lt;/code&gt; 命令一看，&lt;strong&gt;内存（Memory）怎么被占用了 90% 以上？&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;原因就是 Page Cache。&lt;/strong&gt; Linux 的逻辑是：&lt;strong&gt;“闲着的内存就是浪费”&lt;/strong&gt;。与其空着，不如把所有读写过的文件都缓存起来。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;如果你的程序突然需要内存怎么办？&lt;/strong&gt; 放心，Linux 会瞬间释放掉一部分 Page Cache 腾出空间给你的程序用。它是“借用”，不是“霸占”。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;4-总结&#34;&gt;4. 总结
+&lt;/h3&gt;&lt;p&gt;回到 Kafka 和 MySQL 的场景：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Page Cache 是谁？&lt;/strong&gt; 是 Linux 操作系统利用空闲内存构建的一层缓存。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;在哪里？&lt;/strong&gt; 在内存条里（RAM）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Kafka 为什么快？&lt;/strong&gt; 因为 Kafka 写数据实际上是写到了 Page Cache（内存）里，相当于写内存，当然快。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;风险是什么？&lt;/strong&gt; 既然在内存里，&lt;strong&gt;断电即失&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;这就是为什么 Kafka 叫“异步刷盘”（写完内存就算成功）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;这也是为什么 MySQL 为了安全要搞“同步刷盘”（必须从 Page Cache 逼到硬盘里才算成功）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
 </description>
         </item>
         <item>

@@ -580,6 +580,19 @@
         <li><a href="#4-深度思考为什么-kafka-敢不刷盘">4. 深度思考：为什么 Kafka 敢不刷盘？</a></li>
       </ol>
     </li>
+    <li><a href="#page-cache是什么">Page Cache是什么？</a>
+      <ol>
+        <li><a href="#1-存储在哪里">1. 存储在哪里？</a></li>
+        <li><a href="#2-它是干啥的为什么要用它">2. 它是干啥的？（为什么要用它？）</a>
+          <ol>
+            <li><a href="#a-写操作write的加速-骗你写完了">A. 写操作（Write）的加速： “骗”你写完了</a></li>
+            <li><a href="#b-读操作read的加速-猜你会再用">B. 读操作（Read）的加速： “猜”你会再用</a></li>
+          </ol>
+        </li>
+        <li><a href="#3-一个直观的现象linux-内存占用">3. 一个直观的现象（Linux 内存占用）</a></li>
+        <li><a href="#4-总结">4. 总结</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -640,7 +653,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 58 分钟
+                    阅读时长: 60 分钟
                 </time>
             </div>
         
@@ -3633,6 +3646,113 @@ CPU 把数据从 <strong>Socket 的接收缓冲区（内核内存）</strong> �
 <p><strong>Kafka</strong> 的安全是<strong>逻辑层面的</strong>（复制到多台机器的内存才算完）。</p>
 </li>
 </ul>
+<h2 id="page-cache是什么">Page Cache是什么？
+</h2><p>简单一句话总结：<strong>Page Cache（页缓存）就是操作系统拿出一部分内存（RAM），专门用来给硬盘（Disk）“加速”的。</strong></p>
+<p>我们从“在哪里”和“干什么”两个方面来拆解：</p>
+<hr>
+<h3 id="1-存储在哪里">1. 存储在哪里？
+</h3><p><strong>它就在你的内存条里（RAM）。</strong></p>
+<p>Page Cache 不是什么特殊的硬件，也不是硬盘里的一部分。</p>
+<ul>
+<li>
+<p>当你买了一台服务器，比如有 32GB 内存。</p>
+</li>
+<li>
+<p>你的 Java 程序只用了 4GB。</p>
+</li>
+<li>
+<p>剩下的 28GB 内存闲着也是闲着，<strong>操作系统（Linux）就会毫不客气地把这些空闲内存征用</strong>，当作 Page Cache 使用。</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>注意：</strong> 它是<strong>易失性</strong>的。既然是在内存里，一旦断电或者重启，Page Cache 里的东西瞬间就没了。</p>
+</blockquote>
+<hr>
+<h3 id="2-它是干啥的为什么要用它">2. 它是干啥的？（为什么要用它？）
+</h3><p>核心原因只有一个：<strong>硬盘太慢了，内存太快了。</strong></p>
+<ul>
+<li>
+<p><strong>内存（RAM）</strong> 的速度像<strong>法拉利</strong>。</p>
+</li>
+<li>
+<p><strong>硬盘（Disk）</strong> 的速度像<strong>蜗牛</strong>。</p>
+</li>
+</ul>
+<p>如果 CPU 每次读写数据都要等着硬盘（蜗牛）慢慢爬，那 CPU（法拉利）大部分时间都在“发呆”等待。为了解决这个速度不匹配的问题，Linux 引入了 Page Cache 当作“中间商”。</p>
+<h4 id="a-写操作write的加速-骗你写完了">A. 写操作（Write）的加速： “骗”你写完了
+</h4><p>当 Kafka 说“我要把消息写到硬盘”时：</p>
+<ol>
+<li>
+<p>操作系统直接把数据丢进 <strong>Page Cache（内存）</strong>。</p>
+</li>
+<li>
+<p>操作系统立刻告诉 Kafka：“写完了，你走吧！”（其实还没进硬盘）。</p>
+</li>
+<li>
+<p><strong>结果：</strong> Kafka 觉得写硬盘飞快（其实是写了内存），吞吐量极高。</p>
+</li>
+<li>
+<p><strong>后续：</strong> 操作系统会在后台，找个空闲时间，慢慢把 Page Cache 里的数据搬运到硬盘里（这个过程叫 <strong>Flush/刷盘</strong>）。</p>
+</li>
+</ol>
+<blockquote>
+<p><strong>比喻：</strong> 你去图书馆还书（写数据）。
+如果没有 Page Cache，你得自己跑进库房把书插回架子上（写磁盘），很慢。
+有了 Page Cache，前台放了一个<strong>还书箱（内存）</strong>，你把书往箱子里一扔就走了（瞬间完成）。管理员晚点再把箱子里的书摆回架子。</p>
+</blockquote>
+<h4 id="b-读操作read的加速-猜你会再用">B. 读操作（Read）的加速： “猜”你会再用
+</h4><p>当你要从硬盘读取一个文件时：</p>
+<ol>
+<li>
+<p>操作系统把文件从硬盘读出来。</p>
+</li>
+<li>
+<p>先在 <strong>Page Cache（内存）</strong> 里留一份备份，然后再给你。</p>
+</li>
+<li>
+<p><strong>结果：</strong> 下次你（或者别人）再来读同一个文件时，操作系统直接从内存里拿给你，完全不需要动硬盘。速度提升几百倍。</p>
+</li>
+</ol>
+<hr>
+<h3 id="3-一个直观的现象linux-内存占用">3. 一个直观的现象（Linux 内存占用）
+</h3><p>很多新手在用 Linux 时会发现一个“奇怪”的现象：</p>
+<ul>
+<li>
+<p>我看机器空闲着，没跑什么程序。</p>
+</li>
+<li>
+<p>但用 <code>free</code> 命令一看，<strong>内存（Memory）怎么被占用了 90% 以上？</strong></p>
+</li>
+</ul>
+<p><strong>原因就是 Page Cache。</strong> Linux 的逻辑是：<strong>“闲着的内存就是浪费”</strong>。与其空着，不如把所有读写过的文件都缓存起来。</p>
+<ul>
+<li><strong>如果你的程序突然需要内存怎么办？</strong> 放心，Linux 会瞬间释放掉一部分 Page Cache 腾出空间给你的程序用。它是“借用”，不是“霸占”。</li>
+</ul>
+<hr>
+<h3 id="4-总结">4. 总结
+</h3><p>回到 Kafka 和 MySQL 的场景：</p>
+<ol>
+<li>
+<p><strong>Page Cache 是谁？</strong> 是 Linux 操作系统利用空闲内存构建的一层缓存。</p>
+</li>
+<li>
+<p><strong>在哪里？</strong> 在内存条里（RAM）。</p>
+</li>
+<li>
+<p><strong>Kafka 为什么快？</strong> 因为 Kafka 写数据实际上是写到了 Page Cache（内存）里，相当于写内存，当然快。</p>
+</li>
+<li>
+<p><strong>风险是什么？</strong> 既然在内存里，<strong>断电即失</strong>。</p>
+<ul>
+<li>
+<p>这就是为什么 Kafka 叫“异步刷盘”（写完内存就算成功）。</p>
+</li>
+<li>
+<p>这也是为什么 MySQL 为了安全要搞“同步刷盘”（必须从 Page Cache 逼到硬盘里才算成功）。</p>
+</li>
+</ul>
+</li>
+</ol>
 
 </section>
 

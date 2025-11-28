@@ -486,7 +486,7 @@
 <p><strong>高自由度</strong>（如 KNN 当 K=1 时）：曲线非常“摆动 (wiggly)”，紧贴每个数据点。</p>
 </li>
 <li>
-<p><em>(注：在平滑样条中，有一个专门的惩罚参数 \lambda 控制光滑度，\lambda 越大越光滑/平直)</em>。</p>
+<p><em>(注：在平滑样条中，有一个专门的惩罚参数 $\lambda$ 控制光滑度，\lambda 越大越光滑/平直)</em>。</p>
 </li>
 </ul>
 <h3 id="10-光滑度-flexibility-和偏差方差的关系">10. 光滑度 (Flexibility) 和偏差、方差的关系？
@@ -515,7 +515,7 @@
 </ul>
 </li>
 <li>
-<p><em>目标</em>：找到一个中间点，使 Bias^2 + Variance 最小。</p>
+<p><em>目标</em>：找到一个中间点，使 $Bias^2 + Variance$最小。</p>
 </li>
 </ul>
 <h3 id="11-分类模型最常用的估计精度的方法是什么">11. 分类模型最常用的估计精度的方法是什么？
@@ -529,7 +529,8 @@
 <p><strong>策略</strong>：对于给定的 x，将样本分到 Pr(Y=j|X=x) 最大的那一类。</p>
 </li>
 <li>
-<p><strong>计算</strong>：1 - E(\max_j Pr(Y=j|X))。</p>
+<p><strong>计算</strong>：</p>
+$$1 - E(\max_j Pr(Y=j|X))$$<p>。</p>
 <ul>
 <li>意思是：1 减去我们在每个点上做出最佳选择时的平均概率。</li>
 </ul>

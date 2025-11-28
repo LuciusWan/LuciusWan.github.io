@@ -4482,7 +4482,7 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 &lt;p&gt;&lt;strong&gt;高自由度&lt;/strong&gt;（如 KNN 当 K=1 时）：曲线非常“摆动 (wiggly)”，紧贴每个数据点。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;em&gt;(注：在平滑样条中，有一个专门的惩罚参数 \lambda 控制光滑度，\lambda 越大越光滑/平直)&lt;/em&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(注：在平滑样条中，有一个专门的惩罚参数 $\lambda$ 控制光滑度，\lambda 越大越光滑/平直)&lt;/em&gt;。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;10-光滑度-flexibility-和偏差方差的关系&#34;&gt;10. 光滑度 (Flexibility) 和偏差、方差的关系？
@@ -4511,7 +4511,7 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;em&gt;目标&lt;/em&gt;：找到一个中间点，使 Bias^2 + Variance 最小。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;目标&lt;/em&gt;：找到一个中间点，使 $Bias^2 + Variance$最小。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;11-分类模型最常用的估计精度的方法是什么&#34;&gt;11. 分类模型最常用的估计精度的方法是什么？
@@ -4525,7 +4525,8 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 &lt;p&gt;&lt;strong&gt;策略&lt;/strong&gt;：对于给定的 x，将样本分到 Pr(Y=j|X=x) 最大的那一类。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;strong&gt;计算&lt;/strong&gt;：1 - E(\max_j Pr(Y=j|X))。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;计算&lt;/strong&gt;：&lt;/p&gt;
+$$1 - E(\max_j Pr(Y=j|X))$$&lt;p&gt;。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;意思是：1 减去我们在每个点上做出最佳选择时的平均概率。&lt;/li&gt;
 &lt;/ul&gt;

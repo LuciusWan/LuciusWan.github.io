@@ -598,7 +598,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 49 分钟
+                    阅读时长: 50 分钟
                 </time>
             </div>
         
@@ -3171,6 +3171,19 @@ CPU 把数据从 <strong>Socket 的接收缓冲区（内核内存）</strong> �
 <p><strong>铁律：</strong> 用完必须 <code>remove()</code>。</p>
 </li>
 </ol>
+<p><img src="/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/%E5%9C%BA%E6%99%AF2.0/ScreenShot_2025-11-27_155633_958.png"
+	width="786"
+	height="506"
+	srcset="/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/%E5%9C%BA%E6%99%AF2.0/ScreenShot_2025-11-27_155633_958_hu_81579d8173d4edab.png 480w, /p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/%E5%9C%BA%E6%99%AF2.0/ScreenShot_2025-11-27_155633_958_hu_79fdf78b3b089631.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="155"
+		data-flex-basis="372px"
+	
+></p>
+<p>如果不主动区remove()，那么这个threadLocal内部的key-value就会在下一次调用这个线程的时候访问到，产生内存泄漏。</p>
 
 </section>
 

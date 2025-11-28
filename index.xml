@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>LuciusWan</copyright>
-        <lastBuildDate>Thu, 27 Nov 2025 21:58:42 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 28 Nov 2025 10:18:09 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Redis学习与实战</title>
         <link>https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/</link>
         <pubDate>Sun, 16 Mar 2025 20:30:40 +0800</pubDate>
@@ -3452,6 +3452,919 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 	
 &gt;&lt;/p&gt;
 &lt;p&gt;查询的时候是按照距离来搜的,并且附带距离&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>实习经历话术</title>
+        <link>https://LuciusWan.github.io/p/%E5%AE%9E%E4%B9%A0%E7%BB%8F%E5%8E%86%E8%AF%9D%E6%9C%AF/</link>
+        <pubDate>Fri, 28 Nov 2025 10:18:09 +0800</pubDate>
+        
+        <guid>https://LuciusWan.github.io/p/%E5%AE%9E%E4%B9%A0%E7%BB%8F%E5%8E%86%E8%AF%9D%E6%9C%AF/</guid>
+        <description>&lt;h1 id=&#34;智识神工实习经历---面试话术指南&#34;&gt;智识神工实习经历 - 面试话术指南
+&lt;/h1&gt;&lt;h2 id=&#34;一实习整体介绍30秒版本&#34;&gt;一、实习整体介绍（30秒版本）
+&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;我在智识神工实习期间，负责&lt;strong&gt;心理医生知识库&lt;/strong&gt;项目的后端开发。这是一个 AI 驱动的心理健康服务平台，核心功能是让用户可以和 AI 进行心理咨询对话。&lt;/p&gt;
+&lt;p&gt;我主要做了几件事：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;AI 大模型集成&lt;/strong&gt;：用 Spring AI 封装了通义、Ollama 等多个大模型的统一调用接口&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RAG 混合检索&lt;/strong&gt;：基于 ElasticSearch 实现了语义+关键词的混合检索，召回率提升 40%&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;对话历史优化&lt;/strong&gt;：用时间游标分页解决了深分页性能问题，百万级数据查询从 2.1 秒降到 0.7 秒&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;接口限流&lt;/strong&gt;：用 Redisson + AOP 实现了令牌桶限流，保护 AI 接口&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这段实习让我对 &lt;strong&gt;RAG 系统&lt;/strong&gt;、&lt;strong&gt;大模型应用开发&lt;/strong&gt;、&lt;strong&gt;性能优化&lt;/strong&gt; 有了深入的实践经验。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;二八股文融合速查表&#34;&gt;二、八股文融合速查表
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;八股知识点&lt;/th&gt;
+          &lt;th&gt;项目中的应用场景&lt;/th&gt;
+          &lt;th&gt;引出话术&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;ElasticSearch 原理&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;RAG 混合检索&lt;/td&gt;
+          &lt;td&gt;&amp;ldquo;ES 的倒排索引原理是&amp;hellip;&amp;rdquo;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;向量检索&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;语义匹配&lt;/td&gt;
+          &lt;td&gt;&amp;ldquo;向量相似度计算用的是余弦相似度&amp;hellip;&amp;rdquo;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;MySQL 深分页&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;对话历史查询&lt;/td&gt;
+          &lt;td&gt;&amp;ldquo;深分页问题的本质是&amp;hellip;&amp;rdquo;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;游标分页&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;时间游标优化&lt;/td&gt;
+          &lt;td&gt;&amp;ldquo;游标分页避免了 OFFSET 的问题&amp;hellip;&amp;rdquo;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;复合索引&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;查询优化&lt;/td&gt;
+          &lt;td&gt;&amp;ldquo;我建了联合索引&amp;hellip;&amp;rdquo;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;令牌桶算法&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;接口限流&lt;/td&gt;
+          &lt;td&gt;&amp;ldquo;令牌桶和漏桶的区别是&amp;hellip;&amp;rdquo;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;AOP 原理&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;限流注解&lt;/td&gt;
+          &lt;td&gt;&amp;ldquo;我用 AOP 实现了声明式限流&amp;hellip;&amp;rdquo;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;Redis 分布式&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;Redisson 限流&lt;/td&gt;
+          &lt;td&gt;&amp;ldquo;Redisson 的 RRateLimiter 底层是&amp;hellip;&amp;rdquo;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;策略模式&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;多模型切换&lt;/td&gt;
+          &lt;td&gt;&amp;ldquo;我用策略模式封装了多个大模型&amp;hellip;&amp;rdquo;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;Rerank 机制&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;检索结果排序&lt;/td&gt;
+          &lt;td&gt;&amp;ldquo;Rerank 是二次排序，用交叉编码器&amp;hellip;&amp;rdquo;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;三核心亮点一ai-大模型集成&#34;&gt;三、核心亮点一：AI 大模型集成
+&lt;/h2&gt;&lt;h3 id=&#34;问题背景&#34;&gt;问题背景
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;我们的系统需要对接多个大模型：通义千问用于生产环境，Ollama 本地模型用于开发测试。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;问题是&lt;/strong&gt;：每个模型的 API 格式不一样，如果在业务代码里写一堆 if-else，代码会很乱，而且每次加新模型都要改业务代码。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;技术方案&#34;&gt;技术方案
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;我用 &lt;strong&gt;Spring AI + 策略模式&lt;/strong&gt; 解决：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;定义统一的 &lt;code&gt;AiModelService&lt;/code&gt; 接口&lt;/li&gt;
+&lt;li&gt;每个模型实现一个策略类&lt;/li&gt;
+&lt;li&gt;用 Spring 的 &lt;code&gt;Map&amp;lt;String, Interface&amp;gt;&lt;/code&gt; 注入自动收集所有实现&lt;/li&gt;
+&lt;li&gt;业务代码只调用统一接口，根据配置切换模型&amp;rdquo;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;-融合八股策略模式&#34;&gt;🎯 融合八股：策略模式
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;面试官追问&lt;/strong&gt;：为什么用策略模式？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;回答&lt;/strong&gt;：&amp;ldquo;策略模式的核心是&lt;strong&gt;把算法封装成独立的类，让它们可以互相替换&lt;/strong&gt;。好处是：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;开闭原则&lt;/strong&gt;：加新模型只需新增策略类，不改原有代码&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;消除 if-else&lt;/strong&gt;：不用写条件判断&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;易于测试&lt;/strong&gt;：每个策略可以独立单元测试&amp;rdquo;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;四核心亮点二rag-混合检索&#34;&gt;四、核心亮点二：RAG 混合检索
+&lt;/h2&gt;&lt;h3 id=&#34;问题背景-1&#34;&gt;问题背景
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;心理咨询场景有个特点：用户问题很口语化，比如&amp;rsquo;我最近心情不好&amp;rsquo;，但知识库里是专业术语&amp;rsquo;抑郁情绪&amp;rsquo;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;纯关键词检索&lt;/strong&gt;：词不一样，匹配不上 &lt;strong&gt;纯向量检索&lt;/strong&gt;：能匹配语义，但可能召回不相关内容&lt;/p&gt;
+&lt;p&gt;所以需要&lt;strong&gt;混合检索&lt;/strong&gt;，结合两者优点。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;技术方案-1&#34;&gt;技术方案
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;我设计了三阶段检索架构：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第一阶段：混合召回&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;关键词检索：ES 的 BM25 算法&lt;/li&gt;
+&lt;li&gt;向量检索：ES 的 kNN 搜索&lt;/li&gt;
+&lt;li&gt;两路结果合并去重&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;第二阶段：Rerank 精排&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用交叉编码器对召回结果重新打分&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;第三阶段：Top-K 截断&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;取 Top 5 拼接到 Prompt&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;效果数据&#34;&gt;效果数据
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;- &lt;strong&gt;召回率提升 40%&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;NDCG 提升 35%&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;响应时间 &amp;lt; 0.2 秒&lt;/strong&gt;&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;-融合八股es-倒排索引&#34;&gt;🎯 融合八股：ES 倒排索引
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;面试官追问&lt;/strong&gt;：ES 检索原理是什么？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;回答&lt;/strong&gt;：&amp;ldquo;ES 底层用 Lucene，核心是&lt;strong&gt;倒排索引&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;传统数据库是正排：文档 ID → 内容
+倒排索引反过来：词 → 包含这个词的文档列表&lt;/p&gt;
+&lt;p&gt;比如：&lt;code&gt;&#39;抑郁&#39; → [doc1, doc3, doc7]&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;搜索时取列表的交集或并集，就能快速找到相关文档。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;BM25&lt;/strong&gt; 在此基础上计算相关性分数，考虑词频、逆文档频率、文档长度。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;-融合八股向量检索&#34;&gt;🎯 融合八股：向量检索
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;面试官追问&lt;/strong&gt;：向量检索怎么实现？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;回答&lt;/strong&gt;：&amp;ldquo;核心是把文本转成向量，计算相似度。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Embedding&lt;/strong&gt;：用预训练模型把文本转成 1024 维向量 &lt;strong&gt;相似度&lt;/strong&gt;：余弦相似度 cos(A,B) = A·B / (|A|*|B|) &lt;strong&gt;ES kNN&lt;/strong&gt;：底层用 HNSW 算法，时间复杂度 O(log n)&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;-融合八股rerank-机制&#34;&gt;🎯 融合八股：Rerank 机制
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;面试官追问&lt;/strong&gt;：Rerank 和初次检索的区别？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;回答&lt;/strong&gt;：&amp;ldquo;初次检索用&lt;strong&gt;双塔模型&lt;/strong&gt;：Query 和 Document 分别编码，快但精度一般。&lt;/p&gt;
+&lt;p&gt;Rerank 用&lt;strong&gt;交叉编码器&lt;/strong&gt;：Query 和 Document 拼接输入，精度高但慢。&lt;/p&gt;
+&lt;p&gt;策略是：双塔快速召回 Top 100，交叉编码器精排出 Top 5。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;五核心亮点三对话历史查询优化&#34;&gt;五、核心亮点三：对话历史查询优化
+&lt;/h2&gt;&lt;h3 id=&#34;问题背景-2&#34;&gt;问题背景
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;用户的对话历史会越来越多，产品要求支持分页查看历史记录。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;问题&lt;/strong&gt;：传统的 &lt;code&gt;LIMIT offset, size&lt;/code&gt; 在深分页时性能很差。比如查第 10000 页，MySQL 要先扫描前 10000*20 条记录，再丢弃，非常慢。&lt;/p&gt;
+&lt;p&gt;测试数据：百万级数据，查第 5000 页，耗时 2.1 秒，完全不能接受。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;技术方案-2&#34;&gt;技术方案
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;我用&lt;strong&gt;时间游标分页&lt;/strong&gt;替代传统分页：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;传统分页&lt;/strong&gt;：&lt;code&gt;SELECT * FROM chat_history WHERE user_id = ? ORDER BY timestamp DESC LIMIT 100000, 20&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;游标分页&lt;/strong&gt;：&lt;code&gt;SELECT * FROM chat_history WHERE user_id = ? AND timestamp &amp;lt; ? ORDER BY timestamp DESC LIMIT 20&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;区别是：游标分页不用 OFFSET，直接从上一页最后一条记录的时间戳开始查，走索引，性能稳定。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;索引设计&#34;&gt;索引设计
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;我建了复合索引：&lt;code&gt;(user_id, timestamp, session_id)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;为什么这个顺序？&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;user_id&lt;/code&gt; 放最前面，因为每次查询都带这个条件&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;timestamp&lt;/code&gt; 放第二，用于游标定位和排序&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;session_id&lt;/code&gt; 放最后，用于覆盖索引，避免回表&amp;rdquo;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;效果数据-1&#34;&gt;效果数据
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;- 查询性能提升 &lt;strong&gt;3 倍&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;百万级数据响应时间从 &lt;strong&gt;2.1 秒降到 0.7 秒&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;无论查第几页，性能都稳定&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;-融合八股mysql-深分页问题&#34;&gt;🎯 融合八股：MySQL 深分页问题
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;面试官追问&lt;/strong&gt;：深分页为什么慢？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;回答&lt;/strong&gt;：&amp;ldquo;深分页的本质问题是 &lt;strong&gt;OFFSET 需要扫描并丢弃大量数据&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;LIMIT 100000, 20&lt;/code&gt; 的执行过程：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;从索引中找到符合条件的记录&lt;/li&gt;
+&lt;li&gt;扫描前 100020 条&lt;/li&gt;
+&lt;li&gt;丢弃前 100000 条&lt;/li&gt;
+&lt;li&gt;返回最后 20 条&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;OFFSET 越大，扫描的数据越多，性能越差。这是 MySQL 的机制决定的，无法优化。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;-融合八股游标分页原理&#34;&gt;🎯 融合八股：游标分页原理
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;面试官追问&lt;/strong&gt;：游标分页为什么快？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;回答&lt;/strong&gt;：&amp;ldquo;游标分页用 &lt;strong&gt;WHERE 条件替代 OFFSET&lt;/strong&gt;。比如上一页最后一条的时间戳是 &lt;code&gt;2024-01-01 12:00:00&lt;/code&gt;，下一页查询 &lt;code&gt;WHERE timestamp &amp;lt; &#39;2024-01-01 12:00:00&#39; LIMIT 20&lt;/code&gt;。这样 MySQL 直接从索引定位到这个时间点，往前取 20 条，不需要扫描前面的数据。&lt;strong&gt;时间复杂度&lt;/strong&gt;：传统分页 O(offset + limit)，游标分页 O(limit)。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;-融合八股复合索引最左前缀&#34;&gt;🎯 融合八股：复合索引最左前缀
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;面试官追问&lt;/strong&gt;：为什么索引顺序是 (user_id, timestamp, session_id)？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;回答&lt;/strong&gt;：&amp;ldquo;遵循&lt;strong&gt;最左前缀原则&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;这个索引可以支持：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;WHERE user_id = ?&lt;/code&gt; ✅&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;WHERE user_id = ? AND timestamp &amp;lt; ?&lt;/code&gt; ✅&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;WHERE user_id = ? AND timestamp &amp;lt; ? ORDER BY timestamp&lt;/code&gt; ✅&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;但不支持：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;WHERE timestamp &amp;lt; ?&lt;/code&gt; ❌（没有 user_id）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;WHERE session_id = ?&lt;/code&gt; ❌（跳过了前两列）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;我的查询条件是 &lt;code&gt;user_id = ? AND timestamp &amp;lt; ?&lt;/code&gt;，正好匹配索引前两列，可以走索引。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;六核心亮点四接口限流&#34;&gt;六、核心亮点四：接口限流
+&lt;/h2&gt;&lt;h3 id=&#34;问题背景-3&#34;&gt;问题背景
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;AI 接口调用大模型，成本很高（按 Token 计费），而且响应慢。如果不限流：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;恶意用户可能刷接口，造成巨额费用&lt;/li&gt;
+&lt;li&gt;大量请求可能打垮服务&amp;rdquo;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;技术方案-3&#34;&gt;技术方案
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;我用 &lt;strong&gt;Redisson RRateLimiter + Spring AOP&lt;/strong&gt; 实现了声明式限流，底层用 Redisson 的 RRateLimiter，基于 Redis 实现分布式限流。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nd&#34;&gt;@RateLimit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;key&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;ai:chat&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;limit&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;window&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;60&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 每分钟10次&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;public&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;chat&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;prompt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;aiService&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;chat&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;prompt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;-融合八股令牌桶-vs-漏桶&#34;&gt;🎯 融合八股：令牌桶 vs 漏桶
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;面试官追问&lt;/strong&gt;：令牌桶和漏桶有什么区别？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;回答&lt;/strong&gt;：&amp;ldquo;两者都是限流算法，但特性不同：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;漏桶&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;请求进入桶中，以固定速率流出&lt;/li&gt;
+&lt;li&gt;特点是&lt;strong&gt;平滑流量&lt;/strong&gt;，无论请求多快，处理速度恒定&lt;/li&gt;
+&lt;li&gt;缺点是无法应对突发流量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;令牌桶&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;以固定速率往桶里放令牌，请求需要拿到令牌才能执行&lt;/li&gt;
+&lt;li&gt;特点是&lt;strong&gt;允许突发&lt;/strong&gt;，桶里有令牌就能立即执行&lt;/li&gt;
+&lt;li&gt;可以设置桶的容量，控制突发上限&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;我选令牌桶是因为 AI 接口允许一定的突发，比如用户连续问几个问题。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;-融合八股redisson-分布式限流&#34;&gt;🎯 融合八股：Redisson 分布式限流
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;面试官追问&lt;/strong&gt;：为什么用 Redisson 而不是本地限流？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;回答&lt;/strong&gt;：&amp;ldquo;因为我们是分布式部署，多个实例。&lt;/p&gt;
+&lt;p&gt;本地限流（如 Guava RateLimiter）只能限制单个实例，3 个实例就是 3 倍的限流额度。&lt;/p&gt;
+&lt;p&gt;Redisson RRateLimiter 基于 Redis，所有实例共享同一个限流器，能实现全局限流。&lt;/p&gt;
+&lt;p&gt;底层原理是用 Redis 的 Lua 脚本实现令牌桶，保证原子性。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;-融合八股aop-实现原理&#34;&gt;🎯 融合八股：AOP 实现原理
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;面试官追问&lt;/strong&gt;：限流注解是怎么生效的？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;回答&lt;/strong&gt;：&amp;ldquo;通过 Spring AOP 实现。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;定义 &lt;code&gt;@RateLimit&lt;/code&gt; 注解&lt;/li&gt;
+&lt;li&gt;写一个切面类，用 &lt;code&gt;@Around&lt;/code&gt; 拦截带注解的方法&lt;/li&gt;
+&lt;li&gt;在切面里调用 Redisson 限流器&lt;/li&gt;
+&lt;li&gt;限流通过则执行原方法，否则抛异常&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Spring AOP 底层用动态代理：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如果目标类实现了接口，用 JDK 动态代理&lt;/li&gt;
+&lt;li&gt;否则用 CGLIB 生成子类&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;七核心亮点五可观测性建设&#34;&gt;七、核心亮点五：可观测性建设
+&lt;/h2&gt;&lt;h3 id=&#34;问题背景-4&#34;&gt;问题背景
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;AI 应用有个特点：大模型是黑盒，出了问题很难排查。比如用户反馈回答不好，我们需要知道：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;检索到了哪些文档？&lt;/li&gt;
+&lt;li&gt;Prompt 是什么？&lt;/li&gt;
+&lt;li&gt;大模型返回了什么？&lt;/li&gt;
+&lt;li&gt;Token 消耗了多少？&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;技术方案-4&#34;&gt;技术方案
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;我搭建了完整的可观测性体系：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;监控告警&lt;/strong&gt;：ARMS（阿里云应用监控）&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;接口响应时间、错误率&lt;/li&gt;
+&lt;li&gt;JVM 内存、GC 情况&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;自定义指标&lt;/strong&gt;：Prometheus + Grafana&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;大模型 Token 用量&lt;/li&gt;
+&lt;li&gt;检索召回率&lt;/li&gt;
+&lt;li&gt;限流触发次数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;日志追踪&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;每次请求记录完整的 RAG 链路&lt;/li&gt;
+&lt;li&gt;检索结果、Prompt、响应都落日志&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;-融合八股prometheus-指标类型&#34;&gt;🎯 融合八股：Prometheus 指标类型
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;面试官追问&lt;/strong&gt;：Prometheus 有哪些指标类型？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;回答&lt;/strong&gt;：&amp;ldquo;四种：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Counter&lt;/strong&gt;：只增不减的计数器，如请求总数&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Gauge&lt;/strong&gt;：可增可减的仪表盘，如当前连接数&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Histogram&lt;/strong&gt;：直方图，统计分布，如响应时间分布&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Summary&lt;/strong&gt;：摘要，计算分位数，如 P99 响应时间&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;我用 Counter 统计 Token 用量，用 Histogram 统计响应时间分布。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;八口语化面试话术完整版&#34;&gt;八、口语化面试话术（完整版）
+&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;公式&lt;/strong&gt;：业务背景 → 技术选型原因 → 核心难点实现 → 遇到的坑与解决 → 未来优化方向&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;话术一rag-混合检索系统&#34;&gt;【话术一】RAG 混合检索系统
+&lt;/h3&gt;&lt;h4 id=&#34;1-业务背景30秒&#34;&gt;1️⃣ 业务背景（30秒）
+&lt;/h4&gt;&lt;p&gt;&amp;ldquo;我们做的是一个心理咨询 AI，用户可以和 AI 聊天，AI 会根据专业知识库给出回答。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;核心问题是检索&lt;/strong&gt;：用户说&amp;rsquo;我最近心情不好睡不着&amp;rsquo;，但知识库里写的是&amp;rsquo;失眠症状&amp;rsquo;、&amp;lsquo;抑郁情绪&amp;rsquo;这种专业术语。&lt;/p&gt;
+&lt;p&gt;如果用传统的关键词搜索，根本搜不到，因为词不一样。但如果纯用向量语义搜索，又可能召回一些不太相关的内容。&lt;/p&gt;
+&lt;p&gt;所以我需要设计一个&lt;strong&gt;混合检索&lt;/strong&gt;方案，把关键词匹配和语义匹配结合起来。&amp;rdquo;&lt;/p&gt;
+&lt;h4 id=&#34;2-技术选型原因1分钟&#34;&gt;2️⃣ 技术选型原因（1分钟）
+&lt;/h4&gt;&lt;p&gt;&amp;ldquo;我调研了几种方案：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;方案一：纯 ES 关键词检索&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用 BM25 算法匹配关键词&lt;/li&gt;
+&lt;li&gt;问题是：用户口语化表达和专业术语对不上&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;方案二：纯向量检索&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用 Embedding 模型把文本转成向量，计算余弦相似度&lt;/li&gt;
+&lt;li&gt;问题是：可能召回语义相近但实际不相关的内容&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;方案三：混合检索 + Rerank&lt;/strong&gt;（我最终选的）&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;关键词和向量两路召回，合并结果&lt;/li&gt;
+&lt;li&gt;用 Rerank 模型二次排序，提高精度&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;选这个方案是因为它&lt;strong&gt;结合了两者的优点&lt;/strong&gt;：关键词保证精确匹配，向量保证语义理解，Rerank 保证排序质量。&amp;rdquo;&lt;/p&gt;
+&lt;h4 id=&#34;3-核心难点实现2分钟&#34;&gt;3️⃣ 核心难点实现（2分钟）
+&lt;/h4&gt;&lt;p&gt;&amp;ldquo;整个检索分三个阶段：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第一阶段：混合召回&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;我在 ES 里同时存了原文和向量。查询时并行执行两个搜索：&amp;rdquo;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 关键词检索 - BM25&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;List&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Doc&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;keywordResults&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;es&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;search&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;matchQuery&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;content&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;query&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;));&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 向量检索 - kNN&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;float&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;vector&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;embeddingModel&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;embed&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;query&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;List&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Doc&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;vectorResults&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;es&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;knnSearch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;embedding&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;vector&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;k&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 合并去重&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Set&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Doc&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;merged&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;LinkedHashSet&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;merged&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;addAll&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;keywordResults&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;merged&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;addAll&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;vectorResults&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&amp;ldquo;&lt;strong&gt;第二阶段：Rerank 精排&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;召回的结果可能有几十条，但给大模型的 context 不能太长。我用交叉编码器重新打分：&amp;rdquo;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// Rerank - 交叉编码器&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;List&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Doc&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reranked&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rerankModel&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;rerank&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;query&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;merged&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&amp;ldquo;交叉编码器和双塔模型的区别是：双塔模型分别编码 query 和 doc，交叉编码器把两者拼在一起编码，能捕捉更细粒度的交互，精度更高。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第三阶段：构建 Prompt&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;取 Top 5 的文档，拼接到 Prompt 里：&amp;rdquo;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;你是一个专业的心理咨询师。根据以下参考资料回答用户问题：
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;【参考资料】
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;1. {doc1}
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;2. {doc2}
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;...
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;【用户问题】
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;{query}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;4-遇到的坑与解决1分钟&#34;&gt;4️⃣ 遇到的坑与解决（1分钟）
+&lt;/h4&gt;&lt;p&gt;&amp;ldquo;&lt;strong&gt;坑一：向量维度不匹配&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;一开始用的 Embedding 模型输出 768 维，后来换了个模型输出 1024 维，ES 里的旧数据就查不了了。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;解决&lt;/strong&gt;：重新建索引，写了个迁移脚本，把旧数据重新 Embedding 一遍。以后换模型前先评估维度兼容性。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;坑二：Rerank 太慢&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;交叉编码器精度高但是慢，100 条文档 Rerank 要 500ms。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;解决&lt;/strong&gt;：控制召回数量，两路各召回 50 条，去重后大概 70-80 条，Rerank 时间控制在 200ms 以内。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;坑三：ES 向量检索版本问题&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;ES 7.x 的向量检索是插件形式，不太稳定。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;解决&lt;/strong&gt;：升级到 ES 8.x，原生支持 kNN 搜索，性能和稳定性都好很多。&amp;rdquo;&lt;/p&gt;
+&lt;h4 id=&#34;5-未来优化方向30秒&#34;&gt;5️⃣ 未来优化方向（30秒）
+&lt;/h4&gt;&lt;p&gt;&amp;ldquo;1. &lt;strong&gt;Query 改写&lt;/strong&gt;：用大模型把用户口语化的问题改写成专业术语，提高关键词召回率
+2. &lt;strong&gt;多路召回融合&lt;/strong&gt;：除了关键词和向量，还可以加知识图谱召回
+3. &lt;strong&gt;在线学习&lt;/strong&gt;：根据用户反馈调整 Rerank 模型的权重&amp;rdquo;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;话术二对话历史分页优化&#34;&gt;【话术二】对话历史分页优化
+&lt;/h3&gt;&lt;h4 id=&#34;1-业务背景30秒-1&#34;&gt;1️⃣ 业务背景（30秒）
+&lt;/h4&gt;&lt;p&gt;&amp;ldquo;用户和 AI 的对话历史需要持久化，产品要求支持分页查看历史记录。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;问题是&lt;/strong&gt;：用户聊得越多，数据越多。有的用户聊了几千条，用传统的 &lt;code&gt;LIMIT offset, size&lt;/code&gt; 分页，翻到后面特别慢。&lt;/p&gt;
+&lt;p&gt;我测了一下，百万级数据查第 5000 页，要 2.1 秒，用户体验完全不能接受。&amp;rdquo;&lt;/p&gt;
+&lt;h4 id=&#34;2-技术选型原因30秒&#34;&gt;2️⃣ 技术选型原因（30秒）
+&lt;/h4&gt;&lt;p&gt;&amp;ldquo;深分页慢的根本原因是 &lt;strong&gt;OFFSET 需要扫描并丢弃大量数据&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;LIMIT 100000, 20&lt;/code&gt; 实际上要扫描 100020 条，丢弃前 100000 条，只返回最后 20 条。&lt;/p&gt;
+&lt;p&gt;解决方案有两种：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;子查询优化&lt;/strong&gt;：先查出 ID，再根据 ID 查数据。能优化一些，但还是要扫描&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;游标分页&lt;/strong&gt;：用 WHERE 条件替代 OFFSET，彻底避免扫描&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;我选了游标分页，因为它&lt;strong&gt;无论查第几页，性能都是恒定的&lt;/strong&gt;。&amp;rdquo;&lt;/p&gt;
+&lt;h4 id=&#34;3-核心难点实现1分钟&#34;&gt;3️⃣ 核心难点实现（1分钟）
+&lt;/h4&gt;&lt;p&gt;&amp;ldquo;游标分页的核心思想是：&lt;strong&gt;记住上一页最后一条记录的位置，下一页从这个位置开始查&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;传统分页：&amp;rdquo;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;SELECT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;chat_history&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;WHERE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;user_id&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;123&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;ORDER&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;BY&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;timestamp&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;DESC&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;LIMIT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;100000&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;20&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&amp;ldquo;游标分页：&amp;rdquo;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;SELECT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;chat_history&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;WHERE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;user_id&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;123&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;AND&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;timestamp&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;2024-01-01 12:00:00&amp;#39;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;ORDER&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;BY&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;timestamp&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;DESC&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;LIMIT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;20&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&amp;ldquo;关键是要建好索引：&lt;code&gt;(user_id, timestamp, session_id)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;这个索引可以：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;通过 user_id 快速定位到这个用户的数据&lt;/li&gt;
+&lt;li&gt;通过 timestamp 快速定位到游标位置&lt;/li&gt;
+&lt;li&gt;session_id 作为覆盖索引，避免回表&amp;rdquo;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;4-遇到的坑与解决30秒&#34;&gt;4️⃣ 遇到的坑与解决（30秒）
+&lt;/h4&gt;&lt;p&gt;&amp;ldquo;&lt;strong&gt;坑：同一时间戳有多条记录&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;如果两条记录的 timestamp 完全相同，游标分页可能会漏数据或重复。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;解决&lt;/strong&gt;：游标改成 &lt;code&gt;(timestamp, id)&lt;/code&gt; 组合。先按 timestamp 排序，timestamp 相同时按 id 排序。查询条件改成：&amp;rdquo;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;WHERE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;timestamp&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;OR&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;timestamp&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;AND&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;?&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;5-未来优化方向30秒-1&#34;&gt;5️⃣ 未来优化方向（30秒）
+&lt;/h4&gt;&lt;p&gt;&amp;ldquo;1. &lt;strong&gt;缓存热点数据&lt;/strong&gt;：最近的对话记录访问频率高，可以缓存到 Redis
+2. &lt;strong&gt;冷热分离&lt;/strong&gt;：超过 30 天的历史数据迁移到归档表，减少主表数据量
+3. &lt;strong&gt;ES 检索&lt;/strong&gt;：如果要支持全文搜索历史记录，可以同步到 ES&amp;rdquo;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;话术三接口限流设计&#34;&gt;【话术三】接口限流设计
+&lt;/h3&gt;&lt;h4 id=&#34;1-业务背景30秒-2&#34;&gt;1️⃣ 业务背景（30秒）
+&lt;/h4&gt;&lt;p&gt;&amp;ldquo;AI 接口调用大模型，按 Token 计费，成本很高。而且大模型响应慢，如果不限流：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;恶意用户刷接口，一天能刷出几千块的账单&lt;/li&gt;
+&lt;li&gt;大量请求堆积，正常用户也用不了&amp;rdquo;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;2-技术选型原因30秒-1&#34;&gt;2️⃣ 技术选型原因（30秒）
+&lt;/h4&gt;&lt;p&gt;&amp;ldquo;限流算法有几种：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;固定窗口&lt;/strong&gt;：简单但有临界问题 &lt;strong&gt;滑动窗口&lt;/strong&gt;：平滑但内存占用大 &lt;strong&gt;漏桶&lt;/strong&gt;：平滑流量但不能应对突发 &lt;strong&gt;令牌桶&lt;/strong&gt;：允许突发，适合我的场景&lt;/p&gt;
+&lt;p&gt;我选&lt;strong&gt;令牌桶&lt;/strong&gt;，因为用户可能连续问几个问题，需要允许一定的突发。&lt;/p&gt;
+&lt;p&gt;实现上用 &lt;strong&gt;Redisson RRateLimiter&lt;/strong&gt;，因为我们是分布式部署，需要全局限流。&amp;rdquo;&lt;/p&gt;
+&lt;h4 id=&#34;3-核心难点实现1分钟-1&#34;&gt;3️⃣ 核心难点实现（1分钟）
+&lt;/h4&gt;&lt;p&gt;&amp;ldquo;我用 AOP 实现了声明式限流：&amp;rdquo;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 自定义注解&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nd&#34;&gt;@Target&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ElementType&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;METHOD&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nd&#34;&gt;@Retention&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RetentionPolicy&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;RUNTIME&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;public&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nd&#34;&gt;@interface&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RateLimit&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;key&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;limit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 令牌数&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;window&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;     &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 时间窗口（秒）&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 切面&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nd&#34;&gt;@Around&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;@annotation(rateLimit)&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;public&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Object&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;around&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ProceedingJoinPoint&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;point&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RateLimit&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rateLimit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;key&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;buildKey&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rateLimit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 拼接用户ID&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RRateLimiter&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;limiter&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;redisson&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;getRateLimiter&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;key&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 初始化限流器（只执行一次）&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;limiter&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;trySetRate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RateType&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;OVERALL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rateLimit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;limit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(),&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;rateLimit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;window&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(),&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RateIntervalUnit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;SECONDS&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 尝试获取令牌&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;limiter&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;tryAcquire&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;throw&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;new&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RateLimitException&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;操作过于频繁&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;point&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;proceed&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&amp;ldquo;使用时只需要加注解：&amp;rdquo;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nd&#34;&gt;@RateLimit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;key&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;ai:chat&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;limit&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;window&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;60&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;public&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;chat&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;String&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;prompt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;...&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;4-遇到的坑与解决30秒-1&#34;&gt;4️⃣ 遇到的坑与解决（30秒）
+&lt;/h4&gt;&lt;p&gt;&amp;ldquo;&lt;strong&gt;坑：限流器初始化重复执行&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;trySetRate&lt;/code&gt; 每次请求都调用，虽然 Redisson 内部做了幂等，但还是有性能开销。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;解决&lt;/strong&gt;：用一个 Set 记录已初始化的 key，只有第一次才调用 &lt;code&gt;trySetRate&lt;/code&gt;。&amp;rdquo;&lt;/p&gt;
+&lt;h4 id=&#34;5-未来优化方向30秒-2&#34;&gt;5️⃣ 未来优化方向（30秒）
+&lt;/h4&gt;&lt;p&gt;&amp;ldquo;1. &lt;strong&gt;动态限流&lt;/strong&gt;：根据系统负载动态调整限流阈值
+2. &lt;strong&gt;分级限流&lt;/strong&gt;：VIP 用户限流阈值更高
+3. &lt;strong&gt;熔断降级&lt;/strong&gt;：大模型响应慢时自动降级，返回缓存的通用回答&amp;rdquo;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;九常见追问及回答&#34;&gt;九、常见追问及回答
+&lt;/h2&gt;&lt;h3 id=&#34;q1-为什么选择-elasticsearch-而不是专门的向量数据库&#34;&gt;Q1: 为什么选择 ElasticSearch 而不是专门的向量数据库？
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;我对比了几个方案：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;方案&lt;/th&gt;
+          &lt;th&gt;优点&lt;/th&gt;
+          &lt;th&gt;缺点&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;ES 8.x&lt;/td&gt;
+          &lt;td&gt;同时支持关键词和向量，运维成熟&lt;/td&gt;
+          &lt;td&gt;向量检索性能不如专业向量库&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;Milvus&lt;/td&gt;
+          &lt;td&gt;向量检索性能好&lt;/td&gt;
+          &lt;td&gt;不支持关键词检索，需要两套系统&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;Pinecone&lt;/td&gt;
+          &lt;td&gt;托管服务，省心&lt;/td&gt;
+          &lt;td&gt;成本高，数据出境问题&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;我选 ES 是因为：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;我需要混合检索，ES 一套系统搞定&lt;/li&gt;
+&lt;li&gt;公司已有 ES 集群，运维成本低&lt;/li&gt;
+&lt;li&gt;我的数据量不大（几十万条），ES 性能够用&amp;rdquo;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;q2-rerank-模型用的是什么&#34;&gt;Q2: Rerank 模型用的是什么？
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;我用的是 &lt;strong&gt;bge-reranker-base&lt;/strong&gt;，是智源开源的中文 Rerank 模型。&lt;/p&gt;
+&lt;p&gt;选它的原因：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;中文效果好，专门针对中文优化&lt;/li&gt;
+&lt;li&gt;模型不大，推理速度可以接受&lt;/li&gt;
+&lt;li&gt;开源免费，可以本地部署&amp;rdquo;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;q3-游标分页的缺点是什么&#34;&gt;Q3: 游标分页的缺点是什么？
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;游标分页有两个限制：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;不能跳页&lt;/strong&gt;：只能上一页、下一页，不能直接跳到第 100 页&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;需要稳定的排序字段&lt;/strong&gt;：如果数据会更新，排序可能变化&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;对于我的场景，对话历史是按时间顺序的，用户也不需要跳页，所以这两个限制可以接受。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;q4-限流被触发后怎么处理&#34;&gt;Q4: 限流被触发后怎么处理？
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;我做了几层处理：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;友好提示&lt;/strong&gt;：返回&amp;rsquo;操作过于频繁，请稍后重试&amp;rsquo;，不是冷冰冰的错误码&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;重试建议&lt;/strong&gt;：告诉用户多久后可以重试&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;监控告警&lt;/strong&gt;：限流触发次数超过阈值时告警，可能是有人在刷接口&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;日志记录&lt;/strong&gt;：记录被限流的用户 ID 和 IP，方便排查&amp;rdquo;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;q5-实习期间最大的收获是什么&#34;&gt;Q5: 实习期间最大的收获是什么？
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;最大的收获是学会了&lt;strong&gt;从 0 到 1 做一个完整的功能&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;以前在学校做项目，主要是实现功能。实习之后发现，功能只是一部分，还要考虑：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;性能：能不能扛住线上流量&lt;/li&gt;
+&lt;li&gt;成本：AI 接口调用费用怎么控制&lt;/li&gt;
+&lt;li&gt;可观测性：出了问题怎么排查&lt;/li&gt;
+&lt;li&gt;兼容性：新功能上线会不会影响老功能&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这些是在实际工作中才能学到的。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;十面试前-checklist&#34;&gt;十、面试前 Checklist
+&lt;/h2&gt;&lt;h3 id=&#34;必须能脱口而出的&#34;&gt;必须能脱口而出的
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 实习 30 秒介绍&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; RAG 混合检索的三阶段架构&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 深分页为什么慢，游标分页为什么快&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 令牌桶和漏桶的区别&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 为什么用 Redisson 而不是本地限流&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 召回率提升 40%、NDCG 提升 35% 这些数据&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;最好能说清楚的&#34;&gt;最好能说清楚的
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; ES 倒排索引原理&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; BM25 算法&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 向量检索和余弦相似度&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Rerank 交叉编码器 vs 双塔模型&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; MySQL 复合索引最左前缀原则&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; AOP 动态代理原理&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;加分项&#34;&gt;加分项
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 遇到的坑和解决方案&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 未来优化方向&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 技术选型的对比和权衡&lt;/li&gt;
+&lt;li&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 可观测性建设的思路&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;十一实习经历软性问题必问&#34;&gt;十一、实习经历软性问题（必问）
+&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;这部分问题考察的不是技术，而是你的&lt;strong&gt;工作态度、团队协作、抗压能力&lt;/strong&gt;。即使实际经历不多，也要准备好合理的回答。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;q1-实习期间加班多吗怎么看待加班&#34;&gt;Q1: 实习期间加班多吗？怎么看待加班？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;参考回答&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;实习期间加班不算特别多，但也有过几次。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;印象比较深的一次&lt;/strong&gt;是 RAG 检索功能要上线前，发现召回率不达标，我主动留下来和 mentor 一起排查问题。最后发现是 Embedding 模型的版本问题，换了模型后效果好了很多。那次大概加班到晚上 10 点多。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;我对加班的看法&lt;/strong&gt;是：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如果是因为项目紧急、技术攻关，我觉得是可以接受的，毕竟这也是学习和成长的机会&lt;/li&gt;
+&lt;li&gt;但如果是因为效率低或者流程问题导致的常态化加班，我觉得应该反思和优化&lt;/li&gt;
+&lt;li&gt;我会尽量在工作时间内高效完成任务，减少不必要的加班&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;q2-你的代码是怎么上线的经历过完整的上线流程吗&#34;&gt;Q2: 你的代码是怎么上线的？经历过完整的上线流程吗？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;参考回答&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;经历过，我们的上线流程大概是这样的：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1. 开发阶段&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在本地开发，用 Ollama 本地模型测试&lt;/li&gt;
+&lt;li&gt;写完后提交到 Git，发起 Merge Request&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;2. Code Review&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;mentor 会 review 我的代码，提出修改意见&lt;/li&gt;
+&lt;li&gt;我印象比较深的是，mentor 指出我的一个 SQL 没有走索引，让我加了复合索引&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;3. 测试环境&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;代码合并到 develop 分支后，自动部署到测试环境&lt;/li&gt;
+&lt;li&gt;测试同学会做功能测试，我也会自测&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;4. 预发布环境&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;测试通过后，部署到预发布环境&lt;/li&gt;
+&lt;li&gt;预发布环境连的是生产数据库的从库，可以验证真实数据&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;5. 生产发布&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;一般是晚上低峰期发布&lt;/li&gt;
+&lt;li&gt;我参与过一次发布，主要是在旁边看 mentor 操作，学习发布流程&lt;/li&gt;
+&lt;li&gt;发布后会观察监控，确认没有异常&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;我学到的是&lt;/strong&gt;：上线不只是把代码部署上去，还要考虑灰度发布、回滚方案、监控告警这些。&amp;rdquo;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;q3-和同事mentor-是怎么协作的&#34;&gt;Q3: 和同事/mentor 是怎么协作的？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;参考回答&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;我们团队大概 5-6 个人，我主要和 mentor 还有另一个后端同事协作比较多。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;日常协作方式&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;每天早上有个 15 分钟的站会，同步昨天做了什么、今天计划做什么、有没有阻塞&lt;/li&gt;
+&lt;li&gt;有问题会先在飞书群里问，复杂的问题会拉个小会讨论&lt;/li&gt;
+&lt;li&gt;代码通过 GitLab 的 Merge Request 协作，互相 review&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;印象比较深的一次协作&lt;/strong&gt;：
+做 RAG 混合检索的时候，需要和算法同学配合。他负责调 Rerank 模型，我负责工程实现。我们一起定义了接口格式，他把模型封装成 HTTP 服务，我这边调用。中间遇到过返回格式不一致的问题，我们一起 debug 解决的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;我学到的是&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;提前对齐接口和预期，能减少很多返工&lt;/li&gt;
+&lt;li&gt;遇到问题及时沟通，不要自己闷头搞&lt;/li&gt;
+&lt;li&gt;文档很重要，接口文档、设计文档都要写清楚&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;q4-遇到过和同事意见不一致的情况吗怎么处理的&#34;&gt;Q4: 遇到过和同事意见不一致的情况吗？怎么处理的？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;参考回答&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;有过一次。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;背景&lt;/strong&gt;是：我在做对话历史分页的时候，想用游标分页，但 mentor 一开始建议用传统的 LIMIT OFFSET，因为实现简单。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;我的处理方式&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;我没有直接反驳，而是先写了个测试，用百万级数据测了两种方案的性能&lt;/li&gt;
+&lt;li&gt;测试结果显示，深分页时传统方案要 2 秒多，游标分页只要 0.7 秒&lt;/li&gt;
+&lt;li&gt;我把测试结果和分析发给 mentor，说明游标分页虽然实现复杂一点，但性能好很多&lt;/li&gt;
+&lt;li&gt;mentor 看了数据后同意了我的方案，还夸我做事有理有据&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;我学到的是&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;意见不一致很正常，关键是用数据和事实说话&lt;/li&gt;
+&lt;li&gt;不要情绪化，要尊重对方的经验&lt;/li&gt;
+&lt;li&gt;最终目标是把事情做好，不是证明谁对谁错&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;q5-实习期间遇到过什么困难怎么解决的&#34;&gt;Q5: 实习期间遇到过什么困难？怎么解决的？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;参考回答&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;遇到过几个困难：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;技术上的困难&lt;/strong&gt;：
+刚开始做 RAG 的时候，对向量检索完全不懂，不知道 Embedding 是什么，kNN 是什么。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;我的解决方式&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;先看了几篇入门文章，了解基本概念&lt;/li&gt;
+&lt;li&gt;然后看 ES 官方文档，学习怎么用 ES 做向量检索&lt;/li&gt;
+&lt;li&gt;不懂的地方问 mentor，他给我推荐了几篇论文&lt;/li&gt;
+&lt;li&gt;最后自己写 demo 验证，边做边学&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;工作节奏上的困难&lt;/strong&gt;：
+刚开始不太适应，不知道怎么估时间，经常低估任务复杂度，导致 delay。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;我的解决方式&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;后来学会了把大任务拆成小任务，每个小任务单独估时间&lt;/li&gt;
+&lt;li&gt;估时间的时候会乘以 1.5 的系数，留一些 buffer&lt;/li&gt;
+&lt;li&gt;如果发现要 delay，提前和 mentor 沟通，而不是等到 deadline 才说&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;我学到的是&lt;/strong&gt;：遇到困难很正常，关键是主动学习、主动沟通，不要等着别人来帮你。&amp;rdquo;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;q6-mentor-对你的评价怎么样&#34;&gt;Q6: mentor 对你的评价怎么样？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;参考回答&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;mentor 对我的评价总体是正面的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;他肯定的地方&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;学习能力强，新技术上手快&lt;/li&gt;
+&lt;li&gt;做事有责任心，交给我的任务都能按时完成&lt;/li&gt;
+&lt;li&gt;代码质量不错，review 的时候问题比较少&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;他给我的建议&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;要更主动地沟通，有问题早点说，不要自己闷头搞&lt;/li&gt;
+&lt;li&gt;技术深度还要加强，不能只停留在会用的层面，要理解原理&lt;/li&gt;
+&lt;li&gt;可以多参与技术分享，锻炼表达能力&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;我的改进&lt;/strong&gt;：
+后来我确实更主动了，每周会主动找 mentor 聊一次，同步进度和问题。技术上也开始看源码、看论文，不只是看教程。&amp;rdquo;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;q7-为什么从上一家公司离职实习结束&#34;&gt;Q7: 为什么从上一家公司离职/实习结束？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;参考回答&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;主要是因为实习期到了，要回学校准备毕业的事情。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;这段实习我收获很大&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;技术上，学会了 RAG、大模型应用开发、性能优化&lt;/li&gt;
+&lt;li&gt;工作方式上，学会了怎么和团队协作、怎么做 code review、怎么上线&lt;/li&gt;
+&lt;li&gt;认知上，知道了企业级开发和学校项目的区别&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;如果有机会&lt;/strong&gt;，我还是很愿意继续在这个方向深耕的，所以现在在找相关的工作机会。&amp;rdquo;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;q8-实习期间有没有主动做过什么事情&#34;&gt;Q8: 实习期间有没有主动做过什么事情？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;参考回答&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;有的，我主动做了几件事：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1. 写了技术文档&lt;/strong&gt; RAG 检索模块做完后，我主动写了一份技术文档，包括架构设计、接口说明、部署方式。后来新来的实习生就是看我的文档上手的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2. 优化了一个慢查询&lt;/strong&gt; 有一次我在看监控的时候，发现有个接口响应时间很长，排查后发现是 SQL 没走索引。我主动提了优化方案，加了索引后响应时间从 2 秒降到了 200ms。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;3. 分享了一次技术&lt;/strong&gt; 实习快结束的时候，我在组内做了一次技术分享，讲的是游标分页的原理和实践。虽然有点紧张，但反馈还不错。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;我觉得&lt;/strong&gt;：主动做事不仅能学到更多，也能让 mentor 和团队看到你的价值。&amp;rdquo;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;q9-你觉得自己在实习中有什么不足&#34;&gt;Q9: 你觉得自己在实习中有什么不足？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;参考回答&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;有几个不足：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1. 技术深度不够&lt;/strong&gt; 很多技术只停留在会用的层面，比如 ES 我会用，但底层的 Lucene 原理不太清楚。后来我开始有意识地看源码和论文。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2. 沟通不够主动&lt;/strong&gt; 刚开始遇到问题会自己闷头搞很久，后来才学会及时问 mentor。现在我会设一个时间限制，比如一个问题卡了 2 小时还没解决，就去问人。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;3. 全局视角不够&lt;/strong&gt; 我主要关注自己负责的模块，对整个系统的架构了解不多。后来我会主动看其他模块的代码，了解上下游是怎么配合的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;我在持续改进&lt;/strong&gt;，比如现在会定期复盘，看看哪些地方可以做得更好。&amp;rdquo;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;q10-你对这份工作有什么期望&#34;&gt;Q10: 你对这份工作有什么期望？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;参考回答&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;我的期望主要有三点：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1. 技术成长&lt;/strong&gt; 希望能接触到有挑战的项目，比如高并发、大数据、AI 应用这些方向。我不怕难，怕的是没有成长。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2. 团队氛围&lt;/strong&gt; 希望团队氛围是开放的，大家可以互相学习、互相帮助。我在实习的时候很喜欢和 mentor 讨论技术问题，这种感觉很好。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;3. 业务价值&lt;/strong&gt; 希望做的事情是有价值的，能真正帮助到用户。我在实习的时候做的心理咨询 AI，虽然是 toB 的产品，但想到能帮助到有心理困扰的人，还是很有成就感的。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;总的来说&lt;/strong&gt;，我希望找一个能让我快速成长、做有价值的事情的平台。&amp;rdquo;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;十二软性问题回答技巧&#34;&gt;十二、软性问题回答技巧
+&lt;/h2&gt;&lt;h3 id=&#34;回答公式star-法则&#34;&gt;回答公式：STAR 法则
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;S（Situation）&lt;/strong&gt;：背景是什么&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;T（Task）&lt;/strong&gt;：你的任务是什么&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;A（Action）&lt;/strong&gt;：你采取了什么行动&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;R（Result）&lt;/strong&gt;：结果怎么样&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;几个原则&#34;&gt;几个原则
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;诚实但有技巧&lt;/strong&gt;：不用编造经历，但可以把普通经历讲得有亮点&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;具体比抽象好&lt;/strong&gt;：说&amp;quot;我优化了一个 SQL，响应时间从 2 秒降到 200ms&amp;quot;比&amp;quot;我做了性能优化&amp;quot;好&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;展示成长&lt;/strong&gt;：即使是不足，也要说你怎么改进的&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;正面积极&lt;/strong&gt;：不要抱怨前公司、前同事，即使有不好的经历也要正面表达&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;避免的雷区&#34;&gt;避免的雷区
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;❌ &amp;ldquo;我没怎么加班&amp;rdquo; → 显得不够投入&lt;/li&gt;
+&lt;li&gt;❌ &amp;ldquo;我就是按 mentor 说的做&amp;rdquo; → 显得没有主动性&lt;/li&gt;
+&lt;li&gt;❌ &amp;ldquo;前公司/mentor 不好&amp;rdquo; → 显得情商低&lt;/li&gt;
+&lt;li&gt;❌ &amp;ldquo;我没遇到什么困难&amp;rdquo; → 显得经历太浅&lt;/li&gt;
+&lt;li&gt;❌ &amp;ldquo;我什么都会&amp;rdquo; → 显得不够谦虚&lt;/li&gt;
+&lt;/ul&gt;
 </description>
         </item>
         <item>
@@ -9221,6 +10134,19 @@ CPU 把数据从 &lt;strong&gt;Socket 的接收缓冲区（内核内存）&lt;/s
 &lt;p&gt;&lt;strong&gt;铁律：&lt;/strong&gt; 用完必须 &lt;code&gt;remove()&lt;/code&gt;。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/%E5%9C%BA%E6%99%AF2.0/ScreenShot_2025-11-27_155633_958.png&#34;
+	width=&#34;786&#34;
+	height=&#34;506&#34;
+	srcset=&#34;https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/%E5%9C%BA%E6%99%AF2.0/ScreenShot_2025-11-27_155633_958_hu_81579d8173d4edab.png 480w, https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A1/%E5%9C%BA%E6%99%AF2.0/ScreenShot_2025-11-27_155633_958_hu_79fdf78b3b089631.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;155&#34;
+		data-flex-basis=&#34;372px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;如果不主动区remove()，那么这个threadLocal内部的key-value就会在下一次调用这个线程的时候访问到，产生内存泄漏。&lt;/p&gt;
 </description>
         </item>
         <item>

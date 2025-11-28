@@ -4375,30 +4375,30 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
         <guid>https://LuciusWan.github.io/p/%E9%AB%98%E7%BB%9F/</guid>
         <description>&lt;h1 id=&#34;高统简答题&#34;&gt;高统简答题
 &lt;/h1&gt;&lt;h3 id=&#34;1-什么情况下需要进行估计-f-&#34;&gt;1. 什么情况下需要进行估计 f ?
-&lt;/h3&gt;&lt;p&gt;在统计学习中，我们将输入 X 和输出 Y 的关系假设为 Y = f(X) + \epsilon。我们需要估计 f 通常出于以下两个主要目的：&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;在统计学习中，我们将输入 X 和输出 Y 的关系假设为 $Y = f(X) + \epsilon$。我们需要估计 f 通常出于以下两个主要目的：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;strong&gt;预测 (Prediction)&lt;/strong&gt;：当我们可以很容易获得输入 X，但很难获得输出 Y 时。我们希望通过 \hat{Y} = \hat{f}(X) 来预测结果，此时我们只关心预测的准确性，而不太关心 \hat{f} 的具体形式（它可以是一个黑盒）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;预测 (Prediction)&lt;/strong&gt;：当我们可以很容易获得输入 X，但很难获得输出 Y 时。我们希望通过$ \hat{Y} = \hat{f}(X)$ 来预测结果，此时我们只关心预测的准确性，而不太关心 $\hat{f}$ 的具体形式（它可以是一个黑盒）。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;推断 (Inference)&lt;/strong&gt;：当我们想理解 X 是如何影响 Y 时。我们需要确切知道 f 的形式，比如哪些特征最重要？它们与 Y 是正相关还是负相关？此时我们不能把 f 当作黑盒。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;2-y-作为预测其精确度依赖于哪些量&#34;&gt;2. Y 作为预测，其精确度依赖于哪些量？
-&lt;/h3&gt;&lt;p&gt;预测的精确度（通常用 E(Y - \hat{Y})^2 衡量）依赖于两部分误差：&lt;/p&gt;
+&lt;/h3&gt;&lt;p&gt;预测的精确度（通常用 $E(Y - \hat{Y})^2$ 衡量）依赖于两部分误差：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;strong&gt;可约误差 (Reducible Error)&lt;/strong&gt;：来自于 \hat{f} 对真实 f 的估计不完美。通过改进模型算法可以减少这部分误差。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;可约误差 (Reducible Error)&lt;/strong&gt;：来自于 $\hat{f}$ 对真实 f 的估计不完美。通过改进模型算法可以减少这部分误差。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;strong&gt;不可约误差 (Irreducible Error)&lt;/strong&gt;：来自于 \epsilon（误差项）。因为 Y 本身包含无法通过 X 解释的变异，即使我们完美估计了 f，这部分误差依然存在。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;不可约误差 (Irreducible Error)&lt;/strong&gt;：来自于 $\epsilon$（误差项）。因为 Y 本身包含无法通过 X 解释的变异，即使我们完美估计了 f，这部分误差依然存在。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;h3 id=&#34;3-如何区分推断和预测&#34;&gt;3. 如何区分推断和预测？
 &lt;/h3&gt;&lt;p&gt;这是 ISLR 的核心思想之一：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;strong&gt;预测&lt;/strong&gt;关注的是：给一个新的 X，&lt;strong&gt;\hat{Y} 能有多准？&lt;/strong&gt; 我们不在乎模型内部看起来是什么样（哪怕它是复杂的神经网络）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;预测&lt;/strong&gt;关注的是：给一个新的 $X$，&lt;strong&gt;$\hat{Y}$ 能有多准？&lt;/strong&gt; 我们不在乎模型内部看起来是什么样（哪怕它是复杂的神经网络）。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;推断&lt;/strong&gt;关注的是：&lt;strong&gt;X 和 Y 之间的关系是什么？&lt;/strong&gt; 我们需要模型具有&lt;strong&gt;可解释性 (Interpretability)&lt;/strong&gt;。通常，线性模型适合推断，而非线性模型（如 Boosting、SVM）适合预测。&lt;/p&gt;
@@ -4419,7 +4419,7 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 &lt;/ol&gt;
 &lt;h3 id=&#34;5-如何利用均方误差-mse-计算可约误差和不可约误差&#34;&gt;5. 如何利用均方误差 (MSE) 计算可约误差和不可约误差？
 &lt;/h3&gt;&lt;p&gt;数学期望形式的分解如下（这是第二章最重要的公式）：&lt;/p&gt;
-&lt;p&gt;E(Y - \hat{Y})^2 = [f(X) - \hat{f}(X)]^2 + Var(\epsilon)&lt;/p&gt;
+&lt;p&gt;$E(Y - \hat{Y})^2 = [f(X) - \hat{f}(X)]^2 + Var(\epsilon)$&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;$[f(X) - \hat{f}(X)]^2$&lt;/strong&gt;：这是&lt;strong&gt;可约误差&lt;/strong&gt;（即偏差和方差的组合）。&lt;/p&gt;
@@ -4468,7 +4468,7 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 &lt;p&gt;适用于只有少量数据有标签 (Y)，但有大量数据只有输入 (X) 而没有标签的情况。这介于监督学习和无监督学习之间。&lt;/p&gt;
 &lt;h3 id=&#34;8-模型的拟合效果如何评价针对回归类模型&#34;&gt;8. 模型的拟合效果如何评价（针对回归类模型）？
 &lt;/h3&gt;&lt;p&gt;最常用的指标是 均方误差 (MSE, Mean Squared Error)：&lt;/p&gt;
-&lt;p&gt;MSE = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{f}(x_i))^2&lt;/p&gt;
+&lt;p&gt;                                                    $MSE = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{f}(x_i))^2$&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;我们更关注&lt;strong&gt;测试 MSE (Test MSE)&lt;/strong&gt; 而非训练 MSE，因为我们希望模型在未见数据上表现良好。&lt;/li&gt;
 &lt;/ul&gt;
@@ -4516,7 +4516,7 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 &lt;/ul&gt;
 &lt;h3 id=&#34;11-分类模型最常用的估计精度的方法是什么&#34;&gt;11. 分类模型最常用的估计精度的方法是什么？
 &lt;/h3&gt;&lt;p&gt;错误率 (Error Rate) 或 误分类率 (Misclassification Rate)：&lt;/p&gt;
-&lt;p&gt;\frac{1}{n} \sum_{i=1}^{n} I(y_i \neq \hat{y}_i)&lt;/p&gt;
+&lt;p&gt;                                    $\frac{1}{n} \sum_{i=1}^{n} I(y_i \neq \hat{y}_i)$&lt;/p&gt;
 &lt;p&gt;即：分类错误的样本数占总样本数的比例。&lt;/p&gt;
 &lt;h3 id=&#34;12-贝叶斯错误率-bayes-error-rate-如何计算&#34;&gt;12. 贝叶斯错误率 (Bayes Error Rate) 如何计算？
 &lt;/h3&gt;&lt;p&gt;贝叶斯错误率是理论上&lt;strong&gt;最低的可能错误率&lt;/strong&gt;（类似于回归中的不可约误差）。&lt;/p&gt;
@@ -4543,7 +4543,7 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;分类决策&lt;/strong&gt;：这 K 个点中，哪个类别的占比最高（投票），就将 x_0 归为哪一类。&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;em&gt;(注：对于概率，Pr(Y=j|X=x_0) = \frac{1}{K} \sum_{i \in N_0} I(y_i = j))&lt;/em&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;(注：对于概率，$Pr(Y=j|X=x_0) = \frac{1}{K} \sum_{i \in N_0} I(y_i = j))$&lt;/em&gt;。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
@@ -4563,7 +4563,7 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 &lt;p&gt;这是一个易混淆点：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;strong&gt;总体均值 \hat{\mu} 的标准误&lt;/strong&gt;：SE(\hat{\mu}) = \frac{\sigma}{\sqrt{n}}。衡量的是样本均值估计总体的准确度。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;总体均值 \hat{\mu} 的标准误&lt;/strong&gt;：$SE(\hat{\mu}) = \frac{\sigma}{\sqrt{n}}$。衡量的是样本均值估计总体的准确度。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;残差标准误 (RSE, Residual Standard Error)&lt;/strong&gt;：RSE = \sqrt{\frac{RSS}{n-2}}。衡量的是模型预测值偏离真实数据点的平均距离（即 \epsilon 的标准差估计）。&lt;/p&gt;
@@ -4572,10 +4572,10 @@ SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());
 &lt;p&gt;&lt;strong&gt;3. 置信区间 (Confidence Interval) 如何计算？(95%, 99%)&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;p&gt;通式：\hat{\beta}&lt;em&gt;1 \pm t&lt;/em&gt;{\alpha/2, n-2} \times SE(\hat{\beta}_1)。&lt;/p&gt;
+&lt;p&gt;通式：$\hat{\beta}&lt;em&gt;1 \pm t&lt;/em&gt;{\alpha/2, n-2} \times SE(\hat{\beta}_1)$。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;&lt;strong&gt;95% 置信区间&lt;/strong&gt;：大约是 \hat{\beta}_1 \pm 2 \cdot SE(\hat{\beta}_1)。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;95% 置信区间&lt;/strong&gt;：大约是 $\hat{\beta}_1 \pm 2 \cdot SE(\hat{\beta}_1)$。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;这意味着：如果我们重复取样并计算区间，95% 的区间会包含真实的 \beta_1。&lt;/p&gt;

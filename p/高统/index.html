@@ -529,8 +529,7 @@
 <p><strong>策略</strong>：对于给定的 x，将样本分到 Pr(Y=j|X=x) 最大的那一类。</p>
 </li>
 <li>
-<p><strong>计算</strong>：</p>
-$$1 - E(\max_j Pr(Y=j|X))$$<p>。</p>
+<p><strong>计算</strong>：$1 - E(\max_j Pr(Y=j|X))$。</p>
 <ul>
 <li>意思是：1 减去我们在每个点上做出最佳选择时的平均概率。</li>
 </ul>
@@ -571,7 +570,7 @@ $$1 - E(\max_j Pr(Y=j|X))$$<p>。</p>
 <p><strong>总体均值 \hat{\mu} 的标准误</strong>：$SE(\hat{\mu}) = \frac{\sigma}{\sqrt{n}}$。衡量的是样本均值估计总体的准确度。</p>
 </li>
 <li>
-<p><strong>残差标准误 (RSE, Residual Standard Error)</strong>：RSE = \sqrt{\frac{RSS}{n-2}}。衡量的是模型预测值偏离真实数据点的平均距离（即 \epsilon 的标准差估计）。</p>
+<p><strong>残差标准误 (RSE, Residual Standard Error)</strong>：RSE = $\sqrt{\frac{RSS}{n-2}}$。衡量的是模型预测值偏离真实数据点的平均距离（即 \epsilon 的标准差估计）。</p>
 </li>
 </ul>
 <p><strong>3. 置信区间 (Confidence Interval) 如何计算？(95%, 99%)</strong></p>
@@ -588,7 +587,7 @@ $$1 - E(\max_j Pr(Y=j|X))$$<p>。</p>
 </ul>
 <p><strong>4. 如何判断预测变量和响应变量之间存在相关性？</strong></p>
 <ul>
-<li>看 <strong>p 值 (p-value)</strong>。如果 p &lt; 0.05（通常标准），则拒绝原假设 (H_0: \beta_1 = 0)，认为存在相关性。</li>
+<li>看 <strong>p 值 (p-value)</strong>。如果 p &lt; 0.05（通常标准），则拒绝原假设 ($H_0: \beta_1 = 0$)，认为存在相关性。</li>
 </ul>
 <ol start="5">
 <li>判断线性回归拟合质量的标准？</li>
@@ -599,7 +598,7 @@ $$1 - E(\max_j Pr(Y=j|X))$$<p>。</p>
 <p><strong>RSE (残差标准误)</strong>：越小越好。衡量绝对误差。</p>
 </li>
 <li>
-<p><strong>R^2 (决定系数)</strong>：越接近 1 越好。衡量模型解释了数据变异的百分比 (1 - RSS/TSS)。</p>
+<p><strong>$R^2$ (决定系数)</strong>：越接近 1 越好。衡量模型解释了数据变异的百分比 $(1 - RSS/TSS)$。</p>
 </li>
 </ol>
 <p><strong>6. 为什么有些变量在简单回归中显著，在多元回归中变得不显著？</strong></p>
@@ -691,10 +690,10 @@ $$1 - E(\max_j Pr(Y=j|X))$$<p>。</p>
 <p><strong>13. 如何去除可加性假设？什么是实验分层原则 (Hierarchy Principle)？</strong></p>
 <ul>
 <li>
-<p><strong>去除可加性</strong>：引入 <strong>交互项 (Interaction Term)</strong>，例如 X_1 \times X_2。这意味着 X_1 对 Y 的影响取决于 X_2 的取值。</p>
+<p><strong>去除可加性</strong>：引入 <strong>交互项 (Interaction Term)</strong>，例如 $X_1 \times X_2$。这意味着 X_1 对 Y 的影响取决于 X_2 的取值。</p>
 </li>
 <li>
-<p><strong>分层原则 (Hierarchy Principle)</strong>：如果模型中包含了交互项 X_1 \times X_2，那么<strong>必须同时也包含主效应 X_1 和 X_2</strong>，即使它们的主效应 p 值不显著。</p>
+<p><strong>分层原则 (Hierarchy Principle)</strong>：如果模型中包含了交互项$X_1 \times X_2$，那么<strong>必须同时也包含主效应 X_1 和 X_2</strong>，即使它们的主效应 p 值不显著。</p>
 </li>
 </ul>
 <p><strong>14. 如何去除线性假设？</strong></p>
@@ -742,11 +741,11 @@ $$1 - E(\max_j Pr(Y=j|X))$$<p>。</p>
 <ul>
 <li>
 <p>Logistic 函数（确保输出在 [0,1] 之间）：</p>
-<p>p(X) = \frac{e^{\beta_0 + \beta_1 X}}{1 + e^{\beta_0 + \beta_1 X}}</p>
+<p>$p(X) = \frac{e^{\beta_0 + \beta_1 X}}{1 + e^{\beta_0 + \beta_1 X}}$</p>
 </li>
 <li>
-<p>对数发生比 (Log-odds / Logit)：</p>
-<p>\log\left(\frac{p(X)}{1-p(X)}\right) = \beta_0 + \beta_1 X</p>
+<p>对数发生比 $(Log-odds / Logit)$：</p>
+<p>$\log\left(\frac{p(X)}{1-p(X)}\right) = \beta_0 + \beta_1 X$</p>
 </li>
 <li>
 <p><strong>含义</strong>：X 每增加一个单位，<strong>对数发生比</strong>增加 \beta_1。注意：p(X) 与 X 的关系是非线性的，所以不能简单说概率增加了 \beta_1。</p>
@@ -787,7 +786,7 @@ $$1 - E(\max_j Pr(Y=j|X))$$<p>。</p>
 <p>假设每一类观测值 f_k(x) 服从<strong>正态分布 (Gaussian)</strong>。</p>
 </li>
 <li>
-<p>假设所有类别的<strong>方差 (或协方差矩阵) 相等</strong> (\sigma_1^2 = \dots = \sigma_k^2 = \sigma^2)。</p>
+<p>假设所有类别的<strong>方差 (或协方差矩阵) 相等</strong> ($\sigma_1^2 = \dots = \sigma_k^2 = \sigma^2$)。</p>
 </li>
 <li>
 <p>利用贝叶斯公式计算后验概率 Pr(Y=k|X=x)。</p>
@@ -837,13 +836,13 @@ $$1 - E(\max_j Pr(Y=j|X))$$<p>。</p>
 <p>假设：Positive (P) 是我们要检测的关注类（如患病），Negative (N) 是正常类。</p>
 <ul>
 <li>
-<p><strong>灵敏度 (Sensitivity) / 召回率 (Recall)</strong>：\frac{TP}{TP + FN} (所有真病人中，抓出来多少？)</p>
+<p><strong>灵敏度 (Sensitivity) / 召回率 (Recall)</strong>：$\frac{TP}{TP + FN}$ (所有真病人中，抓出来多少？)</p>
 </li>
 <li>
-<p><strong>特异度 (Specificity)</strong>：\frac{TN}{TN + FP} (所有健康人中，排除了多少？)</p>
+<p><strong>特异度 (Specificity)</strong>：$\frac{TN}{TN + FP}$ (所有健康人中，排除了多少？)</p>
 </li>
 <li>
-<p><strong>精确度 (Precision)</strong>：\frac{TP}{TP + FP} (我预测为有病的人里，多少是真的有病？)</p>
+<p><strong>精确度 (Precision)</strong>：$\frac{TP}{TP + FP}$ (我预测为有病的人里，多少是真的有病？)</p>
 </li>
 </ul>
 <p><strong>10. 第一类错误和第二类错误的区分？</strong></p>
@@ -949,9 +948,10 @@ $$1 - E(\max_j Pr(Y=j|X))$$<p>。</p>
 </li>
 <li>
 <p>计算：</p>
-$$CV_{(n)} = \frac{1}{n} \sum_{i=1}^{n} MSE_i$$</li>
+<p>$CV_{(n)} = \frac{1}{n} \sum_{i=1}^{n} MSE_i$</p>
+</li>
 <li>
-<p><em>大师提示（图里提到的那个线性回归特例）</em>：在线性回归中，LOOCV 其实不需要训练 n 次，只要训练一次就可以算出来：CV_{(n)} = \frac{1}{n} \sum (\frac{y_i - \hat{y}_i}{1-h_i})^2，其中 h_i 是杠杆值。</p>
+<p><em>大师提示（图里提到的那个线性回归特例）</em>：在线性回归中，LOOCV 其实不需要训练 n 次，只要训练一次就可以算出来：$CV_{(n)} = \frac{1}{n} \sum (\frac{y_i - \hat{y}_i}{1-h_i})^2$，其中 h_i 是杠杆值。</p>
 </li>
 </ul>
 <p><strong>4. 留一交叉验证和验证集方法的比较？</strong></p>
@@ -1012,7 +1012,8 @@ $$CV_{(n)} = \frac{1}{n} \sum_{i=1}^{n} MSE_i$$</li>
 <ul>
 <li>
 <p>依然是 误分类率 (Error Rate)：</p>
-$$CV_k = \frac{1}{k} \sum_{i=1}^{k} Err_i$$<p>其中 Err_i 是第 i 折里的错误比例。</p>
+<p>$CV_k = \frac{1}{k} \sum_{i=1}^{k} Err_i$</p>
+<p>其中 Err_i 是第 i 折里的错误比例。</p>
 </li>
 </ul>
 <hr>
@@ -1053,7 +1054,7 @@ $$CV_k = \frac{1}{k} \sum_{i=1}^{k} Err_i$$<p>其中 Err_i 是第 i 折里的错
 <p><strong>影响</strong>：</p>
 <ul>
 <li>
-<p>当 n \gg p 时：OLS 表现良好，具有低方差和低偏差。</p>
+<p>当 $n \gg p$ 时：OLS 表现良好，具有低方差和低偏差。</p>
 </li>
 <li>
 <p>当 p 接近 n 时：OLS 容易过拟合，<strong>方差 (Variance) 剧增</strong>。</p>
@@ -1101,10 +1102,10 @@ $$CV_k = \frac{1}{k} \sum_{i=1}^{k} Err_i$$<p>其中 Err_i 是第 i 折里的错
 <p>拟合 M_0 (零模型)。</p>
 </li>
 <li>
-<p>对于 k=1, 2, \dots, p：拟合所有可能的 C_p^k 个模型，挑出 RSS 最小（或 R^2 最大）的那个作为 M_k。</p>
+<p>对于 $k=1, 2, \dots, p$：拟合所有可能的 C_p^k 个模型，挑出 RSS 最小（或 R^2 最大）的那个作为 M_k。</p>
 </li>
 <li>
-<p>最后在 M_0, \dots, M_p 中，利用交叉验证、AIC 或 BIC 选出唯一的最优模型。</p>
+<p>最后在 $M_0, \dots, M_p$ 中，利用交叉验证、AIC 或 BIC 选出唯一的最优模型。</p>
 </li>
 </ol>
 </li>
@@ -1154,7 +1155,7 @@ $$CV_k = \frac{1}{k} \sum_{i=1}^{k} Err_i$$<p>其中 Err_i 是第 i 折里的错
 <p><strong>8. 最优模型选择的方法有哪些？</strong></p>
 <ul>
 <li>
-<p>C_p, AIC, BIC（偏向选简单模型）, Adjusted R^2。</p>
+<p>$C_p, AIC, BIC$（偏向选简单模型）, Adjusted R^2。</p>
 </li>
 <li>
 <p><strong>一倍标准误准则 (One-Standard-Error Rule)</strong>：在交叉验证中，不一定选误差最小的点，而是选<strong>在最小误差的一个标准误范围内，模型最简单（变量最少）的那个点</strong>。</p>
@@ -1174,10 +1175,10 @@ $$CV_k = \frac{1}{k} \sum_{i=1}^{k} Err_i$$<p>其中 Err_i 是第 i 折里的错
 <p><strong>10. 为什么在使用岭回归之前需要对数据进行标准化处理？标准化公式？</strong></p>
 <ul>
 <li>
-<p><strong>原因</strong>：岭回归的惩罚项 \lambda \sum \beta_j^2 对变量的<strong>尺度 (Scale)</strong> 非常敏感。如果 X_1 是“米”，X_2 是“毫米”，X_1 的系数会很大，受到更多惩罚。标准化让所有变量处于公平的起跑线。</p>
+<p><strong>原因</strong>：岭回归的惩罚项$\lambda \sum \beta_j^2$ 对变量的<strong>尺度 (Scale)</strong> 非常敏感。如果 X_1 是“米”，X_2 是“毫米”，X_1 的系数会很大，受到更多惩罚。标准化让所有变量处于公平的起跑线。</p>
 </li>
 <li>
-<p><strong>公式</strong>：\tilde{x}<em>{ij} = \frac{x</em>{ij}}{\sqrt{\frac{1}{n} \sum (x_{ij} - \bar{x}_j)^2}} （即除以标准差，使其方差为1）。</p>
+<p><strong>公式</strong>：$\tilde{x}<em>{ij} = \frac{x</em>{ij}}{\sqrt{\frac{1}{n} \sum (x_{ij} - \bar{x}_j)^2}}$（即除以标准差，使其方差为1）。</p>
 </li>
 </ul>
 <p><strong>11. 为什么岭回归优化了最小二乘的结果？</strong></p>
@@ -1207,10 +1208,10 @@ $$CV_k = \frac{1}{k} \sum_{i=1}^{k} Err_i$$<p>其中 Err_i 是第 i 折里的错
 <p><strong>13. 为什么 Lasso 可以将系数估计完全缩为 0？(几何解释)</strong></p>
 <ul>
 <li>
-<p><strong>几何解释</strong>：Lasso 的约束区域是<strong>菱形</strong> (Diamond, | \beta_1 | + | \beta_2 | \leq s)，有尖角。RSS 的等高线很容易在<strong>尖角</strong>处（即坐标轴上）与约束区域相切。在坐标轴上意味着某个 \beta = 0。</p>
+<p><strong>几何解释</strong>：Lasso 的约束区域是<strong>菱形</strong>$(Diamond, | \beta_1 | + | \beta_2 | \leq s)$，有尖角。RSS 的等高线很容易在<strong>尖角</strong>处（即坐标轴上）与约束区域相切。在坐标轴上意味着某个 \beta = 0。</p>
 </li>
 <li>
-<p>Ridge 的约束区域是<strong>圆形</strong> (\beta_1^2 + \beta_2^2 \leq s)，没有尖角，切点几乎不可能刚好在坐标轴上。</p>
+<p>Ridge 的约束区域是<strong>圆形</strong> $(\beta_1^2 + \beta_2^2 \leq s)$，没有尖角，切点几乎不可能刚好在坐标轴上。</p>
 </li>
 </ul>
 <p><strong>14. 岭回归和 Lasso 回归的不同适用条件？</strong></p>
@@ -1334,7 +1335,7 @@ $$CV_k = \frac{1}{k} \sum_{i=1}^{k} Err_i$$<p>其中 Err_i 是第 i 折里的错
 <li>三次样条函数的基本形式是什么？</li>
 </ol>
 <p>使用截断幂基 (Truncated Power Basis) 表示：</p>
-<p>y_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2 + \beta_3 x_i^3 + \sum_{k=1}^K \beta_{k+3} h(x_i, \xi_k) + \epsilon_i</p>
+<p>$y_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2 + \beta_3 x_i^3 + \sum_{k=1}^K \beta_{k+3} h(x_i, \xi_k) + \epsilon_i$</p>
 <p>其中 h(x, \xi) 是截断函数：当 x &gt; \xi 时为 (x - \xi)^3，否则为 0。这一项确保了在节点 \xi_k 处的平滑连接。</p>
 <p><strong>5. 为什么使用自然样条 (Natural Spline)？</strong></p>
 <ul>
@@ -1386,7 +1387,7 @@ $$CV_k = \frac{1}{k} \sum_{i=1}^{k} Err_i$$<p>其中 Err_i 是第 i 折里的错
 <li>如何理解光滑样条中的惩罚项？</li>
 </ol>
 <p>目标函数：</p>
-<p>\sum_{i=1}^{n} (y_i - g(x_i))^2 + \lambda \int g&rsquo;&rsquo;(t)^2 dt</p>
+<p>$\sum_{i=1}^{n} (y_i - g(x_i))^2 + \lambda \int g&rsquo;&rsquo;(t)^2 dt$</p>
 <ul>
 <li>
 <p><strong>第一项</strong>：拟合程度（RSS）。使曲线靠近数据点。</p>
@@ -1483,11 +1484,12 @@ $$CV_k = \frac{1}{k} \sum_{i=1}^{k} Err_i$$<p>其中 Err_i 是第 i 折里的错
 <p><strong>原因</strong>：如果不剪枝，树会长得非常茂盛（每个叶子节点甚至只有一个样本），导致<strong>过拟合</strong>，模型极其复杂，方差极高。</p>
 </li>
 <li>
-<p><strong>方法</strong>：<strong>代价复杂性剪枝 (Cost Complexity Pruning)</strong>，也叫最弱连接剪枝 (Weakest Link Pruning)。</p>
+<p><strong>方法</strong>：<strong>代价复杂性剪枝 (Cost Complexity Pruning)</strong>，也叫最弱连接剪枝$(Weakest Link Pruning)$。</p>
 </li>
 <li>
 <p>原理：我们在最小化 RSS 的同时，对树的终端节点数量 |T| 进行惩罚。</p>
-$$\text{Minimize } \sum_{m=1}^{|T|} \sum_{i \in R_m} (y_i - \hat{y}_{R_m})^2 + \alpha |T|$$</li>
+<p>$\text{Minimize } \sum_{m=1}^{|T|} \sum_{i \in R_m} (y_i - \hat{y}_{R_m})^2 + \alpha |T|$</p>
+</li>
 </ul>
 <p><strong>3. 代价复杂度剪枝是如何实现的？相关的系数 \alpha 如何求解？</strong></p>
 <ul>
@@ -1586,7 +1588,7 @@ $$\text{Minimize } \sum_{m=1}^{|T|} \sum_{i \in R_m} (y_i - \hat{y}_{R_m})^2 + \
 <p><strong>过程</strong>：在构建树的每一步分裂时，<strong>只允许从随机抽取的 m 个预测变量中选择</strong>（而不是所有 p 个）。</p>
 </li>
 <li>
-<p>通常选择 m \approx \sqrt{p}。</p>
+<p>通常选择$m \approx \sqrt{p}$。</p>
 </li>
 <li>
 <p>这强制让树彼此长得不一样，从而进一步降低方差。</p>
@@ -1606,13 +1608,13 @@ $$\text{Minimize } \sum_{m=1}^{|T|} \sum_{i \in R_m} (y_i - \hat{y}_{R_m})^2 + \
 <p>先初始化 f(x) = 0, r_i = y_i。</p>
 </li>
 <li>
-<p>拟合一棵树 \hat{f}^1 到<strong>残差</strong> r 上（而不是 Y 上）。</p>
+<p>拟合一棵树 $\hat{f}^1$ 到<strong>残差</strong> r 上（而不是 Y 上）。</p>
 </li>
 <li>
-<p>更新模型：\hat{f} \leftarrow \hat{f} + \lambda \hat{f}^1。</p>
+<p>更新模型：$\hat{f} \leftarrow \hat{f} + \lambda \hat{f}^1。$</p>
 </li>
 <li>
-<p>更新残差：r \leftarrow r - \lambda \hat{f}^1。</p>
+<p>更新残差：$r \leftarrow r - \lambda \hat{f}^1。$</p>
 </li>
 <li>
 <p>重复 B 次。</p>

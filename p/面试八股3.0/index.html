@@ -1,0 +1,2775 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="面试八股3.0 介绍JVM堆的分代机制 Java 堆的分代机制 (Generational Collection) 是 JVM 垃圾回收（GC）性能优化的核心策略。\n其核心理论基础是 &ldquo;弱分代假说&rdquo; (Weak Generational Hypothesis)，即：\n">
+<title>面试八股3.0</title>
+
+<link rel='canonical' href='https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A13.0/'>
+
+<link rel="stylesheet" href="/scss/style.min.6a692fd055deae459f2a9767f57f3855ba80cafd5041317f24f7360f6ca47cdf.css"><meta property='og:title' content="面试八股3.0">
+<meta property='og:description' content="面试八股3.0 介绍JVM堆的分代机制 Java 堆的分代机制 (Generational Collection) 是 JVM 垃圾回收（GC）性能优化的核心策略。\n其核心理论基础是 &ldquo;弱分代假说&rdquo; (Weak Generational Hypothesis)，即：\n">
+<meta property='og:url' content='https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A13.0/'>
+<meta property='og:site_name' content='LuciusWan'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-12-02T13:40:39&#43;08:00'/><meta property='article:modified_time' content='2025-12-02T13:40:39&#43;08:00'/>
+<meta name="twitter:title" content="面试八股3.0">
+<meta name="twitter:description" content="面试八股3.0 介绍JVM堆的分代机制 Java 堆的分代机制 (Generational Collection) 是 JVM 垃圾回收（GC）性能优化的核心策略。\n其核心理论基础是 &ldquo;弱分代假说&rdquo; (Weak Generational Hypothesis)，即：\n">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_a00c4178710685fc.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🎇</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">LuciusWan</a></h1>
+            <h2 class="site-description">欢迎来到我的blog</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/440554295'
+                        target="_blank"
+                        title="Bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/LuciusWan'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#介绍jvm堆的分代机制">介绍JVM堆的分代机制</a>
+      <ol>
+        <li><a href="#一-堆内存的区域划分">一、 堆内存的区域划分</a>
+          <ol>
+            <li><a href="#1-新生代-young-generation">1. 新生代 (Young Generation)</a></li>
+            <li><a href="#2-老年代-old-generation">2. 老年代 (Old Generation)</a></li>
+          </ol>
+        </li>
+        <li><a href="#二-对象的生命周期流转-核心流程">二、 对象的生命周期流转 (核心流程)</a>
+          <ol>
+            <li><a href="#1-初始分配-allocation">1. 初始分配 (Allocation)</a></li>
+            <li><a href="#2-minor-gc-eden-满了">2. Minor GC (Eden 满了)</a></li>
+            <li><a href="#3-年龄增长-aging">3. 年龄增长 (Aging)</a></li>
+            <li><a href="#4-晋升老年代-promotion">4. 晋升老年代 (Promotion)</a></li>
+          </ol>
+        </li>
+        <li><a href="#三-为什么需要分代-作用">三、 为什么需要分代？ (作用)</a></li>
+        <li><a href="#四-常见参数总结-面试常考">四、 常见参数总结 (面试常考)</a></li>
+        <li><a href="#总结">总结</a></li>
+      </ol>
+    </li>
+    <li><a href="#介绍jvm-内存结构">介绍JVM 内存结构</a>
+      <ol>
+        <li><a href="#核心架构概览">核心架构概览</a></li>
+        <li><a href="#一-线程私有区域-thread-local">一、 线程私有区域 (Thread Local)</a>
+          <ol>
+            <li><a href="#1-程序计数器-pc-register">1. 程序计数器 (PC Register)</a></li>
+            <li><a href="#2-虚拟机栈-jvm-stack---最常说的栈">2. 虚拟机栈 (JVM Stack) - <em>最常说的&#34;栈&#34;</em></a></li>
+            <li><a href="#3-本地方法栈-native-method-stack">3. 本地方法栈 (Native Method Stack)</a></li>
+          </ol>
+        </li>
+        <li><a href="#二-线程共享区域-shared">二、 线程共享区域 (Shared)</a>
+          <ol>
+            <li><a href="#1-堆-heap">1. 堆 (Heap)</a></li>
+            <li><a href="#2-方法区-method-area">2. 方法区 (Method Area)</a></li>
+          </ol>
+        </li>
+        <li><a href="#三-堆外内存-直接内存-direct-memory">三、 堆外内存 (直接内存 Direct Memory)</a></li>
+        <li><a href="#四-总结对比表">四、 总结对比表</a></li>
+      </ol>
+    </li>
+    <li><a href="#介绍gc标记算法">介绍GC标记算法</a>
+      <ol>
+        <li><a href="#第一步判定对象死活怎么标记">第一步：判定对象死活（怎么标记？）</a>
+          <ol>
+            <li><a href="#1-引用计数法-reference-counting">1. 引用计数法 (Reference Counting)</a></li>
+            <li><a href="#2-可达性分析算法-reachability-analysis--java-的标准">2. 可达性分析算法 (Reachability Analysis) —— <strong>Java 的标准</strong></a></li>
+          </ol>
+        </li>
+        <li><a href="#第二步执行垃圾收集标记完怎么清理">第二步：执行垃圾收集（标记完怎么清理？）</a>
+          <ol>
+            <li><a href="#1-标记-清除算法-mark-sweep">1. 标记-清除算法 (Mark-Sweep)</a></li>
+            <li><a href="#2-标记-复制算法-mark-copy">2. 标记-复制算法 (Mark-Copy)</a></li>
+            <li><a href="#3-标记-整理算法-mark-compact">3. 标记-整理算法 (Mark-Compact)</a></li>
+          </ol>
+        </li>
+        <li><a href="#第三步进阶--三色标记法-tri-color-marking">第三步：进阶 —— 三色标记法 (Tri-color Marking)</a></li>
+        <li><a href="#总结对比表">总结对比表</a></li>
+      </ol>
+    </li>
+    <li><a href="#讲解常见的垃圾回收器">讲解常见的垃圾回收器</a>
+      <ol>
+        <li><a href="#cms-concurrent-mark-sweep--里程碑式产品">CMS (Concurrent Mark Sweep) —— <em>里程碑式产品</em></a></li>
+        <li><a href="#g1-garbage-first--jdk-9-之后的默认王者">G1 (Garbage First) —— <em>JDK 9 之后的默认王者</em></a></li>
+      </ol>
+    </li>
+    <li><a href="#介绍java的线程池">介绍Java的线程池</a>
+      <ol>
+        <li><a href="#一为什么要用线程池">一、为什么要用线程池？</a></li>
+        <li><a href="#二核心类threadpoolexecutor">二、核心类：ThreadPoolExecutor</a></li>
+        <li><a href="#三线程池的工作流程重要">三、线程池的工作流程（重要）</a></li>
+        <li><a href="#四四种常见的拒绝策略">四、四种常见的拒绝策略</a></li>
+        <li><a href="#五常见的线程池类型executors-工具类">五、常见的线程池类型（Executors 工具类）</a></li>
+        <li><a href="#六线程池参数配置建议">六、线程池参数配置建议</a></li>
+      </ol>
+    </li>
+    <li><a href="#为什么协程适合处理io密集型任务">为什么协程适合处理IO密集型任务</a>
+      <ol>
+        <li><a href="#一协程-vs-线程的核心差异">一、协程 vs 线程的核心差异</a>
+          <ol>
+            <li><a href="#1-极其轻量级的挂起和恢复">1. 极其轻量级的&quot;挂起&quot;和&quot;恢复&quot;</a></li>
+            <li><a href="#2-内存资源消耗极低">2. 内存资源消耗极低</a></li>
+            <li><a href="#3-极低的上下文切换成本">3. 极低的上下文切换成本</a></li>
+            <li><a href="#4-同步的代码异步的执行">4. &ldquo;同步的代码，异步的执行&rdquo;</a></li>
+          </ol>
+        </li>
+        <li><a href="#二通俗类比餐厅服务员">二、通俗类比：餐厅服务员</a></li>
+        <li><a href="#三协程到底做了什么">三、协程到底做了什么？</a></li>
+        <li><a href="#四什么时候用协程">四、什么时候用协程？</a></li>
+      </ol>
+    </li>
+    <li><a href="#io操作的数据搬运是由谁来做的">IO操作的数据搬运是由谁来做的</a>
+      <ol>
+        <li><a href="#第一阶段网卡---内核缓冲区">第一阶段：网卡 -&gt; 内核缓冲区</a></li>
+        <li><a href="#第二阶段内核缓冲区---用户缓冲区">第二阶段：内核缓冲区 -&gt; 用户缓冲区</a></li>
+        <li><a href="#总结谁在搬运">总结：谁在搬运？</a></li>
+        <li><a href="#延伸零拷贝zero-copy">延伸：零拷贝（Zero-Copy）</a></li>
+      </ol>
+    </li>
+    <li><a href="#redis-60-的-io-多线程">Redis 6.0+ 的 IO 多线程</a>
+      <ol>
+        <li><a href="#默认是否开启">默认是否开启？</a></li>
+        <li><a href="#如何开启">如何开启？</a></li>
+        <li><a href="#为什么默认不开启">为什么默认不开启？</a></li>
+        <li><a href="#重要提示核心逻辑依然是单线程">重要提示：核心逻辑依然是&quot;单线程&quot;</a></li>
+        <li><a href="#单线程-redis-会傻等吗">单线程 Redis 会傻等吗？</a></li>
+      </ol>
+    </li>
+    <li><a href="#mysql-主从同步模型">MySQL 主从同步模型</a>
+      <ol>
+        <li><a href="#新节点加入主节点直接传全量-binlog-吗">新节点加入，主节点直接传全量 Binlog 吗？</a></li>
+        <li><a href="#从节点--1-时是否由从节点来同步新的从节点">从节点 &gt; 1 时，是否由从节点来同步新的从节点？</a>
+          <ol>
+            <li><a href="#默认架构星型结构">默认架构（星型结构）</a></li>
+            <li><a href="#级联复制cascading-replication">级联复制（Cascading Replication）</a></li>
+          </ol>
+        </li>
+        <li><a href="#relay-log中继日志是什么">Relay Log（中继日志）是什么？</a></li>
+      </ol>
+    </li>
+    <li><a href="#select-for-update-什么时候解锁">SELECT FOR UPDATE 什么时候解锁</a>
+      <ol>
+        <li><a href="#锁的生命周期">锁的生命周期</a></li>
+        <li><a href="#为什么要设计成事务结束才释放">为什么要设计成&quot;事务结束才释放&quot;？</a></li>
+        <li><a href="#致命的生产事故模型千万小心">致命的生产事故模型（千万小心）</a></li>
+      </ol>
+    </li>
+    <li><a href="#mysql-的-mha-高可用架构">MySQL 的 MHA 高可用架构</a>
+      <ol>
+        <li><a href="#mha-是做什么的">MHA 是做什么的？</a></li>
+        <li><a href="#核心组件架构">核心组件架构</a></li>
+        <li><a href="#故障切换流程核心原理">故障切换流程（核心原理）</a></li>
+        <li><a href="#mha-的优缺点">MHA 的优缺点</a></li>
+      </ol>
+    </li>
+    <li><a href="#mysql-group-replication-mgr">MySQL Group Replication (MGR)</a>
+      <ol>
+        <li><a href="#核心特点为什么它比传统主从牛">核心特点：为什么它比传统主从牛？</a></li>
+        <li><a href="#两种运行模式">两种运行模式</a></li>
+        <li><a href="#mgr-的工作原理">MGR 的工作原理</a></li>
+        <li><a href="#mgr-的硬性限制">MGR 的硬性限制</a></li>
+        <li><a href="#mgr-vs-mha-对比">MGR vs MHA 对比</a></li>
+        <li><a href="#mysql-innodb-cluster">MySQL InnoDB Cluster</a></li>
+      </ol>
+    </li>
+    <li><a href="#redis-的中心化集群架构">Redis 的中心化集群架构</a>
+      <ol>
+        <li><a href="#redis-sentinel哨兵模式">Redis Sentinel（哨兵模式）</a>
+          <ol>
+            <li><a href="#架构拓扑">架构拓扑</a></li>
+            <li><a href="#核心功能">核心功能</a></li>
+            <li><a href="#故障切换流程">故障切换流程</a></li>
+            <li><a href="#优缺点">优缺点</a></li>
+          </ol>
+        </li>
+        <li><a href="#proxy-架构codis--twemproxy">Proxy 架构（Codis / Twemproxy）</a>
+          <ol>
+            <li><a href="#架构拓扑-1">架构拓扑</a></li>
+            <li><a href="#核心原理">核心原理</a></li>
+            <li><a href="#优缺点-1">优缺点</a></li>
+          </ol>
+        </li>
+        <li><a href="#对比redis-cluster-是去中心化">对比：Redis Cluster 是&quot;去中心化&quot;</a></li>
+      </ol>
+    </li>
+    <li><a href="#lsm-tree-是什么">LSM Tree 是什么</a>
+      <ol>
+        <li><a href="#为什么要发明-lsm-tree">为什么要发明 LSM Tree？</a></li>
+        <li><a href="#lsm-tree-的三大核心组件">LSM Tree 的三大核心组件</a>
+          <ol>
+            <li><a href="#1-memtable内存表">1. MemTable（内存表）</a></li>
+            <li><a href="#2-immutable-memtable不可变内存表">2. Immutable MemTable（不可变内存表）</a></li>
+            <li><a href="#3-sstable-sorted-string-table">3. SSTable (Sorted String Table)</a></li>
+            <li><a href="#4-wal-write-ahead-log">4. WAL (Write Ahead Log)</a></li>
+          </ol>
+        </li>
+        <li><a href="#工作流程详解">工作流程详解</a>
+          <ol>
+            <li><a href="#写入流程write--极快">写入流程（Write） —— 极快</a></li>
+            <li><a href="#读取流程read--稍慢">读取流程（Read） —— 稍慢</a></li>
+            <li><a href="#核心机制compaction合并压缩">核心机制：Compaction（合并/压缩）</a></li>
+          </ol>
+        </li>
+        <li><a href="#lsm-tree-vs-b-tree">LSM Tree vs B+ Tree</a></li>
+      </ol>
+    </li>
+    <li><a href="#mysql-buffer-pool-和-tidb-缓存对比">MySQL Buffer Pool 和 TiDB 缓存对比</a>
+      <ol>
+        <li><a href="#mysqlinnodb-buffer-pool">MySQL：InnoDB Buffer Pool</a>
+          <ol>
+            <li><a href="#在哪里">在哪里？</a></li>
+            <li><a href="#怎么运作的">怎么运作的？</a></li>
+            <li><a href="#怎么使用调优">怎么&quot;使用&quot;？（调优）</a></li>
+          </ol>
+        </li>
+        <li><a href="#tidb多层级缓存架构">TiDB：多层级缓存架构</a>
+          <ol>
+            <li><a href="#tikv-层存储层---核心数据缓存">TiKV 层（存储层 - 核心数据缓存）</a></li>
+            <li><a href="#tidb-层计算层---结果缓存">TiDB 层（计算层 - 结果缓存）</a></li>
+          </ol>
+        </li>
+        <li><a href="#核心对比总结">核心对比总结</a></li>
+      </ol>
+    </li>
+    <li><a href="#tidb-的读取速度会不会慢很多">TiDB 的读取速度会不会慢很多？</a>
+      <ol>
+        <li><a href="#为什么-lsm-tree-这种原本读取慢的结构在-tidb-里跑得飞快">为什么 LSM Tree 这种&quot;原本读取慢&quot;的结构，在 TiDB 里跑得飞快？</a>
+          <ol>
+            <li><a href="#1-布隆过滤器-bloom-filter--快速排除">1. 布隆过滤器 (Bloom Filter) —— 快速排除</a></li>
+            <li><a href="#2-block-cache--内存命中">2. Block Cache —— 内存命中</a></li>
+            <li><a href="#3-compaction-合并--保持层级扁平">3. Compaction (合并) —— 保持层级扁平</a></li>
+            <li><a href="#4-tikv-的杀手锏coprocessor-计算下推">4. TiKV 的杀手锏：Coprocessor (计算下推)</a></li>
+          </ol>
+        </li>
+        <li><a href="#性能对比实话实说">性能对比实话实说</a></li>
+        <li><a href="#结论">结论</a></li>
+      </ol>
+    </li>
+    <li><a href="#tidb-如何使用联合索引kv-结构如何模拟-b-树索引">TiDB 如何使用联合索引（KV 结构如何模拟 B+ 树索引）</a>
+      <ol>
+        <li><a href="#场景假设">场景假设</a></li>
+        <li><a href="#tidb-是怎么把它们变成-kv-的">TiDB 是怎么把它们变成 KV 的？</a>
+          <ol>
+            <li><a href="#存行数据-row">存&quot;行数据&quot; (Row)</a></li>
+            <li><a href="#存联合索引-index--重点">存&quot;联合索引&quot; (Index) —— 重点！</a></li>
+          </ol>
+        </li>
+        <li><a href="#联合索引如何生效查询过程">联合索引如何生效？（查询过程）</a>
+          <ol>
+            <li><a href="#场景-1最左前缀匹配">场景 1：最左前缀匹配</a></li>
+            <li><a href="#场景-2联合查询">场景 2：联合查询</a></li>
+            <li><a href="#场景-3索引失效跳过最左前缀">场景 3：索引失效（跳过最左前缀）</a></li>
+          </ol>
+        </li>
+        <li><a href="#总结-1">总结</a></li>
+      </ol>
+    </li>
+    <li><a href="#tidb-多个索引是否要多存几份表">TiDB 多个索引是否要多存几份表？</a>
+      <ol>
+        <li><a href="#并没有存整张表只存了路标">并没有存&quot;整张表&quot;，只存了&quot;路标&quot;</a>
+          <ol>
+            <li><a href="#第一份主键行数据-row-data--它是真身">第一份：主键/行数据 (Row Data) —— 它是真身</a></li>
+            <li><a href="#第二份联合索引-secondary-index--它是影子">第二份：联合索引 (Secondary Index) —— 它是影子</a></li>
+          </ol>
+        </li>
+        <li><a href="#回表back-to-table因为没存整表">回表（Back to Table）：因为没存整表</a></li>
+        <li><a href="#tidb-相比-mysql-的空间优势">TiDB 相比 MySQL 的&quot;空间&quot;优势</a></li>
+        <li><a href="#tidb-的索引查找是否需要遍历">TiDB 的索引查找是否需要遍历？</a>
+          <ol>
+            <li><a href="#宏观层面它是分区的region">宏观层面：它是分区的（Region）</a></li>
+            <li><a href="#微观层面文件内部是有目录的">微观层面：文件内部是有&quot;目录&quot;的</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#tomcat-拥有的是线程池还是连接池">Tomcat 拥有的是线程池还是连接池</a>
+      <ol>
+        <li><a href="#对外tomcat-作为-web-服务器">对外：Tomcat 作为 Web 服务器</a>
+          <ol>
+            <li><a href="#默认值关键知识点">默认值（关键知识点）</a></li>
+          </ol>
+        </li>
+        <li><a href="#对内tomcat-作为数据库连接池提供者">对内：Tomcat 作为数据库连接池提供者</a></li>
+        <li><a href="#图解-tomcat-处理流程-nio">图解 Tomcat 处理流程 (NIO)</a></li>
+        <li><a href="#常见误区纠正">常见误区纠正</a></li>
+      </ol>
+    </li>
+    <li><a href="#java-17-下-tomcat-的线程限制与虚拟线程">Java 17 下 Tomcat 的线程限制与虚拟线程</a>
+      <ol>
+        <li><a href="#java-17-能用到默认的-maxthreads-200-和-maxconnections-10000-吗">Java 17 能用到默认的 maxThreads: 200 和 maxConnections: 10000 吗？</a></li>
+        <li><a href="#java-17-在这里的尴尬地位">Java 17 在这里的&quot;尴尬&quot;地位</a></li>
+        <li><a href="#如何在-java-17-下调优">如何在 Java 17 下调优？</a></li>
+        <li><a href="#ai-生成场景2分钟长连接的特殊考量">AI 生成场景（2分钟长连接）的特殊考量</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A13.0/">面试八股3.0</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-12-02</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 39 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="面试八股30">面试八股3.0
+</h1><h2 id="介绍jvm堆的分代机制">介绍JVM堆的分代机制
+</h2><p>Java 堆的<strong>分代机制 (Generational Collection)</strong> 是 JVM 垃圾回收（GC）性能优化的核心策略。</p>
+<p>其核心理论基础是 <strong>&ldquo;弱分代假说&rdquo; (Weak Generational Hypothesis)</strong>，即：</p>
+<blockquote>
+<p><strong>绝大多数对象都是朝生夕死的（存活时间很短），而剩下的对象则往往能存活很久。</strong></p>
+</blockquote>
+<p>基于这个假设，JVM 将堆内存划分为<strong>新生代 (Young Generation)</strong> 和 <strong>老年代 (Old Generation)</strong>，针对不同区域的特点使用不同的垃圾回收算法，从而提高 GC 效率。</p>
+<hr>
+<h3 id="一-堆内存的区域划分">一、 堆内存的区域划分
+</h3><p>在经典的垃圾收集器（如 Serial, ParNew, CMS, Parallel Scavenge）中，堆内存主要分为两大部分：</p>
+<h4 id="1-新生代-young-generation">1. 新生代 (Young Generation)
+</h4><ul>
+<li>
+<p><strong>占比:</strong> 通常占堆内存的 1/3。</p>
+</li>
+<li>
+<p><strong>特点:</strong> 对象生命周期极短，频繁发生 GC。</p>
+</li>
+<li>
+<p><strong>内部结构:</strong> 进一步划分为三个区域（默认比例 <strong>8:1:1</strong>）：</p>
+<ul>
+<li>
+<p><strong>Eden 区 (80%):</strong> 对象最初分配的地方。</p>
+</li>
+<li>
+<p><strong>Survivor 0 区 (From, 10%):</strong> 上一次 GC 的幸存者。</p>
+</li>
+<li>
+<p><strong>Survivor 1 区 (To, 10%):</strong> 垃圾回收时的复制目标。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>GC 方式:</strong> <strong>Minor GC (Young GC)</strong>。使用<strong>复制算法</strong>（效率高，无碎片，但浪费 10% 空间）。</p>
+</li>
+</ul>
+<h4 id="2-老年代-old-generation">2. 老年代 (Old Generation)
+</h4><ul>
+<li>
+<p><strong>占比:</strong> 通常占堆内存的 2/3。</p>
+</li>
+<li>
+<p><strong>特点:</strong> 存放生命周期长的对象（如连接池、Spring Bean、缓存数据）。</p>
+</li>
+<li>
+<p><strong>GC 方式:</strong> <strong>Major GC</strong> 或 <strong>Full GC</strong>。使用<strong>标记-清除</strong>或<strong>标记-整理</strong>算法（速度比 Minor GC 慢 10 倍以上）。</p>
+</li>
+</ul>
+<p><em>(注：JDK 8 之后，永久代 PermGen 被移除，元空间 Metaspace 存储类信息，它使用的是本地内存，不属于堆。)</em></p>
+<hr>
+<h3 id="二-对象的生命周期流转-核心流程">二、 对象的生命周期流转 (核心流程)
+</h3><p>对象在分代机制中的流转过程通常如下：</p>
+<h4 id="1-初始分配-allocation">1. 初始分配 (Allocation)
+</h4><ul>
+<li>
+<p>绝大多数新对象在 <strong>Eden 区</strong> 分配。</p>
+</li>
+<li>
+<p><em>例外:</em> 如果对象非常大（超过 <code>-XX:PretenureSizeThreshold</code>），直接进入老年代，避免在 Survivor 区之间发生大量的内存复制。</p>
+</li>
+</ul>
+<h4 id="2-minor-gc-eden-满了">2. Minor GC (Eden 满了)
+</h4><ul>
+<li>
+<p>当 Eden 区满时，触发 <strong>Minor GC</strong>。</p>
+</li>
+<li>
+<p><strong>存活判断:</strong> JVM 检查 Eden 和正在使用的 Survivor (From) 区中的对象。</p>
+</li>
+<li>
+<p><strong>复制:</strong> 将存活的对象复制到空的 Survivor (To) 区。</p>
+</li>
+<li>
+<p><strong>清理:</strong> 清空 Eden 和 From 区。</p>
+</li>
+<li>
+<p><strong>交换:</strong> From 和 To 身份互换。</p>
+</li>
+</ul>
+<h4 id="3-年龄增长-aging">3. 年龄增长 (Aging)
+</h4><ul>
+<li>对象每经过一次 Minor GC 且存活下来，其年龄（Age）就 +1（记录在对象头中）。</li>
+</ul>
+<h4 id="4-晋升老年代-promotion">4. 晋升老年代 (Promotion)
+</h4><p>对象进入老年代通常有以下几种情况：</p>
+<ul>
+<li>
+<p><strong>长期存活:</strong> 年龄达到阈值（默认 <strong>15</strong>，可以通过 <code>-XX:MaxTenuringThreshold</code> 设置）。</p>
+</li>
+<li>
+<p><strong>大对象直接进入:</strong> 如前所述，超大数组或字符串。</p>
+</li>
+<li>
+<p><strong>动态年龄判断:</strong> 如果 Survivor 空间中，<strong>相同年龄所有对象的大小总和 &gt; Survivor 空间的一半</strong>，则年龄大于或等于该年龄的对象直接进入老年代，无需等到阈值。</p>
+</li>
+<li>
+<p><strong>空间担保失败:</strong> Minor GC 后，存活对象太多，Survivor 区放不下，借用老年代空间存储。</p>
+</li>
+</ul>
+<hr>
+<h3 id="三-为什么需要分代-作用">三、 为什么需要分代？ (作用)
+</h3><p>如果不分代，每次 GC 都必须扫描整个堆（几个 GB 甚至几十 GB），效率极低。</p>
+<ol>
+<li>
+<p><strong>提升效率:</strong></p>
+<ul>
+<li>
+<p><strong>新生代:</strong> 只有少量对象存活，使用<strong>复制算法</strong>，只需处理少量存活对象，速度极快。</p>
+</li>
+<li>
+<p><strong>老年代:</strong> 对象变动少，不需要频繁回收，减少了全堆扫描的次数。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>减少 STW (Stop-The-World):</strong></p>
+<ul>
+<li>
+<p>频繁发生的 Minor GC 耗时非常短，对用户体验影响小。</p>
+</li>
+<li>
+<p>耗时长的 Full GC 频率被尽可能降低。</p>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="四-常见参数总结-面试常考">四、 常见参数总结 (面试常考)
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>参数</strong></th>
+          <th><strong>含义</strong></th>
+          <th><strong>示例</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>-Xms</code> / <code>-Xmx</code></td>
+          <td>堆的初始大小 / 最大大小</td>
+          <td><code>-Xms2g -Xmx2g</code> (通常设为一样避免抖动)</td>
+      </tr>
+      <tr>
+          <td><code>-Xmn</code></td>
+          <td>新生代大小</td>
+          <td><code>-Xmn1g</code></td>
+      </tr>
+      <tr>
+          <td><code>-XX:NewRatio</code></td>
+          <td>老年代与新生代的比例</td>
+          <td><code>2</code> (表示 老年代:新生代 = 2:1)</td>
+      </tr>
+      <tr>
+          <td><code>-XX:SurvivorRatio</code></td>
+          <td>Eden 与 Survivor 的比例</td>
+          <td><code>8</code> (表示 Eden:S0:S1 = 8:1:1)</td>
+      </tr>
+      <tr>
+          <td><code>-XX:MaxTenuringThreshold</code></td>
+          <td>晋升老年代的年龄阈值</td>
+          <td><code>15</code></td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="总结">总结
+</h3><p>分代机制本质上是<strong>空间换时间</strong>和<strong>算法分治</strong>的思想。</p>
+<ul>
+<li>
+<p><strong>Eden/Survivor:</strong> 用空间（浪费 10%）换取极快的分配和回收速度（复制算法）。</p>
+</li>
+<li>
+<p><strong>Old:</strong> 用复杂的标记算法处理存活率高的对象。</p>
+</li>
+</ul>
+<h2 id="介绍jvm-内存结构">介绍JVM 内存结构
+</h2><h3 id="核心架构概览">核心架构概览
+</h3><p>JVM 在运行 Java 程序时，会把内存划分为以下 5 个主要区域：</p>
+<p><strong>1. 线程私有（Thread Local）</strong> -&gt; <em>随着线程创建而创建，线程结束而销毁。无需 GC。</em></p>
+<ul>
+<li>程序计数器 (Program Counter Register)</li>
+<li>虚拟机栈 (Java Virtual Machine Stack)</li>
+<li>本地方法栈 (Native Method Stack)</li>
+</ul>
+<p><strong>2. 线程共享（Shared）</strong> -&gt; <em>随虚拟机启动而创建。是 GC 的重点区域。</em></p>
+<ul>
+<li>堆 (Heap)</li>
+<li>方法区 (Method Area)</li>
+</ul>
+<hr>
+<h3 id="一-线程私有区域-thread-local">一、 线程私有区域 (Thread Local)
+</h3><p>这部分内存是&quot;私有&quot;的，线程之间互不干扰，所以<strong>不存在线程安全问题</strong>。</p>
+<h4 id="1-程序计数器-pc-register">1. 程序计数器 (PC Register)
+</h4><ul>
+<li>
+<p><strong>作用：</strong> 记录当前线程执行到哪一行字节码指令。</p>
+<ul>
+<li>如果执行的是 Java 方法，记录的是指令地址。</li>
+<li>如果执行的是 Native 方法，这里是 <code>Undefined</code>。</li>
+</ul>
+</li>
+<li>
+<p><strong>特点：</strong></p>
+<ul>
+<li>内存空间极小。</li>
+<li><strong>唯一一个在 JVM 规范中没有规定任何 <code>OutOfMemoryError</code> (OOM) 情况的区域</strong>。</li>
+<li>作用类似 CPU 的寄存器，用于线程切换后恢复执行位置。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-虚拟机栈-jvm-stack---最常说的栈">2. 虚拟机栈 (JVM Stack) - <em>最常说的&quot;栈&quot;</em>
+</h4><ul>
+<li>
+<p><strong>作用：</strong> 描述 Java 方法执行的内存模型。</p>
+</li>
+<li>
+<p><strong>栈帧 (Stack Frame)：</strong> 每个方法被执行的时候，都会创建一个&quot;栈帧&quot;压入栈中。栈帧包含：</p>
+<ul>
+<li><strong>局部变量表：</strong> 存方法参数和内部定义的局部变量（int, boolean, 对象引用等）。</li>
+<li><strong>操作数栈：</strong> 类似于计算器的草稿纸，用于计算过程中的数据暂存和交换。</li>
+<li><strong>动态链接：</strong> 指向方法区中该方法的引用。</li>
+<li><strong>方法返回地址：</strong> 方法正常或异常退出的位置。</li>
+</ul>
+</li>
+<li>
+<p><strong>异常：</strong></p>
+<ul>
+<li><code>StackOverflowError</code>：递归过深，栈帧太多，撑爆了栈深度。</li>
+<li><code>OutOfMemoryError</code>：如果栈可以动态扩展，但申请不到足够内存时抛出。</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-本地方法栈-native-method-stack">3. 本地方法栈 (Native Method Stack)
+</h4><ul>
+<li>
+<p><strong>作用：</strong> 与虚拟机栈类似，区别在于它是为 <strong>Native 方法</strong>（使用 C/C++ 编写的底层方法）服务的。</p>
+</li>
+<li>
+<p><em>注：在 HotSpot 虚拟机中，本地方法栈和虚拟机栈是合二为一的。</em></p>
+</li>
+</ul>
+<hr>
+<h3 id="二-线程共享区域-shared">二、 线程共享区域 (Shared)
+</h3><p>这部分是多线程共享的，需要考虑<strong>线程安全</strong>问题，也是<strong>垃圾回收 (GC)</strong> 的主战场。</p>
+<h4 id="1-堆-heap">1. 堆 (Heap)
+</h4><ul>
+<li>
+<p><strong>作用：</strong> JVM 内存中最大的一块。存放几乎所有的<strong>对象实例</strong>和<strong>数组</strong>。</p>
+</li>
+<li>
+<p><strong>细分：</strong> <strong>新生代 (Eden, S0, S1)</strong> 和 <strong>老年代</strong>。</p>
+</li>
+<li>
+<p><strong>TLAB (Thread Local Allocation Buffer)：</strong> 虽然堆是共享的，但为了提升对象分配效率，JVM 在 Eden 区为每个线程划分了一小块私有分配区（TLAB），避免多线程竞争锁。</p>
+</li>
+<li>
+<p><strong>异常：</strong> <code>OutOfMemoryError: Java heap space</code>（堆内存溢出）。</p>
+</li>
+</ul>
+<h4 id="2-方法区-method-area">2. 方法区 (Method Area)
+</h4><ul>
+<li>
+<p><strong>作用：</strong> 存储已被虚拟机加载的<strong>类信息 (Class)、常量、静态变量 (static)、即时编译器 (JIT) 编译后的代码缓存</strong>等。</p>
+</li>
+<li>
+<p><strong>演进 (面试重点)：</strong></p>
+<ul>
+<li><strong>JDK 1.7 及之前：</strong> 实现为 <strong>永久代 (PermGen)</strong>。它在 JVM 内存中，受限于 JVM 大小，容易出现 OOM。</li>
+<li><strong>JDK 1.8 及之后：</strong> 永久代被移除，取而代之的是 <strong>元空间 (Metaspace)</strong>。</li>
+<li><strong>区别：</strong> 元空间<strong>不在虚拟机内存中</strong>，而是使用<strong>本地内存 (Native Memory)</strong>。这意味着它只受限于机器的物理内存大小，大大降低了 OOM 的风险。</li>
+</ul>
+</li>
+<li>
+<p><strong>运行时常量池 (Runtime Constant Pool)：</strong> 是方法区的一部分。用于存放编译期生成的各种字面量和符号引用。</p>
+</li>
+</ul>
+<hr>
+<h3 id="三-堆外内存-直接内存-direct-memory">三、 堆外内存 (直接内存 Direct Memory)
+</h3><p>这不是 JVM 运行时数据区的一部分，但也非常重要。</p>
+<ul>
+<li>
+<p><strong>作用：</strong> NIO 类库引入了一种基于通道与缓冲区的 I/O 方式，可以使用 Native 函数库直接分配堆外内存。</p>
+</li>
+<li>
+<p><strong>优势：</strong> 避免了在 Java 堆和 Native 堆之间来回复制数据（零拷贝技术），显著提高 I/O 性能。</p>
+</li>
+<li>
+<p><strong>异常：</strong> 虽然不受堆大小限制，但受本机总内存限制，也会抛出 <code>OutOfMemoryError</code>。</p>
+</li>
+</ul>
+<hr>
+<h3 id="四-总结对比表">四、 总结对比表
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>区域</strong></th>
+          <th><strong>线程归属</strong></th>
+          <th><strong>存储内容</strong></th>
+          <th><strong>抛出异常</strong></th>
+          <th><strong>生命周期</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>程序计数器</strong></td>
+          <td>私有</td>
+          <td>指令地址</td>
+          <td><strong>无</strong></td>
+          <td>随线程</td>
+      </tr>
+      <tr>
+          <td><strong>虚拟机栈</strong></td>
+          <td>私有</td>
+          <td>局部变量、操作数栈</td>
+          <td>StackOverflow / OOM</td>
+          <td>随线程</td>
+      </tr>
+      <tr>
+          <td><strong>本地方法栈</strong></td>
+          <td>私有</td>
+          <td>Native 方法信息</td>
+          <td>StackOverflow / OOM</td>
+          <td>随线程</td>
+      </tr>
+      <tr>
+          <td><strong>堆</strong></td>
+          <td><strong>共享</strong></td>
+          <td>对象实例、数组</td>
+          <td>OOM</td>
+          <td>随进程 (JVM)</td>
+      </tr>
+      <tr>
+          <td><strong>方法区</strong></td>
+          <td><strong>共享</strong></td>
+          <td>类信息、常量、静态变量</td>
+          <td>OOM (Metaspace OOM)</td>
+          <td>随进程 (JVM)</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="介绍gc标记算法">介绍GC标记算法
+</h2><p>在垃圾回收（GC）的世界里，&ldquo;标记&quot;其实包含两个层面的含义：</p>
+<ol>
+<li><strong>判定标准：</strong> 怎么知道哪个对象是垃圾？（<strong>死活判定</strong>）</li>
+<li><strong>执行手段：</strong> 找出垃圾后，用什么算法去清理？（<strong>垃圾收集算法</strong>）</li>
+</ol>
+<hr>
+<h3 id="第一步判定对象死活怎么标记">第一步：判定对象死活（怎么标记？）
+</h3><p>在 Java (HotSpot) 中，主要使用的是 <strong>可达性分析算法</strong>，而不是引用计数法。</p>
+<h4 id="1-引用计数法-reference-counting">1. 引用计数法 (Reference Counting)
+</h4><ul>
+<li>
+<p><strong>原理：</strong> 给对象添加一个引用计数器。每当有一个地方引用它，计数器 +1；引用失效，计数器 -1。为 0 则可回收。</p>
+</li>
+<li>
+<p><strong>优点：</strong> 简单，判定效率高。</p>
+</li>
+<li>
+<p><strong>缺点 (致命)：</strong> <strong>无法解决&quot;循环引用&quot;问题</strong>。</p>
+<ul>
+<li><em>例子：</em> 对象 A 引用 B，对象 B 引用 A，除此之外没人引用它们。它们的计数器都是 1，永远无法归零，导致内存泄漏。</li>
+</ul>
+</li>
+<li>
+<p><strong>现状：</strong> <strong>Java 虚拟机（HotSpot）不使用此算法</strong>（Python 和 C++ 智能指针在使用）。</p>
+</li>
+</ul>
+<h4 id="2-可达性分析算法-reachability-analysis--java-的标准">2. 可达性分析算法 (Reachability Analysis) —— <strong>Java 的标准</strong>
+</h4><ul>
+<li>
+<p><strong>原理：</strong> 通过一系列称为 <strong>&ldquo;GC Roots&rdquo;</strong> 的根对象作为起始节点集，从这些节点开始向下搜索。</p>
+<ul>
+<li>凡是能从 GC Roots <strong>&ldquo;顺藤摸瓜&rdquo;</strong> 搜索到的对象，都是<strong>存活</strong>的（标记为&quot;可达&rdquo;）。</li>
+<li>凡是搜索不到的对象，就是<strong>垃圾</strong>（不可达）。</li>
+</ul>
+</li>
+<li>
+<p><strong>什么是 GC Roots？ (面试必考)</strong></p>
+<p>可以作为 GC Roots 的对象主要包括以下 4 类：</p>
+<ol>
+<li><strong>虚拟机栈（栈帧中的局部变量表）</strong> 中引用的对象。</li>
+<li><strong>方法区中类静态属性</strong> 引用的对象。（<code>static User u = ...</code>）</li>
+<li><strong>方法区中常量</strong> 引用的对象。（<code>static final User u = ...</code>）</li>
+<li><strong>本地方法栈中 JNI (Native 方法)</strong> 引用的对象。</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h3 id="第二步执行垃圾收集标记完怎么清理">第二步：执行垃圾收集（标记完怎么清理？）
+</h3><p>当 GC 通过可达性分析标记出了哪些是活的、哪些是死的之后，就需要具体的算法来进行内存回收。常见的有以下三种：</p>
+<h4 id="1-标记-清除算法-mark-sweep">1. 标记-清除算法 (Mark-Sweep)
+</h4><p>这是最基础的算法。</p>
+<ul>
+<li>
+<p><strong>过程：</strong></p>
+<ol>
+<li><strong>标记：</strong> 把所有活动对象标记出来。</li>
+<li><strong>清除：</strong> 统一回收未被标记的对象。</li>
+</ol>
+</li>
+<li>
+<p><strong>优点：</strong> 简单，不需要移动对象。</p>
+</li>
+<li>
+<p><strong>缺点：</strong> <strong>内存碎片化：</strong> 清除后会产生大量不连续的内存碎片。</p>
+</li>
+<li>
+<p><strong>适用场景：</strong> 老年代（CMS 收集器就是基于此）。</p>
+</li>
+</ul>
+<h4 id="2-标记-复制算法-mark-copy">2. 标记-复制算法 (Mark-Copy)
+</h4><p>为了解决碎片问题而生。</p>
+<ul>
+<li>
+<p><strong>过程：</strong></p>
+<ol>
+<li>将内存分为大小相等的两块（A 和 B），每次只使用其中一块。</li>
+<li><strong>标记</strong> A 中的存活对象。</li>
+<li><strong>复制</strong> 将 A 中所有存活的对象，整齐地复制到 B 中。</li>
+<li><strong>清理</strong> 一次性清空 A。</li>
+</ol>
+</li>
+<li>
+<p><strong>优点：</strong> <strong>没有内存碎片</strong>，分配内存简单（指针碰撞）。</p>
+</li>
+<li>
+<p><strong>缺点：</strong> <strong>空间浪费</strong>（内存利用率只有 50%）。</p>
+</li>
+<li>
+<p><strong>优化：</strong> 在 HotSpot 的<strong>新生代</strong>中，使用 <code>Eden : Survivor : Survivor = 8 : 1 : 1</code> 的比例，只浪费 10% 的空间。</p>
+</li>
+<li>
+<p><strong>适用场景：</strong> 新生代（存活率低，复制成本低）。</p>
+</li>
+</ul>
+<h4 id="3-标记-整理算法-mark-compact">3. 标记-整理算法 (Mark-Compact)
+</h4><p>结合了前两者的优点。</p>
+<ul>
+<li>
+<p><strong>过程：</strong></p>
+<ol>
+<li><strong>标记</strong> 存活对象。</li>
+<li><strong>整理</strong> 让所有存活的对象向内存的一端移动（滑动整理）。</li>
+<li><strong>清理</strong> 直接清理掉边界以外的内存。</li>
+</ol>
+</li>
+<li>
+<p><strong>优点：</strong> 没有内存碎片，也不浪费空间。</p>
+</li>
+<li>
+<p><strong>缺点：</strong> 移动对象需要更新引用地址，成本较高，且需要暂停用户线程 (STW)。</p>
+</li>
+<li>
+<p><strong>适用场景：</strong> 老年代（对象存活率高，不适合复制）。</p>
+</li>
+</ul>
+<hr>
+<h3 id="第三步进阶--三色标记法-tri-color-marking">第三步：进阶 —— 三色标记法 (Tri-color Marking)
+</h3><p><em>如果面试官问及&quot;并发标记&quot;或者 CMS/G1 的底层原理，这个是必杀技。</em></p>
+<p>为了让 GC 线程和用户线程能<strong>并发运行</strong>，JVM 引入了三色标记法来描述标记过程中的状态：</p>
+<ul>
+<li><strong>白色：</strong> 尚未访问过。（如果在分析结束时仍为白色，代表是垃圾）</li>
+<li><strong>黑色：</strong> 自己和成员变量都已访问过。（肯定是活的对象，且扫描完毕）</li>
+<li><strong>灰色：</strong> 自己访问过，但成员变量还没访问完。（中间状态，待扫描）</li>
+</ul>
+<p><strong>并发标记的问题：</strong> 在并发过程中，用户线程可能会切断&quot;灰色&quot;到&quot;白色&quot;的引用，同时建立&quot;黑色&quot;到&quot;白色&quot;的引用。这会导致漏标。</p>
+<ul>
+<li><strong>解决方案：</strong>
+<ul>
+<li><strong>CMS</strong> 使用 <strong>增量更新 (Incremental Update)</strong>。</li>
+<li><strong>G1</strong> 使用 <strong>原始快照 (SATB)</strong>。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="总结对比表">总结对比表
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>算法</strong></th>
+          <th><strong>优点</strong></th>
+          <th><strong>缺点</strong></th>
+          <th><strong>适用区域</strong></th>
+          <th><strong>代表收集器</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>标记-清除</strong></td>
+          <td>简单</td>
+          <td>内存碎片严重</td>
+          <td>老年代</td>
+          <td>CMS</td>
+      </tr>
+      <tr>
+          <td><strong>标记-复制</strong></td>
+          <td>无碎片，运行快</td>
+          <td>浪费空间 (需 Survivor)</td>
+          <td>新生代</td>
+          <td>Serial, ParNew, G1 (Young)</td>
+      </tr>
+      <tr>
+          <td><strong>标记-整理</strong></td>
+          <td>无碎片，无空间浪费</td>
+          <td>移动对象效率低，需 STW</td>
+          <td>老年代</td>
+          <td>Parallel Old, Serial Old, G1 (Mixed)</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="讲解常见的垃圾回收器">讲解常见的垃圾回收器
+</h2><h3 id="cms-concurrent-mark-sweep--里程碑式产品">CMS (Concurrent Mark Sweep) —— <em>里程碑式产品</em>
+</h3><ul>
+<li>
+<p><strong>核心特点：</strong> <strong>并发收集、低停顿</strong>。</p>
+</li>
+<li>
+<p><strong>工作流程 (重点)：</strong></p>
+<ol>
+<li><strong>初始标记 (Initial Mark):</strong> STW。只标记 GC Roots 直接关联的对象（速度很快）。</li>
+<li><strong>并发标记 (Concurrent Mark):</strong> <strong>不 STW</strong>。GC 线程和用户线程一起跑，遍历整个对象图。</li>
+<li><strong>重新标记 (Remark):</strong> STW。修正并发期间因用户程序变动而导致标记产生变动的那一部分对象。</li>
+<li><strong>并发清除 (Concurrent Sweep):</strong> <strong>不 STW</strong>。清理垃圾。</li>
+</ol>
+</li>
+<li>
+<p><strong>缺点 (面试必问)：</strong></p>
+<ul>
+<li><strong>CPU 敏感：</strong> 占用线程资源，导致程序变慢。</li>
+<li><strong>浮动垃圾：</strong> 并发清理阶段产生的新垃圾无法在当次处理。</li>
+<li><strong>内存碎片：</strong> 使用<strong>标记-清除</strong>算法，容易产生碎片，导致大对象分配困难，触发 Full GC。</li>
+</ul>
+</li>
+<li>
+<p><strong>现状：</strong> JDK 9 标记废弃，JDK 14 正式移除。</p>
+</li>
+</ul>
+<hr>
+<h3 id="g1-garbage-first--jdk-9-之后的默认王者">G1 (Garbage First) —— <em>JDK 9 之后的默认王者</em>
+</h3><ul>
+<li>
+<p><strong>核心理念：</strong> <strong>化整为零</strong>。</p>
+</li>
+<li>
+<p><strong>内存布局：</strong> 不再有物理隔离的新生代和老年代。它把堆内存切分成很多个大小相等的 <strong>Region (区域)</strong>。这些 Region 逻辑上可以是 Eden、Survivor 或 Old。</p>
+</li>
+<li>
+<p><strong>算法：</strong> 整体看是<strong>标记-整理</strong>，局部（两个 Region 之间）看是<strong>标记-复制</strong>。<strong>不会产生内存碎片</strong>。</p>
+</li>
+<li>
+<p><strong>最大优势：</strong> <strong>可预测的停顿模型</strong>。</p>
+<ul>
+<li>你可以告诉 G1：&ldquo;即使堆很大，但我要求 GC 停顿时间不要超过 200ms&rdquo;。G1 会分析哪个 Region 垃圾最多（回收收益最大），优先回收它（这也是 Garbage First 名字的由来）。</li>
+</ul>
+</li>
+<li>
+<p><strong>适用场景：</strong> 面向服务端应用，配备大内存（6GB - 8GB 以上），替代 CMS。</p>
+</li>
+</ul>
+<h2 id="介绍java的线程池">介绍Java的线程池
+</h2><p>Java 线程池（Thread Pool）是 Java 并发编程中的核心组件，主要用于管理线程的生命周期、减少资源消耗并提高系统响应速度。</p>
+<h3 id="一为什么要用线程池">一、为什么要用线程池？
+</h3><p>如果不使用线程池，每当有新任务时手动创建线程（<code>new Thread()</code>），会带来以下问题：</p>
+<ul>
+<li><strong>资源消耗大：</strong> 频繁创建和销毁线程需要消耗大量系统资源（CPU、内存）。</li>
+<li><strong>响应速度慢：</strong> 创建线程本身需要时间，增加了任务处理的延迟。</li>
+<li><strong>难以管理：</strong> 无限制创建线程可能导致 CPU 过载或 OOM（内存溢出）。</li>
+</ul>
+<p><strong>线程池的好处：</strong></p>
+<ul>
+<li><strong>降低资源消耗：</strong> 重复利用已创建的线程。</li>
+<li><strong>提高响应速度：</strong> 任务到达时无需等待线程创建即可立即执行。</li>
+<li><strong>提高可管理性：</strong> 可以统一分配、调优和监控线程。</li>
+</ul>
+<hr>
+<h3 id="二核心类threadpoolexecutor">二、核心类：ThreadPoolExecutor
+</h3><p>Java 线程池的核心实现类是 <code>java.util.concurrent.ThreadPoolExecutor</code>。构造函数包含 <strong>7 个核心参数</strong>（面试和实战的重点）：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="nf">ThreadPoolExecutor</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">corePoolSize</span><span class="p">,</span><span class="w">    </span><span class="c1">// 1. 核心线程数</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">maximumPoolSize</span><span class="p">,</span><span class="w"> </span><span class="c1">// 2. 最大线程数</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="n">keepAliveTime</span><span class="p">,</span><span class="w">  </span><span class="c1">// 3. 空闲线程存活时间</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">TimeUnit</span><span class="w"> </span><span class="n">unit</span><span class="p">,</span><span class="w">       </span><span class="c1">// 4. 时间单位</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">BlockingQueue</span><span class="o">&lt;</span><span class="n">Runnable</span><span class="o">&gt;</span><span class="w"> </span><span class="n">workQueue</span><span class="p">,</span><span class="w"> </span><span class="c1">// 5. 任务队列</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">ThreadFactory</span><span class="w"> </span><span class="n">threadFactory</span><span class="p">,</span><span class="w">       </span><span class="c1">// 6. 线程工厂</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">RejectedExecutionHandler</span><span class="w"> </span><span class="n">handler</span><span class="w">   </span><span class="c1">// 7. 拒绝策略</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">)</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>参数详解：</strong></p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>参数</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>corePoolSize</code></td>
+          <td>核心线程数，线程池中长驻的线程数量</td>
+      </tr>
+      <tr>
+          <td><code>workQueue</code></td>
+          <td>任务队列，核心线程都在忙时，新任务暂存于此</td>
+      </tr>
+      <tr>
+          <td><code>maximumPoolSize</code></td>
+          <td>最大线程数，队列满了且线程数 &lt; 最大线程数时，创建非核心线程</td>
+      </tr>
+      <tr>
+          <td><code>keepAliveTime</code></td>
+          <td>空闲线程存活时间，超过 corePoolSize 的线程空闲超时后被回收</td>
+      </tr>
+      <tr>
+          <td><code>unit</code></td>
+          <td>keepAliveTime 的时间单位</td>
+      </tr>
+      <tr>
+          <td><code>threadFactory</code></td>
+          <td>线程工厂，用于创建新线程（可自定义线程名）</td>
+      </tr>
+      <tr>
+          <td><code>handler</code></td>
+          <td>拒绝策略，队列满且线程数达到最大值时触发</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="三线程池的工作流程重要">三、线程池的工作流程（重要）
+</h3><p>当一个新任务提交给线程池时，处理逻辑如下：</p>
+<ol>
+<li><strong>判断核心线程：</strong> 如果当前运行的线程数 &lt; <code>corePoolSize</code>，则立即创建新线程执行任务。</li>
+<li><strong>进入队列：</strong> 如果核心线程都在忙（&gt;= corePoolSize），则将任务放入 <code>workQueue</code> 等待。</li>
+<li><strong>创建非核心线程：</strong> 如果队列也满了，判断当前线程数是否 &lt; <code>maximumPoolSize</code>。如果是，则创建新线程执行任务。</li>
+<li><strong>触发拒绝策略：</strong> 如果队列满了，且线程数已达到 <code>maximumPoolSize</code>，则调用 <code>handler</code> 执行拒绝策略。</li>
+</ol>
+<p><strong>简记口诀：</strong> 先核心，后队列，再最大，最后拒绝。</p>
+<hr>
+<h3 id="四四种常见的拒绝策略">四、四种常见的拒绝策略
+</h3><p>JDK 内置了四种 <code>RejectedExecutionHandler</code> 实现：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>策略</th>
+          <th>行为</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>AbortPolicy</code> (默认)</td>
+          <td>直接抛出 <code>RejectedExecutionException</code> 异常</td>
+      </tr>
+      <tr>
+          <td><code>CallerRunsPolicy</code></td>
+          <td>由调用线程直接运行该任务（负反馈调节）</td>
+      </tr>
+      <tr>
+          <td><code>DiscardPolicy</code></td>
+          <td>直接丢弃任务，不抛出异常</td>
+      </tr>
+      <tr>
+          <td><code>DiscardOldestPolicy</code></td>
+          <td>丢弃队列中等待最久的任务，然后重新提交当前任务</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="五常见的线程池类型executors-工具类">五、常见的线程池类型（Executors 工具类）
+</h3><p>JDK 提供了 <code>Executors</code> 工厂类来快速创建线程池，但在<strong>生产环境中通常不推荐直接使用</strong>（参考《阿里巴巴 Java 开发手册》），建议手动 <code>new ThreadPoolExecutor</code>。</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>类型</th>
+          <th>特点</th>
+          <th>风险</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>FixedThreadPool</code></td>
+          <td>固定大小的线程池</td>
+          <td>使用无界队列，可能导致 OOM</td>
+      </tr>
+      <tr>
+          <td><code>SingleThreadExecutor</code></td>
+          <td>只有一个线程，保证任务按顺序执行</td>
+          <td>同样使用无界队列，有 OOM 风险</td>
+      </tr>
+      <tr>
+          <td><code>CachedThreadPool</code></td>
+          <td>可缓存线程池，线程数无上限</td>
+          <td>创建大量线程，导致 CPU 100% 或 OOM</td>
+      </tr>
+      <tr>
+          <td><code>ScheduledThreadPool</code></td>
+          <td>支持定时及周期性任务执行</td>
+          <td>-</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="六线程池参数配置建议">六、线程池参数配置建议
+</h3><p>配置线程池大小通常取决于任务类型：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>任务类型</th>
+          <th>特点</th>
+          <th>建议配置</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>CPU 密集型</strong></td>
+          <td>加密、计算、压缩</td>
+          <td><code>CPU 核数 + 1</code></td>
+      </tr>
+      <tr>
+          <td><strong>IO 密集型</strong></td>
+          <td>数据库查询、HTTP 请求、文件读写</td>
+          <td><code>CPU 核数 * 2</code> 或 <code>CPU 核数 / (1 - 阻塞系数)</code></td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="为什么协程适合处理io密集型任务">为什么协程适合处理IO密集型任务
+</h2><p>协程（Coroutine）之所以被认为是处理 IO 密集型任务的神器，核心原因可以用一句话概括：</p>
+<blockquote>
+<p><strong>协程把&quot;等待 IO&quot;的时间利用了起来，并且以极低的成本实现了并发。</strong></p>
+</blockquote>
+<hr>
+<h3 id="一协程-vs-线程的核心差异">一、协程 vs 线程的核心差异
+</h3><h4 id="1-极其轻量级的挂起和恢复">1. 极其轻量级的&quot;挂起&quot;和&quot;恢复&quot;
+</h4><ul>
+<li>
+<p><strong>线程的痛点（阻塞）：</strong> 当一个线程发起 IO 请求时，如果数据没回来，这个线程就会阻塞（Block）。线程虽然什么都不干（在傻等），但它依然占用了系统资源。</p>
+</li>
+<li>
+<p><strong>协程的优势（非阻塞/挂起）：</strong> 当协程发起 IO 请求时，它不会&quot;傻等&quot;，而是会主动<strong>挂起（Yield）</strong>，把当前占用的线程控制权让出来。底层的物理线程没有被阻塞，它可以立即去执行其他协程的任务。</p>
+</li>
+</ul>
+<h4 id="2-内存资源消耗极低">2. 内存资源消耗极低
+</h4><ul>
+<li>
+<p><strong>线程（Heavyweight）：</strong> Java 的线程是操作系统内核级线程。创建一个线程通常需要预留 <strong>1MB 左右</strong>的栈内存。</p>
+<ul>
+<li>10,000 个并发连接 = 10GB 内存</li>
+</ul>
+</li>
+<li>
+<p><strong>协程（Lightweight）：</strong> 协程是用户态的，完全由程序或语言运行时管理。一个协程的初始栈内存通常只有 <strong>几 KB</strong>（如 Go 协程约 2KB）。</p>
+<ul>
+<li>同样的 10GB 内存，理论上可以支撑<strong>数百万</strong>个协程。</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-极低的上下文切换成本">3. 极低的上下文切换成本
+</h4><ul>
+<li>
+<p><strong>线程切换（贵）：</strong> 线程调度由操作系统内核完成。涉及用户态和内核态的转换，需要保存和恢复大量的寄存器状态，开销较大。</p>
+</li>
+<li>
+<p><strong>协程切换（便宜）：</strong> 协程调度完全在<strong>用户态</strong>完成，不涉及内核态切换。速度比线程切换快 <strong>1~2 个数量级</strong>。</p>
+</li>
+</ul>
+<h4 id="4-同步的代码异步的执行">4. &ldquo;同步的代码，异步的执行&rdquo;
+</h4><p>你可以用写同步代码的方式（顺序执行）来写异步逻辑，极大地降低了编写高并发 IO 代码的心智负担。</p>
+<hr>
+<h3 id="二通俗类比餐厅服务员">二、通俗类比：餐厅服务员
+</h3><ul>
+<li>
+<p><strong>多线程模型（1 对 1）：</strong> 来了 100 个客人，老板雇了 100 个服务员。每个服务员负责一个客人，客人点完菜，服务员就站在厨房门口死等厨师做好饭，期间什么也不干。</p>
+<ul>
+<li><strong>缺点：</strong> 雇佣服务员成本太高，且大部分服务员都在发呆（阻塞）。</li>
+</ul>
+</li>
+<li>
+<p><strong>协程模型（1 对 多）：</strong> 来了 100 个客人，老板只雇了 1 个服务员。服务员给 1 号桌点完菜，把单子扔给厨房，立刻跑去给 2 号桌点菜。等厨房喊&quot;1 号桌菜好了&quot;，服务员再回来端菜。</p>
+<ul>
+<li><strong>优点：</strong> 只需要很少的服务员就能服务大量客人，服务员一直在跑动（CPU 高效利用）。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="三协程到底做了什么">三、协程到底做了什么？
+</h3><p><strong>结论：协程并不能让 CPU 偷懒不做数据搬运。</strong></p>
+<p>当数据准备好后，依然是 CPU 亲自把数据从内核缓冲区搬运（复制）到用户缓冲区。这一点，协程和线程没有任何区别。</p>
+<p><strong>协程赢在&quot;等待数据到达内核缓冲区&quot;的这段时间。</strong></p>
+<p>协程底层配合的是 <strong>非阻塞 I/O (Non-blocking I/O)</strong> 和 <strong>IO 多路复用 (Epoll/Selector)</strong>：</p>
+<ol>
+<li>协程调用读取操作，底层立即问内核：&ldquo;数据到了吗？&rdquo;</li>
+<li>内核说&quot;没到&quot;。协程不睡，而是仅仅在用户态线程内部记录一下&quot;我先暂停&quot;，然后立刻让出 CPU 给其他协程用。</li>
+<li>协程把&quot;我在等数据&quot;这件事注册给操作系统的监听器（Epoll）。</li>
+<li>数据到达后，监听器通知程序，协程被恢复继续执行。</li>
+</ol>
+<p><strong>总结：</strong> 协程并不是让 CPU 少干了活（搬运工作量没变），而是让 CPU 在等待期间别闲着，也别瞎折腾（切换上下文），从而能处理更多的并发任务。</p>
+<hr>
+<h3 id="四什么时候用协程">四、什么时候用协程？
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>任务类型</th>
+          <th>特点</th>
+          <th>是否适合协程</th>
+          <th>原因</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>IO 密集型</strong></td>
+          <td>网络请求、读写数据库、微服务调用</td>
+          <td><strong>非常适合</strong></td>
+          <td>解决了大量&quot;等待&quot;造成的资源浪费，能支撑超高并发</td>
+      </tr>
+      <tr>
+          <td><strong>CPU 密集型</strong></td>
+          <td>视频转码、复杂的数学计算、加密解密</td>
+          <td><strong>不适合</strong></td>
+          <td>任务主要在用 CPU 计算，没有时间让出控制权，协程的调度反而会增加负担</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="io操作的数据搬运是由谁来做的">IO操作的数据搬运是由谁来做的
+</h2><p>从 Socket 内存缓冲区（内核空间）到用户内存缓冲区（用户空间）的数据搬运，<strong>必须由 CPU 亲力亲为</strong>。</p>
+<p>但是，整个 I/O 过程并非全由 CPU 完成。我们需要把一次网络 I/O 拆解为两个阶段：</p>
+<hr>
+<h3 id="第一阶段网卡---内核缓冲区">第一阶段：网卡 -&gt; 内核缓冲区
+</h3><ul>
+<li><strong>干活的主角：</strong> DMA（Direct Memory Access，直接存储器访问）</li>
+<li><strong>CPU 的角色：</strong> 基本不参与（只负责发号施令）</li>
+</ul>
+<ol>
+<li>网线上的光电信号到达网卡（NIC）。</li>
+<li>DMA 控制器（硬件芯片）接管总线，直接把数据从网卡拷贝到内存中的内核缓冲区。</li>
+<li>搬运完成后，DMA 会给 CPU 发送一个<strong>中断信号</strong>，告诉 CPU：&ldquo;数据已经卸到内核仓库了&rdquo;。</li>
+</ol>
+<p><strong>为什么要用 DMA？</strong> 如果没有 DMA，CPU 就得一个字节一个字节地从网卡读数据，效率极低。有了 DMA，CPU 就可以做&quot;甩手掌柜&quot;。</p>
+<hr>
+<h3 id="第二阶段内核缓冲区---用户缓冲区">第二阶段：内核缓冲区 -&gt; 用户缓冲区
+</h3><ul>
+<li><strong>干活的主角：</strong> CPU</li>
+<li><strong>状态：</strong> 昂贵的&quot;上下文切换&quot;和&quot;内存拷贝&quot;</li>
+</ul>
+<ol>
+<li><strong>系统调用：</strong> Java 程序执行了 <code>socket.read()</code>。</li>
+<li><strong>模式切换：</strong> 线程从用户态切换到内核态。</li>
+<li><strong>CPU 搬运：</strong> CPU 亲自上阵，将数据从内核 Socket 缓冲区逐字节拷贝到用户空间缓冲区。</li>
+<li><strong>返回用户态：</strong> 拷贝完成后，CPU 切换回用户态，<code>read()</code> 方法返回。</li>
+</ol>
+<hr>
+<h3 id="总结谁在搬运">总结：谁在搬运？
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>数据流向</th>
+          <th>搬运工 (硬件)</th>
+          <th>消耗资源</th>
+          <th>备注</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>网卡 → 内核内存</td>
+          <td>DMA 控制器</td>
+          <td>总线带宽</td>
+          <td>CPU 几乎不参与，效率极高</td>
+      </tr>
+      <tr>
+          <td>内核内存 → 用户内存</td>
+          <td><strong>CPU</strong></td>
+          <td>CPU 周期</td>
+          <td><strong>这是性能瓶颈！</strong> CPU 必须暂停其他计算工作来搬砖</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="延伸零拷贝zero-copy">延伸：零拷贝（Zero-Copy）
+</h3><p>既然 CPU 搬运内核到用户空间很慢，那能不能不搬？这就是 Kafka、Netty 等高性能框架使用的<strong>零拷贝</strong>技术（如 <code>sendfile</code> 或 <code>mmap</code>）。</p>
+<ul>
+<li><strong>核心思想：</strong> 如果你只是想把文件读取出来发给网卡（比如做静态资源服务器），数据其实不需要进入用户空间。</li>
+<li><strong>做法：</strong> 数据由 DMA 从磁盘搬到内核，再由 DMA 直接从内核搬到网卡。</li>
+<li><strong>结果：</strong> 完全跳过了 CPU 将数据搬运到用户缓冲区的步骤，CPU 占用率大幅下降，性能起飞。</li>
+</ul>
+<h2 id="redis-60-的-io-多线程">Redis 6.0+ 的 IO 多线程
+</h2><h3 id="默认是否开启">默认是否开启？
+</h3><p><strong>默认是关闭的（Disabled）。</strong> 虽然 Redis 6.0 引入了多线程 I/O 特性，但在默认配置下，Redis 依然表现为传统的单线程模式。</p>
+<hr>
+<h3 id="如何开启">如何开启？
+</h3><p>修改 <code>redis.conf</code> 配置文件中的以下两个参数：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>参数</th>
+          <th>默认值</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>io-threads</code></td>
+          <td>1</td>
+          <td>设置为大于 1 的值开启。4 核机器建议设为 2~3 个，8 核机器建议设为 6 个</td>
+      </tr>
+      <tr>
+          <td><code>io-threads-do-reads</code></td>
+          <td>no</td>
+          <td>设置为 yes 开启多线程读。默认只开启多线程写</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="为什么默认不开启">为什么默认不开启？
+</h3><ol>
+<li>
+<p><strong>性能没瓶颈：</strong> 对于绝大多数应用程序，Redis 的瓶颈通常在于网络带宽或内存，而不是 CPU。单线程的 Redis 已经足够快（每秒处理数万至十万级请求）。</p>
+</li>
+<li>
+<p><strong>复杂性与稳定性：</strong> 引入多线程会增加系统的复杂性。保持默认关闭可以最大程度保证旧版本的行为一致性和稳定性。</p>
+</li>
+</ol>
+<hr>
+<h3 id="重要提示核心逻辑依然是单线程">重要提示：核心逻辑依然是&quot;单线程&quot;
+</h3><p><strong>多线程只负责 I/O：</strong> 处理网络数据的读（Read/Decode）和网络数据的写（Write/Encode）。</p>
+<p><strong>命令执行依然是单线程：</strong> 实际执行 GET、SET、LUA 脚本等操作的，依然是那个唯一的主线程。</p>
+<p>这意味着：</p>
+<ul>
+<li>你依然不需要担心多线程并发带来的数据竞争问题（不需要加锁）。</li>
+<li>原子性依然得到天然保证。</li>
+</ul>
+<hr>
+<h3 id="单线程-redis-会傻等吗">单线程 Redis 会傻等吗？
+</h3><p><strong>绝对不会傻等。</strong> Redis 之所以快，靠的就是 <strong>I/O 多路复用（Epoll）</strong> 技术。</p>
+<ol>
+<li><strong>DMA 搬运阶段：</strong> Redis 主线程不参与，它正在忙着处理其他请求。</li>
+<li><strong>数据到站：</strong> 操作系统通过 Epoll 标记该 Socket &ldquo;可读&rdquo;。</li>
+<li><strong>Redis 发现数据：</strong> 主线程调用 <code>epoll_wait()</code> 问操作系统哪些连接有数据。</li>
+<li><strong>搬运到用户态：</strong> 因为数据已经在内核缓冲区躺好了，<code>read()</code> 调用不需要等待。</li>
+</ol>
+<p><strong>结论：</strong> Redis 没开启多线程时，它绝不会等&quot;网卡接收数据&quot;（这是 DMA 干的），但它必须亲自做&quot;内核到用户态的数据拷贝&quot;（这是 CPU 干的）。</p>
+<h2 id="mysql-主从同步模型">MySQL 主从同步模型
+</h2><h3 id="新节点加入主节点直接传全量-binlog-吗">新节点加入，主节点直接传全量 Binlog 吗？
+</h3><p><strong>通常不会，甚至是不可能的。</strong> 如果数据库已经运行了一年，Binlog 可能早就滚动删除了。</p>
+<p><strong>标准的新节点同步流程是&quot;全量快照 + 增量 Binlog&quot;：</strong></p>
+<ol>
+<li>
+<p><strong>全量数据搬运（Snapshot）：</strong> 先手动将主节点（或某个现存从节点）当前的数据快照拷贝给新节点。</p>
+<ul>
+<li>工具：<code>mysqldump</code>（逻辑备份，慢）或 <code>Percona XtraBackup</code>（物理备份，快，生产环境首选）</li>
+</ul>
+</li>
+<li>
+<p><strong>记录位点（Position）：</strong> 在做快照的那一瞬间，记录下当前的 Binlog 文件名和偏移量，或者 GTID。</p>
+</li>
+<li>
+<p><strong>增量追赶（Catch-up）：</strong> 将快照恢复到新节点后，新节点执行 <code>CHANGE MASTER TO</code>，指向记录的&quot;时间戳&quot;，请求之后产生的新 Binlog。</p>
+</li>
+</ol>
+<hr>
+<h3 id="从节点--1-时是否由从节点来同步新的从节点">从节点 &gt; 1 时，是否由从节点来同步新的从节点？
+</h3><p><strong>默认不会，但你可以配置成这样（级联复制）。</strong></p>
+<h4 id="默认架构星型结构">默认架构（星型结构）
+</h4><ul>
+<li>结构：1 主 -&gt; N 从</li>
+<li>行为：新节点配置的 Master IP 是主节点，它就会直接连接主节点</li>
+<li>缺点：如果新节点太多，会把主节点的网卡或磁盘 I/O 打满</li>
+</ul>
+<h4 id="级联复制cascading-replication">级联复制（Cascading Replication）
+</h4><ul>
+<li>结构：Master -&gt; Slave A -&gt; Slave B（新节点）</li>
+<li>做法：新节点的 <code>MASTER_HOST</code> 指向现有的从节点（Slave A）</li>
+<li>前提：中间节点必须开启 <code>log_slave_updates = 1</code></li>
+<li>优点：减轻了主节点的压力</li>
+<li>缺点：同步链路变长，延迟会叠加</li>
+</ul>
+<hr>
+<h3 id="relay-log中继日志是什么">Relay Log（中继日志）是什么？
+</h3><p>Relay Log 是 MySQL 主从复制架构中，存在于<strong>从节点</strong>上的一种特殊日志文件。你可以把它理解为从节点上的**&ldquo;临时待办箱&rdquo;**。</p>
+<p><strong>复制流程中的位置：</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Master (Binlog) --&gt; 网络 --&gt; Slave I/O 线程 --&gt; [Relay Log] --&gt; Slave SQL 线程 --&gt; Slave 数据
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>为什么要设计 Relay Log？</strong></p>
+<ol>
+<li>
+<p><strong>接收快，执行慢：</strong> 网络传输通常很快，但执行 SQL 通常很慢。有了 Relay Log，I/O 线程可以疯狂地把 Master 的日志拉取回来存在本地，哪怕 SQL 线程处理不过来也没关系。</p>
+</li>
+<li>
+<p><strong>断点续传与崩溃恢复：</strong> 如果 Slave 宕机重启，Relay Log 还存在磁盘上。SQL 线程知道自己上次执行到了哪个位置，重启后可以继续执行。</p>
+</li>
+</ol>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>特性</th>
+          <th>Binlog</th>
+          <th>Relay Log</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>存放位置</td>
+          <td>通常在 Master</td>
+          <td>只在 Slave 上</td>
+      </tr>
+      <tr>
+          <td>产生者</td>
+          <td>数据库自身的写操作</td>
+          <td>Slave 的 I/O 线程（从 Master 拷贝来的）</td>
+      </tr>
+      <tr>
+          <td>生命周期</td>
+          <td>长期保留</td>
+          <td>用完即焚，SQL 线程执行完后自动删除</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="select-for-update-什么时候解锁">SELECT FOR UPDATE 什么时候解锁
+</h2><p><strong>是事务结束时（Commit 或 Rollback 之后）。</strong></p>
+<hr>
+<h3 id="锁的生命周期">锁的生命周期
+</h3><p>在 MySQL（InnoDB 引擎）中，<code>SELECT ... FOR UPDATE</code> 遵循<strong>两阶段锁协议（2PL）</strong>：</p>
+<ol>
+<li><strong>加锁时刻：</strong> 当 CPU 执行到这条 SQL 语句时，开始申请并持有锁。</li>
+<li><strong>持有过程：</strong> 即使这条 SQL 执行完了，锁依然不会释放。</li>
+<li><strong>解锁时刻：</strong> 只有当整个事务执行了 <code>COMMIT</code> 或 <code>ROLLBACK</code> 后，锁才会释放。</li>
+</ol>
+<hr>
+<h3 id="为什么要设计成事务结束才释放">为什么要设计成&quot;事务结束才释放&quot;？
+</h3><p>如果 SQL 执行完立刻释放锁，会发生严重的数据一致性问题（丢失更新）。</p>
+<p>只有拿到事务结束，才能保证在你处理完这行数据之前，没有任何人能修改它。</p>
+<hr>
+<h3 id="致命的生产事故模型千万小心">致命的生产事故模型（千万小心）
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Transactional</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">buyTicket</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 1. 获取锁（开启事务，加锁）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">ticketMapper</span><span class="p">.</span><span class="na">selectTicketForUpdate</span><span class="p">(</span><span class="n">ticketId</span><span class="p">);</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 2. 危险操作！！！</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 在持有数据库锁的时候，去调用了第三方的 HTTP 接口</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 假设这个 HTTP 请求卡了 3 秒...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">thirdPartyPaymentService</span><span class="p">.</span><span class="na">pay</span><span class="p">();</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 3. 更新数据库</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">ticketMapper</span><span class="p">.</span><span class="na">reduceStock</span><span class="p">(</span><span class="n">ticketId</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 4. 事务结束（释放锁）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>后果：</strong> 在那 3 秒钟内，这行数据是被死锁住的。所有其他想买这张票的用户，全部卡在第 1 步等待。如果并发量大，数据库连接瞬间就会被这些等待的线程占满，导致整个系统宕机。</p>
+<p><strong>最佳实践：</strong> 只有在必须要修改数据，且业务逻辑非常快（纯内存计算，无外部 IO）的代码块里，才使用 <code>FOR UPDATE</code>。不要拿着锁去逛街（做耗时操作）。</p>
+<h2 id="mysql-的-mha-高可用架构">MySQL 的 MHA 高可用架构
+</h2><p>MHA (Master High Availability Manager and Tools for MySQL) 是 MySQL 领域非常经典、使用非常广泛的第三方高可用解决方案。</p>
+<hr>
+<h3 id="mha-是做什么的">MHA 是做什么的？
+</h3><p>核心目标只有一个：在 Master（主库）宕机后，以最快的速度（通常 <strong>10~30秒内</strong>）自动将某个 Slave 提升为新的 Master，并让其他 Slave 指向新的 Master，同时尽最大努力<strong>不丢失数据</strong>。</p>
+<hr>
+<h3 id="核心组件架构">核心组件架构
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>组件</th>
+          <th>部署位置</th>
+          <th>职责</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>MHA Manager</strong></td>
+          <td>单独部署在一台机器上</td>
+          <td>大脑。监控 Master 状态，执行故障转移流程</td>
+      </tr>
+      <tr>
+          <td><strong>MHA Node</strong></td>
+          <td>每一台 MySQL 服务器上</td>
+          <td>执行者。解析 Binlog/Relay Log，对比差异，应用日志</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="故障切换流程核心原理">故障切换流程（核心原理）
+</h3><p>假设架构是：Master(A) -&gt; Slave(B), Slave(C)。当 Master(A) 宕机时：</p>
+<ol>
+<li>
+<p><strong>侦测与确认：</strong> Manager 发现 Master(A) 连不上，多次重试确认。</p>
+</li>
+<li>
+<p><strong>选主（Election）：</strong> 检查 Slave(B) 和 Slave(C)，谁的 Relay Log 最完整（数据最新），谁就当新主。</p>
+</li>
+<li>
+<p><strong>数据补全（差异日志补全）：</strong></p>
+<ul>
+<li>如果 Master SSH 还能连：MHA 会登录到死掉的 Master 上，把还没来得及发给 Slave 的最新 Binlog 截取并应用到新主上。<strong>数据 0 丢失</strong>。</li>
+<li>如果 Master 物理损坏：对比各 Slave 的 Relay Log，把差异补齐。</li>
+</ul>
+</li>
+<li>
+<p><strong>提升新主与重构拓扑：</strong> 对新主执行 <code>STOP SLAVE</code>，解除只读模式；告诉其他 Slave 执行 <code>CHANGE MASTER TO</code> 指向新主。</p>
+</li>
+<li>
+<p><strong>VIP 漂移：</strong> 通过钩子脚本将 VIP 从旧 Master 漂移到新 Master 上。</p>
+</li>
+</ol>
+<hr>
+<h3 id="mha-的优缺点">MHA 的优缺点
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>优点</th>
+          <th>缺点</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>数据一致性高（SSH 可达时数据不丢失）</td>
+          <td>Perl 语言编写，维护困难</td>
+      </tr>
+      <tr>
+          <td>切换速度快（30 秒内）</td>
+          <td>VIP 配置复杂，需自己写脚本</td>
+      </tr>
+      <tr>
+          <td>对现有架构侵入小</td>
+          <td>脑裂风险（需配置 fencing 脚本）</td>
+      </tr>
+      <tr>
+          <td>成熟稳定</td>
+          <td>MHA Manager 自身是单点</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="mysql-group-replication-mgr">MySQL Group Replication (MGR)
+</h2><p>MySQL Group Replication (MGR) 是 MySQL 官方在 5.7.17 版本正式推出的高可用与高扩展解决方案。它引入了分布式系统中最核心的 <strong>Paxos 协议</strong>，从而实现了数据库集群的<strong>强一致性</strong>和<strong>原生高可用</strong>。</p>
+<hr>
+<h3 id="核心特点为什么它比传统主从牛">核心特点：为什么它比传统主从牛？
+</h3><ul>
+<li><strong>数据不丢失：</strong> 任何一个事务想要提交，必须经过集群中**大多数（N/2 + 1）**节点的同意。</li>
+<li><strong>原子性：</strong> 一个事务要么在所有节点都生效，要么都不生效。</li>
+<li><strong>自动脑裂防御：</strong> 如果发生网络分区，只有拥有大多数节点的那个分区能对外提供服务，少数派分区会自动锁死。</li>
+</ul>
+<hr>
+<h3 id="两种运行模式">两种运行模式
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>模式</th>
+          <th>特点</th>
+          <th>适用场景</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>单主模式 (Single-Primary)</strong></td>
+          <td>只有一个节点可以写，其他节点只读。Primary 挂掉时自动选新主</td>
+          <td><strong>推荐/主流</strong>，几乎没有冲突检测开销</td>
+      </tr>
+      <tr>
+          <td><strong>多主模式 (Multi-Primary)</strong></td>
+          <td>所有节点都可以同时处理写请求</td>
+          <td>冲突检测复杂，同时修改同一行数据会报错回滚</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="mgr-的工作原理">MGR 的工作原理
+</h3><p>假设有 3 个节点（A, B, C），Client 向 A 发送了一条 UPDATE：</p>
+<ol>
+<li>
+<p><strong>执行阶段：</strong> 节点 A 先在本地内存里预执行这个事务，但不提交。生成一个<strong>写集 (Write Set)</strong>。</p>
+</li>
+<li>
+<p><strong>广播与共识 (Paxos)：</strong> 节点 A 把写集广播给整个小组。只要有 2 个收到并排序成功，协议就达成。</p>
+</li>
+<li>
+<p><strong>冲突检测 (Certification)：</strong> 所有节点都会拿着这个写集，去跟自己内存里正在处理的其他事务比对。如果有冲突，后到的事务直接回滚。</p>
+</li>
+<li>
+<p><strong>提交 (Commit)：</strong> 通过认证后，事务真正写入 Binlog 和磁盘。</p>
+</li>
+</ol>
+<hr>
+<h3 id="mgr-的硬性限制">MGR 的硬性限制
+</h3><ul>
+<li><strong>必须是 InnoDB 引擎</strong></li>
+<li><strong>每张表必须有主键 (Primary Key)</strong>：MGR 靠主键的 Hash 来判断写冲突</li>
+<li><strong>必须开启 GTID</strong></li>
+<li><strong>网络要求高</strong>：节点间通信非常频繁</li>
+<li><strong>节点数量限制：</strong> 最多支持 <strong>9 个</strong>节点</li>
+</ul>
+<hr>
+<h3 id="mgr-vs-mha-对比">MGR vs MHA 对比
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>维度</th>
+          <th>MHA</th>
+          <th>MGR</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>核心机制</td>
+          <td>外部脚本监控 + 异步/半同步复制</td>
+          <td>数据库内核插件 + Paxos 协议</td>
+      </tr>
+      <tr>
+          <td>数据一致性</td>
+          <td>理论上可能有丢失</td>
+          <td>强一致性（Quorum 机制保证不丢）</td>
+      </tr>
+      <tr>
+          <td>脑裂保护</td>
+          <td>需额外配置 fencing 脚本</td>
+          <td>原生自带</td>
+      </tr>
+      <tr>
+          <td>故障切换</td>
+          <td>需要 VIP 漂移脚本配合</td>
+          <td>自动选主</td>
+      </tr>
+      <tr>
+          <td>多点写入</td>
+          <td>不支持</td>
+          <td>支持（多主模式）</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="mysql-innodb-cluster">MySQL InnoDB Cluster
+</h3><p>这是一个全家桶解决方案：</p>
+<ul>
+<li><strong>MGR（底层）：</strong> 负责数据复制和强一致性</li>
+<li><strong>MySQL Router（中间件）：</strong> 负责流量转发，自动识别谁是主节点</li>
+<li><strong>MySQL Shell（工具）：</strong> 一键部署和管理 MGR 集群</li>
+</ul>
+<p><strong>公式：</strong> InnoDB Cluster = MGR + MySQL Router + MySQL Shell</p>
+<h2 id="redis-的中心化集群架构">Redis 的中心化集群架构
+</h2><p>在 Redis 的生态演进中，提到&quot;中心化&quot;架构，通常指的是两种形态：</p>
+<ul>
+<li><strong>高可用层面：</strong> Redis Sentinel（哨兵模式）</li>
+<li><strong>分片/代理层面：</strong> Codis 或 Twemproxy</li>
+</ul>
+<p>与之相对的是 Redis Cluster（官方集群），它是典型的**去中心化（P2P）**架构。</p>
+<hr>
+<h3 id="redis-sentinel哨兵模式">Redis Sentinel（哨兵模式）
+</h3><p>这是 Redis 官方推荐的**高可用（HA）**解决方案。</p>
+<h4 id="架构拓扑">架构拓扑
+</h4><ul>
+<li><strong>数据节点：</strong> 1 个 Master（负责写）+ N 个 Slave（负责读）</li>
+<li><strong>管理节点（Sentinel）：</strong> 一组独立的 Redis 进程（建议至少 3 个），互相通信，同时监控所有数据节点</li>
+</ul>
+<h4 id="核心功能">核心功能
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>功能</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>监控 (Monitoring)</strong></td>
+          <td>不断 Ping Master 和 Slave，看它们是否还活着</td>
+      </tr>
+      <tr>
+          <td><strong>通知 (Notification)</strong></td>
+          <td>发现节点挂了，可以通过 API 通知管理员</td>
+      </tr>
+      <tr>
+          <td><strong>自动故障转移 (Automatic Failover)</strong></td>
+          <td>Master 挂了，哨兵投票选出新 Master，指挥其他 Slave 连向新老大</td>
+      </tr>
+      <tr>
+          <td><strong>配置中心 (Configuration Provider)</strong></td>
+          <td>客户端连接 Sentinel，Sentinel 告诉客户端当前 Master 的地址</td>
+      </tr>
+  </tbody>
+</table></div>
+<h4 id="故障切换流程">故障切换流程
+</h4><ol>
+<li><strong>主观下线 (SDOWN)：</strong> 一个哨兵 Ping 不通 Master，它认为 Master 挂了（主观觉得）。</li>
+<li><strong>客观下线 (ODOWN)：</strong> 超过半数（Quorum）的哨兵都说连不上，坐实 Master 挂了。</li>
+<li><strong>选举领头哨兵：</strong> 哨兵们内部选出一个&quot;领头哨兵&quot;来执行切换操作。</li>
+<li><strong>选新主：</strong> 领头哨兵根据规则（优先级、复制偏移量）选出一个 Slave 升级为 Master。</li>
+<li><strong>广播：</strong> 通知其余 Slave 和客户端切换到新地址。</li>
+</ol>
+<h4 id="优缺点">优缺点
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>优点</th>
+          <th>缺点</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>官方原生，自动化 HA</td>
+          <td><strong>写性能无法扩展</strong>（只有一个 Master）</td>
+      </tr>
+      <tr>
+          <td>解决了单点故障问题</td>
+          <td><strong>存储无法扩展</strong>（内存容量受限于单机）</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="proxy-架构codis--twemproxy">Proxy 架构（Codis / Twemproxy）
+</h3><p>这是一种<strong>中心化分片架构</strong>。在 Redis Cluster 普及之前，这是处理海量数据的主流方案。</p>
+<h4 id="架构拓扑-1">架构拓扑
+</h4><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Client &lt;---&gt; Proxy (Codis/Twemproxy) &lt;---&gt; Redis Group 1, Group 2, ...
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="核心原理">核心原理
+</h4><ul>
+<li><strong>中心入口：</strong> 客户端只连接 Proxy，感觉就像连接一个巨大的单机 Redis。</li>
+<li><strong>数据分片：</strong> Proxy 内部维护了路由表（Slot 映射）。当你 <code>SET key value</code> 时，Proxy 计算 key 的 Hash 值，转发给后端的某一台 Redis。</li>
+<li><strong>扩容：</strong> Codis 提供了 Dashboard，可以动态地迁移数据（Slot），对客户端透明。</li>
+</ul>
+<h4 id="优缺点-1">优缺点
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>优点</th>
+          <th>缺点</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>客户端简单（无需改代码）</td>
+          <td>多了一层网络转发，增加延迟</td>
+      </tr>
+      <tr>
+          <td>支持超大容量</td>
+          <td>架构复杂，需要部署 ZooKeeper/Etcd</td>
+      </tr>
+      <tr>
+          <td>-</td>
+          <td>逐渐被边缘化（Redis Cluster 成熟后）</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="对比redis-cluster-是去中心化">对比：Redis Cluster 是&quot;去中心化&quot;
+</h3><ul>
+<li><strong>没有 Proxy：</strong> 客户端直接连任何一个 Redis 节点</li>
+<li><strong>没有中心 Master：</strong> 集群被切分成 16384 个槽（Slots），分配给多个主节点</li>
+<li><strong>Gossip 协议：</strong> 节点之间互相对话</li>
+<li><strong>客户端智能：</strong> 请求错了节点，节点会返回 <code>MOVED</code> 错误，告诉客户端正确的 IP</li>
+</ul>
+<h2 id="lsm-tree-是什么">LSM Tree 是什么
+</h2><p>LSM Tree (Log-Structured Merge-tree) 是一种为<strong>高吞吐量写入</strong>而优化的数据结构，它是现代 NoSQL 数据库（如 HBase, Cassandra, LevelDB, RocksDB）和部分 NewSQL 数据库（如 TiDB）的存储引擎核心。</p>
+<p><strong>核心思想：</strong> 将离散的随机写请求，转换成批量的顺序写请求，以换取极致的写入性能。</p>
+<hr>
+<h3 id="为什么要发明-lsm-tree">为什么要发明 LSM Tree？
+</h3><p>在传统的 B+ 树（MySQL InnoDB 使用）中，当我们要写入一条数据时，需要先找到它在磁盘 B+ 树中的具体叶子节点位置，然后做<strong>原地更新</strong>。</p>
+<p><strong>痛点：</strong> 如果写入的主键是无序的，这会产生大量的<strong>磁盘随机 I/O</strong>。对于机械硬盘甚至 SSD 来说，随机写比顺序写慢得多。</p>
+<p><strong>LSM Tree 的解决思路：</strong> 不管你写什么，我先不急着存到磁盘的具体位置，而是像写日志一样，**追加（Append）**到文件末尾。追加是顺序写，速度极快。</p>
+<hr>
+<h3 id="lsm-tree-的三大核心组件">LSM Tree 的三大核心组件
+</h3><h4 id="1-memtable内存表">1. MemTable（内存表）
+</h4><ul>
+<li><strong>位置：</strong> 内存（RAM）</li>
+<li><strong>结构：</strong> 通常是一个有序的数据结构（如跳表 SkipList 或红黑树）</li>
+<li><strong>作用：</strong> 所有新的写入请求首先都进入 MemTable。因为是在内存中操作，速度极快</li>
+</ul>
+<h4 id="2-immutable-memtable不可变内存表">2. Immutable MemTable（不可变内存表）
+</h4><ul>
+<li><strong>位置：</strong> 内存</li>
+<li><strong>作用：</strong> 当 MemTable 写满后，它会瞬间变成&quot;不可变&quot;状态，并生成一个新的 MemTable 接收新写入。这个不可变的表会在后台被刷盘（Flush）到磁盘</li>
+</ul>
+<h4 id="3-sstable-sorted-string-table">3. SSTable (Sorted String Table)
+</h4><ul>
+<li><strong>位置：</strong> 磁盘</li>
+<li><strong>结构：</strong> 内部有序的键值对文件</li>
+<li><strong>特点：</strong> <strong>不可变（Immutable）</strong>。一旦写入磁盘，就不会再被修改</li>
+<li><strong>分层（Level）：</strong> 磁盘上的 SSTable 通常分为 Level 0, Level 1, Level 2&hellip; 多层</li>
+</ul>
+<h4 id="4-wal-write-ahead-log">4. WAL (Write Ahead Log)
+</h4><ul>
+<li><strong>作用：</strong> 为了防止断电导致内存里的 MemTable 数据丢失，每次写 MemTable 之前，会先顺序写入磁盘的 WAL 日志</li>
+</ul>
+<hr>
+<h3 id="工作流程详解">工作流程详解
+</h3><h4 id="写入流程write--极快">写入流程（Write） —— 极快
+</h4><ol>
+<li>写 WAL（保证持久性）</li>
+<li>写 MemTable（内存操作，O(logN)）</li>
+<li>结束。（对客户端来说，写入已经完成了）</li>
+</ol>
+<p><strong>后台动作：</strong> 当 MemTable 满了，转为 Immutable MemTable，然后 Flush 到磁盘成为 Level 0 的 SSTable。</p>
+<h4 id="读取流程read--稍慢">读取流程（Read） —— 稍慢
+</h4><p>因为数据可能散落在内存和磁盘的不同层级中，读取需要分层查找：</p>
+<ol>
+<li>查 MemTable</li>
+<li>查 Immutable MemTable</li>
+<li>查 L0 层 SSTable（文件间 Key 可能重叠，需要遍历）</li>
+<li>查 L1, L2&hellip; 层 SSTable</li>
+</ol>
+<p><strong>优化：</strong> 使用<strong>布隆过滤器 (Bloom Filter)</strong>。在打开一个 SSTable 文件前，先问布隆过滤器：&ldquo;这个 Key 可能在这里吗？&ldquo;如果回答&quot;不在&rdquo;，就直接跳过该文件。</p>
+<h4 id="核心机制compaction合并压缩">核心机制：Compaction（合并/压缩）
+</h4><p>LSM Tree 需要在后台运行 Compaction 进程：</p>
+<ol>
+<li><strong>Merge：</strong> 把多个小的、重叠的 SSTable 读取出来</li>
+<li><strong>Sort：</strong> 进行归并排序</li>
+<li><strong>Clean：</strong> 丢弃旧版本数据，物理删除带有&quot;墓碑标记&quot;的数据</li>
+<li><strong>Write：</strong> 写入新的、更大的、更有序的 Level+1 层 SSTable</li>
+</ol>
+<hr>
+<h3 id="lsm-tree-vs-b-tree">LSM Tree vs B+ Tree
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>特性</th>
+          <th>LSM Tree</th>
+          <th>B+ Tree</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>典型代表</td>
+          <td>RocksDB, HBase, Cassandra, TiKV</td>
+          <td>MySQL (InnoDB), PostgreSQL</td>
+      </tr>
+      <tr>
+          <td>写入性能</td>
+          <td><strong>极高</strong> (顺序写)</td>
+          <td>一般 (随机写，需维护树结构平衡)</td>
+      </tr>
+      <tr>
+          <td>读取性能</td>
+          <td>一般 (可能需要查多个文件)</td>
+          <td><strong>极高</strong> (索引直接定位)</td>
+      </tr>
+      <tr>
+          <td>空间利用率</td>
+          <td>高 (SSTable 紧凑排列，无碎片)</td>
+          <td>低 (页分裂导致碎片)</td>
+      </tr>
+      <tr>
+          <td>适用场景</td>
+          <td><strong>写多读少</strong>，海量数据日志、监控</td>
+          <td><strong>读多写少</strong>，强一致性事务</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="mysql-buffer-pool-和-tidb-缓存对比">MySQL Buffer Pool 和 TiDB 缓存对比
+</h2><p>MySQL 的 Buffer Pool 和 TiDB 的缓存机制存在显著差异，这主要源于它们底层存储引擎结构的不同（B+ 树 vs LSM 树）。</p>
+<hr>
+<h3 id="mysqlinnodb-buffer-pool">MySQL：InnoDB Buffer Pool
+</h3><h4 id="在哪里">在哪里？
+</h4><ul>
+<li><strong>物理位置：</strong> MySQL 服务器的**内存（RAM）**中</li>
+<li><strong>归属：</strong> 属于 InnoDB 存储引擎</li>
+<li><strong>内容：</strong> 缓存数据页、索引页、插入缓冲（Change Buffer）、自适应哈希索引、锁信息等</li>
+</ul>
+<h4 id="怎么运作的">怎么运作的？
+</h4><p>MySQL 的 Buffer Pool 是典型的 <strong>Page Cache（页缓存）</strong> 机制，默认页大小为 16KB。</p>
+<p><strong>读操作：</strong></p>
+<ul>
+<li>命中（Hit）：直接返回，无需读盘（极快）</li>
+<li>未命中（Miss）：从磁盘加载该页到 Buffer Pool，然后再返回</li>
+</ul>
+<p><strong>写操作（Write Back 策略）：</strong></p>
+<ul>
+<li>直接修改内存中的页，将其标记为&quot;脏页（Dirty Page）&rdquo;</li>
+<li>同时写入 Redo Log 保证持久性</li>
+<li>后台线程异步将脏页刷回磁盘</li>
+</ul>
+<h4 id="怎么使用调优">怎么&quot;使用&quot;？（调优）
+</h4><ul>
+<li><strong>核心参数：</strong> <code>innodb_buffer_pool_size</code></li>
+<li><strong>建议配置：</strong> 在专用数据库服务器上，通常设置为<strong>物理内存的 50% ~ 75%</strong></li>
+<li><strong>切记：</strong> 留给操作系统和其他进程一些内存，不要设得太满导致 Swap</li>
+</ul>
+<hr>
+<h3 id="tidb多层级缓存架构">TiDB：多层级缓存架构
+</h3><p>TiDB 是存算分离架构，缓存分为两部分：TiDB Server（计算层）和 TiKV（存储层）。</p>
+<h4 id="tikv-层存储层---核心数据缓存">TiKV 层（存储层 - 核心数据缓存）
+</h4><p>TiKV 底层使用 RocksDB（LSM Tree 架构），缓存机制与 MySQL 大不相同。</p>
+<p><strong>Block Cache（读缓存）：</strong></p>
+<ul>
+<li>在 TiKV 节点的内存中</li>
+<li>用于缓存磁盘上的 SSTable 数据块（Block）</li>
+<li>数据是<strong>只读</strong>的，不存在&quot;脏页&quot;的概念</li>
+</ul>
+<p><strong>MemTable（写缓存）：</strong></p>
+<ul>
+<li>在 TiKV 节点的内存中</li>
+<li>新数据直接写入 MemTable，写满后 Flush 到磁盘成为 SSTable</li>
+</ul>
+<p><strong>写入完全不经过 Block Cache。</strong></p>
+<h4 id="tidb-层计算层---结果缓存">TiDB 层（计算层 - 结果缓存）
+</h4><ul>
+<li><strong>Coprocessor Cache：</strong> 缓存下推给 TiKV 计算的中间结果</li>
+<li><strong>Plan Cache（执行计划缓存）：</strong> 缓存 SQL 的解析和优化结果</li>
+</ul>
+<hr>
+<h3 id="核心对比总结">核心对比总结
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>特性</th>
+          <th>MySQL (InnoDB Buffer Pool)</th>
+          <th>TiDB (TiKV RocksDB Block Cache)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>数据结构</td>
+          <td>B+ Tree 页 (Page, 16KB)</td>
+          <td>LSM Tree 块 (Block, 4KB~)</td>
+      </tr>
+      <tr>
+          <td>缓存内容</td>
+          <td>数据 + 索引</td>
+          <td>主要是 SSTable 的数据块</td>
+      </tr>
+      <tr>
+          <td>写入方式</td>
+          <td><strong>原地更新</strong>：直接修改缓存页，标记为脏页</td>
+          <td><strong>追加写</strong>：写入单独的 MemTable，不修改 Block Cache</td>
+      </tr>
+      <tr>
+          <td>脏页处理</td>
+          <td>需要 Checkpoint 刷盘</td>
+          <td>无脏页概念 (SSTable 是不可变的)</td>
+      </tr>
+      <tr>
+          <td>内存分配</td>
+          <td>建议给 50-75% 物理内存</td>
+          <td>建议给 45% 左右 (需预留给 OS Cache)</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="tidb-的读取速度会不会慢很多">TiDB 的读取速度会不会慢很多？
+</h2><p>TiKV 的底层完全基于 RocksDB，使用的就是 LSM Tree 结构。</p>
+<p><strong>答案是：</strong> 理论上单次查询会有轻微延迟（Read Amplification，读放大），但在实际生产和高并发场景下，通常感觉不到慢，甚至在某些场景下更快。</p>
+<hr>
+<h3 id="为什么-lsm-tree-这种原本读取慢的结构在-tidb-里跑得飞快">为什么 LSM Tree 这种&quot;原本读取慢&quot;的结构，在 TiDB 里跑得飞快？
+</h3><h4 id="1-布隆过滤器-bloom-filter--快速排除">1. 布隆过滤器 (Bloom Filter) —— 快速排除
+</h4><p>RocksDB 给每个 SSTable 文件都配了一个布隆过滤器。它能以 O(1) 的速度告诉你：&ldquo;这个文件里<strong>绝对没有</strong>这个 Key&rdquo; 或者 &ldquo;可能有&rdquo;。</p>
+<p><strong>效果：</strong> 绝大多数不包含该数据的文件会被瞬间排除，根本不需要发生磁盘 I/O。</p>
+<h4 id="2-block-cache--内存命中">2. Block Cache —— 内存命中
+</h4><p>热点数据（Hot Data）通常已经被加载到了内存的 Block Cache 中。如果缓存命中，读取速度就等同于读内存。</p>
+<h4 id="3-compaction-合并--保持层级扁平">3. Compaction (合并) —— 保持层级扁平
+</h4><p>RocksDB 会在后台不断进行 Compaction，把多层的小文件合并成一层的大文件。保证读取时需要查找的文件层数非常少。</p>
+<h4 id="4-tikv-的杀手锏coprocessor-计算下推">4. TiKV 的杀手锏：Coprocessor (计算下推)
+</h4><p>这是 TiDB 架构上最大的优势。</p>
+<ul>
+<li><strong>MySQL 的做法：</strong> &ldquo;把数据全搬到 Server 层，Server 再过滤。&rdquo;</li>
+<li><strong>TiDB 的做法：</strong> &ldquo;计算下推&rdquo;。TiDB Server 告诉 TiKV 节点：&ldquo;你帮我数一下 age &gt; 20 的有多少，直接告诉我结果。&rdquo;</li>
+</ul>
+<p><strong>效果：</strong> 虽然 LSM Tree 读单行可能稍慢，但 TiDB 利用多节点并行计算 + 减少网络传输，使得整体查询响应速度往往反超单机 MySQL。</p>
+<hr>
+<h3 id="性能对比实话实说">性能对比实话实说
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>场景</th>
+          <th>MySQL (B+ Tree)</th>
+          <th>TiDB (LSM Tree)</th>
+          <th>谁赢？</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>点查询</strong> <code>select * from t where id=1</code></td>
+          <td>极快 (O(logN) 稳定索引查找)</td>
+          <td>稍慢 (可能要查 MemTable+BlockCache)</td>
+          <td>MySQL 险胜（但高并发下 TiDB 吞吐量更大）</td>
+      </tr>
+      <tr>
+          <td><strong>范围查询</strong> <code>select * from t where id &gt; 100</code></td>
+          <td>快 (叶子节点链表)</td>
+          <td>很快 (SSTable 内部本身就是有序的)</td>
+          <td>平手 / TiDB 胜</td>
+      </tr>
+      <tr>
+          <td><strong>写入性能</strong></td>
+          <td>一般 (随机 I/O，页分裂)</td>
+          <td><strong>极快</strong> (顺序追加写)</td>
+          <td><strong>TiDB 完胜</strong></td>
+      </tr>
+      <tr>
+          <td><strong>复杂分析 (OLAP)</strong> 聚合、Group By</td>
+          <td>慢 (单机 CPU 瓶颈)</td>
+          <td><strong>极快</strong> (MPP 架构，多节点并行计算)</td>
+          <td><strong>TiDB 完胜</strong></td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="结论">结论
+</h3><p>TiDB 的&quot;慢&quot;主要体现在极低延迟要求的&quot;单点查询&quot;上（比如 MySQL 能做到 0.5ms，TiDB 可能是 1-2ms）。</p>
+<p>但在绝大多数业务场景下，得益于缓存和布隆过滤器，这个差异是可以忽略的。而它带来的<strong>写入吞吐量巨大提升</strong>和<strong>海量数据扩展能力</strong>，是 B+ Tree 架构难以比拟的。</p>
+<h2 id="tidb-如何使用联合索引kv-结构如何模拟-b-树索引">TiDB 如何使用联合索引（KV 结构如何模拟 B+ 树索引）
+</h2><p>TiDB 底层 TiKV 是一个巨大的 Map（Key-Value），看起来是平铺的。那怎么用扁平的 KV 来模拟立体的&quot;联合索引&quot;呢？</p>
+<p><strong>答案就在于 &ldquo;Key 的编码规则（Key Encoding）&quot;。</strong></p>
+<p>TiDB 并没有真的建立一棵 B+ 树，而是巧妙地把&quot;索引列的值&quot;直接编码到了 KV 的 Key 里面。因为 TiKV（RocksDB）是按 Key 的字节序有序存储的，所以只要设计好 Key 的格式，就能利用&quot;Key 的顺序&quot;来模拟&quot;B+ 树的顺序&rdquo;。</p>
+<hr>
+<h3 id="场景假设">场景假设
+</h3><p>假设你有一张表 <code>user</code>，有一个联合索引 <code>idx_name_age (name, age)</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">name</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">age</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">KEY</span><span class="w"> </span><span class="n">idx_name_age</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">age</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">19</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><hr>
+<h3 id="tidb-是怎么把它们变成-kv-的">TiDB 是怎么把它们变成 KV 的？
+</h3><h4 id="存行数据-row">存&quot;行数据&quot; (Row)
+</h4><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Key: t{表ID}_r{行ID}
+</span></span><span class="line"><span class="cl">Value: [Alice, 18, ...] (整行数据)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="存联合索引-index--重点">存&quot;联合索引&quot; (Index) —— 重点！
+</h4><p>TiDB 会按照 <code>(TableID, IndexID, IndexColumnValues)</code> 的格式构造 Key：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>逻辑上的 Key 结构</th>
+          <th>Value</th>
+          <th>解释</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>t10_i1_Alice_18_1</code></td>
+          <td>null</td>
+          <td>Alice(18岁) 对应 ID=1</td>
+      </tr>
+      <tr>
+          <td><code>t10_i1_Alice_19_3</code></td>
+          <td>null</td>
+          <td>Alice(19岁) 对应 ID=3</td>
+      </tr>
+      <tr>
+          <td><code>t10_i1_Bob_20_2</code></td>
+          <td>null</td>
+          <td>Bob(20岁) 对应 ID=2</td>
+      </tr>
+  </tbody>
+</table></div>
+<p><strong>Key 的设计玄机：</strong></p>
+<ul>
+<li><strong>前缀相同：</strong> 大家都是 <code>t10_i1</code>（同一个表，同一个索引），所以它们在磁盘上是物理挨在一起的</li>
+<li><strong>顺序排列：</strong> RocksDB 会自动把 Key 排序。<code>Alice_18</code> 排在 <code>Alice_19</code> 前面，<code>Alice_xxx</code> 全部都排在 <code>Bob_xxx</code> 前面</li>
+</ul>
+<hr>
+<h3 id="联合索引如何生效查询过程">联合索引如何生效？（查询过程）
+</h3><h4 id="场景-1最左前缀匹配">场景 1：最左前缀匹配
+</h4><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Alice&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>TiDB 动作：</p>
+<ol>
+<li>构造一个扫描范围：从 <code>t10_i1_Alice</code> 开始</li>
+<li>TiKV 直接定位到 <code>t10_i1_Alice_18_1</code></li>
+<li>接着往下读，读到 <code>t10_i1_Alice_19_3</code></li>
+<li>再往下读，发现是 Bob 了，停止</li>
+</ol>
+<p><strong>结果：</strong> 拿到了 ID 1 和 3。这和 B+ 树的范围查找完全一样！</p>
+<h4 id="场景-2联合查询">场景 2：联合查询
+</h4><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Alice&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">19</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>TiDB 动作：直接构造精确的 Key 前缀 <code>t10_i1_Alice_19</code>，TiKV 直接 Seek 定位。</p>
+<h4 id="场景-3索引失效跳过最左前缀">场景 3：索引失效（跳过最左前缀）
+</h4><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">19</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>索引 Key 是按 name 排序的。<code>age=19</code> 的数据并不是挨在一起的，没办法 Scan，只能全表扫描。<strong>这和 MySQL 的索引失效原理完全一致。</strong></p>
+<hr>
+<h3 id="总结-1">总结
+</h3><p>TiDB 并没有像 MySQL 那样维护复杂的树指针，它用了一种&quot;降维打击&quot;的方式：</p>
+<ol>
+<li><strong>映射：</strong> 把多维的&quot;联合索引 (a, b, c)&quot; 扁平化映射成一维的 Key <code>..._a_b_c</code></li>
+<li><strong>排序：</strong> 利用底层 RocksDB/LSM Tree 对 Key 的天然有序性</li>
+<li><strong>扫描：</strong> 把 SQL 的范围查询转换成 KV 存储的 Prefix Scan（前缀扫描）</li>
+</ol>
+<p><strong>所以，你在 MySQL 里学的索引原则（最左前缀、索引覆盖、索引下推），在 TiDB 里 100% 适用。</strong></p>
+<h2 id="tidb-多个索引是否要多存几份表">TiDB 多个索引是否要多存几份表？
+</h2><p><strong>你的理解是对的，但有一个关键的定语需要修正：</strong> 并不是&quot;多存几份表&quot;，而是&quot;多存几份索引列的数据&quot;。</p>
+<p>这是数据库领域最核心的交换法则：<strong>空间换时间（Space for Time）</strong>。</p>
+<hr>
+<h3 id="并没有存整张表只存了路标">并没有存&quot;整张表&quot;，只存了&quot;路标&quot;
+</h3><p>假设你的 <code>user</code> 表非常宽，有很多列：<code>id, name, age, address, bio, photo_url, create_time...</code></p>
+<h4 id="第一份主键行数据-row-data--它是真身">第一份：主键/行数据 (Row Data) —— 它是真身
+</h4><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Key: t10_r1 (主键 ID)
+</span></span><span class="line"><span class="cl">Value: {name:Alice, age:18, address:北京, bio:..., photo:..., ...} (整行所有数据都在这)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>大小：</strong> 假设这一行有 1KB。</p>
+<h4 id="第二份联合索引-secondary-index--它是影子">第二份：联合索引 (Secondary Index) —— 它是影子
+</h4><p>假设你建了索引 <code>idx_name_age (name, age)</code>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Key: t10_i1_Alice_18_1 (索引 ID + 索引列的值 + 主键 ID)
+</span></span><span class="line"><span class="cl">Value: null (几乎不占空间)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>它只复制了 <code>name(&quot;Alice&quot;)</code> 和 <code>age(18)</code> 这两个字段，加上一个主键 ID(1)。其他的 <code>address</code>、<code>bio</code>、<code>photo</code> 统统不存。</p>
+<p><strong>大小：</strong> 这一行 KV 可能只有 50 Bytes。</p>
+<hr>
+<h3 id="回表back-to-table因为没存整表">回表（Back to Table）：因为没存整表
+</h3><p>正因为索引 KV 里只有 <code>name</code> 和 <code>age</code>，没有 <code>address</code>，所以：</p>
+<ul>
+<li>
+<p><strong>查询 1（索引覆盖）：</strong> <code>SELECT name, age FROM user WHERE name='Alice'</code></p>
+<ul>
+<li>只需要读索引 KV，拿到 &ldquo;Alice&rdquo; 和 18，任务结束。速度极快。</li>
+</ul>
+</li>
+<li>
+<p><strong>查询 2（回表）：</strong> <code>SELECT address FROM user WHERE name='Alice'</code></p>
+<ul>
+<li>读索引 KV，找到 <code>name='Alice'</code> 对应的主键 ID = 1</li>
+<li>拿着 ID = 1，再去读&quot;主键/行数据&quot;那份 KV，把 <code>address</code> 拿出来</li>
+<li>这就是所谓的**&ldquo;回表&rdquo;**代价</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="tidb-相比-mysql-的空间优势">TiDB 相比 MySQL 的&quot;空间&quot;优势
+</h3><p>虽然逻辑上 TiDB 和 MySQL 都要存这些索引副本，但在物理存储上，TiDB（RocksDB）有一个巨大的优势：<strong>前缀压缩（Prefix Compression）</strong>。</p>
+<p>在 TiDB (LSM Tree) 中，RocksDB 会利用 <strong>Delta Encoding</strong> 和 <strong>Block Compression (Zstd/Lz4)</strong>：</p>
+<ul>
+<li>它不会傻傻地把 &ldquo;Alice&rdquo; 存 1 万遍</li>
+<li>它会记：&ldquo;跟上一行比，前缀有 15 个字节是一样的，只有最后的主键 ID 不一样&rdquo;</li>
+</ul>
+<p><strong>实测结果：</strong> 同样的数据量和索引量，迁移到 TiDB 后，磁盘占用通常只有 MySQL 的 <strong>30% ~ 50%</strong>。</p>
+<hr>
+<h3 id="tidb-的索引查找是否需要遍历">TiDB 的索引查找是否需要遍历？
+</h3><p><strong>绝对不是&quot;每一次都遍历&quot;。</strong></p>
+<p>虽然 TiKV 底层是 KV 结构，但它支持一种核心操作叫 <code>Seek(key)</code>。这个操作的复杂度是 <strong>O(log N)</strong>，和 MySQL 的 B+ 树查找效率是同一个量级的。</p>
+<h4 id="宏观层面它是分区的region">宏观层面：它是分区的（Region）
+</h4><p>PD (Placement Driver) 知道 <code>name='Alice'</code> 对应的数据在哪个 Region 上，请求直接发给对应节点。</p>
+<h4 id="微观层面文件内部是有目录的">微观层面：文件内部是有&quot;目录&quot;的
+</h4><p>SSTable 文件内部自带索引（Index Block），查找时：</p>
+<ol>
+<li><strong>布隆过滤器：</strong> 先看一眼文件头，如果过滤器说&quot;这里面没有 Alice&quot;，直接跳过整个文件</li>
+<li><strong>查索引块：</strong> 发现 Alice 应该在第 0~10KB 这个块里</li>
+<li><strong>二分查找：</strong> 只把这个小块加载到内存，然后做一次二分查找</li>
+</ol>
+<p><strong>结论：</strong> 无论文件有多大，找到 Alice 只需要读取极少量的元数据块，然后做一次精准跳转。</p>
+<h2 id="tomcat-拥有的是线程池还是连接池">Tomcat 拥有的是线程池还是连接池
+</h2><p><strong>直接回答：</strong> Tomcat 两者都有，但&quot;默认连接数&quot;通常指的是它作为 Web 服务器处理 HTTP 请求的能力。</p>
+<hr>
+<h3 id="对外tomcat-作为-web-服务器">对外：Tomcat 作为 Web 服务器
+</h3><p>这里指的是浏览器（Client）连接到 Tomcat。在这个层面，Tomcat 主要维护的是<strong>线程池（Thread Pool）<strong>和</strong>连接数（Connections）</strong>。</p>
+<h4 id="默认值关键知识点">默认值（关键知识点）
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>参数</th>
+          <th>默认值</th>
+          <th>含义</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>maxThreads</code></td>
+          <td><strong>200</strong></td>
+          <td>最大工作线程数，Tomcat 能同时并行处理多少个请求</td>
+      </tr>
+      <tr>
+          <td><code>maxConnections</code></td>
+          <td><strong>10,000</strong> (NIO) / <strong>8,192</strong> (Spring Boot)</td>
+          <td>最大连接数，Tomcat 能同时维持多少个 TCP Socket 连接</td>
+      </tr>
+      <tr>
+          <td><code>acceptCount</code></td>
+          <td><strong>100</strong></td>
+          <td>排队队列，当 maxConnections 也满了，操作系统层面还允许多少个新的 TCP 连接排队</td>
+      </tr>
+  </tbody>
+</table></div>
+<p><strong>为什么连接数比线程数大这么多？</strong></p>
+<p>因为用了 <strong>NIO (Non-blocking IO)</strong>！Tomcat 用少量的线程（Poller Thread）就能挂起成千上万个空闲的 TCP 连接。只有当连接真正要读写数据、处理业务时，才会分配那 200 个 <code>maxThreads</code> 中的一个去干活。</p>
+<p><strong>总结：</strong> Tomcat 默认能 hold 住 10,000 个连接，但同一时刻只能全力跑 200 个业务代码。</p>
+<hr>
+<h3 id="对内tomcat-作为数据库连接池提供者">对内：Tomcat 作为数据库连接池提供者
+</h3><p>这里指的是你的 Java 代码连接 MySQL。</p>
+<p>Tomcat 确实自带了一个组件叫 <code>tomcat-jdbc</code>，这是一个 JDBC 数据库连接池。</p>
+<p><strong>但是：</strong> 在 Spring Boot 2.0 之后，默认换成了性能更强悍的 <strong>HikariCP</strong>。</p>
+<hr>
+<h3 id="图解-tomcat-处理流程-nio">图解 Tomcat 处理流程 (NIO)
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">用户请求 (浏览器)
+</span></span><span class="line"><span class="cl">   |
+</span></span><span class="line"><span class="cl">   v
+</span></span><span class="line"><span class="cl">[ TCP 连接 (Socket) ] &lt;--- 限制由 maxConnections (10000) 控制
+</span></span><span class="line"><span class="cl">   |
+</span></span><span class="line"><span class="cl">   | (IO多路复用, Epoll 监听)
+</span></span><span class="line"><span class="cl">   v
+</span></span><span class="line"><span class="cl">[ Poller 线程 ] (极少，负责搬运数据)
+</span></span><span class="line"><span class="cl">   |
+</span></span><span class="line"><span class="cl">   | (数据读取完毕，准备执行业务)
+</span></span><span class="line"><span class="cl">   v
+</span></span><span class="line"><span class="cl">[ Worker 线程池 ] &lt;--- 限制由 maxThreads (200) 控制
+</span></span><span class="line"><span class="cl">   |
+</span></span><span class="line"><span class="cl">   | (执行 Java 代码: Controller -&gt; Service -&gt; Dao)
+</span></span><span class="line"><span class="cl">   v
+</span></span><span class="line"><span class="cl">[ DB 连接池 (HikariCP) ] &lt;--- 限制由 max-size (10) 控制
+</span></span><span class="line"><span class="cl">   |
+</span></span><span class="line"><span class="cl">   v
+</span></span><span class="line"><span class="cl">MySQL
+</span></span></code></pre></td></tr></table>
+</div>
+</div><hr>
+<h3 id="常见误区纠正">常见误区纠正
+</h3><p><strong>误区：</strong> &ldquo;把 maxThreads 加到 10000，Tomcat 就能处理 10000 高并发。&rdquo;</p>
+<p><strong>真相：</strong> 可能会死机。</p>
+<ul>
+<li>线程是昂贵的资源</li>
+<li>开启 10000 个 Java 线程，光上下文切换就会把 CPU 吃光</li>
+</ul>
+<p><strong>调优建议：</strong> 对于计算密集型，<code>maxThreads</code> 设小点；对于 IO 密集型，可以适当调大到 500~800，但很少超过 1000。</p>
+<h2 id="java-17-下-tomcat-的线程限制与虚拟线程">Java 17 下 Tomcat 的线程限制与虚拟线程
+</h2><h3 id="java-17-能用到默认的-maxthreads-200-和-maxconnections-10000-吗">Java 17 能用到默认的 maxThreads: 200 和 maxConnections: 10000 吗？
+</h3><p><strong>是的，完全可以。</strong> Java 版本（JDK 17）本身不会改变 Tomcat 的这些默认参数配置。这些参数是由 Tomcat 的版本以及你使用的框架（如 Spring Boot）决定的。</p>
+<p>如果你使用的是 Spring Boot（最常见的情况），默认配置如下：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>参数</th>
+          <th>默认值</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>server.tomcat.threads.max</code></td>
+          <td><strong>200</strong></td>
+          <td>同一时刻最多只有 200 个线程在全力处理业务逻辑</td>
+      </tr>
+      <tr>
+          <td><code>server.tomcat.max-connections</code></td>
+          <td><strong>8192</strong></td>
+          <td>可以同时维持 8000 多个 TCP 连接</td>
+      </tr>
+      <tr>
+          <td><code>server.tomcat.accept-count</code></td>
+          <td><strong>100</strong></td>
+          <td>排队队列</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="java-17-在这里的尴尬地位">Java 17 在这里的&quot;尴尬&quot;地位
+</h3><p>在 Java 17 下，这 200 个线程是真正的**&ldquo;重量级系统线程&rdquo; (Platform Threads)**。</p>
+<p>这意味着：</p>
+<ul>
+<li>
+<p><strong>硬上限：</strong> 你很难把这个值调得特别大（比如调到 10,000）。因为 Java 17 的线程直接对应操作系统内核线程，开几千个线程会导致内存爆炸和 CPU 疯狂切换上下文。</p>
+</li>
+<li>
+<p><strong>IO 阻塞痛点：</strong> 如果你的业务里有大量的 <code>Thread.sleep</code>、外部 API 调用、慢 SQL 查询，这 200 个线程很容易被占满（Block 住）。一旦 200 个全被占住，第 201 个请求进来就得去队列里排队。</p>
+</li>
+</ul>
+<p><strong>对比 Java 21+：</strong> 如果你升级到 Java 21 使用<strong>虚拟线程</strong>，这 <code>maxThreads: 200</code> 的限制就不存在了。虚拟线程模式下，Tomcat 甚至不使用传统的线程池，而是为每个请求创建一个全新的虚拟线程，轻松支持 10 万+ 并发。</p>
+<hr>
+<h3 id="如何在-java-17-下调优">如何在 Java 17 下调优？
+</h3><p>既然不能用虚拟线程，如果你的并发量上来，觉得 200 不够用，可以在 <code>application.yml</code> 中适当调大：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">server</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">tomcat</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">threads</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="m">500</span><span class="w">       </span><span class="c"># 建议值：IO密集型任务可调至 500-800</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">min-spare</span><span class="p">:</span><span class="w"> </span><span class="m">50</span><span class="w">  </span><span class="c"># 最小空闲线程，保证有任务来能立马干活</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">max-connections</span><span class="p">:</span><span class="w"> </span><span class="m">10000</span><span class="w"> </span><span class="c"># 如果并发连接确实很高，可以改回 10000 甚至 20000</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">accept-count</span><span class="p">:</span><span class="w"> </span><span class="m">200</span><span class="w"> </span><span class="c"># 稍微排长一点队</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><hr>
+<h3 id="ai-生成场景2分钟长连接的特殊考量">AI 生成场景（2分钟长连接）的特殊考量
+</h3><p>如果你的服务是 AI 生成，且和客户端的连接一次都是在 2 分钟左右，这种情况下：</p>
+<p><strong>Java 17 (平台线程) 会直接暴毙：</strong></p>
+<ul>
+<li>用户 A 进来了，开始 AI 生成。他占用了一个线程，持续时间 2 分钟</li>
+<li>这个线程在这 2 分钟里，虽然 99% 的时间在睡觉（等 GPU），但它死死抱住茅坑不拉屎</li>
+<li>只要有 200 个用户同时在生成，你的服务器就满载了</li>
+</ul>
+<p><strong>虚拟线程 (Java 21) 能轻松拿捏：</strong></p>
+<ul>
+<li>虚拟线程发起读取 LLM 数据的请求时，JVM 会把这个虚拟线程从 CPU 上拿下来，挂到堆内存里（只占几 KB 内存）</li>
+<li>载体线程空出来了，可以立马去服务第 201、202&hellip; 第 10000 个用户</li>
+<li>一台 4 核 8G 的机器，可以轻松维持<strong>数万个</strong>这种 2 分钟的长连接</li>
+</ul>
+<p><strong>Java 17 的解决方案：</strong></p>
+<ol>
+<li><strong>彻底的异步非阻塞 (Spring WebFlux / Netty)</strong>：代码难写，但性能和虚拟线程一样强</li>
+<li><strong>集群 + 增加配置</strong>：调大 maxThreads，上多台机器通过 Nginx 负载均衡</li>
+<li><strong>升级 Java 21</strong>：成本最低、收益最高</li>
+</ol>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 LuciusWan
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>LuciusWan</copyright>
-        <lastBuildDate>Fri, 28 Nov 2025 10:18:09 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 02 Dec 2025 13:40:39 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Redis学习与实战</title>
         <link>https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/</link>
         <pubDate>Sun, 16 Mar 2025 20:30:40 +0800</pubDate>
@@ -9666,6 +9666,2041 @@ export default {
 &lt;p&gt;以后设计接口最好这样搞&lt;/p&gt;
 &lt;p&gt;TODO标签代表还没做完的事，后面可以查看TODO标签对没写完的代码进行完善&lt;/p&gt;
 </description>
+        </item>
+        <item>
+        <title>面试八股3.0</title>
+        <link>https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A13.0/</link>
+        <pubDate>Tue, 02 Dec 2025 13:40:39 +0800</pubDate>
+        
+        <guid>https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A13.0/</guid>
+        <description>&lt;h1 id=&#34;面试八股30&#34;&gt;面试八股3.0
+&lt;/h1&gt;&lt;h2 id=&#34;介绍jvm堆的分代机制&#34;&gt;介绍JVM堆的分代机制
+&lt;/h2&gt;&lt;p&gt;Java 堆的&lt;strong&gt;分代机制 (Generational Collection)&lt;/strong&gt; 是 JVM 垃圾回收（GC）性能优化的核心策略。&lt;/p&gt;
+&lt;p&gt;其核心理论基础是 &lt;strong&gt;&amp;ldquo;弱分代假说&amp;rdquo; (Weak Generational Hypothesis)&lt;/strong&gt;，即：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;绝大多数对象都是朝生夕死的（存活时间很短），而剩下的对象则往往能存活很久。&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;基于这个假设，JVM 将堆内存划分为&lt;strong&gt;新生代 (Young Generation)&lt;/strong&gt; 和 &lt;strong&gt;老年代 (Old Generation)&lt;/strong&gt;，针对不同区域的特点使用不同的垃圾回收算法，从而提高 GC 效率。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;一-堆内存的区域划分&#34;&gt;一、 堆内存的区域划分
+&lt;/h3&gt;&lt;p&gt;在经典的垃圾收集器（如 Serial, ParNew, CMS, Parallel Scavenge）中，堆内存主要分为两大部分：&lt;/p&gt;
+&lt;h4 id=&#34;1-新生代-young-generation&#34;&gt;1. 新生代 (Young Generation)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;占比:&lt;/strong&gt; 通常占堆内存的 1/3。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;特点:&lt;/strong&gt; 对象生命周期极短，频繁发生 GC。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;内部结构:&lt;/strong&gt; 进一步划分为三个区域（默认比例 &lt;strong&gt;8:1:1&lt;/strong&gt;）：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Eden 区 (80%):&lt;/strong&gt; 对象最初分配的地方。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Survivor 0 区 (From, 10%):&lt;/strong&gt; 上一次 GC 的幸存者。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Survivor 1 区 (To, 10%):&lt;/strong&gt; 垃圾回收时的复制目标。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;GC 方式:&lt;/strong&gt; &lt;strong&gt;Minor GC (Young GC)&lt;/strong&gt;。使用&lt;strong&gt;复制算法&lt;/strong&gt;（效率高，无碎片，但浪费 10% 空间）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-老年代-old-generation&#34;&gt;2. 老年代 (Old Generation)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;占比:&lt;/strong&gt; 通常占堆内存的 2/3。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;特点:&lt;/strong&gt; 存放生命周期长的对象（如连接池、Spring Bean、缓存数据）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;GC 方式:&lt;/strong&gt; &lt;strong&gt;Major GC&lt;/strong&gt; 或 &lt;strong&gt;Full GC&lt;/strong&gt;。使用&lt;strong&gt;标记-清除&lt;/strong&gt;或&lt;strong&gt;标记-整理&lt;/strong&gt;算法（速度比 Minor GC 慢 10 倍以上）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;(注：JDK 8 之后，永久代 PermGen 被移除，元空间 Metaspace 存储类信息，它使用的是本地内存，不属于堆。)&lt;/em&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;二-对象的生命周期流转-核心流程&#34;&gt;二、 对象的生命周期流转 (核心流程)
+&lt;/h3&gt;&lt;p&gt;对象在分代机制中的流转过程通常如下：&lt;/p&gt;
+&lt;h4 id=&#34;1-初始分配-allocation&#34;&gt;1. 初始分配 (Allocation)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;绝大多数新对象在 &lt;strong&gt;Eden 区&lt;/strong&gt; 分配。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;例外:&lt;/em&gt; 如果对象非常大（超过 &lt;code&gt;-XX:PretenureSizeThreshold&lt;/code&gt;），直接进入老年代，避免在 Survivor 区之间发生大量的内存复制。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-minor-gc-eden-满了&#34;&gt;2. Minor GC (Eden 满了)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;当 Eden 区满时，触发 &lt;strong&gt;Minor GC&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;存活判断:&lt;/strong&gt; JVM 检查 Eden 和正在使用的 Survivor (From) 区中的对象。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;复制:&lt;/strong&gt; 将存活的对象复制到空的 Survivor (To) 区。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;清理:&lt;/strong&gt; 清空 Eden 和 From 区。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;交换:&lt;/strong&gt; From 和 To 身份互换。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;3-年龄增长-aging&#34;&gt;3. 年龄增长 (Aging)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;对象每经过一次 Minor GC 且存活下来，其年龄（Age）就 +1（记录在对象头中）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;4-晋升老年代-promotion&#34;&gt;4. 晋升老年代 (Promotion)
+&lt;/h4&gt;&lt;p&gt;对象进入老年代通常有以下几种情况：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;长期存活:&lt;/strong&gt; 年龄达到阈值（默认 &lt;strong&gt;15&lt;/strong&gt;，可以通过 &lt;code&gt;-XX:MaxTenuringThreshold&lt;/code&gt; 设置）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;大对象直接进入:&lt;/strong&gt; 如前所述，超大数组或字符串。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;动态年龄判断:&lt;/strong&gt; 如果 Survivor 空间中，&lt;strong&gt;相同年龄所有对象的大小总和 &amp;gt; Survivor 空间的一半&lt;/strong&gt;，则年龄大于或等于该年龄的对象直接进入老年代，无需等到阈值。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;空间担保失败:&lt;/strong&gt; Minor GC 后，存活对象太多，Survivor 区放不下，借用老年代空间存储。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;三-为什么需要分代-作用&#34;&gt;三、 为什么需要分代？ (作用)
+&lt;/h3&gt;&lt;p&gt;如果不分代，每次 GC 都必须扫描整个堆（几个 GB 甚至几十 GB），效率极低。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;提升效率:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;新生代:&lt;/strong&gt; 只有少量对象存活，使用&lt;strong&gt;复制算法&lt;/strong&gt;，只需处理少量存活对象，速度极快。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;老年代:&lt;/strong&gt; 对象变动少，不需要频繁回收，减少了全堆扫描的次数。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;减少 STW (Stop-The-World):&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;频繁发生的 Minor GC 耗时非常短，对用户体验影响小。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;耗时长的 Full GC 频率被尽可能降低。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;四-常见参数总结-面试常考&#34;&gt;四、 常见参数总结 (面试常考)
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;&lt;strong&gt;参数&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;含义&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;示例&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;-Xms&lt;/code&gt; / &lt;code&gt;-Xmx&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;堆的初始大小 / 最大大小&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;-Xms2g -Xmx2g&lt;/code&gt; (通常设为一样避免抖动)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;-Xmn&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;新生代大小&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;-Xmn1g&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;-XX:NewRatio&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;老年代与新生代的比例&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;2&lt;/code&gt; (表示 老年代:新生代 = 2:1)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;-XX:SurvivorRatio&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;Eden 与 Survivor 的比例&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;8&lt;/code&gt; (表示 Eden:S0:S1 = 8:1:1)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;-XX:MaxTenuringThreshold&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;晋升老年代的年龄阈值&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;15&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id=&#34;总结&#34;&gt;总结
+&lt;/h3&gt;&lt;p&gt;分代机制本质上是&lt;strong&gt;空间换时间&lt;/strong&gt;和&lt;strong&gt;算法分治&lt;/strong&gt;的思想。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Eden/Survivor:&lt;/strong&gt; 用空间（浪费 10%）换取极快的分配和回收速度（复制算法）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Old:&lt;/strong&gt; 用复杂的标记算法处理存活率高的对象。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;介绍jvm-内存结构&#34;&gt;介绍JVM 内存结构
+&lt;/h2&gt;&lt;h3 id=&#34;核心架构概览&#34;&gt;核心架构概览
+&lt;/h3&gt;&lt;p&gt;JVM 在运行 Java 程序时，会把内存划分为以下 5 个主要区域：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1. 线程私有（Thread Local）&lt;/strong&gt; -&amp;gt; &lt;em&gt;随着线程创建而创建，线程结束而销毁。无需 GC。&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;程序计数器 (Program Counter Register)&lt;/li&gt;
+&lt;li&gt;虚拟机栈 (Java Virtual Machine Stack)&lt;/li&gt;
+&lt;li&gt;本地方法栈 (Native Method Stack)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;2. 线程共享（Shared）&lt;/strong&gt; -&amp;gt; &lt;em&gt;随虚拟机启动而创建。是 GC 的重点区域。&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;堆 (Heap)&lt;/li&gt;
+&lt;li&gt;方法区 (Method Area)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;一-线程私有区域-thread-local&#34;&gt;一、 线程私有区域 (Thread Local)
+&lt;/h3&gt;&lt;p&gt;这部分内存是&amp;quot;私有&amp;quot;的，线程之间互不干扰，所以&lt;strong&gt;不存在线程安全问题&lt;/strong&gt;。&lt;/p&gt;
+&lt;h4 id=&#34;1-程序计数器-pc-register&#34;&gt;1. 程序计数器 (PC Register)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;作用：&lt;/strong&gt; 记录当前线程执行到哪一行字节码指令。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如果执行的是 Java 方法，记录的是指令地址。&lt;/li&gt;
+&lt;li&gt;如果执行的是 Native 方法，这里是 &lt;code&gt;Undefined&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;特点：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;内存空间极小。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;唯一一个在 JVM 规范中没有规定任何 &lt;code&gt;OutOfMemoryError&lt;/code&gt; (OOM) 情况的区域&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;作用类似 CPU 的寄存器，用于线程切换后恢复执行位置。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-虚拟机栈-jvm-stack---最常说的栈&#34;&gt;2. 虚拟机栈 (JVM Stack) - &lt;em&gt;最常说的&amp;quot;栈&amp;quot;&lt;/em&gt;
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;作用：&lt;/strong&gt; 描述 Java 方法执行的内存模型。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;栈帧 (Stack Frame)：&lt;/strong&gt; 每个方法被执行的时候，都会创建一个&amp;quot;栈帧&amp;quot;压入栈中。栈帧包含：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;局部变量表：&lt;/strong&gt; 存方法参数和内部定义的局部变量（int, boolean, 对象引用等）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;操作数栈：&lt;/strong&gt; 类似于计算器的草稿纸，用于计算过程中的数据暂存和交换。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;动态链接：&lt;/strong&gt; 指向方法区中该方法的引用。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;方法返回地址：&lt;/strong&gt; 方法正常或异常退出的位置。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;异常：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;StackOverflowError&lt;/code&gt;：递归过深，栈帧太多，撑爆了栈深度。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;OutOfMemoryError&lt;/code&gt;：如果栈可以动态扩展，但申请不到足够内存时抛出。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;3-本地方法栈-native-method-stack&#34;&gt;3. 本地方法栈 (Native Method Stack)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;作用：&lt;/strong&gt; 与虚拟机栈类似，区别在于它是为 &lt;strong&gt;Native 方法&lt;/strong&gt;（使用 C/C++ 编写的底层方法）服务的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;注：在 HotSpot 虚拟机中，本地方法栈和虚拟机栈是合二为一的。&lt;/em&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;二-线程共享区域-shared&#34;&gt;二、 线程共享区域 (Shared)
+&lt;/h3&gt;&lt;p&gt;这部分是多线程共享的，需要考虑&lt;strong&gt;线程安全&lt;/strong&gt;问题，也是&lt;strong&gt;垃圾回收 (GC)&lt;/strong&gt; 的主战场。&lt;/p&gt;
+&lt;h4 id=&#34;1-堆-heap&#34;&gt;1. 堆 (Heap)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;作用：&lt;/strong&gt; JVM 内存中最大的一块。存放几乎所有的&lt;strong&gt;对象实例&lt;/strong&gt;和&lt;strong&gt;数组&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;细分：&lt;/strong&gt; &lt;strong&gt;新生代 (Eden, S0, S1)&lt;/strong&gt; 和 &lt;strong&gt;老年代&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;TLAB (Thread Local Allocation Buffer)：&lt;/strong&gt; 虽然堆是共享的，但为了提升对象分配效率，JVM 在 Eden 区为每个线程划分了一小块私有分配区（TLAB），避免多线程竞争锁。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;异常：&lt;/strong&gt; &lt;code&gt;OutOfMemoryError: Java heap space&lt;/code&gt;（堆内存溢出）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-方法区-method-area&#34;&gt;2. 方法区 (Method Area)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;作用：&lt;/strong&gt; 存储已被虚拟机加载的&lt;strong&gt;类信息 (Class)、常量、静态变量 (static)、即时编译器 (JIT) 编译后的代码缓存&lt;/strong&gt;等。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;演进 (面试重点)：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;JDK 1.7 及之前：&lt;/strong&gt; 实现为 &lt;strong&gt;永久代 (PermGen)&lt;/strong&gt;。它在 JVM 内存中，受限于 JVM 大小，容易出现 OOM。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;JDK 1.8 及之后：&lt;/strong&gt; 永久代被移除，取而代之的是 &lt;strong&gt;元空间 (Metaspace)&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;区别：&lt;/strong&gt; 元空间&lt;strong&gt;不在虚拟机内存中&lt;/strong&gt;，而是使用&lt;strong&gt;本地内存 (Native Memory)&lt;/strong&gt;。这意味着它只受限于机器的物理内存大小，大大降低了 OOM 的风险。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;运行时常量池 (Runtime Constant Pool)：&lt;/strong&gt; 是方法区的一部分。用于存放编译期生成的各种字面量和符号引用。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;三-堆外内存-直接内存-direct-memory&#34;&gt;三、 堆外内存 (直接内存 Direct Memory)
+&lt;/h3&gt;&lt;p&gt;这不是 JVM 运行时数据区的一部分，但也非常重要。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;作用：&lt;/strong&gt; NIO 类库引入了一种基于通道与缓冲区的 I/O 方式，可以使用 Native 函数库直接分配堆外内存。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;优势：&lt;/strong&gt; 避免了在 Java 堆和 Native 堆之间来回复制数据（零拷贝技术），显著提高 I/O 性能。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;异常：&lt;/strong&gt; 虽然不受堆大小限制，但受本机总内存限制，也会抛出 &lt;code&gt;OutOfMemoryError&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;四-总结对比表&#34;&gt;四、 总结对比表
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;&lt;strong&gt;区域&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;线程归属&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;存储内容&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;抛出异常&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;生命周期&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;程序计数器&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;私有&lt;/td&gt;
+          &lt;td&gt;指令地址&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;无&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;随线程&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;虚拟机栈&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;私有&lt;/td&gt;
+          &lt;td&gt;局部变量、操作数栈&lt;/td&gt;
+          &lt;td&gt;StackOverflow / OOM&lt;/td&gt;
+          &lt;td&gt;随线程&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;本地方法栈&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;私有&lt;/td&gt;
+          &lt;td&gt;Native 方法信息&lt;/td&gt;
+          &lt;td&gt;StackOverflow / OOM&lt;/td&gt;
+          &lt;td&gt;随线程&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;堆&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;共享&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;对象实例、数组&lt;/td&gt;
+          &lt;td&gt;OOM&lt;/td&gt;
+          &lt;td&gt;随进程 (JVM)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;方法区&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;共享&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;类信息、常量、静态变量&lt;/td&gt;
+          &lt;td&gt;OOM (Metaspace OOM)&lt;/td&gt;
+          &lt;td&gt;随进程 (JVM)&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;介绍gc标记算法&#34;&gt;介绍GC标记算法
+&lt;/h2&gt;&lt;p&gt;在垃圾回收（GC）的世界里，&amp;ldquo;标记&amp;quot;其实包含两个层面的含义：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;判定标准：&lt;/strong&gt; 怎么知道哪个对象是垃圾？（&lt;strong&gt;死活判定&lt;/strong&gt;）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;执行手段：&lt;/strong&gt; 找出垃圾后，用什么算法去清理？（&lt;strong&gt;垃圾收集算法&lt;/strong&gt;）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;第一步判定对象死活怎么标记&#34;&gt;第一步：判定对象死活（怎么标记？）
+&lt;/h3&gt;&lt;p&gt;在 Java (HotSpot) 中，主要使用的是 &lt;strong&gt;可达性分析算法&lt;/strong&gt;，而不是引用计数法。&lt;/p&gt;
+&lt;h4 id=&#34;1-引用计数法-reference-counting&#34;&gt;1. 引用计数法 (Reference Counting)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;原理：&lt;/strong&gt; 给对象添加一个引用计数器。每当有一个地方引用它，计数器 +1；引用失效，计数器 -1。为 0 则可回收。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;优点：&lt;/strong&gt; 简单，判定效率高。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;缺点 (致命)：&lt;/strong&gt; &lt;strong&gt;无法解决&amp;quot;循环引用&amp;quot;问题&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;例子：&lt;/em&gt; 对象 A 引用 B，对象 B 引用 A，除此之外没人引用它们。它们的计数器都是 1，永远无法归零，导致内存泄漏。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;现状：&lt;/strong&gt; &lt;strong&gt;Java 虚拟机（HotSpot）不使用此算法&lt;/strong&gt;（Python 和 C++ 智能指针在使用）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-可达性分析算法-reachability-analysis--java-的标准&#34;&gt;2. 可达性分析算法 (Reachability Analysis) —— &lt;strong&gt;Java 的标准&lt;/strong&gt;
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;原理：&lt;/strong&gt; 通过一系列称为 &lt;strong&gt;&amp;ldquo;GC Roots&amp;rdquo;&lt;/strong&gt; 的根对象作为起始节点集，从这些节点开始向下搜索。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;凡是能从 GC Roots &lt;strong&gt;&amp;ldquo;顺藤摸瓜&amp;rdquo;&lt;/strong&gt; 搜索到的对象，都是&lt;strong&gt;存活&lt;/strong&gt;的（标记为&amp;quot;可达&amp;rdquo;）。&lt;/li&gt;
+&lt;li&gt;凡是搜索不到的对象，就是&lt;strong&gt;垃圾&lt;/strong&gt;（不可达）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;什么是 GC Roots？ (面试必考)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;可以作为 GC Roots 的对象主要包括以下 4 类：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;虚拟机栈（栈帧中的局部变量表）&lt;/strong&gt; 中引用的对象。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;方法区中类静态属性&lt;/strong&gt; 引用的对象。（&lt;code&gt;static User u = ...&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;方法区中常量&lt;/strong&gt; 引用的对象。（&lt;code&gt;static final User u = ...&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;本地方法栈中 JNI (Native 方法)&lt;/strong&gt; 引用的对象。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;第二步执行垃圾收集标记完怎么清理&#34;&gt;第二步：执行垃圾收集（标记完怎么清理？）
+&lt;/h3&gt;&lt;p&gt;当 GC 通过可达性分析标记出了哪些是活的、哪些是死的之后，就需要具体的算法来进行内存回收。常见的有以下三种：&lt;/p&gt;
+&lt;h4 id=&#34;1-标记-清除算法-mark-sweep&#34;&gt;1. 标记-清除算法 (Mark-Sweep)
+&lt;/h4&gt;&lt;p&gt;这是最基础的算法。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;过程：&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;标记：&lt;/strong&gt; 把所有活动对象标记出来。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;清除：&lt;/strong&gt; 统一回收未被标记的对象。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;优点：&lt;/strong&gt; 简单，不需要移动对象。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;缺点：&lt;/strong&gt; &lt;strong&gt;内存碎片化：&lt;/strong&gt; 清除后会产生大量不连续的内存碎片。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;适用场景：&lt;/strong&gt; 老年代（CMS 收集器就是基于此）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-标记-复制算法-mark-copy&#34;&gt;2. 标记-复制算法 (Mark-Copy)
+&lt;/h4&gt;&lt;p&gt;为了解决碎片问题而生。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;过程：&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;将内存分为大小相等的两块（A 和 B），每次只使用其中一块。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;标记&lt;/strong&gt; A 中的存活对象。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;复制&lt;/strong&gt; 将 A 中所有存活的对象，整齐地复制到 B 中。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;清理&lt;/strong&gt; 一次性清空 A。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;优点：&lt;/strong&gt; &lt;strong&gt;没有内存碎片&lt;/strong&gt;，分配内存简单（指针碰撞）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;缺点：&lt;/strong&gt; &lt;strong&gt;空间浪费&lt;/strong&gt;（内存利用率只有 50%）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;优化：&lt;/strong&gt; 在 HotSpot 的&lt;strong&gt;新生代&lt;/strong&gt;中，使用 &lt;code&gt;Eden : Survivor : Survivor = 8 : 1 : 1&lt;/code&gt; 的比例，只浪费 10% 的空间。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;适用场景：&lt;/strong&gt; 新生代（存活率低，复制成本低）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;3-标记-整理算法-mark-compact&#34;&gt;3. 标记-整理算法 (Mark-Compact)
+&lt;/h4&gt;&lt;p&gt;结合了前两者的优点。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;过程：&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;标记&lt;/strong&gt; 存活对象。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;整理&lt;/strong&gt; 让所有存活的对象向内存的一端移动（滑动整理）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;清理&lt;/strong&gt; 直接清理掉边界以外的内存。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;优点：&lt;/strong&gt; 没有内存碎片，也不浪费空间。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;缺点：&lt;/strong&gt; 移动对象需要更新引用地址，成本较高，且需要暂停用户线程 (STW)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;适用场景：&lt;/strong&gt; 老年代（对象存活率高，不适合复制）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;第三步进阶--三色标记法-tri-color-marking&#34;&gt;第三步：进阶 —— 三色标记法 (Tri-color Marking)
+&lt;/h3&gt;&lt;p&gt;&lt;em&gt;如果面试官问及&amp;quot;并发标记&amp;quot;或者 CMS/G1 的底层原理，这个是必杀技。&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;为了让 GC 线程和用户线程能&lt;strong&gt;并发运行&lt;/strong&gt;，JVM 引入了三色标记法来描述标记过程中的状态：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;白色：&lt;/strong&gt; 尚未访问过。（如果在分析结束时仍为白色，代表是垃圾）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;黑色：&lt;/strong&gt; 自己和成员变量都已访问过。（肯定是活的对象，且扫描完毕）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;灰色：&lt;/strong&gt; 自己访问过，但成员变量还没访问完。（中间状态，待扫描）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;并发标记的问题：&lt;/strong&gt; 在并发过程中，用户线程可能会切断&amp;quot;灰色&amp;quot;到&amp;quot;白色&amp;quot;的引用，同时建立&amp;quot;黑色&amp;quot;到&amp;quot;白色&amp;quot;的引用。这会导致漏标。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;解决方案：&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;CMS&lt;/strong&gt; 使用 &lt;strong&gt;增量更新 (Incremental Update)&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;G1&lt;/strong&gt; 使用 &lt;strong&gt;原始快照 (SATB)&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;总结对比表&#34;&gt;总结对比表
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;&lt;strong&gt;算法&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;优点&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;缺点&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;适用区域&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;代表收集器&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;标记-清除&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;简单&lt;/td&gt;
+          &lt;td&gt;内存碎片严重&lt;/td&gt;
+          &lt;td&gt;老年代&lt;/td&gt;
+          &lt;td&gt;CMS&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;标记-复制&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;无碎片，运行快&lt;/td&gt;
+          &lt;td&gt;浪费空间 (需 Survivor)&lt;/td&gt;
+          &lt;td&gt;新生代&lt;/td&gt;
+          &lt;td&gt;Serial, ParNew, G1 (Young)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;标记-整理&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;无碎片，无空间浪费&lt;/td&gt;
+          &lt;td&gt;移动对象效率低，需 STW&lt;/td&gt;
+          &lt;td&gt;老年代&lt;/td&gt;
+          &lt;td&gt;Parallel Old, Serial Old, G1 (Mixed)&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;讲解常见的垃圾回收器&#34;&gt;讲解常见的垃圾回收器
+&lt;/h2&gt;&lt;h3 id=&#34;cms-concurrent-mark-sweep--里程碑式产品&#34;&gt;CMS (Concurrent Mark Sweep) —— &lt;em&gt;里程碑式产品&lt;/em&gt;
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;核心特点：&lt;/strong&gt; &lt;strong&gt;并发收集、低停顿&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;工作流程 (重点)：&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;初始标记 (Initial Mark):&lt;/strong&gt; STW。只标记 GC Roots 直接关联的对象（速度很快）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;并发标记 (Concurrent Mark):&lt;/strong&gt; &lt;strong&gt;不 STW&lt;/strong&gt;。GC 线程和用户线程一起跑，遍历整个对象图。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;重新标记 (Remark):&lt;/strong&gt; STW。修正并发期间因用户程序变动而导致标记产生变动的那一部分对象。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;并发清除 (Concurrent Sweep):&lt;/strong&gt; &lt;strong&gt;不 STW&lt;/strong&gt;。清理垃圾。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;缺点 (面试必问)：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;CPU 敏感：&lt;/strong&gt; 占用线程资源，导致程序变慢。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;浮动垃圾：&lt;/strong&gt; 并发清理阶段产生的新垃圾无法在当次处理。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;内存碎片：&lt;/strong&gt; 使用&lt;strong&gt;标记-清除&lt;/strong&gt;算法，容易产生碎片，导致大对象分配困难，触发 Full GC。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;现状：&lt;/strong&gt; JDK 9 标记废弃，JDK 14 正式移除。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;g1-garbage-first--jdk-9-之后的默认王者&#34;&gt;G1 (Garbage First) —— &lt;em&gt;JDK 9 之后的默认王者&lt;/em&gt;
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;核心理念：&lt;/strong&gt; &lt;strong&gt;化整为零&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;内存布局：&lt;/strong&gt; 不再有物理隔离的新生代和老年代。它把堆内存切分成很多个大小相等的 &lt;strong&gt;Region (区域)&lt;/strong&gt;。这些 Region 逻辑上可以是 Eden、Survivor 或 Old。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;算法：&lt;/strong&gt; 整体看是&lt;strong&gt;标记-整理&lt;/strong&gt;，局部（两个 Region 之间）看是&lt;strong&gt;标记-复制&lt;/strong&gt;。&lt;strong&gt;不会产生内存碎片&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;最大优势：&lt;/strong&gt; &lt;strong&gt;可预测的停顿模型&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;你可以告诉 G1：&amp;ldquo;即使堆很大，但我要求 GC 停顿时间不要超过 200ms&amp;rdquo;。G1 会分析哪个 Region 垃圾最多（回收收益最大），优先回收它（这也是 Garbage First 名字的由来）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;适用场景：&lt;/strong&gt; 面向服务端应用，配备大内存（6GB - 8GB 以上），替代 CMS。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;介绍java的线程池&#34;&gt;介绍Java的线程池
+&lt;/h2&gt;&lt;p&gt;Java 线程池（Thread Pool）是 Java 并发编程中的核心组件，主要用于管理线程的生命周期、减少资源消耗并提高系统响应速度。&lt;/p&gt;
+&lt;h3 id=&#34;一为什么要用线程池&#34;&gt;一、为什么要用线程池？
+&lt;/h3&gt;&lt;p&gt;如果不使用线程池，每当有新任务时手动创建线程（&lt;code&gt;new Thread()&lt;/code&gt;），会带来以下问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;资源消耗大：&lt;/strong&gt; 频繁创建和销毁线程需要消耗大量系统资源（CPU、内存）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;响应速度慢：&lt;/strong&gt; 创建线程本身需要时间，增加了任务处理的延迟。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;难以管理：&lt;/strong&gt; 无限制创建线程可能导致 CPU 过载或 OOM（内存溢出）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;线程池的好处：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;降低资源消耗：&lt;/strong&gt; 重复利用已创建的线程。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;提高响应速度：&lt;/strong&gt; 任务到达时无需等待线程创建即可立即执行。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;提高可管理性：&lt;/strong&gt; 可以统一分配、调优和监控线程。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;二核心类threadpoolexecutor&#34;&gt;二、核心类：ThreadPoolExecutor
+&lt;/h3&gt;&lt;p&gt;Java 线程池的核心实现类是 &lt;code&gt;java.util.concurrent.ThreadPoolExecutor&lt;/code&gt;。构造函数包含 &lt;strong&gt;7 个核心参数&lt;/strong&gt;（面试和实战的重点）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kd&#34;&gt;public&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;ThreadPoolExecutor&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;corePoolSize&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 1. 核心线程数&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;maximumPoolSize&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 2. 最大线程数&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;long&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;keepAliveTime&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 3. 空闲线程存活时间&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;TimeUnit&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;unit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;       &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 4. 时间单位&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;BlockingQueue&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Runnable&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;workQueue&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 5. 任务队列&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ThreadFactory&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;threadFactory&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;       &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 6. 线程工厂&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;RejectedExecutionHandler&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;handler&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;   &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 7. 拒绝策略&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;参数详解：&lt;/strong&gt;&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;参数&lt;/th&gt;
+          &lt;th&gt;说明&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;corePoolSize&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;核心线程数，线程池中长驻的线程数量&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;workQueue&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;任务队列，核心线程都在忙时，新任务暂存于此&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;maximumPoolSize&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;最大线程数，队列满了且线程数 &amp;lt; 最大线程数时，创建非核心线程&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;keepAliveTime&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;空闲线程存活时间，超过 corePoolSize 的线程空闲超时后被回收&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;unit&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;keepAliveTime 的时间单位&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;threadFactory&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;线程工厂，用于创建新线程（可自定义线程名）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;handler&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;拒绝策略，队列满且线程数达到最大值时触发&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;三线程池的工作流程重要&#34;&gt;三、线程池的工作流程（重要）
+&lt;/h3&gt;&lt;p&gt;当一个新任务提交给线程池时，处理逻辑如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;判断核心线程：&lt;/strong&gt; 如果当前运行的线程数 &amp;lt; &lt;code&gt;corePoolSize&lt;/code&gt;，则立即创建新线程执行任务。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;进入队列：&lt;/strong&gt; 如果核心线程都在忙（&amp;gt;= corePoolSize），则将任务放入 &lt;code&gt;workQueue&lt;/code&gt; 等待。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;创建非核心线程：&lt;/strong&gt; 如果队列也满了，判断当前线程数是否 &amp;lt; &lt;code&gt;maximumPoolSize&lt;/code&gt;。如果是，则创建新线程执行任务。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;触发拒绝策略：&lt;/strong&gt; 如果队列满了，且线程数已达到 &lt;code&gt;maximumPoolSize&lt;/code&gt;，则调用 &lt;code&gt;handler&lt;/code&gt; 执行拒绝策略。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;简记口诀：&lt;/strong&gt; 先核心，后队列，再最大，最后拒绝。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;四四种常见的拒绝策略&#34;&gt;四、四种常见的拒绝策略
+&lt;/h3&gt;&lt;p&gt;JDK 内置了四种 &lt;code&gt;RejectedExecutionHandler&lt;/code&gt; 实现：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;策略&lt;/th&gt;
+          &lt;th&gt;行为&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;AbortPolicy&lt;/code&gt; (默认)&lt;/td&gt;
+          &lt;td&gt;直接抛出 &lt;code&gt;RejectedExecutionException&lt;/code&gt; 异常&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;CallerRunsPolicy&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;由调用线程直接运行该任务（负反馈调节）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;DiscardPolicy&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;直接丢弃任务，不抛出异常&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;DiscardOldestPolicy&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;丢弃队列中等待最久的任务，然后重新提交当前任务&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;五常见的线程池类型executors-工具类&#34;&gt;五、常见的线程池类型（Executors 工具类）
+&lt;/h3&gt;&lt;p&gt;JDK 提供了 &lt;code&gt;Executors&lt;/code&gt; 工厂类来快速创建线程池，但在&lt;strong&gt;生产环境中通常不推荐直接使用&lt;/strong&gt;（参考《阿里巴巴 Java 开发手册》），建议手动 &lt;code&gt;new ThreadPoolExecutor&lt;/code&gt;。&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;类型&lt;/th&gt;
+          &lt;th&gt;特点&lt;/th&gt;
+          &lt;th&gt;风险&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;FixedThreadPool&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;固定大小的线程池&lt;/td&gt;
+          &lt;td&gt;使用无界队列，可能导致 OOM&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;SingleThreadExecutor&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;只有一个线程，保证任务按顺序执行&lt;/td&gt;
+          &lt;td&gt;同样使用无界队列，有 OOM 风险&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;CachedThreadPool&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;可缓存线程池，线程数无上限&lt;/td&gt;
+          &lt;td&gt;创建大量线程，导致 CPU 100% 或 OOM&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;ScheduledThreadPool&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;支持定时及周期性任务执行&lt;/td&gt;
+          &lt;td&gt;-&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;六线程池参数配置建议&#34;&gt;六、线程池参数配置建议
+&lt;/h3&gt;&lt;p&gt;配置线程池大小通常取决于任务类型：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;任务类型&lt;/th&gt;
+          &lt;th&gt;特点&lt;/th&gt;
+          &lt;th&gt;建议配置&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;CPU 密集型&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;加密、计算、压缩&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;CPU 核数 + 1&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;IO 密集型&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;数据库查询、HTTP 请求、文件读写&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;CPU 核数 * 2&lt;/code&gt; 或 &lt;code&gt;CPU 核数 / (1 - 阻塞系数)&lt;/code&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;为什么协程适合处理io密集型任务&#34;&gt;为什么协程适合处理IO密集型任务
+&lt;/h2&gt;&lt;p&gt;协程（Coroutine）之所以被认为是处理 IO 密集型任务的神器，核心原因可以用一句话概括：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;协程把&amp;quot;等待 IO&amp;quot;的时间利用了起来，并且以极低的成本实现了并发。&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;一协程-vs-线程的核心差异&#34;&gt;一、协程 vs 线程的核心差异
+&lt;/h3&gt;&lt;h4 id=&#34;1-极其轻量级的挂起和恢复&#34;&gt;1. 极其轻量级的&amp;quot;挂起&amp;quot;和&amp;quot;恢复&amp;quot;
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;线程的痛点（阻塞）：&lt;/strong&gt; 当一个线程发起 IO 请求时，如果数据没回来，这个线程就会阻塞（Block）。线程虽然什么都不干（在傻等），但它依然占用了系统资源。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;协程的优势（非阻塞/挂起）：&lt;/strong&gt; 当协程发起 IO 请求时，它不会&amp;quot;傻等&amp;quot;，而是会主动&lt;strong&gt;挂起（Yield）&lt;/strong&gt;，把当前占用的线程控制权让出来。底层的物理线程没有被阻塞，它可以立即去执行其他协程的任务。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-内存资源消耗极低&#34;&gt;2. 内存资源消耗极低
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;线程（Heavyweight）：&lt;/strong&gt; Java 的线程是操作系统内核级线程。创建一个线程通常需要预留 &lt;strong&gt;1MB 左右&lt;/strong&gt;的栈内存。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;10,000 个并发连接 = 10GB 内存&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;协程（Lightweight）：&lt;/strong&gt; 协程是用户态的，完全由程序或语言运行时管理。一个协程的初始栈内存通常只有 &lt;strong&gt;几 KB&lt;/strong&gt;（如 Go 协程约 2KB）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;同样的 10GB 内存，理论上可以支撑&lt;strong&gt;数百万&lt;/strong&gt;个协程。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;3-极低的上下文切换成本&#34;&gt;3. 极低的上下文切换成本
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;线程切换（贵）：&lt;/strong&gt; 线程调度由操作系统内核完成。涉及用户态和内核态的转换，需要保存和恢复大量的寄存器状态，开销较大。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;协程切换（便宜）：&lt;/strong&gt; 协程调度完全在&lt;strong&gt;用户态&lt;/strong&gt;完成，不涉及内核态切换。速度比线程切换快 &lt;strong&gt;1~2 个数量级&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;4-同步的代码异步的执行&#34;&gt;4. &amp;ldquo;同步的代码，异步的执行&amp;rdquo;
+&lt;/h4&gt;&lt;p&gt;你可以用写同步代码的方式（顺序执行）来写异步逻辑，极大地降低了编写高并发 IO 代码的心智负担。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;二通俗类比餐厅服务员&#34;&gt;二、通俗类比：餐厅服务员
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;多线程模型（1 对 1）：&lt;/strong&gt; 来了 100 个客人，老板雇了 100 个服务员。每个服务员负责一个客人，客人点完菜，服务员就站在厨房门口死等厨师做好饭，期间什么也不干。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;缺点：&lt;/strong&gt; 雇佣服务员成本太高，且大部分服务员都在发呆（阻塞）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;协程模型（1 对 多）：&lt;/strong&gt; 来了 100 个客人，老板只雇了 1 个服务员。服务员给 1 号桌点完菜，把单子扔给厨房，立刻跑去给 2 号桌点菜。等厨房喊&amp;quot;1 号桌菜好了&amp;quot;，服务员再回来端菜。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;优点：&lt;/strong&gt; 只需要很少的服务员就能服务大量客人，服务员一直在跑动（CPU 高效利用）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;三协程到底做了什么&#34;&gt;三、协程到底做了什么？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;结论：协程并不能让 CPU 偷懒不做数据搬运。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;当数据准备好后，依然是 CPU 亲自把数据从内核缓冲区搬运（复制）到用户缓冲区。这一点，协程和线程没有任何区别。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;协程赢在&amp;quot;等待数据到达内核缓冲区&amp;quot;的这段时间。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;协程底层配合的是 &lt;strong&gt;非阻塞 I/O (Non-blocking I/O)&lt;/strong&gt; 和 &lt;strong&gt;IO 多路复用 (Epoll/Selector)&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;协程调用读取操作，底层立即问内核：&amp;ldquo;数据到了吗？&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;内核说&amp;quot;没到&amp;quot;。协程不睡，而是仅仅在用户态线程内部记录一下&amp;quot;我先暂停&amp;quot;，然后立刻让出 CPU 给其他协程用。&lt;/li&gt;
+&lt;li&gt;协程把&amp;quot;我在等数据&amp;quot;这件事注册给操作系统的监听器（Epoll）。&lt;/li&gt;
+&lt;li&gt;数据到达后，监听器通知程序，协程被恢复继续执行。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;总结：&lt;/strong&gt; 协程并不是让 CPU 少干了活（搬运工作量没变），而是让 CPU 在等待期间别闲着，也别瞎折腾（切换上下文），从而能处理更多的并发任务。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;四什么时候用协程&#34;&gt;四、什么时候用协程？
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;任务类型&lt;/th&gt;
+          &lt;th&gt;特点&lt;/th&gt;
+          &lt;th&gt;是否适合协程&lt;/th&gt;
+          &lt;th&gt;原因&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;IO 密集型&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;网络请求、读写数据库、微服务调用&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;非常适合&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;解决了大量&amp;quot;等待&amp;quot;造成的资源浪费，能支撑超高并发&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;CPU 密集型&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;视频转码、复杂的数学计算、加密解密&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;不适合&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;任务主要在用 CPU 计算，没有时间让出控制权，协程的调度反而会增加负担&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;io操作的数据搬运是由谁来做的&#34;&gt;IO操作的数据搬运是由谁来做的
+&lt;/h2&gt;&lt;p&gt;从 Socket 内存缓冲区（内核空间）到用户内存缓冲区（用户空间）的数据搬运，&lt;strong&gt;必须由 CPU 亲力亲为&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;但是，整个 I/O 过程并非全由 CPU 完成。我们需要把一次网络 I/O 拆解为两个阶段：&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;第一阶段网卡---内核缓冲区&#34;&gt;第一阶段：网卡 -&amp;gt; 内核缓冲区
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;干活的主角：&lt;/strong&gt; DMA（Direct Memory Access，直接存储器访问）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CPU 的角色：&lt;/strong&gt; 基本不参与（只负责发号施令）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;网线上的光电信号到达网卡（NIC）。&lt;/li&gt;
+&lt;li&gt;DMA 控制器（硬件芯片）接管总线，直接把数据从网卡拷贝到内存中的内核缓冲区。&lt;/li&gt;
+&lt;li&gt;搬运完成后，DMA 会给 CPU 发送一个&lt;strong&gt;中断信号&lt;/strong&gt;，告诉 CPU：&amp;ldquo;数据已经卸到内核仓库了&amp;rdquo;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;为什么要用 DMA？&lt;/strong&gt; 如果没有 DMA，CPU 就得一个字节一个字节地从网卡读数据，效率极低。有了 DMA，CPU 就可以做&amp;quot;甩手掌柜&amp;quot;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;第二阶段内核缓冲区---用户缓冲区&#34;&gt;第二阶段：内核缓冲区 -&amp;gt; 用户缓冲区
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;干活的主角：&lt;/strong&gt; CPU&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;状态：&lt;/strong&gt; 昂贵的&amp;quot;上下文切换&amp;quot;和&amp;quot;内存拷贝&amp;quot;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;系统调用：&lt;/strong&gt; Java 程序执行了 &lt;code&gt;socket.read()&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;模式切换：&lt;/strong&gt; 线程从用户态切换到内核态。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CPU 搬运：&lt;/strong&gt; CPU 亲自上阵，将数据从内核 Socket 缓冲区逐字节拷贝到用户空间缓冲区。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;返回用户态：&lt;/strong&gt; 拷贝完成后，CPU 切换回用户态，&lt;code&gt;read()&lt;/code&gt; 方法返回。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;总结谁在搬运&#34;&gt;总结：谁在搬运？
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;数据流向&lt;/th&gt;
+          &lt;th&gt;搬运工 (硬件)&lt;/th&gt;
+          &lt;th&gt;消耗资源&lt;/th&gt;
+          &lt;th&gt;备注&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;网卡 → 内核内存&lt;/td&gt;
+          &lt;td&gt;DMA 控制器&lt;/td&gt;
+          &lt;td&gt;总线带宽&lt;/td&gt;
+          &lt;td&gt;CPU 几乎不参与，效率极高&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;内核内存 → 用户内存&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;CPU&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;CPU 周期&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;这是性能瓶颈！&lt;/strong&gt; CPU 必须暂停其他计算工作来搬砖&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;延伸零拷贝zero-copy&#34;&gt;延伸：零拷贝（Zero-Copy）
+&lt;/h3&gt;&lt;p&gt;既然 CPU 搬运内核到用户空间很慢，那能不能不搬？这就是 Kafka、Netty 等高性能框架使用的&lt;strong&gt;零拷贝&lt;/strong&gt;技术（如 &lt;code&gt;sendfile&lt;/code&gt; 或 &lt;code&gt;mmap&lt;/code&gt;）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心思想：&lt;/strong&gt; 如果你只是想把文件读取出来发给网卡（比如做静态资源服务器），数据其实不需要进入用户空间。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;做法：&lt;/strong&gt; 数据由 DMA 从磁盘搬到内核，再由 DMA 直接从内核搬到网卡。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结果：&lt;/strong&gt; 完全跳过了 CPU 将数据搬运到用户缓冲区的步骤，CPU 占用率大幅下降，性能起飞。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;redis-60-的-io-多线程&#34;&gt;Redis 6.0+ 的 IO 多线程
+&lt;/h2&gt;&lt;h3 id=&#34;默认是否开启&#34;&gt;默认是否开启？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;默认是关闭的（Disabled）。&lt;/strong&gt; 虽然 Redis 6.0 引入了多线程 I/O 特性，但在默认配置下，Redis 依然表现为传统的单线程模式。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;如何开启&#34;&gt;如何开启？
+&lt;/h3&gt;&lt;p&gt;修改 &lt;code&gt;redis.conf&lt;/code&gt; 配置文件中的以下两个参数：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;参数&lt;/th&gt;
+          &lt;th&gt;默认值&lt;/th&gt;
+          &lt;th&gt;说明&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;io-threads&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;1&lt;/td&gt;
+          &lt;td&gt;设置为大于 1 的值开启。4 核机器建议设为 2~3 个，8 核机器建议设为 6 个&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;io-threads-do-reads&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;no&lt;/td&gt;
+          &lt;td&gt;设置为 yes 开启多线程读。默认只开启多线程写&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;为什么默认不开启&#34;&gt;为什么默认不开启？
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;性能没瓶颈：&lt;/strong&gt; 对于绝大多数应用程序，Redis 的瓶颈通常在于网络带宽或内存，而不是 CPU。单线程的 Redis 已经足够快（每秒处理数万至十万级请求）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;复杂性与稳定性：&lt;/strong&gt; 引入多线程会增加系统的复杂性。保持默认关闭可以最大程度保证旧版本的行为一致性和稳定性。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;重要提示核心逻辑依然是单线程&#34;&gt;重要提示：核心逻辑依然是&amp;quot;单线程&amp;quot;
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;多线程只负责 I/O：&lt;/strong&gt; 处理网络数据的读（Read/Decode）和网络数据的写（Write/Encode）。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;命令执行依然是单线程：&lt;/strong&gt; 实际执行 GET、SET、LUA 脚本等操作的，依然是那个唯一的主线程。&lt;/p&gt;
+&lt;p&gt;这意味着：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;你依然不需要担心多线程并发带来的数据竞争问题（不需要加锁）。&lt;/li&gt;
+&lt;li&gt;原子性依然得到天然保证。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;单线程-redis-会傻等吗&#34;&gt;单线程 Redis 会傻等吗？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;绝对不会傻等。&lt;/strong&gt; Redis 之所以快，靠的就是 &lt;strong&gt;I/O 多路复用（Epoll）&lt;/strong&gt; 技术。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;DMA 搬运阶段：&lt;/strong&gt; Redis 主线程不参与，它正在忙着处理其他请求。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数据到站：&lt;/strong&gt; 操作系统通过 Epoll 标记该 Socket &amp;ldquo;可读&amp;rdquo;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Redis 发现数据：&lt;/strong&gt; 主线程调用 &lt;code&gt;epoll_wait()&lt;/code&gt; 问操作系统哪些连接有数据。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;搬运到用户态：&lt;/strong&gt; 因为数据已经在内核缓冲区躺好了，&lt;code&gt;read()&lt;/code&gt; 调用不需要等待。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;结论：&lt;/strong&gt; Redis 没开启多线程时，它绝不会等&amp;quot;网卡接收数据&amp;quot;（这是 DMA 干的），但它必须亲自做&amp;quot;内核到用户态的数据拷贝&amp;quot;（这是 CPU 干的）。&lt;/p&gt;
+&lt;h2 id=&#34;mysql-主从同步模型&#34;&gt;MySQL 主从同步模型
+&lt;/h2&gt;&lt;h3 id=&#34;新节点加入主节点直接传全量-binlog-吗&#34;&gt;新节点加入，主节点直接传全量 Binlog 吗？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;通常不会，甚至是不可能的。&lt;/strong&gt; 如果数据库已经运行了一年，Binlog 可能早就滚动删除了。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;标准的新节点同步流程是&amp;quot;全量快照 + 增量 Binlog&amp;quot;：&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;全量数据搬运（Snapshot）：&lt;/strong&gt; 先手动将主节点（或某个现存从节点）当前的数据快照拷贝给新节点。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;工具：&lt;code&gt;mysqldump&lt;/code&gt;（逻辑备份，慢）或 &lt;code&gt;Percona XtraBackup&lt;/code&gt;（物理备份，快，生产环境首选）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;记录位点（Position）：&lt;/strong&gt; 在做快照的那一瞬间，记录下当前的 Binlog 文件名和偏移量，或者 GTID。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;增量追赶（Catch-up）：&lt;/strong&gt; 将快照恢复到新节点后，新节点执行 &lt;code&gt;CHANGE MASTER TO&lt;/code&gt;，指向记录的&amp;quot;时间戳&amp;quot;，请求之后产生的新 Binlog。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;从节点--1-时是否由从节点来同步新的从节点&#34;&gt;从节点 &amp;gt; 1 时，是否由从节点来同步新的从节点？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;默认不会，但你可以配置成这样（级联复制）。&lt;/strong&gt;&lt;/p&gt;
+&lt;h4 id=&#34;默认架构星型结构&#34;&gt;默认架构（星型结构）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;结构：1 主 -&amp;gt; N 从&lt;/li&gt;
+&lt;li&gt;行为：新节点配置的 Master IP 是主节点，它就会直接连接主节点&lt;/li&gt;
+&lt;li&gt;缺点：如果新节点太多，会把主节点的网卡或磁盘 I/O 打满&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;级联复制cascading-replication&#34;&gt;级联复制（Cascading Replication）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;结构：Master -&amp;gt; Slave A -&amp;gt; Slave B（新节点）&lt;/li&gt;
+&lt;li&gt;做法：新节点的 &lt;code&gt;MASTER_HOST&lt;/code&gt; 指向现有的从节点（Slave A）&lt;/li&gt;
+&lt;li&gt;前提：中间节点必须开启 &lt;code&gt;log_slave_updates = 1&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;优点：减轻了主节点的压力&lt;/li&gt;
+&lt;li&gt;缺点：同步链路变长，延迟会叠加&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;relay-log中继日志是什么&#34;&gt;Relay Log（中继日志）是什么？
+&lt;/h3&gt;&lt;p&gt;Relay Log 是 MySQL 主从复制架构中，存在于&lt;strong&gt;从节点&lt;/strong&gt;上的一种特殊日志文件。你可以把它理解为从节点上的**&amp;ldquo;临时待办箱&amp;rdquo;**。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;复制流程中的位置：&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Master (Binlog) --&amp;gt; 网络 --&amp;gt; Slave I/O 线程 --&amp;gt; [Relay Log] --&amp;gt; Slave SQL 线程 --&amp;gt; Slave 数据
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;为什么要设计 Relay Log？&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;接收快，执行慢：&lt;/strong&gt; 网络传输通常很快，但执行 SQL 通常很慢。有了 Relay Log，I/O 线程可以疯狂地把 Master 的日志拉取回来存在本地，哪怕 SQL 线程处理不过来也没关系。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;断点续传与崩溃恢复：&lt;/strong&gt; 如果 Slave 宕机重启，Relay Log 还存在磁盘上。SQL 线程知道自己上次执行到了哪个位置，重启后可以继续执行。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;特性&lt;/th&gt;
+          &lt;th&gt;Binlog&lt;/th&gt;
+          &lt;th&gt;Relay Log&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;存放位置&lt;/td&gt;
+          &lt;td&gt;通常在 Master&lt;/td&gt;
+          &lt;td&gt;只在 Slave 上&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;产生者&lt;/td&gt;
+          &lt;td&gt;数据库自身的写操作&lt;/td&gt;
+          &lt;td&gt;Slave 的 I/O 线程（从 Master 拷贝来的）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;生命周期&lt;/td&gt;
+          &lt;td&gt;长期保留&lt;/td&gt;
+          &lt;td&gt;用完即焚，SQL 线程执行完后自动删除&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;select-for-update-什么时候解锁&#34;&gt;SELECT FOR UPDATE 什么时候解锁
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;是事务结束时（Commit 或 Rollback 之后）。&lt;/strong&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;锁的生命周期&#34;&gt;锁的生命周期
+&lt;/h3&gt;&lt;p&gt;在 MySQL（InnoDB 引擎）中，&lt;code&gt;SELECT ... FOR UPDATE&lt;/code&gt; 遵循&lt;strong&gt;两阶段锁协议（2PL）&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;加锁时刻：&lt;/strong&gt; 当 CPU 执行到这条 SQL 语句时，开始申请并持有锁。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;持有过程：&lt;/strong&gt; 即使这条 SQL 执行完了，锁依然不会释放。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;解锁时刻：&lt;/strong&gt; 只有当整个事务执行了 &lt;code&gt;COMMIT&lt;/code&gt; 或 &lt;code&gt;ROLLBACK&lt;/code&gt; 后，锁才会释放。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;为什么要设计成事务结束才释放&#34;&gt;为什么要设计成&amp;quot;事务结束才释放&amp;quot;？
+&lt;/h3&gt;&lt;p&gt;如果 SQL 执行完立刻释放锁，会发生严重的数据一致性问题（丢失更新）。&lt;/p&gt;
+&lt;p&gt;只有拿到事务结束，才能保证在你处理完这行数据之前，没有任何人能修改它。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;致命的生产事故模型千万小心&#34;&gt;致命的生产事故模型（千万小心）
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nd&#34;&gt;@Transactional&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;public&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;void&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;buyTicket&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 1. 获取锁（开启事务，加锁）&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ticketMapper&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;selectTicketForUpdate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ticketId&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 2. 危险操作！！！&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 在持有数据库锁的时候，去调用了第三方的 HTTP 接口&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 假设这个 HTTP 请求卡了 3 秒...&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;thirdPartyPaymentService&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;pay&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 3. 更新数据库&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ticketMapper&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;reduceStock&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ticketId&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 4. 事务结束（释放锁）&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;后果：&lt;/strong&gt; 在那 3 秒钟内，这行数据是被死锁住的。所有其他想买这张票的用户，全部卡在第 1 步等待。如果并发量大，数据库连接瞬间就会被这些等待的线程占满，导致整个系统宕机。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;最佳实践：&lt;/strong&gt; 只有在必须要修改数据，且业务逻辑非常快（纯内存计算，无外部 IO）的代码块里，才使用 &lt;code&gt;FOR UPDATE&lt;/code&gt;。不要拿着锁去逛街（做耗时操作）。&lt;/p&gt;
+&lt;h2 id=&#34;mysql-的-mha-高可用架构&#34;&gt;MySQL 的 MHA 高可用架构
+&lt;/h2&gt;&lt;p&gt;MHA (Master High Availability Manager and Tools for MySQL) 是 MySQL 领域非常经典、使用非常广泛的第三方高可用解决方案。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;mha-是做什么的&#34;&gt;MHA 是做什么的？
+&lt;/h3&gt;&lt;p&gt;核心目标只有一个：在 Master（主库）宕机后，以最快的速度（通常 &lt;strong&gt;10~30秒内&lt;/strong&gt;）自动将某个 Slave 提升为新的 Master，并让其他 Slave 指向新的 Master，同时尽最大努力&lt;strong&gt;不丢失数据&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;核心组件架构&#34;&gt;核心组件架构
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;组件&lt;/th&gt;
+          &lt;th&gt;部署位置&lt;/th&gt;
+          &lt;th&gt;职责&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;MHA Manager&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;单独部署在一台机器上&lt;/td&gt;
+          &lt;td&gt;大脑。监控 Master 状态，执行故障转移流程&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;MHA Node&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;每一台 MySQL 服务器上&lt;/td&gt;
+          &lt;td&gt;执行者。解析 Binlog/Relay Log，对比差异，应用日志&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;故障切换流程核心原理&#34;&gt;故障切换流程（核心原理）
+&lt;/h3&gt;&lt;p&gt;假设架构是：Master(A) -&amp;gt; Slave(B), Slave(C)。当 Master(A) 宕机时：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;侦测与确认：&lt;/strong&gt; Manager 发现 Master(A) 连不上，多次重试确认。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;选主（Election）：&lt;/strong&gt; 检查 Slave(B) 和 Slave(C)，谁的 Relay Log 最完整（数据最新），谁就当新主。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;数据补全（差异日志补全）：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如果 Master SSH 还能连：MHA 会登录到死掉的 Master 上，把还没来得及发给 Slave 的最新 Binlog 截取并应用到新主上。&lt;strong&gt;数据 0 丢失&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;如果 Master 物理损坏：对比各 Slave 的 Relay Log，把差异补齐。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;提升新主与重构拓扑：&lt;/strong&gt; 对新主执行 &lt;code&gt;STOP SLAVE&lt;/code&gt;，解除只读模式；告诉其他 Slave 执行 &lt;code&gt;CHANGE MASTER TO&lt;/code&gt; 指向新主。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;VIP 漂移：&lt;/strong&gt; 通过钩子脚本将 VIP 从旧 Master 漂移到新 Master 上。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;mha-的优缺点&#34;&gt;MHA 的优缺点
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;优点&lt;/th&gt;
+          &lt;th&gt;缺点&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;数据一致性高（SSH 可达时数据不丢失）&lt;/td&gt;
+          &lt;td&gt;Perl 语言编写，维护困难&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;切换速度快（30 秒内）&lt;/td&gt;
+          &lt;td&gt;VIP 配置复杂，需自己写脚本&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;对现有架构侵入小&lt;/td&gt;
+          &lt;td&gt;脑裂风险（需配置 fencing 脚本）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;成熟稳定&lt;/td&gt;
+          &lt;td&gt;MHA Manager 自身是单点&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;mysql-group-replication-mgr&#34;&gt;MySQL Group Replication (MGR)
+&lt;/h2&gt;&lt;p&gt;MySQL Group Replication (MGR) 是 MySQL 官方在 5.7.17 版本正式推出的高可用与高扩展解决方案。它引入了分布式系统中最核心的 &lt;strong&gt;Paxos 协议&lt;/strong&gt;，从而实现了数据库集群的&lt;strong&gt;强一致性&lt;/strong&gt;和&lt;strong&gt;原生高可用&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;核心特点为什么它比传统主从牛&#34;&gt;核心特点：为什么它比传统主从牛？
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;数据不丢失：&lt;/strong&gt; 任何一个事务想要提交，必须经过集群中**大多数（N/2 + 1）**节点的同意。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;原子性：&lt;/strong&gt; 一个事务要么在所有节点都生效，要么都不生效。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;自动脑裂防御：&lt;/strong&gt; 如果发生网络分区，只有拥有大多数节点的那个分区能对外提供服务，少数派分区会自动锁死。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;两种运行模式&#34;&gt;两种运行模式
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;模式&lt;/th&gt;
+          &lt;th&gt;特点&lt;/th&gt;
+          &lt;th&gt;适用场景&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;单主模式 (Single-Primary)&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;只有一个节点可以写，其他节点只读。Primary 挂掉时自动选新主&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;推荐/主流&lt;/strong&gt;，几乎没有冲突检测开销&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;多主模式 (Multi-Primary)&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;所有节点都可以同时处理写请求&lt;/td&gt;
+          &lt;td&gt;冲突检测复杂，同时修改同一行数据会报错回滚&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;mgr-的工作原理&#34;&gt;MGR 的工作原理
+&lt;/h3&gt;&lt;p&gt;假设有 3 个节点（A, B, C），Client 向 A 发送了一条 UPDATE：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;执行阶段：&lt;/strong&gt; 节点 A 先在本地内存里预执行这个事务，但不提交。生成一个&lt;strong&gt;写集 (Write Set)&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;广播与共识 (Paxos)：&lt;/strong&gt; 节点 A 把写集广播给整个小组。只要有 2 个收到并排序成功，协议就达成。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;冲突检测 (Certification)：&lt;/strong&gt; 所有节点都会拿着这个写集，去跟自己内存里正在处理的其他事务比对。如果有冲突，后到的事务直接回滚。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;提交 (Commit)：&lt;/strong&gt; 通过认证后，事务真正写入 Binlog 和磁盘。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;mgr-的硬性限制&#34;&gt;MGR 的硬性限制
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;必须是 InnoDB 引擎&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;每张表必须有主键 (Primary Key)&lt;/strong&gt;：MGR 靠主键的 Hash 来判断写冲突&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;必须开启 GTID&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;网络要求高&lt;/strong&gt;：节点间通信非常频繁&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;节点数量限制：&lt;/strong&gt; 最多支持 &lt;strong&gt;9 个&lt;/strong&gt;节点&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;mgr-vs-mha-对比&#34;&gt;MGR vs MHA 对比
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;维度&lt;/th&gt;
+          &lt;th&gt;MHA&lt;/th&gt;
+          &lt;th&gt;MGR&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;核心机制&lt;/td&gt;
+          &lt;td&gt;外部脚本监控 + 异步/半同步复制&lt;/td&gt;
+          &lt;td&gt;数据库内核插件 + Paxos 协议&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;数据一致性&lt;/td&gt;
+          &lt;td&gt;理论上可能有丢失&lt;/td&gt;
+          &lt;td&gt;强一致性（Quorum 机制保证不丢）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;脑裂保护&lt;/td&gt;
+          &lt;td&gt;需额外配置 fencing 脚本&lt;/td&gt;
+          &lt;td&gt;原生自带&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;故障切换&lt;/td&gt;
+          &lt;td&gt;需要 VIP 漂移脚本配合&lt;/td&gt;
+          &lt;td&gt;自动选主&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;多点写入&lt;/td&gt;
+          &lt;td&gt;不支持&lt;/td&gt;
+          &lt;td&gt;支持（多主模式）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;mysql-innodb-cluster&#34;&gt;MySQL InnoDB Cluster
+&lt;/h3&gt;&lt;p&gt;这是一个全家桶解决方案：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;MGR（底层）：&lt;/strong&gt; 负责数据复制和强一致性&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;MySQL Router（中间件）：&lt;/strong&gt; 负责流量转发，自动识别谁是主节点&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;MySQL Shell（工具）：&lt;/strong&gt; 一键部署和管理 MGR 集群&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;公式：&lt;/strong&gt; InnoDB Cluster = MGR + MySQL Router + MySQL Shell&lt;/p&gt;
+&lt;h2 id=&#34;redis-的中心化集群架构&#34;&gt;Redis 的中心化集群架构
+&lt;/h2&gt;&lt;p&gt;在 Redis 的生态演进中，提到&amp;quot;中心化&amp;quot;架构，通常指的是两种形态：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;高可用层面：&lt;/strong&gt; Redis Sentinel（哨兵模式）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分片/代理层面：&lt;/strong&gt; Codis 或 Twemproxy&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;与之相对的是 Redis Cluster（官方集群），它是典型的**去中心化（P2P）**架构。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;redis-sentinel哨兵模式&#34;&gt;Redis Sentinel（哨兵模式）
+&lt;/h3&gt;&lt;p&gt;这是 Redis 官方推荐的**高可用（HA）**解决方案。&lt;/p&gt;
+&lt;h4 id=&#34;架构拓扑&#34;&gt;架构拓扑
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;数据节点：&lt;/strong&gt; 1 个 Master（负责写）+ N 个 Slave（负责读）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;管理节点（Sentinel）：&lt;/strong&gt; 一组独立的 Redis 进程（建议至少 3 个），互相通信，同时监控所有数据节点&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;核心功能&#34;&gt;核心功能
+&lt;/h4&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;功能&lt;/th&gt;
+          &lt;th&gt;说明&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;监控 (Monitoring)&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;不断 Ping Master 和 Slave，看它们是否还活着&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;通知 (Notification)&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;发现节点挂了，可以通过 API 通知管理员&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;自动故障转移 (Automatic Failover)&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;Master 挂了，哨兵投票选出新 Master，指挥其他 Slave 连向新老大&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;配置中心 (Configuration Provider)&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;客户端连接 Sentinel，Sentinel 告诉客户端当前 Master 的地址&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h4 id=&#34;故障切换流程&#34;&gt;故障切换流程
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;主观下线 (SDOWN)：&lt;/strong&gt; 一个哨兵 Ping 不通 Master，它认为 Master 挂了（主观觉得）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;客观下线 (ODOWN)：&lt;/strong&gt; 超过半数（Quorum）的哨兵都说连不上，坐实 Master 挂了。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;选举领头哨兵：&lt;/strong&gt; 哨兵们内部选出一个&amp;quot;领头哨兵&amp;quot;来执行切换操作。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;选新主：&lt;/strong&gt; 领头哨兵根据规则（优先级、复制偏移量）选出一个 Slave 升级为 Master。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;广播：&lt;/strong&gt; 通知其余 Slave 和客户端切换到新地址。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;优缺点&#34;&gt;优缺点
+&lt;/h4&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;优点&lt;/th&gt;
+          &lt;th&gt;缺点&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;官方原生，自动化 HA&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;写性能无法扩展&lt;/strong&gt;（只有一个 Master）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;解决了单点故障问题&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;存储无法扩展&lt;/strong&gt;（内存容量受限于单机）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;proxy-架构codis--twemproxy&#34;&gt;Proxy 架构（Codis / Twemproxy）
+&lt;/h3&gt;&lt;p&gt;这是一种&lt;strong&gt;中心化分片架构&lt;/strong&gt;。在 Redis Cluster 普及之前，这是处理海量数据的主流方案。&lt;/p&gt;
+&lt;h4 id=&#34;架构拓扑-1&#34;&gt;架构拓扑
+&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Client &amp;lt;---&amp;gt; Proxy (Codis/Twemproxy) &amp;lt;---&amp;gt; Redis Group 1, Group 2, ...
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;核心原理&#34;&gt;核心原理
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;中心入口：&lt;/strong&gt; 客户端只连接 Proxy，感觉就像连接一个巨大的单机 Redis。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数据分片：&lt;/strong&gt; Proxy 内部维护了路由表（Slot 映射）。当你 &lt;code&gt;SET key value&lt;/code&gt; 时，Proxy 计算 key 的 Hash 值，转发给后端的某一台 Redis。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;扩容：&lt;/strong&gt; Codis 提供了 Dashboard，可以动态地迁移数据（Slot），对客户端透明。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;优缺点-1&#34;&gt;优缺点
+&lt;/h4&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;优点&lt;/th&gt;
+          &lt;th&gt;缺点&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;客户端简单（无需改代码）&lt;/td&gt;
+          &lt;td&gt;多了一层网络转发，增加延迟&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;支持超大容量&lt;/td&gt;
+          &lt;td&gt;架构复杂，需要部署 ZooKeeper/Etcd&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;-&lt;/td&gt;
+          &lt;td&gt;逐渐被边缘化（Redis Cluster 成熟后）&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;对比redis-cluster-是去中心化&#34;&gt;对比：Redis Cluster 是&amp;quot;去中心化&amp;quot;
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;没有 Proxy：&lt;/strong&gt; 客户端直接连任何一个 Redis 节点&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;没有中心 Master：&lt;/strong&gt; 集群被切分成 16384 个槽（Slots），分配给多个主节点&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Gossip 协议：&lt;/strong&gt; 节点之间互相对话&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;客户端智能：&lt;/strong&gt; 请求错了节点，节点会返回 &lt;code&gt;MOVED&lt;/code&gt; 错误，告诉客户端正确的 IP&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;lsm-tree-是什么&#34;&gt;LSM Tree 是什么
+&lt;/h2&gt;&lt;p&gt;LSM Tree (Log-Structured Merge-tree) 是一种为&lt;strong&gt;高吞吐量写入&lt;/strong&gt;而优化的数据结构，它是现代 NoSQL 数据库（如 HBase, Cassandra, LevelDB, RocksDB）和部分 NewSQL 数据库（如 TiDB）的存储引擎核心。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;核心思想：&lt;/strong&gt; 将离散的随机写请求，转换成批量的顺序写请求，以换取极致的写入性能。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;为什么要发明-lsm-tree&#34;&gt;为什么要发明 LSM Tree？
+&lt;/h3&gt;&lt;p&gt;在传统的 B+ 树（MySQL InnoDB 使用）中，当我们要写入一条数据时，需要先找到它在磁盘 B+ 树中的具体叶子节点位置，然后做&lt;strong&gt;原地更新&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;痛点：&lt;/strong&gt; 如果写入的主键是无序的，这会产生大量的&lt;strong&gt;磁盘随机 I/O&lt;/strong&gt;。对于机械硬盘甚至 SSD 来说，随机写比顺序写慢得多。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;LSM Tree 的解决思路：&lt;/strong&gt; 不管你写什么，我先不急着存到磁盘的具体位置，而是像写日志一样，**追加（Append）**到文件末尾。追加是顺序写，速度极快。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;lsm-tree-的三大核心组件&#34;&gt;LSM Tree 的三大核心组件
+&lt;/h3&gt;&lt;h4 id=&#34;1-memtable内存表&#34;&gt;1. MemTable（内存表）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;位置：&lt;/strong&gt; 内存（RAM）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结构：&lt;/strong&gt; 通常是一个有序的数据结构（如跳表 SkipList 或红黑树）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;作用：&lt;/strong&gt; 所有新的写入请求首先都进入 MemTable。因为是在内存中操作，速度极快&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;2-immutable-memtable不可变内存表&#34;&gt;2. Immutable MemTable（不可变内存表）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;位置：&lt;/strong&gt; 内存&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;作用：&lt;/strong&gt; 当 MemTable 写满后，它会瞬间变成&amp;quot;不可变&amp;quot;状态，并生成一个新的 MemTable 接收新写入。这个不可变的表会在后台被刷盘（Flush）到磁盘&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;3-sstable-sorted-string-table&#34;&gt;3. SSTable (Sorted String Table)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;位置：&lt;/strong&gt; 磁盘&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结构：&lt;/strong&gt; 内部有序的键值对文件&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特点：&lt;/strong&gt; &lt;strong&gt;不可变（Immutable）&lt;/strong&gt;。一旦写入磁盘，就不会再被修改&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;分层（Level）：&lt;/strong&gt; 磁盘上的 SSTable 通常分为 Level 0, Level 1, Level 2&amp;hellip; 多层&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;4-wal-write-ahead-log&#34;&gt;4. WAL (Write Ahead Log)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;作用：&lt;/strong&gt; 为了防止断电导致内存里的 MemTable 数据丢失，每次写 MemTable 之前，会先顺序写入磁盘的 WAL 日志&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;工作流程详解&#34;&gt;工作流程详解
+&lt;/h3&gt;&lt;h4 id=&#34;写入流程write--极快&#34;&gt;写入流程（Write） —— 极快
+&lt;/h4&gt;&lt;ol&gt;
+&lt;li&gt;写 WAL（保证持久性）&lt;/li&gt;
+&lt;li&gt;写 MemTable（内存操作，O(logN)）&lt;/li&gt;
+&lt;li&gt;结束。（对客户端来说，写入已经完成了）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;后台动作：&lt;/strong&gt; 当 MemTable 满了，转为 Immutable MemTable，然后 Flush 到磁盘成为 Level 0 的 SSTable。&lt;/p&gt;
+&lt;h4 id=&#34;读取流程read--稍慢&#34;&gt;读取流程（Read） —— 稍慢
+&lt;/h4&gt;&lt;p&gt;因为数据可能散落在内存和磁盘的不同层级中，读取需要分层查找：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;查 MemTable&lt;/li&gt;
+&lt;li&gt;查 Immutable MemTable&lt;/li&gt;
+&lt;li&gt;查 L0 层 SSTable（文件间 Key 可能重叠，需要遍历）&lt;/li&gt;
+&lt;li&gt;查 L1, L2&amp;hellip; 层 SSTable&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;优化：&lt;/strong&gt; 使用&lt;strong&gt;布隆过滤器 (Bloom Filter)&lt;/strong&gt;。在打开一个 SSTable 文件前，先问布隆过滤器：&amp;ldquo;这个 Key 可能在这里吗？&amp;ldquo;如果回答&amp;quot;不在&amp;rdquo;，就直接跳过该文件。&lt;/p&gt;
+&lt;h4 id=&#34;核心机制compaction合并压缩&#34;&gt;核心机制：Compaction（合并/压缩）
+&lt;/h4&gt;&lt;p&gt;LSM Tree 需要在后台运行 Compaction 进程：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Merge：&lt;/strong&gt; 把多个小的、重叠的 SSTable 读取出来&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Sort：&lt;/strong&gt; 进行归并排序&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Clean：&lt;/strong&gt; 丢弃旧版本数据，物理删除带有&amp;quot;墓碑标记&amp;quot;的数据&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Write：&lt;/strong&gt; 写入新的、更大的、更有序的 Level+1 层 SSTable&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;lsm-tree-vs-b-tree&#34;&gt;LSM Tree vs B+ Tree
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;特性&lt;/th&gt;
+          &lt;th&gt;LSM Tree&lt;/th&gt;
+          &lt;th&gt;B+ Tree&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;典型代表&lt;/td&gt;
+          &lt;td&gt;RocksDB, HBase, Cassandra, TiKV&lt;/td&gt;
+          &lt;td&gt;MySQL (InnoDB), PostgreSQL&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;写入性能&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;极高&lt;/strong&gt; (顺序写)&lt;/td&gt;
+          &lt;td&gt;一般 (随机写，需维护树结构平衡)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;读取性能&lt;/td&gt;
+          &lt;td&gt;一般 (可能需要查多个文件)&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;极高&lt;/strong&gt; (索引直接定位)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;空间利用率&lt;/td&gt;
+          &lt;td&gt;高 (SSTable 紧凑排列，无碎片)&lt;/td&gt;
+          &lt;td&gt;低 (页分裂导致碎片)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;适用场景&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;写多读少&lt;/strong&gt;，海量数据日志、监控&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;读多写少&lt;/strong&gt;，强一致性事务&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;mysql-buffer-pool-和-tidb-缓存对比&#34;&gt;MySQL Buffer Pool 和 TiDB 缓存对比
+&lt;/h2&gt;&lt;p&gt;MySQL 的 Buffer Pool 和 TiDB 的缓存机制存在显著差异，这主要源于它们底层存储引擎结构的不同（B+ 树 vs LSM 树）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;mysqlinnodb-buffer-pool&#34;&gt;MySQL：InnoDB Buffer Pool
+&lt;/h3&gt;&lt;h4 id=&#34;在哪里&#34;&gt;在哪里？
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;物理位置：&lt;/strong&gt; MySQL 服务器的**内存（RAM）**中&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;归属：&lt;/strong&gt; 属于 InnoDB 存储引擎&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;内容：&lt;/strong&gt; 缓存数据页、索引页、插入缓冲（Change Buffer）、自适应哈希索引、锁信息等&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;怎么运作的&#34;&gt;怎么运作的？
+&lt;/h4&gt;&lt;p&gt;MySQL 的 Buffer Pool 是典型的 &lt;strong&gt;Page Cache（页缓存）&lt;/strong&gt; 机制，默认页大小为 16KB。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;读操作：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;命中（Hit）：直接返回，无需读盘（极快）&lt;/li&gt;
+&lt;li&gt;未命中（Miss）：从磁盘加载该页到 Buffer Pool，然后再返回&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;写操作（Write Back 策略）：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;直接修改内存中的页，将其标记为&amp;quot;脏页（Dirty Page）&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;同时写入 Redo Log 保证持久性&lt;/li&gt;
+&lt;li&gt;后台线程异步将脏页刷回磁盘&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;怎么使用调优&#34;&gt;怎么&amp;quot;使用&amp;quot;？（调优）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心参数：&lt;/strong&gt; &lt;code&gt;innodb_buffer_pool_size&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;建议配置：&lt;/strong&gt; 在专用数据库服务器上，通常设置为&lt;strong&gt;物理内存的 50% ~ 75%&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;切记：&lt;/strong&gt; 留给操作系统和其他进程一些内存，不要设得太满导致 Swap&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;tidb多层级缓存架构&#34;&gt;TiDB：多层级缓存架构
+&lt;/h3&gt;&lt;p&gt;TiDB 是存算分离架构，缓存分为两部分：TiDB Server（计算层）和 TiKV（存储层）。&lt;/p&gt;
+&lt;h4 id=&#34;tikv-层存储层---核心数据缓存&#34;&gt;TiKV 层（存储层 - 核心数据缓存）
+&lt;/h4&gt;&lt;p&gt;TiKV 底层使用 RocksDB（LSM Tree 架构），缓存机制与 MySQL 大不相同。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Block Cache（读缓存）：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在 TiKV 节点的内存中&lt;/li&gt;
+&lt;li&gt;用于缓存磁盘上的 SSTable 数据块（Block）&lt;/li&gt;
+&lt;li&gt;数据是&lt;strong&gt;只读&lt;/strong&gt;的，不存在&amp;quot;脏页&amp;quot;的概念&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;MemTable（写缓存）：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在 TiKV 节点的内存中&lt;/li&gt;
+&lt;li&gt;新数据直接写入 MemTable，写满后 Flush 到磁盘成为 SSTable&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;写入完全不经过 Block Cache。&lt;/strong&gt;&lt;/p&gt;
+&lt;h4 id=&#34;tidb-层计算层---结果缓存&#34;&gt;TiDB 层（计算层 - 结果缓存）
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Coprocessor Cache：&lt;/strong&gt; 缓存下推给 TiKV 计算的中间结果&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Plan Cache（执行计划缓存）：&lt;/strong&gt; 缓存 SQL 的解析和优化结果&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;核心对比总结&#34;&gt;核心对比总结
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;特性&lt;/th&gt;
+          &lt;th&gt;MySQL (InnoDB Buffer Pool)&lt;/th&gt;
+          &lt;th&gt;TiDB (TiKV RocksDB Block Cache)&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;数据结构&lt;/td&gt;
+          &lt;td&gt;B+ Tree 页 (Page, 16KB)&lt;/td&gt;
+          &lt;td&gt;LSM Tree 块 (Block, 4KB~)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;缓存内容&lt;/td&gt;
+          &lt;td&gt;数据 + 索引&lt;/td&gt;
+          &lt;td&gt;主要是 SSTable 的数据块&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;写入方式&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;原地更新&lt;/strong&gt;：直接修改缓存页，标记为脏页&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;追加写&lt;/strong&gt;：写入单独的 MemTable，不修改 Block Cache&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;脏页处理&lt;/td&gt;
+          &lt;td&gt;需要 Checkpoint 刷盘&lt;/td&gt;
+          &lt;td&gt;无脏页概念 (SSTable 是不可变的)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;内存分配&lt;/td&gt;
+          &lt;td&gt;建议给 50-75% 物理内存&lt;/td&gt;
+          &lt;td&gt;建议给 45% 左右 (需预留给 OS Cache)&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;tidb-的读取速度会不会慢很多&#34;&gt;TiDB 的读取速度会不会慢很多？
+&lt;/h2&gt;&lt;p&gt;TiKV 的底层完全基于 RocksDB，使用的就是 LSM Tree 结构。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;答案是：&lt;/strong&gt; 理论上单次查询会有轻微延迟（Read Amplification，读放大），但在实际生产和高并发场景下，通常感觉不到慢，甚至在某些场景下更快。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;为什么-lsm-tree-这种原本读取慢的结构在-tidb-里跑得飞快&#34;&gt;为什么 LSM Tree 这种&amp;quot;原本读取慢&amp;quot;的结构，在 TiDB 里跑得飞快？
+&lt;/h3&gt;&lt;h4 id=&#34;1-布隆过滤器-bloom-filter--快速排除&#34;&gt;1. 布隆过滤器 (Bloom Filter) —— 快速排除
+&lt;/h4&gt;&lt;p&gt;RocksDB 给每个 SSTable 文件都配了一个布隆过滤器。它能以 O(1) 的速度告诉你：&amp;ldquo;这个文件里&lt;strong&gt;绝对没有&lt;/strong&gt;这个 Key&amp;rdquo; 或者 &amp;ldquo;可能有&amp;rdquo;。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt; 绝大多数不包含该数据的文件会被瞬间排除，根本不需要发生磁盘 I/O。&lt;/p&gt;
+&lt;h4 id=&#34;2-block-cache--内存命中&#34;&gt;2. Block Cache —— 内存命中
+&lt;/h4&gt;&lt;p&gt;热点数据（Hot Data）通常已经被加载到了内存的 Block Cache 中。如果缓存命中，读取速度就等同于读内存。&lt;/p&gt;
+&lt;h4 id=&#34;3-compaction-合并--保持层级扁平&#34;&gt;3. Compaction (合并) —— 保持层级扁平
+&lt;/h4&gt;&lt;p&gt;RocksDB 会在后台不断进行 Compaction，把多层的小文件合并成一层的大文件。保证读取时需要查找的文件层数非常少。&lt;/p&gt;
+&lt;h4 id=&#34;4-tikv-的杀手锏coprocessor-计算下推&#34;&gt;4. TiKV 的杀手锏：Coprocessor (计算下推)
+&lt;/h4&gt;&lt;p&gt;这是 TiDB 架构上最大的优势。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;MySQL 的做法：&lt;/strong&gt; &amp;ldquo;把数据全搬到 Server 层，Server 再过滤。&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;TiDB 的做法：&lt;/strong&gt; &amp;ldquo;计算下推&amp;rdquo;。TiDB Server 告诉 TiKV 节点：&amp;ldquo;你帮我数一下 age &amp;gt; 20 的有多少，直接告诉我结果。&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;效果：&lt;/strong&gt; 虽然 LSM Tree 读单行可能稍慢，但 TiDB 利用多节点并行计算 + 减少网络传输，使得整体查询响应速度往往反超单机 MySQL。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;性能对比实话实说&#34;&gt;性能对比实话实说
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;场景&lt;/th&gt;
+          &lt;th&gt;MySQL (B+ Tree)&lt;/th&gt;
+          &lt;th&gt;TiDB (LSM Tree)&lt;/th&gt;
+          &lt;th&gt;谁赢？&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;点查询&lt;/strong&gt; &lt;code&gt;select * from t where id=1&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;极快 (O(logN) 稳定索引查找)&lt;/td&gt;
+          &lt;td&gt;稍慢 (可能要查 MemTable+BlockCache)&lt;/td&gt;
+          &lt;td&gt;MySQL 险胜（但高并发下 TiDB 吞吐量更大）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;范围查询&lt;/strong&gt; &lt;code&gt;select * from t where id &amp;gt; 100&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;快 (叶子节点链表)&lt;/td&gt;
+          &lt;td&gt;很快 (SSTable 内部本身就是有序的)&lt;/td&gt;
+          &lt;td&gt;平手 / TiDB 胜&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;写入性能&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;一般 (随机 I/O，页分裂)&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;极快&lt;/strong&gt; (顺序追加写)&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;TiDB 完胜&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;复杂分析 (OLAP)&lt;/strong&gt; 聚合、Group By&lt;/td&gt;
+          &lt;td&gt;慢 (单机 CPU 瓶颈)&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;极快&lt;/strong&gt; (MPP 架构，多节点并行计算)&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;TiDB 完胜&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;结论&#34;&gt;结论
+&lt;/h3&gt;&lt;p&gt;TiDB 的&amp;quot;慢&amp;quot;主要体现在极低延迟要求的&amp;quot;单点查询&amp;quot;上（比如 MySQL 能做到 0.5ms，TiDB 可能是 1-2ms）。&lt;/p&gt;
+&lt;p&gt;但在绝大多数业务场景下，得益于缓存和布隆过滤器，这个差异是可以忽略的。而它带来的&lt;strong&gt;写入吞吐量巨大提升&lt;/strong&gt;和&lt;strong&gt;海量数据扩展能力&lt;/strong&gt;，是 B+ Tree 架构难以比拟的。&lt;/p&gt;
+&lt;h2 id=&#34;tidb-如何使用联合索引kv-结构如何模拟-b-树索引&#34;&gt;TiDB 如何使用联合索引（KV 结构如何模拟 B+ 树索引）
+&lt;/h2&gt;&lt;p&gt;TiDB 底层 TiKV 是一个巨大的 Map（Key-Value），看起来是平铺的。那怎么用扁平的 KV 来模拟立体的&amp;quot;联合索引&amp;quot;呢？&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;答案就在于 &amp;ldquo;Key 的编码规则（Key Encoding）&amp;quot;。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;TiDB 并没有真的建立一棵 B+ 树，而是巧妙地把&amp;quot;索引列的值&amp;quot;直接编码到了 KV 的 Key 里面。因为 TiKV（RocksDB）是按 Key 的字节序有序存储的，所以只要设计好 Key 的格式，就能利用&amp;quot;Key 的顺序&amp;quot;来模拟&amp;quot;B+ 树的顺序&amp;rdquo;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;场景假设&#34;&gt;场景假设
+&lt;/h3&gt;&lt;p&gt;假设你有一张表 &lt;code&gt;user&lt;/code&gt;，有一个联合索引 &lt;code&gt;idx_name_age (name, age)&lt;/code&gt;。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;CREATE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;TABLE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;user&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;INT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;PRIMARY&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;KEY&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;VARCHAR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;20&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;age&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;INT&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;KEY&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;idx_name_age&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;age&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;INSERT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;INTO&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;user&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;VALUES&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;Alice&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;18&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;INSERT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;INTO&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;user&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;VALUES&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;Bob&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;20&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;INSERT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;INTO&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;user&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;VALUES&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;Alice&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;19&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;hr&gt;
+&lt;h3 id=&#34;tidb-是怎么把它们变成-kv-的&#34;&gt;TiDB 是怎么把它们变成 KV 的？
+&lt;/h3&gt;&lt;h4 id=&#34;存行数据-row&#34;&gt;存&amp;quot;行数据&amp;quot; (Row)
+&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Key: t{表ID}_r{行ID}
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Value: [Alice, 18, ...] (整行数据)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;存联合索引-index--重点&#34;&gt;存&amp;quot;联合索引&amp;quot; (Index) —— 重点！
+&lt;/h4&gt;&lt;p&gt;TiDB 会按照 &lt;code&gt;(TableID, IndexID, IndexColumnValues)&lt;/code&gt; 的格式构造 Key：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;逻辑上的 Key 结构&lt;/th&gt;
+          &lt;th&gt;Value&lt;/th&gt;
+          &lt;th&gt;解释&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;t10_i1_Alice_18_1&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;null&lt;/td&gt;
+          &lt;td&gt;Alice(18岁) 对应 ID=1&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;t10_i1_Alice_19_3&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;null&lt;/td&gt;
+          &lt;td&gt;Alice(19岁) 对应 ID=3&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;t10_i1_Bob_20_2&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;null&lt;/td&gt;
+          &lt;td&gt;Bob(20岁) 对应 ID=2&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;Key 的设计玄机：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;前缀相同：&lt;/strong&gt; 大家都是 &lt;code&gt;t10_i1&lt;/code&gt;（同一个表，同一个索引），所以它们在磁盘上是物理挨在一起的&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;顺序排列：&lt;/strong&gt; RocksDB 会自动把 Key 排序。&lt;code&gt;Alice_18&lt;/code&gt; 排在 &lt;code&gt;Alice_19&lt;/code&gt; 前面，&lt;code&gt;Alice_xxx&lt;/code&gt; 全部都排在 &lt;code&gt;Bob_xxx&lt;/code&gt; 前面&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;联合索引如何生效查询过程&#34;&gt;联合索引如何生效？（查询过程）
+&lt;/h3&gt;&lt;h4 id=&#34;场景-1最左前缀匹配&#34;&gt;场景 1：最左前缀匹配
+&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;SELECT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;user&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;WHERE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;Alice&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;TiDB 动作：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;构造一个扫描范围：从 &lt;code&gt;t10_i1_Alice&lt;/code&gt; 开始&lt;/li&gt;
+&lt;li&gt;TiKV 直接定位到 &lt;code&gt;t10_i1_Alice_18_1&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;接着往下读，读到 &lt;code&gt;t10_i1_Alice_19_3&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;再往下读，发现是 Bob 了，停止&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;结果：&lt;/strong&gt; 拿到了 ID 1 和 3。这和 B+ 树的范围查找完全一样！&lt;/p&gt;
+&lt;h4 id=&#34;场景-2联合查询&#34;&gt;场景 2：联合查询
+&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;SELECT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;user&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;WHERE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;Alice&amp;#39;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;AND&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;age&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;19&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;TiDB 动作：直接构造精确的 Key 前缀 &lt;code&gt;t10_i1_Alice_19&lt;/code&gt;，TiKV 直接 Seek 定位。&lt;/p&gt;
+&lt;h4 id=&#34;场景-3索引失效跳过最左前缀&#34;&gt;场景 3：索引失效（跳过最左前缀）
+&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;SELECT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;user&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;WHERE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;age&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;19&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;索引 Key 是按 name 排序的。&lt;code&gt;age=19&lt;/code&gt; 的数据并不是挨在一起的，没办法 Scan，只能全表扫描。&lt;strong&gt;这和 MySQL 的索引失效原理完全一致。&lt;/strong&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;总结-1&#34;&gt;总结
+&lt;/h3&gt;&lt;p&gt;TiDB 并没有像 MySQL 那样维护复杂的树指针，它用了一种&amp;quot;降维打击&amp;quot;的方式：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;映射：&lt;/strong&gt; 把多维的&amp;quot;联合索引 (a, b, c)&amp;quot; 扁平化映射成一维的 Key &lt;code&gt;..._a_b_c&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;排序：&lt;/strong&gt; 利用底层 RocksDB/LSM Tree 对 Key 的天然有序性&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;扫描：&lt;/strong&gt; 把 SQL 的范围查询转换成 KV 存储的 Prefix Scan（前缀扫描）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;所以，你在 MySQL 里学的索引原则（最左前缀、索引覆盖、索引下推），在 TiDB 里 100% 适用。&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&#34;tidb-多个索引是否要多存几份表&#34;&gt;TiDB 多个索引是否要多存几份表？
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;你的理解是对的，但有一个关键的定语需要修正：&lt;/strong&gt; 并不是&amp;quot;多存几份表&amp;quot;，而是&amp;quot;多存几份索引列的数据&amp;quot;。&lt;/p&gt;
+&lt;p&gt;这是数据库领域最核心的交换法则：&lt;strong&gt;空间换时间（Space for Time）&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;并没有存整张表只存了路标&#34;&gt;并没有存&amp;quot;整张表&amp;quot;，只存了&amp;quot;路标&amp;quot;
+&lt;/h3&gt;&lt;p&gt;假设你的 &lt;code&gt;user&lt;/code&gt; 表非常宽，有很多列：&lt;code&gt;id, name, age, address, bio, photo_url, create_time...&lt;/code&gt;&lt;/p&gt;
+&lt;h4 id=&#34;第一份主键行数据-row-data--它是真身&#34;&gt;第一份：主键/行数据 (Row Data) —— 它是真身
+&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Key: t10_r1 (主键 ID)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Value: {name:Alice, age:18, address:北京, bio:..., photo:..., ...} (整行所有数据都在这)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;大小：&lt;/strong&gt; 假设这一行有 1KB。&lt;/p&gt;
+&lt;h4 id=&#34;第二份联合索引-secondary-index--它是影子&#34;&gt;第二份：联合索引 (Secondary Index) —— 它是影子
+&lt;/h4&gt;&lt;p&gt;假设你建了索引 &lt;code&gt;idx_name_age (name, age)&lt;/code&gt;。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Key: t10_i1_Alice_18_1 (索引 ID + 索引列的值 + 主键 ID)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Value: null (几乎不占空间)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;它只复制了 &lt;code&gt;name(&amp;quot;Alice&amp;quot;)&lt;/code&gt; 和 &lt;code&gt;age(18)&lt;/code&gt; 这两个字段，加上一个主键 ID(1)。其他的 &lt;code&gt;address&lt;/code&gt;、&lt;code&gt;bio&lt;/code&gt;、&lt;code&gt;photo&lt;/code&gt; 统统不存。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;大小：&lt;/strong&gt; 这一行 KV 可能只有 50 Bytes。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;回表back-to-table因为没存整表&#34;&gt;回表（Back to Table）：因为没存整表
+&lt;/h3&gt;&lt;p&gt;正因为索引 KV 里只有 &lt;code&gt;name&lt;/code&gt; 和 &lt;code&gt;age&lt;/code&gt;，没有 &lt;code&gt;address&lt;/code&gt;，所以：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;查询 1（索引覆盖）：&lt;/strong&gt; &lt;code&gt;SELECT name, age FROM user WHERE name=&#39;Alice&#39;&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;只需要读索引 KV，拿到 &amp;ldquo;Alice&amp;rdquo; 和 18，任务结束。速度极快。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;查询 2（回表）：&lt;/strong&gt; &lt;code&gt;SELECT address FROM user WHERE name=&#39;Alice&#39;&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;读索引 KV，找到 &lt;code&gt;name=&#39;Alice&#39;&lt;/code&gt; 对应的主键 ID = 1&lt;/li&gt;
+&lt;li&gt;拿着 ID = 1，再去读&amp;quot;主键/行数据&amp;quot;那份 KV，把 &lt;code&gt;address&lt;/code&gt; 拿出来&lt;/li&gt;
+&lt;li&gt;这就是所谓的**&amp;ldquo;回表&amp;rdquo;**代价&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;tidb-相比-mysql-的空间优势&#34;&gt;TiDB 相比 MySQL 的&amp;quot;空间&amp;quot;优势
+&lt;/h3&gt;&lt;p&gt;虽然逻辑上 TiDB 和 MySQL 都要存这些索引副本，但在物理存储上，TiDB（RocksDB）有一个巨大的优势：&lt;strong&gt;前缀压缩（Prefix Compression）&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;在 TiDB (LSM Tree) 中，RocksDB 会利用 &lt;strong&gt;Delta Encoding&lt;/strong&gt; 和 &lt;strong&gt;Block Compression (Zstd/Lz4)&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;它不会傻傻地把 &amp;ldquo;Alice&amp;rdquo; 存 1 万遍&lt;/li&gt;
+&lt;li&gt;它会记：&amp;ldquo;跟上一行比，前缀有 15 个字节是一样的，只有最后的主键 ID 不一样&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;实测结果：&lt;/strong&gt; 同样的数据量和索引量，迁移到 TiDB 后，磁盘占用通常只有 MySQL 的 &lt;strong&gt;30% ~ 50%&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;tidb-的索引查找是否需要遍历&#34;&gt;TiDB 的索引查找是否需要遍历？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;绝对不是&amp;quot;每一次都遍历&amp;quot;。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;虽然 TiKV 底层是 KV 结构，但它支持一种核心操作叫 &lt;code&gt;Seek(key)&lt;/code&gt;。这个操作的复杂度是 &lt;strong&gt;O(log N)&lt;/strong&gt;，和 MySQL 的 B+ 树查找效率是同一个量级的。&lt;/p&gt;
+&lt;h4 id=&#34;宏观层面它是分区的region&#34;&gt;宏观层面：它是分区的（Region）
+&lt;/h4&gt;&lt;p&gt;PD (Placement Driver) 知道 &lt;code&gt;name=&#39;Alice&#39;&lt;/code&gt; 对应的数据在哪个 Region 上，请求直接发给对应节点。&lt;/p&gt;
+&lt;h4 id=&#34;微观层面文件内部是有目录的&#34;&gt;微观层面：文件内部是有&amp;quot;目录&amp;quot;的
+&lt;/h4&gt;&lt;p&gt;SSTable 文件内部自带索引（Index Block），查找时：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;布隆过滤器：&lt;/strong&gt; 先看一眼文件头，如果过滤器说&amp;quot;这里面没有 Alice&amp;quot;，直接跳过整个文件&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;查索引块：&lt;/strong&gt; 发现 Alice 应该在第 0~10KB 这个块里&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;二分查找：&lt;/strong&gt; 只把这个小块加载到内存，然后做一次二分查找&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;结论：&lt;/strong&gt; 无论文件有多大，找到 Alice 只需要读取极少量的元数据块，然后做一次精准跳转。&lt;/p&gt;
+&lt;h2 id=&#34;tomcat-拥有的是线程池还是连接池&#34;&gt;Tomcat 拥有的是线程池还是连接池
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;直接回答：&lt;/strong&gt; Tomcat 两者都有，但&amp;quot;默认连接数&amp;quot;通常指的是它作为 Web 服务器处理 HTTP 请求的能力。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;对外tomcat-作为-web-服务器&#34;&gt;对外：Tomcat 作为 Web 服务器
+&lt;/h3&gt;&lt;p&gt;这里指的是浏览器（Client）连接到 Tomcat。在这个层面，Tomcat 主要维护的是&lt;strong&gt;线程池（Thread Pool）&lt;strong&gt;和&lt;/strong&gt;连接数（Connections）&lt;/strong&gt;。&lt;/p&gt;
+&lt;h4 id=&#34;默认值关键知识点&#34;&gt;默认值（关键知识点）
+&lt;/h4&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;参数&lt;/th&gt;
+          &lt;th&gt;默认值&lt;/th&gt;
+          &lt;th&gt;含义&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;maxThreads&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;200&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;最大工作线程数，Tomcat 能同时并行处理多少个请求&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;maxConnections&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;10,000&lt;/strong&gt; (NIO) / &lt;strong&gt;8,192&lt;/strong&gt; (Spring Boot)&lt;/td&gt;
+          &lt;td&gt;最大连接数，Tomcat 能同时维持多少个 TCP Socket 连接&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;acceptCount&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;100&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;排队队列，当 maxConnections 也满了，操作系统层面还允许多少个新的 TCP 连接排队&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;为什么连接数比线程数大这么多？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;因为用了 &lt;strong&gt;NIO (Non-blocking IO)&lt;/strong&gt;！Tomcat 用少量的线程（Poller Thread）就能挂起成千上万个空闲的 TCP 连接。只有当连接真正要读写数据、处理业务时，才会分配那 200 个 &lt;code&gt;maxThreads&lt;/code&gt; 中的一个去干活。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;总结：&lt;/strong&gt; Tomcat 默认能 hold 住 10,000 个连接，但同一时刻只能全力跑 200 个业务代码。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;对内tomcat-作为数据库连接池提供者&#34;&gt;对内：Tomcat 作为数据库连接池提供者
+&lt;/h3&gt;&lt;p&gt;这里指的是你的 Java 代码连接 MySQL。&lt;/p&gt;
+&lt;p&gt;Tomcat 确实自带了一个组件叫 &lt;code&gt;tomcat-jdbc&lt;/code&gt;，这是一个 JDBC 数据库连接池。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;但是：&lt;/strong&gt; 在 Spring Boot 2.0 之后，默认换成了性能更强悍的 &lt;strong&gt;HikariCP&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;图解-tomcat-处理流程-nio&#34;&gt;图解 Tomcat 处理流程 (NIO)
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;用户请求 (浏览器)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   |
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   v
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;[ TCP 连接 (Socket) ] &amp;lt;--- 限制由 maxConnections (10000) 控制
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   |
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   | (IO多路复用, Epoll 监听)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   v
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;[ Poller 线程 ] (极少，负责搬运数据)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   |
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   | (数据读取完毕，准备执行业务)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   v
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;[ Worker 线程池 ] &amp;lt;--- 限制由 maxThreads (200) 控制
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   |
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   | (执行 Java 代码: Controller -&amp;gt; Service -&amp;gt; Dao)
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   v
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;[ DB 连接池 (HikariCP) ] &amp;lt;--- 限制由 max-size (10) 控制
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   |
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   v
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;MySQL
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;hr&gt;
+&lt;h3 id=&#34;常见误区纠正&#34;&gt;常见误区纠正
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;误区：&lt;/strong&gt; &amp;ldquo;把 maxThreads 加到 10000，Tomcat 就能处理 10000 高并发。&amp;rdquo;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;真相：&lt;/strong&gt; 可能会死机。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;线程是昂贵的资源&lt;/li&gt;
+&lt;li&gt;开启 10000 个 Java 线程，光上下文切换就会把 CPU 吃光&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;调优建议：&lt;/strong&gt; 对于计算密集型，&lt;code&gt;maxThreads&lt;/code&gt; 设小点；对于 IO 密集型，可以适当调大到 500~800，但很少超过 1000。&lt;/p&gt;
+&lt;h2 id=&#34;java-17-下-tomcat-的线程限制与虚拟线程&#34;&gt;Java 17 下 Tomcat 的线程限制与虚拟线程
+&lt;/h2&gt;&lt;h3 id=&#34;java-17-能用到默认的-maxthreads-200-和-maxconnections-10000-吗&#34;&gt;Java 17 能用到默认的 maxThreads: 200 和 maxConnections: 10000 吗？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;是的，完全可以。&lt;/strong&gt; Java 版本（JDK 17）本身不会改变 Tomcat 的这些默认参数配置。这些参数是由 Tomcat 的版本以及你使用的框架（如 Spring Boot）决定的。&lt;/p&gt;
+&lt;p&gt;如果你使用的是 Spring Boot（最常见的情况），默认配置如下：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;参数&lt;/th&gt;
+          &lt;th&gt;默认值&lt;/th&gt;
+          &lt;th&gt;说明&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;server.tomcat.threads.max&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;200&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;同一时刻最多只有 200 个线程在全力处理业务逻辑&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;server.tomcat.max-connections&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;8192&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;可以同时维持 8000 多个 TCP 连接&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;code&gt;server.tomcat.accept-count&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;100&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;排队队列&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;java-17-在这里的尴尬地位&#34;&gt;Java 17 在这里的&amp;quot;尴尬&amp;quot;地位
+&lt;/h3&gt;&lt;p&gt;在 Java 17 下，这 200 个线程是真正的**&amp;ldquo;重量级系统线程&amp;rdquo; (Platform Threads)**。&lt;/p&gt;
+&lt;p&gt;这意味着：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;硬上限：&lt;/strong&gt; 你很难把这个值调得特别大（比如调到 10,000）。因为 Java 17 的线程直接对应操作系统内核线程，开几千个线程会导致内存爆炸和 CPU 疯狂切换上下文。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;IO 阻塞痛点：&lt;/strong&gt; 如果你的业务里有大量的 &lt;code&gt;Thread.sleep&lt;/code&gt;、外部 API 调用、慢 SQL 查询，这 200 个线程很容易被占满（Block 住）。一旦 200 个全被占住，第 201 个请求进来就得去队列里排队。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;对比 Java 21+：&lt;/strong&gt; 如果你升级到 Java 21 使用&lt;strong&gt;虚拟线程&lt;/strong&gt;，这 &lt;code&gt;maxThreads: 200&lt;/code&gt; 的限制就不存在了。虚拟线程模式下，Tomcat 甚至不使用传统的线程池，而是为每个请求创建一个全新的虚拟线程，轻松支持 10 万+ 并发。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;如何在-java-17-下调优&#34;&gt;如何在 Java 17 下调优？
+&lt;/h3&gt;&lt;p&gt;既然不能用虚拟线程，如果你的并发量上来，觉得 200 不够用，可以在 &lt;code&gt;application.yml&lt;/code&gt; 中适当调大：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;server&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;tomcat&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;threads&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;max&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;500&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;       &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 建议值：IO密集型任务可调至 500-800&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;min-spare&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;50&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 最小空闲线程，保证有任务来能立马干活&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;max-connections&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;10000&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 如果并发连接确实很高，可以改回 10000 甚至 20000&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;accept-count&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;200&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 稍微排长一点队&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;hr&gt;
+&lt;h3 id=&#34;ai-生成场景2分钟长连接的特殊考量&#34;&gt;AI 生成场景（2分钟长连接）的特殊考量
+&lt;/h3&gt;&lt;p&gt;如果你的服务是 AI 生成，且和客户端的连接一次都是在 2 分钟左右，这种情况下：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Java 17 (平台线程) 会直接暴毙：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户 A 进来了，开始 AI 生成。他占用了一个线程，持续时间 2 分钟&lt;/li&gt;
+&lt;li&gt;这个线程在这 2 分钟里，虽然 99% 的时间在睡觉（等 GPU），但它死死抱住茅坑不拉屎&lt;/li&gt;
+&lt;li&gt;只要有 200 个用户同时在生成，你的服务器就满载了&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;虚拟线程 (Java 21) 能轻松拿捏：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;虚拟线程发起读取 LLM 数据的请求时，JVM 会把这个虚拟线程从 CPU 上拿下来，挂到堆内存里（只占几 KB 内存）&lt;/li&gt;
+&lt;li&gt;载体线程空出来了，可以立马去服务第 201、202&amp;hellip; 第 10000 个用户&lt;/li&gt;
+&lt;li&gt;一台 4 核 8G 的机器，可以轻松维持&lt;strong&gt;数万个&lt;/strong&gt;这种 2 分钟的长连接&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Java 17 的解决方案：&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;彻底的异步非阻塞 (Spring WebFlux / Netty)&lt;/strong&gt;：代码难写，但性能和虚拟线程一样强&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;集群 + 增加配置&lt;/strong&gt;：调大 maxThreads，上多台机器通过 Nginx 负载均衡&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;升级 Java 21&lt;/strong&gt;：成本最低、收益最高&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        </item>
+        <item>
+        <title>场景</title>
+        <link>https://LuciusWan.github.io/p/%E5%9C%BA%E6%99%AF/</link>
+        <pubDate>Mon, 01 Dec 2025 14:11:07 +0800</pubDate>
+        
+        <guid>https://LuciusWan.github.io/p/%E5%9C%BA%E6%99%AF/</guid>
+        <description></description>
         </item>
         <item>
         <title>实习经历话术</title>

@@ -2880,7 +2880,7 @@
 <pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@GetMapping</span><span class="p">(</span><span class="s">&#34;/ai-stream&#34;</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">SseEmitter</span><span class="w"> </span><span class="nf">stream</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">SseEmitter</span><span class="w"> </span><span class="n">emitter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SseEmitter</span><span class="p">(</span><span class="n">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">60</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">1000L</span><span class="p">);</span><span class="w"> </span><span class="c1">// 5分钟超时</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// Tomcat 线程只做这一件事：创建 emitter，扔给后台，立即返回</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">aiTaskExecutor</span><span class="p">.</span><span class="na">submit</span><span class="p">(()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
@@ -2890,7 +2890,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">emitter</span><span class="p">.</span><span class="na">completeWithError</span><span class="p">(</span><span class="n">e</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">});</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">emitter</span><span class="p">;</span><span class="w"> </span><span class="c1">// Tomcat 线程瞬间释放（2~5ms）</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>

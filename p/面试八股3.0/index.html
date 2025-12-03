@@ -563,6 +563,98 @@
         <li><a href="#总结-2">总结</a></li>
       </ol>
     </li>
+    <li><a href="#tidb-新节点发现与数据调度">TiDB 新节点发现与数据调度</a>
+      <ol>
+        <li><a href="#新-tikv-是如何被发现的节点注册">新 TiKV 是如何被发现的？（节点注册）</a></li>
+        <li><a href="#什么时候把数据存过去调度与平衡">什么时候把数据存过去？（调度与平衡）</a></li>
+        <li><a href="#tidb-server-是怎么感知到的">TiDB Server 是怎么感知到的？</a></li>
+      </ol>
+    </li>
+    <li><a href="#tikv-的-raft-log">TiKV 的 Raft Log</a>
+      <ol>
+        <li><a href="#核心定义">核心定义</a></li>
+        <li><a href="#物理存储">物理存储</a></li>
+        <li><a href="#raft-log-vs-mysql-日志对比">Raft Log vs MySQL 日志对比</a></li>
+      </ol>
+    </li>
+    <li><a href="#lsm-tree-vs-b-树的读写性能对比">LSM Tree vs B+ 树的读写性能对比</a>
+      <ol>
+        <li><a href="#写入速度lsm-tree-碾压-b-树">写入速度：LSM Tree 碾压 B+ 树</a></li>
+        <li><a href="#读取速度b-树稳赢但-lsm-也没输太惨">读取速度：B+ 树稳赢，但 LSM 也没输太惨</a>
+          <ol>
+            <li><a href="#神器一布隆过滤器-bloom-filter">神器一：布隆过滤器 (Bloom Filter)</a></li>
+            <li><a href="#神器二block-cache">神器二：Block Cache</a></li>
+          </ol>
+        </li>
+        <li><a href="#实测对比">实测对比</a></li>
+        <li><a href="#ssd-改变了战局">SSD 改变了战局</a></li>
+        <li><a href="#一句话总结">一句话总结</a></li>
+      </ol>
+    </li>
+    <li><a href="#多层-sstable-结构详解leveled-compaction">多层 SSTable 结构详解（Leveled Compaction）</a>
+      <ol>
+        <li><a href="#各层职责">各层职责</a>
+          <ol>
+            <li><a href="#level-0-l0--无序的乱流区">Level 0 (L0) —— &ldquo;无序的乱流区&rdquo;</a></li>
+            <li><a href="#level-1--level-6--有序的图书馆">Level 1 ~ Level 6 —— &ldquo;有序的图书馆&rdquo;</a></li>
+          </ol>
+        </li>
+        <li><a href="#compaction-机制数据下沉">Compaction 机制（数据下沉）</a>
+          <ol>
+            <li><a href="#l0---l1-major-compaction">L0 -&gt; L1 (Major Compaction)</a></li>
+            <li><a href="#l1---l2------l6">L1 -&gt; L2 -&gt; &hellip; -&gt; L6</a></li>
+          </ol>
+        </li>
+        <li><a href="#查询路径">查询路径</a></li>
+        <li><a href="#总结-3">总结</a></li>
+      </ol>
+    </li>
+    <li><a href="#布隆过滤器bloom-filter详解">布隆过滤器（Bloom Filter）详解</a>
+      <ol>
+        <li><a href="#工作原理">工作原理</a>
+          <ol>
+            <li><a href="#写入数据存入-tikv">写入数据（存入 &ldquo;TiKV&rdquo;）</a></li>
+            <li><a href="#查询数据">查询数据</a></li>
+          </ol>
+        </li>
+        <li><a href="#在-tikv-中的作用">在 TiKV 中的作用</a></li>
+        <li><a href="#优缺点-2">优缺点</a></li>
+        <li><a href="#一句话总结-1">一句话总结</a></li>
+      </ol>
+    </li>
+    <li><a href="#tidb-查询-l0-层的真实流程">TiDB 查询 L0 层的真实流程</a>
+      <ol>
+        <li><a href="#查询流程还原">查询流程还原</a></li>
+        <li><a href="#为什么-l0-还是慢">为什么 L0 还是慢？</a></li>
+        <li><a href="#范围查询range-scan">范围查询（Range Scan）</a></li>
+      </ol>
+    </li>
+    <li><a href="#memtable-刷盘到-l0-的过程">MemTable 刷盘到 L0 的过程</a>
+      <ol>
+        <li><a href="#排序其实早已完成">排序：其实早已完成</a></li>
+        <li><a href="#元数据生成边写边算">元数据生成：边写边算</a></li>
+        <li><a href="#l0-sstable-的双重性质">L0 SSTable 的双重性质</a></li>
+      </ol>
+    </li>
+    <li><a href="#sstable-二分查找-vs-b-树多次随机-io">SSTable 二分查找 vs B+ 树多次随机 I/O</a>
+      <ol>
+        <li><a href="#核心纠正">核心纠正</a></li>
+        <li><a href="#sstable-的真实查找流程">SSTable 的真实查找流程</a></li>
+        <li><a href="#mysql-b-树的查找流程">MySQL B+ 树的查找流程</a></li>
+        <li><a href="#终极对比">终极对比</a></li>
+        <li><a href="#一句话概括">一句话概括</a></li>
+      </ol>
+    </li>
+    <li><a href="#为什么-tidb-选择-lsm-tree-而不是-b-树">为什么 TiDB 选择 LSM Tree 而不是 B+ 树</a>
+      <ol>
+        <li><a href="#原因一写入性能的鸿沟">原因一：写入性能的鸿沟</a></li>
+        <li><a href="#原因二分布式架构下的数据迁移">原因二：分布式架构下的&quot;数据迁移&quot;</a></li>
+        <li><a href="#原因三存储成本压缩率">原因三：存储成本（压缩率）</a></li>
+        <li><a href="#原因四站在巨人的肩膀上rocksdb">原因四：站在巨人的肩膀上（RocksDB）</a></li>
+        <li><a href="#总结对比">总结对比</a></li>
+        <li><a href="#一句话总结-2">一句话总结</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -619,7 +711,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 44 分钟
+                    阅读时长: 57 分钟
                 </time>
             </div>
         
@@ -2984,6 +3076,624 @@
       </tr>
   </tbody>
 </table></div>
+<h2 id="tidb-新节点发现与数据调度">TiDB 新节点发现与数据调度
+</h2><h3 id="新-tikv-是如何被发现的节点注册">新 TiKV 是如何被发现的？（节点注册）
+</h3><p>当你在新机器上启动一个 TiKV 实例时，它是**主动向集群&quot;报到&quot;**的。核心调度者是 <strong>PD (Placement Driver)</strong>，而不是 TiDB Server。</p>
+<p><strong>流程：</strong></p>
+<ol>
+<li><strong>读取配置：</strong> 新 TiKV 读取配置文件，找到 PD 节点的地址（<code>pd-endpoints</code>）</li>
+<li><strong>发送心跳：</strong> 新 TiKV 向 PD 发送 RPC 请求，告诉 PD：&ldquo;我是新来的，我的 IP 是多少，我的磁盘容量是多少&rdquo;</li>
+<li><strong>PD 注册：</strong> PD 为新节点分配一个全局唯一的 Store ID，将其状态标记为 <code>Up</code></li>
+</ol>
+<p><em>注：TiDB Server 此时可能还不知道新节点，它只有在读写数据时发现路由变化，才会更新本地的 Region Cache。</em></p>
+<hr>
+<h3 id="什么时候把数据存过去调度与平衡">什么时候把数据存过去？（调度与平衡）
+</h3><p>数据基于 <strong>Region（数据分片）</strong> 为单位，通过 <strong>Raft 协议</strong> 逐步迁移，完全由 PD 的调度器控制。</p>
+<p><strong>流程：</strong></p>
+<ol>
+<li>
+<p><strong>信息收集：</strong> 所有 TiKV 节点定期（默认每 10 秒）向 PD 发送 Store Heartbeat</p>
+<ul>
+<li>旧节点汇报：我有 1000 个 Region，磁盘使用了 80%</li>
+<li>新节点汇报：我有 0 个 Region，磁盘使用了 1%</li>
+</ul>
+</li>
+<li>
+<p><strong>生成调度策略：</strong> PD 的 <code>balance-region-scheduler</code> 发现新节点分数极低，决定把旧节点的一些 Region 搬运过去</p>
+</li>
+<li>
+<p><strong>下发操作指令：</strong> PD 生成 <code>MovePeer</code> Operator</p>
+<ul>
+<li>Add Peer：在新节点上增加一个副本</li>
+<li>Remove Peer：数据同步完成后，删掉旧节点上多余的副本</li>
+</ul>
+</li>
+<li>
+<p><strong>执行搬运（Raft）：</strong></p>
+<ul>
+<li>Leader 向新节点发送 Snapshot（快照数据）</li>
+<li>快照期间的新写入通过 Raft Log 同步</li>
+<li>新节点数据追平后，正式成为 Raft Group 成员</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="tidb-server-是怎么感知到的">TiDB Server 是怎么感知到的？
+</h3><p>TiDB Server 在这个过程中是<strong>被动的</strong>：</p>
+<ol>
+<li><strong>缓存失效：</strong> TiDB Server 维护了 Region Cache（Region ID -&gt; TiKV 地址的映射）</li>
+<li><strong>请求重试：</strong> 数据迁移后，旧 TiKV 会返回 <code>Region Error</code></li>
+<li><strong>重新拉取：</strong> TiDB Server 向 PD 询问最新路由信息</li>
+</ol>
+<h2 id="tikv-的-raft-log">TiKV 的 Raft Log
+</h2><p>TiKV 用来同步主从（Leader 和 Follower）副本的日志是 <strong>Raft Log</strong>。</p>
+<hr>
+<h3 id="核心定义">核心定义
+</h3><p>TiKV 是一个基于 <strong>Raft 一致性算法</strong> 的分布式存储系统。在 Raft 协议中，所有的写操作首先都会被转化为一条<strong>日志条目（Log Entry）</strong>。</p>
+<ul>
+<li><strong>Leader 的职责：</strong> 接收写入请求，把指令追加到自己的 Raft Log 中，然后复制给 Followers</li>
+<li><strong>Follower 的职责：</strong> 接收 Leader 发来的 Log，追加到自己的 Log 中，并告诉 Leader &ldquo;我收到了&rdquo;</li>
+<li><strong>达成一致（Commit）：</strong> 当**大多数节点（Majority）**都收到了这条 Log，Leader 才会把它应用到状态机</li>
+</ul>
+<hr>
+<h3 id="物理存储">物理存储
+</h3><p>Raft Log 在 TiKV 内部是作为 KV 数据存储在 RocksDB 里的。</p>
+<p>TiKV 内部有两个 RocksDB 实例：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>实例</th>
+          <th>存储内容</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>RocksDB-KV (kvdb)</strong></td>
+          <td>真正的用户数据（State Machine）</td>
+      </tr>
+      <tr>
+          <td><strong>RocksDB-Raft (raftdb)</strong></td>
+          <td>Raft Log</td>
+      </tr>
+  </tbody>
+</table></div>
+<p><strong>写入流程：</strong></p>
+<ol>
+<li>用户写入 <code>Key=&quot;A&quot;, Value=&quot;1&quot;</code></li>
+<li>TiKV Leader 将操作封装成 Log Entry，写入 <code>raftdb</code>（落盘）</li>
+<li>Leader 通过网络把 Log Entry 发给 Followers</li>
+<li>Followers 收到后，也写入自己的 <code>raftdb</code></li>
+<li>达成共识后，Leader 和 Followers 再把数据写入 <code>kvdb</code>（这步叫 Apply）</li>
+<li>旧的 Raft Log 会被清理（Log Compaction）</li>
+</ol>
+<hr>
+<h3 id="raft-log-vs-mysql-日志对比">Raft Log vs MySQL 日志对比
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>特性</th>
+          <th>TiKV Raft Log</th>
+          <th>MySQL Redo Log</th>
+          <th>MySQL Binlog</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>主要用途</td>
+          <td>多副本之间的数据同步、故障恢复</td>
+          <td>单机引擎的故障恢复</td>
+          <td>主从同步、数据归档</td>
+      </tr>
+      <tr>
+          <td>共识机制</td>
+          <td><strong>强一致性</strong>（Raft 协议，必须多数派成功）</td>
+          <td>无（单机写盘）</td>
+          <td>弱一致性/半同步</td>
+      </tr>
+      <tr>
+          <td>存储方式</td>
+          <td>存储在 RocksDB (LSM-Tree) 中</td>
+          <td>循环写的物理日志文件</td>
+          <td>追加写的逻辑日志文件</td>
+      </tr>
+      <tr>
+          <td>内容</td>
+          <td>操作指令 + 索引 + 任期</td>
+          <td>物理页的修改</td>
+          <td>SQL 语句或行级数据变化</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="lsm-tree-vs-b-树的读写性能对比">LSM Tree vs B+ 树的读写性能对比
+</h2><h3 id="写入速度lsm-tree-碾压-b-树">写入速度：LSM Tree 碾压 B+ 树
+</h3><p><strong>差距：1 个数量级以上（10x ~ 100x）</strong></p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>引擎</th>
+          <th>写入方式</th>
+          <th>问题</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>B+ 树（MySQL）</strong></td>
+          <td>随机写（Random Write）</td>
+          <td>修改一行数据，需要把整个 16KB Page 读出来、修改、写回去；Page 满了还要分裂</td>
+      </tr>
+      <tr>
+          <td><strong>LSM Tree（TiDB）</strong></td>
+          <td>顺序写（Sequential Write）</td>
+          <td>不管改哪行数据，都直接追加到内存和 WAL 末尾</td>
+      </tr>
+  </tbody>
+</table></div>
+<p><strong>磁盘特性：</strong> 机械硬盘的顺序写速度是随机写的 <strong>100 倍</strong>；即使是 NVMe SSD，顺序写也能跑满带宽。</p>
+<hr>
+<h3 id="读取速度b-树稳赢但-lsm-也没输太惨">读取速度：B+ 树稳赢，但 LSM 也没输太惨
+</h3><p><strong>B+ 树：</strong> 高度为 3，根节点和第二层索引通常在内存里，查询 = <strong>1 次物理 I/O</strong>。稳得可怕。</p>
+<p><strong>LSM Tree：</strong> 数据可能在 MemTable、L0、L1&hellip;L6。理论上需要多次 I/O，但有两个&quot;作弊神器&quot;：</p>
+<h4 id="神器一布隆过滤器-bloom-filter">神器一：布隆过滤器 (Bloom Filter)
+</h4><p>每个 SSTable 文件都附带一个 Bloom Filter：</p>
+<ul>
+<li>回答&quot;绝对没有&quot; → 直接跳过这个文件，<strong>0 次磁盘 I/O</strong></li>
+<li>回答&quot;可能有&quot; → 才去读这个文件</li>
+</ul>
+<p><strong>效果：</strong> 能过滤掉 <strong>99%</strong> 不包含目标 Key 的 SSTable 文件。</p>
+<h4 id="神器二block-cache">神器二：Block Cache
+</h4><p>热点数据的 SSTable Block 会被缓存在内存中，命中时等同于读内存。</p>
+<hr>
+<h3 id="实测对比">实测对比
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>场景</th>
+          <th>MySQL (B+ Tree)</th>
+          <th>TiDB (LSM Tree)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>点查（Point Lookup）</strong></td>
+          <td>极度稳定，约 1 次 I/O</td>
+          <td>最好 0 次（MemTable 命中），普通 1-2 次，最坏多次（Bloom Filter 误判）</td>
+      </tr>
+      <tr>
+          <td><strong>范围查询（Range Scan）</strong></td>
+          <td>叶子节点有双向链表，顺序读极快</td>
+          <td>需要在多个层级做归并排序，消耗 CPU</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="ssd-改变了战局">SSD 改变了战局
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>硬件</th>
+          <th>顺序读写</th>
+          <th>随机读写</th>
+          <th>差距</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>机械硬盘 (HDD)</strong></td>
+          <td>100MB/s</td>
+          <td>1MB/s</td>
+          <td><strong>100 倍</strong></td>
+      </tr>
+      <tr>
+          <td><strong>固态硬盘 (SSD)</strong></td>
+          <td>2000MB/s</td>
+          <td>500MB/s</td>
+          <td><strong>4~5 倍</strong></td>
+      </tr>
+  </tbody>
+</table></div>
+<p>SSD 的随机读能力非常强，这在一定程度上削弱了 LSM Tree 顺序写的优势，同时也掩盖了 LSM Tree 多次随机读的劣势。</p>
+<hr>
+<h3 id="一句话总结">一句话总结
+</h3><p>如果没有布隆过滤器，LSM Tree 的读取速度可能是 B+ 树的 <strong>1/10</strong>；但加上布隆过滤器和 SSD 后，两者的点查性能差距通常在 <strong>10%~20%</strong> 以内，而 LSM 却换来了 <strong>10 倍</strong> 的写入性能提升。</p>
+<h2 id="多层-sstable-结构详解leveled-compaction">多层 SSTable 结构详解（Leveled Compaction）
+</h2><p>TiKV 默认配置是 <strong>7 层</strong>（Level 0 到 Level 6），每一层的容量通常是上一层的 <strong>10 倍</strong>。</p>
+<hr>
+<h3 id="各层职责">各层职责
+</h3><h4 id="level-0-l0--无序的乱流区">Level 0 (L0) —— &ldquo;无序的乱流区&rdquo;
+</h4><ul>
+<li><strong>来源：</strong> MemTable 写满后直接 Flush 成为 L0 的一个 SSTable 文件</li>
+<li><strong>特点：</strong> Key 是<strong>重叠的（Overlapping）</strong>，因为按时间顺序生成，没有经过合并</li>
+<li><strong>读取代价：</strong> 必须遍历 L0 层的所有文件</li>
+<li><strong>控制：</strong> TiKV 严格控制 L0 的文件数量（通常只有几个），一旦多了马上触发 Compaction</li>
+</ul>
+<h4 id="level-1--level-6--有序的图书馆">Level 1 ~ Level 6 —— &ldquo;有序的图书馆&rdquo;
+</h4><ul>
+<li><strong>来源：</strong> 由上一层的数据经过 Compaction（合并排序）下沉而来</li>
+<li><strong>特点：</strong> <strong>全局有序，互不重叠</strong></li>
+<li><strong>读取优势：</strong> 通过 Key 可以直接定位到唯一的一个 SSTable 文件（支持二分查找）</li>
+</ul>
+<hr>
+<h3 id="compaction-机制数据下沉">Compaction 机制（数据下沉）
+</h3><h4 id="l0---l1-major-compaction">L0 -&gt; L1 (Major Compaction)
+</h4><ol>
+<li>当 L0 文件太多（例如超过 4 个），系统把 L0 的文件和 L1 里 Key 范围有重叠的文件一起读取</li>
+<li>在内存中进行<strong>多路归并排序（Merge Sort）</strong></li>
+<li>生成新的、无重叠的 SSTable 文件，放回 L1</li>
+</ol>
+<p><em>注：这一步最耗费 CPU，因为 L0 是乱序的。</em></p>
+<h4 id="l1---l2------l6">L1 -&gt; L2 -&gt; &hellip; -&gt; L6
+</h4><p>当某层大小超过阈值，挑选一个文件，找到下一层中和它范围重叠的文件，合并、排序、去重、删除（处理墓碑），写入下一层。</p>
+<hr>
+<h3 id="查询路径">查询路径
+</h3><p>当 TiDB 发起一个查询 <code>Get(Key=&quot;user_1&quot;)</code>：</p>
+<ol>
+<li><strong>MemTable：</strong> 先看内存里有没有最新的（速度最快）</li>
+<li><strong>Immutable MemTable：</strong> 看准备刷盘的那块内存</li>
+<li><strong>L0 SSTables：</strong> 依次查询每一个文件（按时间倒序）—— <strong>这里最慢</strong></li>
+<li><strong>L1 SSTables：</strong> 根据 Key 范围定位到唯一的一个文件，问 Bloom Filter</li>
+<li><strong>L2 &hellip; L6：</strong> 同上，每一层只读 1 个文件</li>
+</ol>
+<hr>
+<h3 id="总结-3">总结
+</h3><ul>
+<li><strong>L0 层：</strong> 是写性能的缓冲区，允许乱序，写入极快，但读取慢（必须全扫）</li>
+<li><strong>L1-L6 层：</strong> 是读性能的保障区，严格有序，读取快（二分查找），但写入需要付出 Compaction 的代价</li>
+</ul>
+<p>LSM Tree 是&quot;用后台的 CPU 和 I/O 资源（做 Compaction），来换取前台的极速写入和较好的读取性能&quot;。</p>
+<h2 id="布隆过滤器bloom-filter详解">布隆过滤器（Bloom Filter）详解
+</h2><p>布隆过滤器是计算机科学中设计最巧妙的数据结构之一。</p>
+<p><strong>核心逻辑：</strong> 如果布隆过滤器说&quot;没有&quot;，那就是 <strong>100% 没有</strong>；如果它说&quot;有&quot;，那是**&ldquo;可能有&rdquo;**。</p>
+<hr>
+<h3 id="工作原理">工作原理
+</h3><p>想象一个非常长的<strong>位数组（Bit Array）</strong>，初始全都是 0，同时有几个<strong>哈希函数</strong>。</p>
+<h4 id="写入数据存入-tikv">写入数据（存入 &ldquo;TiKV&rdquo;）
+</h4><ol>
+<li>用 3 个哈希函数计算：<code>Hash1(&quot;TiKV&quot;)=3</code>, <code>Hash2(&quot;TiKV&quot;)=5</code>, <code>Hash3(&quot;TiKV&quot;)=8</code></li>
+<li>把位数组中下标为 3、5、8 的格子全都置为 1</li>
+</ol>
+<h4 id="查询数据">查询数据
+</h4><p><strong>情况 A：绝对不存在</strong></p>
+<ul>
+<li>查 &ldquo;MySQL&rdquo;：<code>Hash1=3</code>, <code>Hash2=6</code>, <code>Hash3=8</code></li>
+<li>第 6 位是 0 → <strong>绝对从来没被存进去过</strong></li>
+</ul>
+<p><strong>情况 B：可能存在（误判）</strong></p>
+<ul>
+<li>查 &ldquo;Oracle&rdquo;：<code>Hash1=3</code>, <code>Hash2=8</code>, <code>Hash3=5</code></li>
+<li>第 3、5、8 位全都是 1 → 系统说&quot;可能存在&quot;</li>
+<li><strong>真相：</strong> 其实从来没存过 &ldquo;Oracle&rdquo;，这是哈希碰撞导致的<strong>假阳性（False Positive）</strong></li>
+</ul>
+<hr>
+<h3 id="在-tikv-中的作用">在 TiKV 中的作用
+</h3><p>TiKV 的磁盘上存了成千上万个 SSTable 文件。当你要找 <code>Key = 10086</code> 时：</p>
+<ol>
+<li>TiKV 拿到 SSTable 文件头部的 Bloom Filter（通常缓存在内存里）</li>
+<li>问 Bloom Filter：&ldquo;在这个文件里有 10086 吗？&rdquo;
+<ul>
+<li><strong>&ldquo;绝对没有&rdquo;</strong> → 直接跳过，<strong>节省一次磁盘 I/O</strong></li>
+<li><strong>&ldquo;可能有&rdquo;</strong> → 去磁盘加载这个 SSTable 的数据块</li>
+</ul>
+</li>
+</ol>
+<p><strong>核心价值：</strong> 能帮数据库过滤掉 <strong>99% 以上</strong>不包含目标 Key 的文件。</p>
+<hr>
+<h3 id="优缺点-2">优缺点
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>优点</th>
+          <th>缺点</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>极其节省空间：</strong> 存 10 亿个 Key 可能只需要几百 MB</td>
+          <td><strong>存在误判（False Positive）：</strong> 会把&quot;没有&quot;说成&quot;有&quot;</td>
+      </tr>
+      <tr>
+          <td><strong>极快：</strong> 查询和插入都是 O(k)，跟数据量无关</td>
+          <td><strong>不支持删除：</strong> 不能简单地把位还原成 0</td>
+      </tr>
+      <tr>
+          <td><strong>绝无&quot;漏网之鱼&quot;：</strong> 说&quot;没有&quot;就绝对没有</td>
+          <td>-</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="一句话总结-1">一句话总结
+</h3><p>布隆过滤器是一个**&ldquo;内存很小、不说谎但偶尔会看走眼&rdquo;**的看门大爷。他能极其高效地告诉你：&ldquo;这人肯定不在屋里，别进去找了&rdquo;，从而省下了无数次推门进去（读磁盘）的力气。</p>
+<h2 id="tidb-查询-l0-层的真实流程">TiDB 查询 L0 层的真实流程
+</h2><p>TiDB 在 L0 上<strong>不是</strong>对文件内容的&quot;全量顺序扫描&quot;，而是对 L0 层所有文件的**&ldquo;逐个排查&rdquo;**。</p>
+<hr>
+<h3 id="查询流程还原">查询流程还原
+</h3><p>假设 L0 层有 4 个 SSTable 文件（File A, B, C, D），按时间顺序生成（A 最新）。查询 <code>Key = 100</code>：</p>
+<p><strong>第 1 步：查 File A</strong></p>
+<ul>
+<li>元数据检查（内存）：Key 范围是 200~300</li>
+<li>判断：100 不在范围内 → <strong>直接跳过</strong></li>
+</ul>
+<p><strong>第 2 步：查 File B</strong></p>
+<ul>
+<li>元数据检查：Key 范围是 0~150，命中</li>
+<li>Bloom Filter 检查（内存）：回答&quot;没有&quot; → <strong>跳过</strong></li>
+</ul>
+<p><strong>第 3 步：查 File C</strong></p>
+<ul>
+<li>元数据检查：范围 50~200，命中</li>
+<li>Bloom Filter 检查：回答&quot;可能有&quot;</li>
+<li><strong>文件内部查找（读取磁盘）：</strong>
+<ul>
+<li>SSTable 内部也是有序的，有 Index Block</li>
+<li>二分查找定位到具体的 Data Block（通常 4KB）</li>
+<li>只加载那个 Data Block，解析出来</li>
+</ul>
+</li>
+<li>结果：找到了！返回 Value</li>
+</ul>
+<p><strong>第 4 步：查 File D</strong></p>
+<ul>
+<li>因为在 File C 里已经找到了，File D 不需要看了</li>
+</ul>
+<hr>
+<h3 id="为什么-l0-还是慢">为什么 L0 还是慢？
+</h3><p>虽然用到了二分查找和布隆过滤器，但 L0 的机制依然比 L1~L6 慢：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>问题</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>必须 Loop 每一个文件</strong></td>
+          <td>L1 层可以直接定位到唯一的一个文件，L0 层必须一个个问</td>
+      </tr>
+      <tr>
+          <td><strong>多次 I/O 的风险</strong></td>
+          <td>Bloom Filter 误判或范围查询时，可能需要读取多个文件</td>
+      </tr>
+  </tbody>
+</table></div>
+<p><strong>查询 L1~L6：</strong> 最多读 1 个文件
+<strong>查询 L0：</strong> 最坏情况可能读 N 个文件</p>
+<hr>
+<h3 id="范围查询range-scan">范围查询（Range Scan）
+</h3><p>如果是 <code>SELECT * FROM t WHERE id &gt; 100 AND id &lt; 200</code>：</p>
+<ol>
+<li>TiKV 打开 L0 层所有涉及该范围的文件</li>
+<li>同时建立多个迭代器（Iterator）</li>
+<li>在内存中对比这些迭代器当前指的值，谁最小选谁（还要处理覆盖逻辑）</li>
+</ol>
+<p>这个过程非常消耗 CPU，因为要不断地比较、推进迭代器。</p>
+<h2 id="memtable-刷盘到-l0-的过程">MemTable 刷盘到 L0 的过程
+</h2><h3 id="排序其实早已完成">排序：其实早已完成
+</h3><p>MemTable 的底层数据结构通常是 <strong>SkipList（跳表）</strong>，这是一种<strong>天然有序</strong>的数据结构。</p>
+<ul>
+<li>当你往 TiKV 写数据时，它在插入的那一瞬间，就已经被安插到了正确的位置上</li>
+<li>刷盘时，Flush 线程只需要从头到尾遍历这个 SkipList，按顺序把数据拿出来写到磁盘上即可</li>
+<li><strong>不需要再进行一次耗时的排序算法</strong></li>
+</ul>
+<hr>
+<h3 id="元数据生成边写边算">元数据生成：边写边算
+</h3><p>在把数据从内存顺序写入磁盘文件的过程中，TiKV 会同时计算并生成大量元数据，追加到 SSTable 文件的末尾（Footer）：</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>元数据</th>
+          <th>作用</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Min/Max Key</strong></td>
+          <td>记录文件里的最小和最大 Key，用于快速判断&quot;不在本文件&quot;</td>
+      </tr>
+      <tr>
+          <td><strong>Bloom Filter</strong></td>
+          <td>把文件里所有的 Key 都算一遍哈希，生成布隆过滤器的位图</td>
+      </tr>
+      <tr>
+          <td><strong>Index Block</strong></td>
+          <td>记录数据块的位置，支持文件内部的二分查找</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="l0-sstable-的双重性质">L0 SSTable 的双重性质
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>维度</th>
+          <th>特点</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>内部（Internally）</strong></td>
+          <td>绝对完美有序，带有完整的索引和布隆过滤器</td>
+      </tr>
+      <tr>
+          <td><strong>外部（Globally）</strong></td>
+          <td>和其他 L0 文件是&quot;乱序/重叠&quot;的</td>
+      </tr>
+  </tbody>
+</table></div>
+<p>这就导致了&quot;必须逐个检查 L0 文件&quot;的问题。</p>
+<h2 id="sstable-二分查找-vs-b-树多次随机-io">SSTable 二分查找 vs B+ 树多次随机 I/O
+</h2><h3 id="核心纠正">核心纠正
+</h3><p>SSTable 的&quot;二分查找&quot;<strong>并不是</strong>在磁盘上跳来跳去的二分查找。如果真的在磁盘上做标准的二分查找，SSTable 会慢到令人发指。</p>
+<hr>
+<h3 id="sstable-的真实查找流程">SSTable 的真实查找流程
+</h3><p>假设一个 SSTable 文件有 256MB，查询 <code>Key = 100</code>：</p>
+<p><strong>第 1 步：查 Index Block（内存操作）</strong></p>
+<ul>
+<li>SSTable 的末尾有一个索引块，通常缓存在内存里</li>
+<li>在索引里二分查找，发现 Key = 100 在第 5 个数据块（Block 5），位置是 <code>Offset: 16KB, Length: 4KB</code></li>
+</ul>
+<p><strong>第 2 步：精准 I/O（磁盘操作）</strong></p>
+<ul>
+<li>TiKV 只读取这 <strong>4KB</strong> 的数据，而不是 256MB 的整个文件</li>
+</ul>
+<p><strong>第 3 步：块内搜索（内存操作）</strong></p>
+<ul>
+<li>把这 4KB 数据解压到内存</li>
+<li>在这个 4KB 的小范围内做二分查找</li>
+</ul>
+<p><strong>总结：</strong> SSTable 的查找 = <strong>0 次磁盘二分 + 1 次磁盘精准读取</strong></p>
+<hr>
+<h3 id="mysql-b-树的查找流程">MySQL B+ 树的查找流程
+</h3><p>假设查 <code>ID = 100</code>：</p>
+<ol>
+<li><strong>查根节点（Root Page）：</strong> 通常常驻内存</li>
+<li><strong>查分支节点（Internal Page）：</strong> 如果内存里有直接查，没有就读磁盘</li>
+<li><strong>查叶子节点（Leaf Page）：</strong> 把 16KB 整个加载到 Buffer Pool</li>
+<li><strong>页内搜索：</strong> 通过 Page Directory 进行二分查找</li>
+</ol>
+<hr>
+<h3 id="终极对比">终极对比
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>特性</th>
+          <th>TiDB (SSTable)</th>
+          <th>MySQL (B+ Tree)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>最小读取单位</td>
+          <td>Block (通常 4KB)</td>
+          <td>Page (通常 16KB)</td>
+      </tr>
+      <tr>
+          <td>如何定位目标块？</td>
+          <td><strong>依靠计算和索引：</strong> Bloom Filter 确认存在 → Index Block 算出 Offset</td>
+          <td><strong>依靠指针：</strong> 父节点记录了子节点的 Page ID，一层层跳过去</td>
+      </tr>
+      <tr>
+          <td>磁盘 I/O 行为</td>
+          <td><strong>跳跃式：</strong> 直接算出位置，空降过去读取</td>
+          <td><strong>寻路式：</strong> 如果父节点不在内存，可能要读多次盘</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="一句话概括">一句话概括
+</h3><ul>
+<li><strong>TiDB 像是有 GPS 坐标：</strong> Bloom Filter 确认你在，Index 告诉我你在第几排第几列，我直接空降过去拿那一本书（Block）</li>
+<li><strong>MySQL 像是查路标：</strong> 先看路口的牌子（Root），往左走；再看路口的牌子（Internal），往右走；最后走到房子门口（Leaf），进去拿那一页（Page）</li>
+</ul>
+<h2 id="为什么-tidb-选择-lsm-tree-而不是-b-树">为什么 TiDB 选择 LSM Tree 而不是 B+ 树
+</h2><p>TiDB 的定位是**&ldquo;分布式&rdquo;<strong>且</strong>&ldquo;支持海量数据写入&rdquo;**的数据库。在这个定位下，B+ 树有几个致命的弱点。</p>
+<hr>
+<h3 id="原因一写入性能的鸿沟">原因一：写入性能的鸿沟
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>引擎</th>
+          <th>问题</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>B+ 树</strong></td>
+          <td>当数据量达到 TB 级别，且写入是随机的（如 UUID 主键），需要不断地把磁盘上的 Page 读出来、修改、写回去。更糟糕的是<strong>页分裂（Page Split）</strong>，会导致大量的磁盘操作和锁竞争。这被称为**&ldquo;写墙&rdquo;（Write Wall）**</td>
+      </tr>
+      <tr>
+          <td><strong>LSM Tree</strong></td>
+          <td>不管改哪个 Key，对于磁盘来说永远都是 <strong>Append Only</strong>。顺序写磁盘的速度是随机写的几十倍甚至上百倍</td>
+      </tr>
+  </tbody>
+</table></div>
+<p><strong>场景：</strong> TiDB 经常被用来应对&quot;双11&quot;这种流量洪峰，或者日志类数据的海量插入。</p>
+<hr>
+<h3 id="原因二分布式架构下的数据迁移">原因二：分布式架构下的&quot;数据迁移&quot;
+</h3><p>TiDB 是分布式的，数据会在不同的 TiKV 节点之间搬来搬去（Rebalance）。</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>引擎</th>
+          <th>迁移难度</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>B+ 树</strong></td>
+          <td>是一个原地更新的复杂结构。迁移数据需要从复杂的树结构里拆出一部分，锁定，传输，再在另一台机器上重建树结构。非常复杂且难以保证一致性</td>
+      </tr>
+      <tr>
+          <td><strong>LSM Tree</strong></td>
+          <td>SSTable 文件是**不可变（Immutable）**的。快照极快，只需要直接把文件通过网络发过去就行了（Send File）</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="原因三存储成本压缩率">原因三：存储成本（压缩率）
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>引擎</th>
+          <th>空间利用率</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>B+ 树</strong></td>
+          <td>Page 通常不会填满（为了预留空间给 Update），典型空间利用率只有 <strong>50%~70%</strong>。而且很难做高压缩</td>
+      </tr>
+      <tr>
+          <td><strong>LSM Tree</strong></td>
+          <td>SSTable 是一次性生成的，数据紧紧挨在一起。前缀压缩效果极好</td>
+      </tr>
+  </tbody>
+</table></div>
+<p><strong>实测数据：</strong> 同样的数据存入 TiDB，通常只占用 MySQL 磁盘空间的 <strong>30%~50%</strong>。</p>
+<hr>
+<h3 id="原因四站在巨人的肩膀上rocksdb">原因四：站在巨人的肩膀上（RocksDB）
+</h3><p>TiDB 团队并没有从零手写存储引擎，而是直接利用经过工业界大规模验证的 <strong>RocksDB</strong> 作为底层，把精力花在处理 Raft 共识协议和分布式事务上。</p>
+<hr>
+<h3 id="总结对比">总结对比
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>维度</th>
+          <th>B+ 树 (MySQL)</th>
+          <th>LSM Tree (TiDB)</th>
+          <th>谁赢？</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>读性能</td>
+          <td>极好（稳定 1 次 IO）</td>
+          <td>稍弱（依赖 Cache/Bloom Filter）</td>
+          <td>B+ 树赢</td>
+      </tr>
+      <tr>
+          <td>写性能</td>
+          <td>一般（随机 IO 瓶颈）</td>
+          <td><strong>极强</strong>（顺序写）</td>
+          <td><strong>LSM 赢（关键）</strong></td>
+      </tr>
+      <tr>
+          <td>空间利用率</td>
+          <td>一般（有碎片）</td>
+          <td><strong>极高</strong>（压缩好）</td>
+          <td><strong>LSM 赢（省钱）</strong></td>
+      </tr>
+      <tr>
+          <td>扩容/迁移</td>
+          <td>困难（修改复杂结构）</td>
+          <td><strong>容易</strong>（直接发文件）</td>
+          <td><strong>LSM 赢（分布式核心）</strong></td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h3 id="一句话总结-2">一句话总结
+</h3><p>TiDB 并不是为了&quot;找麻烦&quot;才选复杂的 LSM Tree，而是因为在分布式和海量写入的场景下，B+ 树&quot;撑不住&quot;了。LSM Tree 虽然读取逻辑复杂一点，但它换来了<strong>十倍的写入吞吐量</strong>和<strong>极高的压缩率</strong>，这对分布式数据库来说是最划算的交易。</p>
 
 </section>
 

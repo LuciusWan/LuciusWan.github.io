@@ -301,6 +301,28 @@
         <li><a href="#形象记忆法快递寄书">形象记忆法：快递寄书</a></li>
       </ol>
     </li>
+    <li><a href="#redis-持久化机制-rdb">Redis 持久化机制 (RDB)</a>
+      <ol>
+        <li><a href="#1-核心误区修正">1. 核心误区修正</a></li>
+        <li><a href="#2-bgsave-标准执行流程-6步">2. BGSAVE 标准执行流程 (6步)</a></li>
+        <li><a href="#3-save-vs-bgsave">3. SAVE vs BGSAVE</a></li>
+      </ol>
+    </li>
+    <li><a href="#kafka--rocketmq-存储底层原理">Kafka &amp; RocketMQ 存储底层原理</a>
+      <ol>
+        <li><a href="#1-写入与刷盘机制">1. 写入与刷盘机制</a></li>
+        <li><a href="#2-存储结构lsm-tree-还是-log">2. 存储结构：LSM Tree 还是 Log？</a></li>
+        <li><a href="#3-消费者读取机制-读写分离">3. 消费者读取机制 (读写分离？)</a></li>
+      </ol>
+    </li>
+    <li><a href="#rocketmq-主节点挂了怎么办高可用-ha">RocketMQ 主节点挂了怎么办？(高可用 HA)</a>
+      <ol>
+        <li><a href="#1-传统主从架构-master-slave">1. 传统主从架构 (Master-Slave)</a></li>
+        <li><a href="#2-dledger-架构-rocketmq-45">2. Dledger 架构 (RocketMQ 4.5+)</a></li>
+        <li><a href="#3-controller-模式-rocketmq-50">3. Controller 模式 (RocketMQ 5.0+)</a></li>
+        <li><a href="#-核心总结-one-liner">💡 核心总结 (One Liner)</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -357,7 +379,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 9 分钟
+                    阅读时长: 12 分钟
                 </time>
             </div>
         
@@ -823,6 +845,172 @@
 <p><strong>确认：</strong> 发送端收到“收到 #103”的回执，精确计算耗时，不会搞混。</p>
 </li>
 </ol>
+<h2 id="redis-持久化机制-rdb">Redis 持久化机制 (RDB)
+</h2><h3 id="1-核心误区修正">1. 核心误区修正
+</h3><ul>
+<li>
+<p><strong>Page Cache 归属</strong>：Redis 没有自己维护类似 MySQL Buffer Pool 的 Page Cache。所谓的 Page Cache 完全由<strong>操作系统内核 (OS Kernel)</strong> 管理。</p>
+</li>
+<li>
+<p><strong>写入流程</strong>：Redis 只是把数据从堆内存写入到了 OS Page Cache，具体的物理刷盘由 OS 调度。</p>
+</li>
+</ul>
+<h3 id="2-bgsave-标准执行流程-6步">2. BGSAVE 标准执行流程 (6步)
+</h3><ol>
+<li>
+<p><strong>判断</strong>：检查是否有正在执行的 save/bgsave。</p>
+</li>
+<li>
+<p><strong>Fork (阻塞点)</strong>：主线程执行 <code>fork()</code> 创建子进程。<strong>此时主线程阻塞</strong>（仅阻塞页表复制的时间）。</p>
+</li>
+<li>
+<p><strong>COW (写时复制)</strong>：子进程共享父进程物理内存，父进程修改数据时会复制副本，子进程读取的是 fork 瞬间的快照。</p>
+</li>
+<li>
+<p><strong>写入内核</strong>：子进程遍历内存，调用 <code>write()</code> 将数据写入 <strong>OS Page Cache</strong>。</p>
+</li>
+<li>
+<p><strong>替换文件</strong>：写入完成后，原子替换旧的 RDB 文件。</p>
+</li>
+<li>
+<p><strong>异步刷盘</strong>：操作系统负责将 OS Page Cache 中的数据最终刷入磁盘。</p>
+</li>
+</ol>
+<h3 id="3-save-vs-bgsave">3. SAVE vs BGSAVE
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>特性</strong></th>
+          <th><strong>SAVE</strong></th>
+          <th><strong>BGSAVE (生产标准)</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>线程</strong></td>
+          <td>主线程直接执行</td>
+          <td>子进程执行</td>
+      </tr>
+      <tr>
+          <td><strong>阻塞</strong></td>
+          <td><strong>全程阻塞</strong> (Stop the World)</td>
+          <td>仅 <strong>Fork 瞬间</strong> 阻塞</td>
+      </tr>
+      <tr>
+          <td><strong>场景</strong></td>
+          <td>关机维护/迁移</td>
+          <td>自动快照/主从复制/日常备份</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h2 id="kafka--rocketmq-存储底层原理">Kafka &amp; RocketMQ 存储底层原理
+</h2><h3 id="1-写入与刷盘机制">1. 写入与刷盘机制
+</h3><p>两者都利用了<strong>顺序写 (Sequential Write)</strong> 和 <strong>OS Page Cache</strong> 来提升吞吐量。</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>维度</strong></th>
+          <th><strong>Kafka</strong></th>
+          <th><strong>RocketMQ</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>写入核心</strong></td>
+          <td><code>FileChannel</code> (Buffered IO)</td>
+          <td><code>mmap</code> (内存映射)</td>
+      </tr>
+      <tr>
+          <td><strong>刷盘策略</strong></td>
+          <td><strong>异步刷盘</strong> (完全依赖 OS)</td>
+          <td><strong>异步</strong> (默认) / <strong>同步</strong> (Sync Flush)</td>
+      </tr>
+      <tr>
+          <td><strong>零拷贝技术</strong></td>
+          <td><code>sendfile</code> (读路径)</td>
+          <td><code>mmap</code> (读写路径)</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="2-存储结构lsm-tree-还是-log">2. 存储结构：LSM Tree 还是 Log？
+</h3><ul>
+<li>
+<p><strong>结论</strong>：它们<strong>都不是</strong> LSM Tree。</p>
+</li>
+<li>
+<p><strong>实质</strong>：它们是 <strong>Partitioned Log (分区日志)</strong> 或 <strong>Append-only Log</strong>。</p>
+</li>
+<li>
+<p><strong>区别</strong>：</p>
+<ul>
+<li>
+<p><strong>LSM (HBase/RocksDB)</strong>：为了<strong>随机读 (Get Key)</strong>，需要排序、合并 (Merge/Compaction)。</p>
+</li>
+<li>
+<p><strong>MQ (Kafka/RocketMQ)</strong>：为了<strong>顺序消费 (Stream)</strong>，只追加写，不排序，不合并。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-消费者读取机制-读写分离">3. 消费者读取机制 (读写分离？)
+</h3><ul>
+<li>
+<p><strong>是否等落盘？</strong>：<strong>不需要</strong>。</p>
+</li>
+<li>
+<p><strong>热读 (Hot Read)</strong>：数据刚写入 Page Cache，消费者直接从 Page Cache 读取 (Zero Copy)，此时数据可能还没落盘。</p>
+</li>
+<li>
+<p><strong>可见性控制</strong>：</p>
+<ul>
+<li>
+<p><strong>Kafka</strong>：由 <strong>High Watermark (HW)</strong> 决定，等 ISR 副本同步完即可读。</p>
+</li>
+<li>
+<p><strong>RocketMQ</strong>：由 <strong>Dispatch (构建索引)</strong> 决定，等消息位置写入 <code>ConsumeQueue</code> 即可读。</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="rocketmq-主节点挂了怎么办高可用-ha">RocketMQ 主节点挂了怎么办？(高可用 HA)
+</h2><p>RocketMQ 的容灾能力取决于部署架构：</p>
+<h3 id="1-传统主从架构-master-slave">1. 传统主从架构 (Master-Slave)
+</h3><ul>
+<li>
+<p><strong>表现</strong>：Master 挂掉后，<strong>无法写入</strong>，只能读（Consumer 自动切到 Slave）。</p>
+</li>
+<li>
+<p><strong>恢复</strong>：<strong>无法自动切换</strong>，需要人工运维介入，修改配置重启。</p>
+</li>
+</ul>
+<h3 id="2-dledger-架构-rocketmq-45">2. Dledger 架构 (RocketMQ 4.5+)
+</h3><ul>
+<li>
+<p><strong>原理</strong>：引入 <strong>Raft 协议</strong>。</p>
+</li>
+<li>
+<p><strong>表现</strong>：Master 挂掉后，Broker 组内自动投票选举出新的 Master。</p>
+</li>
+<li>
+<p><strong>结果</strong>：<strong>自动故障转移 (Failover)</strong>，保证写入高可用。</p>
+</li>
+</ul>
+<h3 id="3-controller-模式-rocketmq-50">3. Controller 模式 (RocketMQ 5.0+)
+</h3><ul>
+<li>
+<p><strong>原理</strong>：类似 Kafka Controller，由独立的管控节点监控并指定 Master。</p>
+</li>
+<li>
+<p><strong>优势</strong>：解耦了存储和选主逻辑，更轻量。</p>
+</li>
+</ul>
+<hr>
+<h3 id="-核心总结-one-liner">💡 核心总结 (One Liner)
+</h3><blockquote>
+<p><strong>Redis、Kafka、RocketMQ 的快很大程度上都归功于“借力”——借用操作系统的 Page Cache 和顺序写能力，而不是自己造轮子去管理磁盘 IO；而高可用则是从“人工介入”向“算法自动选举 (Raft)”进化的过程。</strong></p>
+</blockquote>
 
 </section>
 

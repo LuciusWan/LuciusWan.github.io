@@ -10124,6 +10124,172 @@ export default {
 &lt;p&gt;&lt;strong&gt;确认：&lt;/strong&gt; 发送端收到“收到 #103”的回执，精确计算耗时，不会搞混。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
+&lt;h2 id=&#34;redis-持久化机制-rdb&#34;&gt;Redis 持久化机制 (RDB)
+&lt;/h2&gt;&lt;h3 id=&#34;1-核心误区修正&#34;&gt;1. 核心误区修正
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Page Cache 归属&lt;/strong&gt;：Redis 没有自己维护类似 MySQL Buffer Pool 的 Page Cache。所谓的 Page Cache 完全由&lt;strong&gt;操作系统内核 (OS Kernel)&lt;/strong&gt; 管理。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;写入流程&lt;/strong&gt;：Redis 只是把数据从堆内存写入到了 OS Page Cache，具体的物理刷盘由 OS 调度。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-bgsave-标准执行流程-6步&#34;&gt;2. BGSAVE 标准执行流程 (6步)
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;判断&lt;/strong&gt;：检查是否有正在执行的 save/bgsave。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Fork (阻塞点)&lt;/strong&gt;：主线程执行 &lt;code&gt;fork()&lt;/code&gt; 创建子进程。&lt;strong&gt;此时主线程阻塞&lt;/strong&gt;（仅阻塞页表复制的时间）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;COW (写时复制)&lt;/strong&gt;：子进程共享父进程物理内存，父进程修改数据时会复制副本，子进程读取的是 fork 瞬间的快照。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;写入内核&lt;/strong&gt;：子进程遍历内存，调用 &lt;code&gt;write()&lt;/code&gt; 将数据写入 &lt;strong&gt;OS Page Cache&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;替换文件&lt;/strong&gt;：写入完成后，原子替换旧的 RDB 文件。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;异步刷盘&lt;/strong&gt;：操作系统负责将 OS Page Cache 中的数据最终刷入磁盘。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;3-save-vs-bgsave&#34;&gt;3. SAVE vs BGSAVE
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;&lt;strong&gt;特性&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;SAVE&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;BGSAVE (生产标准)&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;线程&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;主线程直接执行&lt;/td&gt;
+          &lt;td&gt;子进程执行&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;阻塞&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;全程阻塞&lt;/strong&gt; (Stop the World)&lt;/td&gt;
+          &lt;td&gt;仅 &lt;strong&gt;Fork 瞬间&lt;/strong&gt; 阻塞&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;场景&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;关机维护/迁移&lt;/td&gt;
+          &lt;td&gt;自动快照/主从复制/日常备份&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;kafka--rocketmq-存储底层原理&#34;&gt;Kafka &amp;amp; RocketMQ 存储底层原理
+&lt;/h2&gt;&lt;h3 id=&#34;1-写入与刷盘机制&#34;&gt;1. 写入与刷盘机制
+&lt;/h3&gt;&lt;p&gt;两者都利用了&lt;strong&gt;顺序写 (Sequential Write)&lt;/strong&gt; 和 &lt;strong&gt;OS Page Cache&lt;/strong&gt; 来提升吞吐量。&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;&lt;strong&gt;维度&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;Kafka&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;RocketMQ&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;写入核心&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;FileChannel&lt;/code&gt; (Buffered IO)&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;mmap&lt;/code&gt; (内存映射)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;刷盘策略&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;异步刷盘&lt;/strong&gt; (完全依赖 OS)&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;异步&lt;/strong&gt; (默认) / &lt;strong&gt;同步&lt;/strong&gt; (Sync Flush)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;零拷贝技术&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;sendfile&lt;/code&gt; (读路径)&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;mmap&lt;/code&gt; (读写路径)&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id=&#34;2-存储结构lsm-tree-还是-log&#34;&gt;2. 存储结构：LSM Tree 还是 Log？
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;结论&lt;/strong&gt;：它们&lt;strong&gt;都不是&lt;/strong&gt; LSM Tree。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;实质&lt;/strong&gt;：它们是 &lt;strong&gt;Partitioned Log (分区日志)&lt;/strong&gt; 或 &lt;strong&gt;Append-only Log&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;区别&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;LSM (HBase/RocksDB)&lt;/strong&gt;：为了&lt;strong&gt;随机读 (Get Key)&lt;/strong&gt;，需要排序、合并 (Merge/Compaction)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;MQ (Kafka/RocketMQ)&lt;/strong&gt;：为了&lt;strong&gt;顺序消费 (Stream)&lt;/strong&gt;，只追加写，不排序，不合并。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-消费者读取机制-读写分离&#34;&gt;3. 消费者读取机制 (读写分离？)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;是否等落盘？&lt;/strong&gt;：&lt;strong&gt;不需要&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;热读 (Hot Read)&lt;/strong&gt;：数据刚写入 Page Cache，消费者直接从 Page Cache 读取 (Zero Copy)，此时数据可能还没落盘。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;可见性控制&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Kafka&lt;/strong&gt;：由 &lt;strong&gt;High Watermark (HW)&lt;/strong&gt; 决定，等 ISR 副本同步完即可读。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;RocketMQ&lt;/strong&gt;：由 &lt;strong&gt;Dispatch (构建索引)&lt;/strong&gt; 决定，等消息位置写入 &lt;code&gt;ConsumeQueue&lt;/code&gt; 即可读。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;rocketmq-主节点挂了怎么办高可用-ha&#34;&gt;RocketMQ 主节点挂了怎么办？(高可用 HA)
+&lt;/h2&gt;&lt;p&gt;RocketMQ 的容灾能力取决于部署架构：&lt;/p&gt;
+&lt;h3 id=&#34;1-传统主从架构-master-slave&#34;&gt;1. 传统主从架构 (Master-Slave)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;表现&lt;/strong&gt;：Master 挂掉后，&lt;strong&gt;无法写入&lt;/strong&gt;，只能读（Consumer 自动切到 Slave）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;恢复&lt;/strong&gt;：&lt;strong&gt;无法自动切换&lt;/strong&gt;，需要人工运维介入，修改配置重启。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-dledger-架构-rocketmq-45&#34;&gt;2. Dledger 架构 (RocketMQ 4.5+)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;原理&lt;/strong&gt;：引入 &lt;strong&gt;Raft 协议&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;表现&lt;/strong&gt;：Master 挂掉后，Broker 组内自动投票选举出新的 Master。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;结果&lt;/strong&gt;：&lt;strong&gt;自动故障转移 (Failover)&lt;/strong&gt;，保证写入高可用。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-controller-模式-rocketmq-50&#34;&gt;3. Controller 模式 (RocketMQ 5.0+)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;原理&lt;/strong&gt;：类似 Kafka Controller，由独立的管控节点监控并指定 Master。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;优势&lt;/strong&gt;：解耦了存储和选主逻辑，更轻量。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;-核心总结-one-liner&#34;&gt;💡 核心总结 (One Liner)
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Redis、Kafka、RocketMQ 的快很大程度上都归功于“借力”——借用操作系统的 Page Cache 和顺序写能力，而不是自己造轮子去管理磁盘 IO；而高可用则是从“人工介入”向“算法自动选举 (Raft)”进化的过程。&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
 </description>
         </item>
         <item>

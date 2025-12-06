@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="面试八股4.0 介绍RocketMQ中常用的组件 在 RocketMQ 的架构中，有四个最核心的组件，它们各司其职，共同支撑起整个消息系统的高性能和高可用。\n我们可以把 RocketMQ 想象成一个 “邮政系统” 来理解这些组件：\n1. NameServer (邮局总管 / 路由中心) 角色定位： 它是整个系统的大脑，是一个非常轻量级的注册中心（类似于 ZooKeeper，但更简单，无状态，节点之间互不通信）。\n">
+<title>面试八股4.0</title>
+
+<link rel='canonical' href='https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A14.0/'>
+
+<link rel="stylesheet" href="/scss/style.min.6a692fd055deae459f2a9767f57f3855ba80cafd5041317f24f7360f6ca47cdf.css"><meta property='og:title' content="面试八股4.0">
+<meta property='og:description' content="面试八股4.0 介绍RocketMQ中常用的组件 在 RocketMQ 的架构中，有四个最核心的组件，它们各司其职，共同支撑起整个消息系统的高性能和高可用。\n我们可以把 RocketMQ 想象成一个 “邮政系统” 来理解这些组件：\n1. NameServer (邮局总管 / 路由中心) 角色定位： 它是整个系统的大脑，是一个非常轻量级的注册中心（类似于 ZooKeeper，但更简单，无状态，节点之间互不通信）。\n">
+<meta property='og:url' content='https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A14.0/'>
+<meta property='og:site_name' content='LuciusWan'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-12-06T15:00:20&#43;08:00'/><meta property='article:modified_time' content='2025-12-06T15:00:20&#43;08:00'/>
+<meta name="twitter:title" content="面试八股4.0">
+<meta name="twitter:description" content="面试八股4.0 介绍RocketMQ中常用的组件 在 RocketMQ 的架构中，有四个最核心的组件，它们各司其职，共同支撑起整个消息系统的高性能和高可用。\n我们可以把 RocketMQ 想象成一个 “邮政系统” 来理解这些组件：\n1. NameServer (邮局总管 / 路由中心) 角色定位： 它是整个系统的大脑，是一个非常轻量级的注册中心（类似于 ZooKeeper，但更简单，无状态，节点之间互不通信）。\n">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_a00c4178710685fc.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🎇</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">LuciusWan</a></h1>
+            <h2 class="site-description">欢迎来到我的blog</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/440554295'
+                        target="_blank"
+                        title="Bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/LuciusWan'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#介绍rocketmq中常用的组件">介绍RocketMQ中常用的组件</a>
+      <ol>
+        <li><a href="#1-nameserver-邮局总管--路由中心">1. NameServer (邮局总管 / 路由中心)</a></li>
+        <li><a href="#2-broker-邮递员--分拣站">2. Broker (邮递员 / 分拣站)</a></li>
+        <li><a href="#3-producer-寄件人">3. Producer (寄件人)</a></li>
+        <li><a href="#4-consumer-收件人">4. Consumer (收件人)</a></li>
+        <li><a href="#辅助的重要概念">辅助的重要概念</a></li>
+      </ol>
+    </li>
+    <li><a href="#rocketmq的死信队列是怎样的">RocketMQ的死信队列是怎样的？</a>
+      <ol>
+        <li><a href="#1-死信是如何产生的生命周期">1. 死信是如何产生的？（生命周期）</a></li>
+        <li><a href="#2-死信队列的关键特征">2. 死信队列的关键特征</a></li>
+        <li><a href="#3-我们该怎么处理死信消息">3. 我们该怎么处理死信消息？</a></li>
+        <li><a href="#总结">总结</a></li>
+      </ol>
+    </li>
+    <li><a href="#介绍tcp的流量控制和拥塞控制">介绍TCP的流量控制和拥塞控制</a>
+      <ol>
+        <li><a href="#1-流量控制-flow-control">1. 流量控制 (Flow Control)</a></li>
+        <li><a href="#2-拥塞控制-congestion-control">2. 拥塞控制 (Congestion Control)</a>
+          <ol>
+            <li><a href="#a-慢启动-slow-start">A. 慢启动 (Slow Start)</a></li>
+            <li><a href="#b-拥塞避免-congestion-avoidance">B. 拥塞避免 (Congestion Avoidance)</a></li>
+            <li><a href="#c-快重传-fast-retransmit">C. 快重传 (Fast Retransmit)</a></li>
+            <li><a href="#d-快恢复-fast-recovery">D. 快恢复 (Fast Recovery)</a></li>
+          </ol>
+        </li>
+        <li><a href="#总结对比">总结对比</a></li>
+      </ol>
+    </li>
+    <li><a href="#http3-quic-可靠传输核心">HTTP/3 (QUIC) 可靠传输核心</a>
+      <ol>
+        <li><a href="#1-核心设计传输-id-与数据-id-分离">1. 核心设计：传输 ID 与数据 ID 分离</a></li>
+        <li><a href="#2-丢包发现机制-loss-detection">2. 丢包发现机制 (Loss Detection)</a></li>
+        <li><a href="#3-什么时候重传threshold">3. 什么时候重传？(Threshold)</a></li>
+        <li><a href="#4-误判与虚假重传-spurious-retransmission">4. 误判与虚假重传 (Spurious Retransmission)</a></li>
+        <li><a href="#形象记忆法快递寄书">形象记忆法：快递寄书</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A14.0/">面试八股4.0</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-12-06</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 9 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="面试八股40">面试八股4.0
+</h1><h2 id="介绍rocketmq中常用的组件">介绍RocketMQ中常用的组件
+</h2><p>在 RocketMQ 的架构中，有四个最核心的组件，它们各司其职，共同支撑起整个消息系统的高性能和高可用。</p>
+<p>我们可以把 RocketMQ 想象成一个 <strong>“邮政系统”</strong> 来理解这些组件：</p>
+<h3 id="1-nameserver-邮局总管--路由中心">1. NameServer (邮局总管 / 路由中心)
+</h3><ul>
+<li>
+<p><strong>角色定位：</strong> 它是整个系统的<strong>大脑</strong>，是一个非常轻量级的<strong>注册中心</strong>（类似于 ZooKeeper，但更简单，无状态，节点之间互不通信）。</p>
+</li>
+<li>
+<p><strong>核心功能：</strong></p>
+<ul>
+<li>
+<p><strong>服务注册：</strong> 所有的 Broker 都要定期向 NameServer 汇报自己的“家庭住址”（IP、端口）和“能送哪些信”（Topic 信息）。</p>
+</li>
+<li>
+<p><strong>路由发现：</strong> Producer 和 Consumer 启动时，先问 NameServer：“我要发信/收信，请给我一份最新的 Broker 地址名单。”</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>特点：</strong> 如果 NameServer 挂了，只要集群里还有一台存活，系统就能正常工作。如果全挂了，已有连接的收发不受影响，但无法建立新连接或扩容。</p>
+</li>
+</ul>
+<h3 id="2-broker-邮递员--分拣站">2. Broker (邮递员 / 分拣站)
+</h3><ul>
+<li>
+<p><strong>角色定位：</strong> 它是系统的<strong>核心</strong>，干活最累的角色。负责<strong>存储消息、转发消息</strong>。</p>
+</li>
+<li>
+<p><strong>核心功能：</strong></p>
+<ul>
+<li>
+<p><strong>存信：</strong> 接收 Producer 发来的消息，持久化到硬盘（CommitLog）。</p>
+</li>
+<li>
+<p><strong>送信：</strong> 响应 Consumer 的拉取请求，把消息发给它们。</p>
+</li>
+<li>
+<p><strong>管理：</strong> 处理死信队列、重试队列、定时消息等复杂逻辑。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>部署架构：</strong></p>
+<ul>
+<li>
+<p><strong>Master (主)：</strong> 负责读和写。</p>
+</li>
+<li>
+<p><strong>Slave (从)：</strong> 负责备份数据，也可以分担读压力（当主负载高时）。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-producer-寄件人">3. Producer (寄件人)
+</h3><ul>
+<li>
+<p><strong>角色定位：</strong> 业务系统中的<strong>消息发送方</strong>（比如：订单系统、支付系统）。</p>
+</li>
+<li>
+<p><strong>核心功能：</strong></p>
+<ul>
+<li>
+<p>它从 NameServer 获取路由信息，知道哪个 Topic 在哪些 Broker 上。</p>
+</li>
+<li>
+<p>它通过负载均衡算法，把消息发给具体的 Broker。</p>
+</li>
+<li>
+<p><strong>发送方式：</strong> 支持同步发送（要回执）、异步发送（回调）、单向发送（发完不管，如日志）。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-consumer-收件人">4. Consumer (收件人)
+</h3><ul>
+<li>
+<p><strong>角色定位：</strong> 业务系统中的<strong>消息接收方</strong>（比如：库存系统、积分系统）。</p>
+</li>
+<li>
+<p><strong>核心功能：</strong></p>
+<ul>
+<li>
+<p>从 Broker 获取消息并进行业务处理（消费）。</p>
+</li>
+<li>
+<p><strong>消费模式：</strong></p>
+<ul>
+<li>
+<p><strong>Clustering (集群模式)：</strong> 默认模式。同一个消费者组里的机器<strong>平分</strong>消息（你一条我一条，不重复）。</p>
+</li>
+<li>
+<p><strong>Broadcasting (广播模式)：</strong> 每一条消息都会发给组里的<strong>所有</strong>机器（就像广播一样，大家都能听到）。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="辅助的重要概念">辅助的重要概念
+</h3><p>除了上面四个“物理组件”，还有几个“逻辑概念”必须知道：</p>
+<ul>
+<li>
+<p><strong>Topic (主题)：</strong> 消息的一级分类。比如“订单交易”是一个 Topic，“用户注册”是另一个 Topic。寄件人必须指定把信投到哪个 Topic。</p>
+</li>
+<li>
+<p><strong>Tag (标签)：</strong> 消息的二级分类。在同一个 Topic 下，可以用 Tag 进一步过滤。比如在“订单交易”Topic 下，可以用 Tag 区分 <code>TagA=食品订单</code>，<code>TagB=服装订单</code>。Consumer 可以只订阅 <code>TagA</code>。</p>
+</li>
+<li>
+<p><strong>Message Queue (消息队列)：</strong> 这是物理存储单元。一个 Topic 通常被切分成多个 Message Queue，分布在不同的 Broker 上，以此实现<strong>并行发送和消费</strong>（提高吞吐量的关键）。</p>
+</li>
+<li>
+<p><strong>Consumer Group (消费者组)：</strong> 一组逻辑行为一致的 Consumer。RocketMQ 很多机制（如负载均衡、重试、死信）都是以“组”为单位管理的。</p>
+</li>
+</ul>
+<p><strong>一句话总结它们的协作：</strong> <strong>Producer</strong> 问 <strong>NameServer</strong> 拿到路由，把信（Message）分类（Topic/Tag）后寄给 <strong>Broker</strong>；<strong>Broker</strong> 把信存好；<strong>Consumer</strong> 从 <strong>Broker</strong> 拿信并拆开阅读。</p>
+<h2 id="rocketmq的死信队列是怎样的">RocketMQ的死信队列是怎样的？
+</h2><p>RocketMQ 的<strong>死信队列 (Dead Letter Queue, 简称 DLQ)</strong> 可以被理解为消息的<strong>ICU或者最终归宿</strong>。</p>
+<p>当一条消息被消费者不断重试消费，但仍然失败，达到最大重试次数（默认 16 次）后，RocketMQ 就认为这条消息“没救了”。为了不让这条失败的消息一直堵塞正常业务或无限占用资源，Broker 会把它扔到一个特殊的队列里，这个队列就是死信队列。</p>
+<p>以下是关于它的核心机制、特征和使用场景的详细拆解：</p>
+<h3 id="1-死信是如何产生的生命周期">1. 死信是如何产生的？（生命周期）
+</h3><p>整个过程可以分为三个阶段：</p>
+<ol>
+<li>
+<p><strong>正常消费阶段：</strong> 生产者发送消息到 Topic，消费者尝试消费。</p>
+</li>
+<li>
+<p><strong>重试阶段 (Retry)：</strong></p>
+<ul>
+<li>
+<p>如果你在代码里抛出异常或返回 <code>RECONSUME_LATER</code>（消费失败），Broker 不会立刻丢弃消息，而是把消息发到一个内部的<strong>重试 Topic</strong>（名字叫 <code>%RETRY%消费者组名</code>）。</p>
+</li>
+<li>
+<p>RocketMQ 会按照梯队时间（1s, 5s, 10s, 30s&hellip; 2h）进行<strong>默认 16 次</strong>重试。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>死信阶段 (DLQ)：</strong></p>
+<ul>
+<li>如果第 16 次重试依然失败，Broker 就会把这条消息从重试队列移出，发送到<strong>死信 Topic</strong>。</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-死信队列的关键特征">2. 死信队列的关键特征
+</h3><p>你需要记住以下几个非常具有 RocketMQ 特色的点：</p>
+<ul>
+<li>
+<p><strong>对应关系：</strong> 死信队列是<strong>基于消费者组 (Consumer Group)</strong> 的，而不是基于 Topic 的。</p>
+<ul>
+<li>
+<p>假设你有一个 Topic 叫 <code>Order_Topic</code>，被 <code>Group_A</code> 和 <code>Group_B</code> 订阅。</p>
+</li>
+<li>
+<p>如果 <code>Group_A</code> 消费失败，死信会进 <code>Group_A</code> 专属的死信队列。</p>
+</li>
+<li>
+<p><code>Group_B</code> 不受影响。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>命名规则：</strong> 死信 Topic 的名字是固定的：<code>%DLQ%消费者组名</code>。</p>
+</li>
+<li>
+<p><strong>默认不可见：</strong> 正常的消费者在启动时，<strong>不会</strong>自动订阅死信 Topic。也就是说，进入死信队列的消息，默认情况下<strong>不再会被消费</strong>，静静地躺在那里。</p>
+</li>
+<li>
+<p><strong>有效期：</strong> 死信队列里的消息也是有有效期的（和普通消息一样，通常 Broker 设置为 3 天）。如果 3 天没人管，它就被物理删除了，数据就真丢了。</p>
+</li>
+</ul>
+<h3 id="3-我们该怎么处理死信消息">3. 我们该怎么处理死信消息？
+</h3><p>既然消息进了死信队列，说明你的程序可能有 Bug，或者这条消息的数据有问题（也就是所谓的“毒丸消息”）。</p>
+<p>处理死信的标准流程通常是 <strong>“人工干预”</strong>：</p>
+<ol>
+<li>
+<p><strong>告警 (Alert)：</strong></p>
+<ul>
+<li>你应该监控 <code>%DLQ%</code> 开头的 Topic。一旦发现里面有消息（offset 增加了），立刻给开发人员发告警。</li>
+</ul>
+</li>
+<li>
+<p><strong>排查问题 (Debug)：</strong></p>
+<ul>
+<li>开发人员登录 RocketMQ 控制台（Dashboard），查看死信消息的内容，分析为什么会消费失败（是代码逻辑错了？还是上游发的数据格式不对？）。</li>
+</ul>
+</li>
+<li>
+<p><strong>处理 (Action)：</strong></p>
+<ul>
+<li>
+<p><strong>场景 A（Bug 修复了）：</strong> 在控制台上点击**“重发消息” (Resend)**。这会让消息重新回到正常 Topic，再次被消费者消费。</p>
+</li>
+<li>
+<p><strong>场景 B（脏数据）：</strong> 确认数据本身就是错的，没法消费，直接在控制台<strong>跳过/忽略</strong>该消息。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="总结">总结
+</h3><p>你可以把 RocketMQ 的机制看作一个<strong>分诊系统</strong>：</p>
+<ul>
+<li>
+<p><strong>普通队列：</strong> 普通门诊，处理正常病人。</p>
+</li>
+<li>
+<p><strong>重试队列 (%RETRY%)：</strong> 急诊留观室，病人情况不好，多观察几次，过一会再治治看。</p>
+</li>
+<li>
+<p><strong>死信队列 (%DLQ%)：</strong> 太平间/ICU。常规手段治不好了，将其移出，以免占用医生资源，等待专家（开发者）专门来做尸检（排查问题）或最后决定。</p>
+</li>
+</ul>
+<h2 id="介绍tcp的流量控制和拥塞控制">介绍TCP的流量控制和拥塞控制
+</h2><p>虽然这两个概念经常一起出现，但它们的<strong>保护对象</strong>完全不同，这一点是面试时区分的关键：</p>
+<ul>
+<li>
+<p><strong>流量控制 (Flow Control)：</strong> 是为了不把<strong>接收端</strong>填满。是一个<strong>点对点</strong>（Sender to Receiver）的问题。</p>
+</li>
+<li>
+<p><strong>拥塞控制 (Congestion Control)：</strong> 是为了不把<strong>整个网络</strong>（路由器、链路）堵死。是一个<strong>全局性</strong>的问题。</p>
+</li>
+</ul>
+<hr>
+<h3 id="1-流量控制-flow-control">1. 流量控制 (Flow Control)
+</h3><p><strong>核心机制：滑动窗口 (Sliding Window)</strong></p>
+<p>想象一下，你（Sender）在往一个水缸（Receiver 的缓存）里倒水。</p>
+<ul>
+<li>
+<p>接收端有一个<strong>接收窗口 (rwnd, Receive Window)</strong>，代表它的水缸还剩多少空间。</p>
+</li>
+<li>
+<p>接收端会在每次回传 ACK 时，顺便把这个 <code>rwnd</code> 的值带给你，告诉你：“我还剩 100字节 的空间，你最多只能发这么多。”</p>
+</li>
+<li>
+<p>如果接收端处理不过来了，把 <code>rwnd</code> 设为 0，你（发送端）就会停止发送，进入等待状态，直到收到新的窗口更新通知。</p>
+<ul>
+<li><em>注：为了防止死锁（接收端有了空间发了通知，但通知丢包了），发送端会定期发送“探测包”去问一下接收端。</em></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="2-拥塞控制-congestion-control">2. 拥塞控制 (Congestion Control)
+</h3><p><strong>核心机制：拥塞窗口 (cwnd, Congestion Window) + 四大算法</strong></p>
+<p>流量控制只管接收端能不能吃得消，不管中间的网线、路由器堵不堵。如果网络已经很堵了，你发得越快，丢包越多，网络就越堵（正反馈雪崩）。</p>
+<p>为了解决这个问题，发送端自己维护了一个拥塞窗口 (cwnd)。</p>
+<p>最终发送窗口 = min(接收端 rwnd, 自身 cwnd)。</p>
+<p>TCP 使用以下四个经典算法来动态调整 <code>cwnd</code>：</p>
+<h4 id="a-慢启动-slow-start">A. 慢启动 (Slow Start)
+</h4><ul>
+<li>
+<p><strong>原理：</strong> 刚建立连接时，不知道网络深浅，不能一上来就全速发送。</p>
+</li>
+<li>
+<p><strong>过程：</strong></p>
+<ul>
+<li>
+<p>先把 <code>cwnd</code> 设为 1（个 MSS）。</p>
+</li>
+<li>
+<p>收到一个 ACK，<code>cwnd</code> 加 1。</p>
+</li>
+<li>
+<p>收到一轮 ACK 后，<code>cwnd</code> 翻倍（1 $\rightarrow$ 2 $\rightarrow$ 4 $\rightarrow$ 8&hellip;）。</p>
+</li>
+<li>
+<p><strong>呈指数增长</strong>，直到达到一个阈值 (<strong>ssthresh</strong>, slow start threshold)。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="b-拥塞避免-congestion-avoidance">B. 拥塞避免 (Congestion Avoidance)
+</h4><ul>
+<li>
+<p><strong>原理：</strong> 当 <code>cwnd</code> 超过 <code>ssthresh</code> 后，说明网络可能快饱和了，不能再翻倍了，要小心翼翼地加。</p>
+</li>
+<li>
+<p><strong>过程：</strong></p>
+<ul>
+<li>
+<p>每经过一个 RTT（往返时间），<code>cwnd</code> 只加 1。</p>
+</li>
+<li>
+<p><strong>呈线性增长</strong>（加法增大），慢慢试探网络的底线。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="c-快重传-fast-retransmit">C. 快重传 (Fast Retransmit)
+</h4><ul>
+<li>
+<p><strong>触发条件：</strong> 发送端连续收到 <strong>3 个重复的 ACK</strong>。</p>
+<ul>
+<li>
+<p>比如你发了包 1, 2, 3, 4, 5。接收端收到了 1，没收到 2，收到了 3, 4, 5。</p>
+</li>
+<li>
+<p>接收端收到 3, 4, 5 时，都会回复“我想要 2”（ACK 2）。</p>
+</li>
+<li>
+<p>发送端一连收到 3 个“ACK 2”，就知道包 2 肯定丢了，不用等超时定时器（Timeout），<strong>立刻重传</strong>包 2。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="d-快恢复-fast-recovery">D. 快恢复 (Fast Recovery)
+</h4><ul>
+<li>
+<p><strong>原理：</strong> 既然能收到 3 个重复 ACK，说明网络虽然有点堵（丢了个包），但还没完全断（后续的包还能到），不需要像“超时”那样惨烈地重回“慢启动”。</p>
+</li>
+<li>
+<p><strong>过程：</strong></p>
+<ul>
+<li>
+<p>把 <code>ssthresh</code> 设为当前 <code>cwnd</code> 的一半。</p>
+</li>
+<li>
+<p>把 <code>cwnd</code> 也设为当前的一半（或者一半 + 3）。</p>
+</li>
+<li>
+<p>直接进入<strong>拥塞避免</strong>阶段（线性增长）。</p>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><strong>注意：</strong> 如果是发生<strong>超时 (Timeout)</strong>，说明网络真的很烂了，连 ACK 都回不来。TCP 会判定为严重拥塞，直接把 <code>cwnd</code> 重置为 1，重新开始<strong>慢启动</strong>。</p>
+</blockquote>
+<hr>
+<h3 id="总结对比">总结对比
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>特性</strong></th>
+          <th><strong>流量控制 (Flow Control)</strong></th>
+          <th><strong>拥塞控制 (Congestion Control)</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>保护对象</strong></td>
+          <td><strong>接收端</strong> (Receiver)</td>
+          <td><strong>网络环境</strong> (Network)</td>
+      </tr>
+      <tr>
+          <td><strong>通信范围</strong></td>
+          <td>点对点</td>
+          <td>全局性</td>
+      </tr>
+      <tr>
+          <td><strong>反馈机制</strong></td>
+          <td>接收端在 TCP Header 里显式告诉发送端 (<code>rwnd</code>)</td>
+          <td>发送端根据丢包或延迟自己推测 (<code>cwnd</code>)</td>
+      </tr>
+      <tr>
+          <td><strong>核心算法</strong></td>
+          <td>滑动窗口 (Sliding Window)</td>
+          <td>慢启动、拥塞避免、快重传、快恢复</td>
+      </tr>
+      <tr>
+          <td><strong>发送上限</strong></td>
+          <td>取决于接收端的缓冲区大小</td>
+          <td>取决于网络带宽和拥塞程度</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="http3-quic-可靠传输核心">HTTP/3 (QUIC) 可靠传输核心
+</h2><h3 id="1-核心设计传输-id-与数据-id-分离">1. 核心设计：传输 ID 与数据 ID 分离
+</h3><p>这是 QUIC 区别于 TCP 最关键的设计，解决了 <strong>重传歧义 (Retransmission Ambiguity)</strong> 问题。</p>
+<ul>
+<li>
+<p><strong>TCP 的做法（混淆）：</strong> 序列号 (Seq) 既代表数据顺序，也代表包的身份。重传时序列号不变，导致发送端无法区分 ACK 到底是回给“原包”的还是“重传包”的，RTT 计算不准。</p>
+</li>
+<li>
+<p><strong>QUIC 的做法（分离）：</strong></p>
+<ul>
+<li>
+<p><strong>Packet Number (包号)：</strong> 这里的“快递单号”。严格递增，<strong>只增不减</strong>。即使是重传，也会用一个新的、更大的 Packet Number。</p>
+</li>
+<li>
+<p><strong>Stream Offset (流偏移量)：</strong> 这里的“书页码”。代表数据在流中的位置，永远不变。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>重传策略：</strong> 当包 #100 丢了，QUIC 会把 #100 里的旧数据（Offset），装进新的包 #103 里发出去。</p>
+</li>
+</ul>
+<h3 id="2-丢包发现机制-loss-detection">2. 丢包发现机制 (Loss Detection)
+</h3><ul>
+<li>
+<p><strong>接收端的角色：</strong> 接收端<strong>不主动请求</strong>重传，它只是一个诚实的记录员。</p>
+</li>
+<li>
+<p><strong>ACK Ranges (SACK)：</strong> 接收端回复的 ACK 会明确指出收到的范围。例如：“我收到了 #1-#2，以及 #4”。</p>
+</li>
+<li>
+<p><strong>跳号检测：</strong> 发送端收到 ACK 后，发现中间缺了 #3（跳号了），从而意识到可能发生了丢包。</p>
+</li>
+</ul>
+<h3 id="3-什么时候重传threshold">3. 什么时候重传？(Threshold)
+</h3><p>发送端发现缺口后，不会立刻重传（防止网络只是抖动/乱序），而是基于阈值判断：</p>
+<ul>
+<li>
+<p><strong>包数量阈值 (Packet Threshold)：</strong> 比如后续又有 3 个包（#4, #5, #6）都到了，#3 还没到，判定 #3 丢失。</p>
+</li>
+<li>
+<p><strong>时间阈值 (Time Threshold)：</strong> 超过一定时间的 RTT 还没到，判定丢失。</p>
+</li>
+<li>
+<p><strong>触发动作：</strong> 发送端主动将丢失的数据取出，封装到新包中发送。</p>
+</li>
+</ul>
+<h3 id="4-误判与虚假重传-spurious-retransmission">4. 误判与虚假重传 (Spurious Retransmission)
+</h3><p>针对“如果包传输太慢，会不会被误判为丢失”的问题：</p>
+<ul>
+<li>
+<p><strong>MTU 限制：</strong> 物理传输中不存在“巨大的包”，所有包最大约为 1.5KB (MTU)。包慢通常是因为<strong>排队或路径拥堵</strong>，而不是包太大。</p>
+</li>
+<li>
+<p><strong>确实会误判：</strong> 如果网络抖动过大（超过阈值），发送端会误以为丢包并重传。</p>
+</li>
+<li>
+<p><strong>后果（QUIC 优于 TCP）：</strong></p>
+<ul>
+<li>
+<p>接收端会收到两份数据（旧包迟到了，新包也到了）。</p>
+</li>
+<li>
+<p><strong>QUIC 能完美处理：</strong> 因为两个包的 Packet Number 不同，发送端能区分哪个 ACK 对应哪个包。接收端只需根据 Offset 去重即可。这不会导致 TCP 那样的 RTT 计算混乱。</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="形象记忆法快递寄书">形象记忆法：快递寄书
+</h3><ol>
+<li>
+<p><strong>发货：</strong> 用“快递盒 #100”装“第 10 页”。</p>
+</li>
+<li>
+<p><strong>丢包：</strong> 接收端说“收到 #101, #102，没看到 #100”。</p>
+</li>
+<li>
+<p><strong>重传：</strong> 发送端拿个<strong>新盒子</strong> “快递盒 #103”，装入<strong>旧复印件</strong> “第 10 页” 发出去。</p>
+</li>
+<li>
+<p><strong>确认：</strong> 发送端收到“收到 #103”的回执，精确计算耗时，不会搞混。</p>
+</li>
+</ol>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 LuciusWan
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

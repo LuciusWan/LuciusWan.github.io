@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>LuciusWan</copyright>
-        <lastBuildDate>Sat, 06 Dec 2025 13:29:41 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sat, 06 Dec 2025 15:00:20 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Redis学习与实战</title>
         <link>https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/</link>
         <pubDate>Sun, 16 Mar 2025 20:30:40 +0800</pubDate>
@@ -9665,6 +9665,465 @@ export default {
 &lt;p&gt;此时前端的代码为&lt;/p&gt;
 &lt;p&gt;以后设计接口最好这样搞&lt;/p&gt;
 &lt;p&gt;TODO标签代表还没做完的事，后面可以查看TODO标签对没写完的代码进行完善&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>面试八股4.0</title>
+        <link>https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A14.0/</link>
+        <pubDate>Sat, 06 Dec 2025 15:00:20 +0800</pubDate>
+        
+        <guid>https://LuciusWan.github.io/p/%E9%9D%A2%E8%AF%95%E5%85%AB%E8%82%A14.0/</guid>
+        <description>&lt;h1 id=&#34;面试八股40&#34;&gt;面试八股4.0
+&lt;/h1&gt;&lt;h2 id=&#34;介绍rocketmq中常用的组件&#34;&gt;介绍RocketMQ中常用的组件
+&lt;/h2&gt;&lt;p&gt;在 RocketMQ 的架构中，有四个最核心的组件，它们各司其职，共同支撑起整个消息系统的高性能和高可用。&lt;/p&gt;
+&lt;p&gt;我们可以把 RocketMQ 想象成一个 &lt;strong&gt;“邮政系统”&lt;/strong&gt; 来理解这些组件：&lt;/p&gt;
+&lt;h3 id=&#34;1-nameserver-邮局总管--路由中心&#34;&gt;1. NameServer (邮局总管 / 路由中心)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;角色定位：&lt;/strong&gt; 它是整个系统的&lt;strong&gt;大脑&lt;/strong&gt;，是一个非常轻量级的&lt;strong&gt;注册中心&lt;/strong&gt;（类似于 ZooKeeper，但更简单，无状态，节点之间互不通信）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;核心功能：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;服务注册：&lt;/strong&gt; 所有的 Broker 都要定期向 NameServer 汇报自己的“家庭住址”（IP、端口）和“能送哪些信”（Topic 信息）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;路由发现：&lt;/strong&gt; Producer 和 Consumer 启动时，先问 NameServer：“我要发信/收信，请给我一份最新的 Broker 地址名单。”&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;特点：&lt;/strong&gt; 如果 NameServer 挂了，只要集群里还有一台存活，系统就能正常工作。如果全挂了，已有连接的收发不受影响，但无法建立新连接或扩容。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-broker-邮递员--分拣站&#34;&gt;2. Broker (邮递员 / 分拣站)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;角色定位：&lt;/strong&gt; 它是系统的&lt;strong&gt;核心&lt;/strong&gt;，干活最累的角色。负责&lt;strong&gt;存储消息、转发消息&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;核心功能：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;存信：&lt;/strong&gt; 接收 Producer 发来的消息，持久化到硬盘（CommitLog）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;送信：&lt;/strong&gt; 响应 Consumer 的拉取请求，把消息发给它们。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;管理：&lt;/strong&gt; 处理死信队列、重试队列、定时消息等复杂逻辑。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;部署架构：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Master (主)：&lt;/strong&gt; 负责读和写。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Slave (从)：&lt;/strong&gt; 负责备份数据，也可以分担读压力（当主负载高时）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-producer-寄件人&#34;&gt;3. Producer (寄件人)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;角色定位：&lt;/strong&gt; 业务系统中的&lt;strong&gt;消息发送方&lt;/strong&gt;（比如：订单系统、支付系统）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;核心功能：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;它从 NameServer 获取路由信息，知道哪个 Topic 在哪些 Broker 上。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;它通过负载均衡算法，把消息发给具体的 Broker。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;发送方式：&lt;/strong&gt; 支持同步发送（要回执）、异步发送（回调）、单向发送（发完不管，如日志）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-consumer-收件人&#34;&gt;4. Consumer (收件人)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;角色定位：&lt;/strong&gt; 业务系统中的&lt;strong&gt;消息接收方&lt;/strong&gt;（比如：库存系统、积分系统）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;核心功能：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;从 Broker 获取消息并进行业务处理（消费）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;消费模式：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Clustering (集群模式)：&lt;/strong&gt; 默认模式。同一个消费者组里的机器&lt;strong&gt;平分&lt;/strong&gt;消息（你一条我一条，不重复）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Broadcasting (广播模式)：&lt;/strong&gt; 每一条消息都会发给组里的&lt;strong&gt;所有&lt;/strong&gt;机器（就像广播一样，大家都能听到）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;辅助的重要概念&#34;&gt;辅助的重要概念
+&lt;/h3&gt;&lt;p&gt;除了上面四个“物理组件”，还有几个“逻辑概念”必须知道：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Topic (主题)：&lt;/strong&gt; 消息的一级分类。比如“订单交易”是一个 Topic，“用户注册”是另一个 Topic。寄件人必须指定把信投到哪个 Topic。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Tag (标签)：&lt;/strong&gt; 消息的二级分类。在同一个 Topic 下，可以用 Tag 进一步过滤。比如在“订单交易”Topic 下，可以用 Tag 区分 &lt;code&gt;TagA=食品订单&lt;/code&gt;，&lt;code&gt;TagB=服装订单&lt;/code&gt;。Consumer 可以只订阅 &lt;code&gt;TagA&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Message Queue (消息队列)：&lt;/strong&gt; 这是物理存储单元。一个 Topic 通常被切分成多个 Message Queue，分布在不同的 Broker 上，以此实现&lt;strong&gt;并行发送和消费&lt;/strong&gt;（提高吞吐量的关键）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Consumer Group (消费者组)：&lt;/strong&gt; 一组逻辑行为一致的 Consumer。RocketMQ 很多机制（如负载均衡、重试、死信）都是以“组”为单位管理的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;一句话总结它们的协作：&lt;/strong&gt; &lt;strong&gt;Producer&lt;/strong&gt; 问 &lt;strong&gt;NameServer&lt;/strong&gt; 拿到路由，把信（Message）分类（Topic/Tag）后寄给 &lt;strong&gt;Broker&lt;/strong&gt;；&lt;strong&gt;Broker&lt;/strong&gt; 把信存好；&lt;strong&gt;Consumer&lt;/strong&gt; 从 &lt;strong&gt;Broker&lt;/strong&gt; 拿信并拆开阅读。&lt;/p&gt;
+&lt;h2 id=&#34;rocketmq的死信队列是怎样的&#34;&gt;RocketMQ的死信队列是怎样的？
+&lt;/h2&gt;&lt;p&gt;RocketMQ 的&lt;strong&gt;死信队列 (Dead Letter Queue, 简称 DLQ)&lt;/strong&gt; 可以被理解为消息的&lt;strong&gt;ICU或者最终归宿&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;当一条消息被消费者不断重试消费，但仍然失败，达到最大重试次数（默认 16 次）后，RocketMQ 就认为这条消息“没救了”。为了不让这条失败的消息一直堵塞正常业务或无限占用资源，Broker 会把它扔到一个特殊的队列里，这个队列就是死信队列。&lt;/p&gt;
+&lt;p&gt;以下是关于它的核心机制、特征和使用场景的详细拆解：&lt;/p&gt;
+&lt;h3 id=&#34;1-死信是如何产生的生命周期&#34;&gt;1. 死信是如何产生的？（生命周期）
+&lt;/h3&gt;&lt;p&gt;整个过程可以分为三个阶段：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;正常消费阶段：&lt;/strong&gt; 生产者发送消息到 Topic，消费者尝试消费。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;重试阶段 (Retry)：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;如果你在代码里抛出异常或返回 &lt;code&gt;RECONSUME_LATER&lt;/code&gt;（消费失败），Broker 不会立刻丢弃消息，而是把消息发到一个内部的&lt;strong&gt;重试 Topic&lt;/strong&gt;（名字叫 &lt;code&gt;%RETRY%消费者组名&lt;/code&gt;）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;RocketMQ 会按照梯队时间（1s, 5s, 10s, 30s&amp;hellip; 2h）进行&lt;strong&gt;默认 16 次&lt;/strong&gt;重试。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;死信阶段 (DLQ)：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如果第 16 次重试依然失败，Broker 就会把这条消息从重试队列移出，发送到&lt;strong&gt;死信 Topic&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;2-死信队列的关键特征&#34;&gt;2. 死信队列的关键特征
+&lt;/h3&gt;&lt;p&gt;你需要记住以下几个非常具有 RocketMQ 特色的点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;对应关系：&lt;/strong&gt; 死信队列是&lt;strong&gt;基于消费者组 (Consumer Group)&lt;/strong&gt; 的，而不是基于 Topic 的。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;假设你有一个 Topic 叫 &lt;code&gt;Order_Topic&lt;/code&gt;，被 &lt;code&gt;Group_A&lt;/code&gt; 和 &lt;code&gt;Group_B&lt;/code&gt; 订阅。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如果 &lt;code&gt;Group_A&lt;/code&gt; 消费失败，死信会进 &lt;code&gt;Group_A&lt;/code&gt; 专属的死信队列。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;Group_B&lt;/code&gt; 不受影响。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;命名规则：&lt;/strong&gt; 死信 Topic 的名字是固定的：&lt;code&gt;%DLQ%消费者组名&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;默认不可见：&lt;/strong&gt; 正常的消费者在启动时，&lt;strong&gt;不会&lt;/strong&gt;自动订阅死信 Topic。也就是说，进入死信队列的消息，默认情况下&lt;strong&gt;不再会被消费&lt;/strong&gt;，静静地躺在那里。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;有效期：&lt;/strong&gt; 死信队列里的消息也是有有效期的（和普通消息一样，通常 Broker 设置为 3 天）。如果 3 天没人管，它就被物理删除了，数据就真丢了。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-我们该怎么处理死信消息&#34;&gt;3. 我们该怎么处理死信消息？
+&lt;/h3&gt;&lt;p&gt;既然消息进了死信队列，说明你的程序可能有 Bug，或者这条消息的数据有问题（也就是所谓的“毒丸消息”）。&lt;/p&gt;
+&lt;p&gt;处理死信的标准流程通常是 &lt;strong&gt;“人工干预”&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;告警 (Alert)：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;你应该监控 &lt;code&gt;%DLQ%&lt;/code&gt; 开头的 Topic。一旦发现里面有消息（offset 增加了），立刻给开发人员发告警。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;排查问题 (Debug)：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;开发人员登录 RocketMQ 控制台（Dashboard），查看死信消息的内容，分析为什么会消费失败（是代码逻辑错了？还是上游发的数据格式不对？）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;处理 (Action)：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;场景 A（Bug 修复了）：&lt;/strong&gt; 在控制台上点击**“重发消息” (Resend)**。这会让消息重新回到正常 Topic，再次被消费者消费。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;场景 B（脏数据）：&lt;/strong&gt; 确认数据本身就是错的，没法消费，直接在控制台&lt;strong&gt;跳过/忽略&lt;/strong&gt;该消息。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;总结&#34;&gt;总结
+&lt;/h3&gt;&lt;p&gt;你可以把 RocketMQ 的机制看作一个&lt;strong&gt;分诊系统&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;普通队列：&lt;/strong&gt; 普通门诊，处理正常病人。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;重试队列 (%RETRY%)：&lt;/strong&gt; 急诊留观室，病人情况不好，多观察几次，过一会再治治看。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;死信队列 (%DLQ%)：&lt;/strong&gt; 太平间/ICU。常规手段治不好了，将其移出，以免占用医生资源，等待专家（开发者）专门来做尸检（排查问题）或最后决定。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;介绍tcp的流量控制和拥塞控制&#34;&gt;介绍TCP的流量控制和拥塞控制
+&lt;/h2&gt;&lt;p&gt;虽然这两个概念经常一起出现，但它们的&lt;strong&gt;保护对象&lt;/strong&gt;完全不同，这一点是面试时区分的关键：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;流量控制 (Flow Control)：&lt;/strong&gt; 是为了不把&lt;strong&gt;接收端&lt;/strong&gt;填满。是一个&lt;strong&gt;点对点&lt;/strong&gt;（Sender to Receiver）的问题。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;拥塞控制 (Congestion Control)：&lt;/strong&gt; 是为了不把&lt;strong&gt;整个网络&lt;/strong&gt;（路由器、链路）堵死。是一个&lt;strong&gt;全局性&lt;/strong&gt;的问题。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;1-流量控制-flow-control&#34;&gt;1. 流量控制 (Flow Control)
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;核心机制：滑动窗口 (Sliding Window)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;想象一下，你（Sender）在往一个水缸（Receiver 的缓存）里倒水。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;接收端有一个&lt;strong&gt;接收窗口 (rwnd, Receive Window)&lt;/strong&gt;，代表它的水缸还剩多少空间。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;接收端会在每次回传 ACK 时，顺便把这个 &lt;code&gt;rwnd&lt;/code&gt; 的值带给你，告诉你：“我还剩 100字节 的空间，你最多只能发这么多。”&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如果接收端处理不过来了，把 &lt;code&gt;rwnd&lt;/code&gt; 设为 0，你（发送端）就会停止发送，进入等待状态，直到收到新的窗口更新通知。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;注：为了防止死锁（接收端有了空间发了通知，但通知丢包了），发送端会定期发送“探测包”去问一下接收端。&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;2-拥塞控制-congestion-control&#34;&gt;2. 拥塞控制 (Congestion Control)
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;核心机制：拥塞窗口 (cwnd, Congestion Window) + 四大算法&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;流量控制只管接收端能不能吃得消，不管中间的网线、路由器堵不堵。如果网络已经很堵了，你发得越快，丢包越多，网络就越堵（正反馈雪崩）。&lt;/p&gt;
+&lt;p&gt;为了解决这个问题，发送端自己维护了一个拥塞窗口 (cwnd)。&lt;/p&gt;
+&lt;p&gt;最终发送窗口 = min(接收端 rwnd, 自身 cwnd)。&lt;/p&gt;
+&lt;p&gt;TCP 使用以下四个经典算法来动态调整 &lt;code&gt;cwnd&lt;/code&gt;：&lt;/p&gt;
+&lt;h4 id=&#34;a-慢启动-slow-start&#34;&gt;A. 慢启动 (Slow Start)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;原理：&lt;/strong&gt; 刚建立连接时，不知道网络深浅，不能一上来就全速发送。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;过程：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;先把 &lt;code&gt;cwnd&lt;/code&gt; 设为 1（个 MSS）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;收到一个 ACK，&lt;code&gt;cwnd&lt;/code&gt; 加 1。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;收到一轮 ACK 后，&lt;code&gt;cwnd&lt;/code&gt; 翻倍（1 $\rightarrow$ 2 $\rightarrow$ 4 $\rightarrow$ 8&amp;hellip;）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;呈指数增长&lt;/strong&gt;，直到达到一个阈值 (&lt;strong&gt;ssthresh&lt;/strong&gt;, slow start threshold)。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;b-拥塞避免-congestion-avoidance&#34;&gt;B. 拥塞避免 (Congestion Avoidance)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;原理：&lt;/strong&gt; 当 &lt;code&gt;cwnd&lt;/code&gt; 超过 &lt;code&gt;ssthresh&lt;/code&gt; 后，说明网络可能快饱和了，不能再翻倍了，要小心翼翼地加。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;过程：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;每经过一个 RTT（往返时间），&lt;code&gt;cwnd&lt;/code&gt; 只加 1。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;呈线性增长&lt;/strong&gt;（加法增大），慢慢试探网络的底线。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;c-快重传-fast-retransmit&#34;&gt;C. 快重传 (Fast Retransmit)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;触发条件：&lt;/strong&gt; 发送端连续收到 &lt;strong&gt;3 个重复的 ACK&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;比如你发了包 1, 2, 3, 4, 5。接收端收到了 1，没收到 2，收到了 3, 4, 5。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;接收端收到 3, 4, 5 时，都会回复“我想要 2”（ACK 2）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;发送端一连收到 3 个“ACK 2”，就知道包 2 肯定丢了，不用等超时定时器（Timeout），&lt;strong&gt;立刻重传&lt;/strong&gt;包 2。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;d-快恢复-fast-recovery&#34;&gt;D. 快恢复 (Fast Recovery)
+&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;原理：&lt;/strong&gt; 既然能收到 3 个重复 ACK，说明网络虽然有点堵（丢了个包），但还没完全断（后续的包还能到），不需要像“超时”那样惨烈地重回“慢启动”。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;过程：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;把 &lt;code&gt;ssthresh&lt;/code&gt; 设为当前 &lt;code&gt;cwnd&lt;/code&gt; 的一半。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;把 &lt;code&gt;cwnd&lt;/code&gt; 也设为当前的一半（或者一半 + 3）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;直接进入&lt;strong&gt;拥塞避免&lt;/strong&gt;阶段（线性增长）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;注意：&lt;/strong&gt; 如果是发生&lt;strong&gt;超时 (Timeout)&lt;/strong&gt;，说明网络真的很烂了，连 ACK 都回不来。TCP 会判定为严重拥塞，直接把 &lt;code&gt;cwnd&lt;/code&gt; 重置为 1，重新开始&lt;strong&gt;慢启动&lt;/strong&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;总结对比&#34;&gt;总结对比
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;&lt;strong&gt;特性&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;流量控制 (Flow Control)&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;拥塞控制 (Congestion Control)&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;保护对象&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;接收端&lt;/strong&gt; (Receiver)&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;网络环境&lt;/strong&gt; (Network)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;通信范围&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;点对点&lt;/td&gt;
+          &lt;td&gt;全局性&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;反馈机制&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;接收端在 TCP Header 里显式告诉发送端 (&lt;code&gt;rwnd&lt;/code&gt;)&lt;/td&gt;
+          &lt;td&gt;发送端根据丢包或延迟自己推测 (&lt;code&gt;cwnd&lt;/code&gt;)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;核心算法&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;滑动窗口 (Sliding Window)&lt;/td&gt;
+          &lt;td&gt;慢启动、拥塞避免、快重传、快恢复&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;发送上限&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;取决于接收端的缓冲区大小&lt;/td&gt;
+          &lt;td&gt;取决于网络带宽和拥塞程度&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;http3-quic-可靠传输核心&#34;&gt;HTTP/3 (QUIC) 可靠传输核心
+&lt;/h2&gt;&lt;h3 id=&#34;1-核心设计传输-id-与数据-id-分离&#34;&gt;1. 核心设计：传输 ID 与数据 ID 分离
+&lt;/h3&gt;&lt;p&gt;这是 QUIC 区别于 TCP 最关键的设计，解决了 &lt;strong&gt;重传歧义 (Retransmission Ambiguity)&lt;/strong&gt; 问题。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;TCP 的做法（混淆）：&lt;/strong&gt; 序列号 (Seq) 既代表数据顺序，也代表包的身份。重传时序列号不变，导致发送端无法区分 ACK 到底是回给“原包”的还是“重传包”的，RTT 计算不准。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;QUIC 的做法（分离）：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Packet Number (包号)：&lt;/strong&gt; 这里的“快递单号”。严格递增，&lt;strong&gt;只增不减&lt;/strong&gt;。即使是重传，也会用一个新的、更大的 Packet Number。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Stream Offset (流偏移量)：&lt;/strong&gt; 这里的“书页码”。代表数据在流中的位置，永远不变。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;重传策略：&lt;/strong&gt; 当包 #100 丢了，QUIC 会把 #100 里的旧数据（Offset），装进新的包 #103 里发出去。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;2-丢包发现机制-loss-detection&#34;&gt;2. 丢包发现机制 (Loss Detection)
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;接收端的角色：&lt;/strong&gt; 接收端&lt;strong&gt;不主动请求&lt;/strong&gt;重传，它只是一个诚实的记录员。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;ACK Ranges (SACK)：&lt;/strong&gt; 接收端回复的 ACK 会明确指出收到的范围。例如：“我收到了 #1-#2，以及 #4”。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;跳号检测：&lt;/strong&gt; 发送端收到 ACK 后，发现中间缺了 #3（跳号了），从而意识到可能发生了丢包。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;3-什么时候重传threshold&#34;&gt;3. 什么时候重传？(Threshold)
+&lt;/h3&gt;&lt;p&gt;发送端发现缺口后，不会立刻重传（防止网络只是抖动/乱序），而是基于阈值判断：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;包数量阈值 (Packet Threshold)：&lt;/strong&gt; 比如后续又有 3 个包（#4, #5, #6）都到了，#3 还没到，判定 #3 丢失。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;时间阈值 (Time Threshold)：&lt;/strong&gt; 超过一定时间的 RTT 还没到，判定丢失。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;触发动作：&lt;/strong&gt; 发送端主动将丢失的数据取出，封装到新包中发送。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;4-误判与虚假重传-spurious-retransmission&#34;&gt;4. 误判与虚假重传 (Spurious Retransmission)
+&lt;/h3&gt;&lt;p&gt;针对“如果包传输太慢，会不会被误判为丢失”的问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;MTU 限制：&lt;/strong&gt; 物理传输中不存在“巨大的包”，所有包最大约为 1.5KB (MTU)。包慢通常是因为&lt;strong&gt;排队或路径拥堵&lt;/strong&gt;，而不是包太大。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;确实会误判：&lt;/strong&gt; 如果网络抖动过大（超过阈值），发送端会误以为丢包并重传。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;后果（QUIC 优于 TCP）：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;接收端会收到两份数据（旧包迟到了，新包也到了）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;QUIC 能完美处理：&lt;/strong&gt; 因为两个包的 Packet Number 不同，发送端能区分哪个 ACK 对应哪个包。接收端只需根据 Offset 去重即可。这不会导致 TCP 那样的 RTT 计算混乱。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;形象记忆法快递寄书&#34;&gt;形象记忆法：快递寄书
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;发货：&lt;/strong&gt; 用“快递盒 #100”装“第 10 页”。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;丢包：&lt;/strong&gt; 接收端说“收到 #101, #102，没看到 #100”。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;重传：&lt;/strong&gt; 发送端拿个&lt;strong&gt;新盒子&lt;/strong&gt; “快递盒 #103”，装入&lt;strong&gt;旧复印件&lt;/strong&gt; “第 10 页” 发出去。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;确认：&lt;/strong&gt; 发送端收到“收到 #103”的回执，精确计算耗时，不会搞混。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
 </description>
         </item>
         <item>

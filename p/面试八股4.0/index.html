@@ -339,6 +339,25 @@
         <li><a href="#thp是什么transparent-huge-pages-thp">THP是什么：Transparent Huge Pages (THP)</a></li>
       </ol>
     </li>
+    <li><a href="#mysql的char和varchar的区别是什么">MySQL的char和varchar的区别是什么</a></li>
+    <li><a href="#介绍常见的jvm实现介绍他们的区别">介绍常见的JVM实现，介绍他们的区别</a>
+      <ol>
+        <li><a href="#1-hotspot-vm-oracleopenjdk--绝对的霸主">1. HotSpot VM (Oracle/OpenJDK) —— &ldquo;绝对的霸主&rdquo;</a></li>
+        <li><a href="#2-j9-openj9--ibm-j9--内存管理的艺术大师">2. J9 (OpenJ9 / IBM J9) —— &ldquo;内存管理的艺术大师&rdquo;</a></li>
+        <li><a href="#3-graalvm--多语言通天塔--原生镜像">3. GraalVM —— &ldquo;多语言通天塔 &amp; 原生镜像&rdquo;</a></li>
+      </ol>
+    </li>
+    <li><a href="#为什么j9比graalvm还省内存">为什么J9比GraalVM还省内存？</a>
+      <ol>
+        <li><a href="#1-杀手锏类共享缓存-shared-classes-cache-scc">1. 杀手锏：类共享缓存 (Shared Classes Cache, SCC)</a></li>
+        <li><a href="#2-内存管理策略吝啬-vs-豪横">2. 内存管理策略：吝啬 vs. 豪横</a></li>
+        <li><a href="#3-对象头与指针压缩-compressed-references">3. 对象头与指针压缩 (Compressed References)</a></li>
+        <li><a href="#4-编译器线程的开销">4. 编译器线程的开销</a></li>
+        <li><a href="#总结-1">总结</a></li>
+        <li><a href="#物理真相page-cache-才是真正的幕后金主">物理真相：Page Cache 才是真正的“幕后金主”</a></li>
+        <li><a href="#为什么比自己解析还要快">为什么比“自己解析”还要快？</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -395,7 +414,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 15 分钟
+                    阅读时长: 21 分钟
                 </time>
             </div>
         
@@ -1192,6 +1211,295 @@ Linux 默认的内存页大小是 <strong>4KB</strong>。为了提高内存访�
 </li>
 </ul>
 <p><strong>这听起来是个好功能，对吧？但在 Redis 场景下，它变成了“好心办坏事”。</strong></p>
+<h2 id="mysql的char和varchar的区别是什么">MySQL的char和varchar的区别是什么
+</h2><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>特性 (Feature)</strong></th>
+          <th><strong>CHAR(M)</strong></th>
+          <th><strong>VARCHAR(M)</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>存储方式</strong></td>
+          <td><strong>固定长度</strong> (Fixed-length)</td>
+          <td><strong>可变长度</strong> (Variable-length)</td>
+      </tr>
+      <tr>
+          <td><strong>空间占用</strong></td>
+          <td>始终占用 <strong>M</strong> 个字符的存储空间。</td>
+          <td>占用 <strong>实际字符串长度</strong> + <strong>1 或 2 字节</strong>的长度前缀。</td>
+      </tr>
+      <tr>
+          <td><strong>空间填充 (Padding)</strong></td>
+          <td>当存储的字符串长度小于 M 时，会在<strong>右侧填充空格</strong> (Trailing spaces)。</td>
+          <td>存储时<strong>不会填充</strong>空格，只占用实际需要的空间。</td>
+      </tr>
+      <tr>
+          <td><strong>检索处理</strong></td>
+          <td>检索时通常会<strong>自动移除</strong>末尾填充的空格 (除非启用特殊模式)。</td>
+          <td>检索时会<strong>保留</strong>所有尾随空格。</td>
+      </tr>
+      <tr>
+          <td><strong>最大长度</strong></td>
+          <td><strong>0 到 255</strong> 个字符。</td>
+          <td><strong>0 到 65,535</strong> 个字符 (受限于行最大长度 65535 字节)。</td>
+      </tr>
+      <tr>
+          <td><strong>性能/适用场景</strong></td>
+          <td>适用于长度<strong>固定不变</strong>的数据 (如：MD5 散列、状态码、性别)。 查询和索引速度通常<strong>更快</strong>。</td>
+          <td>适用于长度<strong>变化较大</strong>的数据 (如：姓名、地址、描述)。 <strong>更节省</strong>存储空间。</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="介绍常见的jvm实现介绍他们的区别">介绍常见的JVM实现，介绍他们的区别
+</h2><h3 id="1-hotspot-vm-oracleopenjdk--绝对的霸主">1. HotSpot VM (Oracle/OpenJDK) —— &ldquo;绝对的霸主&rdquo;
+</h3><p>这是目前世界上使用最广泛的 JVM，也是你我日常开发、绝大多数公司生产环境默认使用的版本。</p>
+<ul>
+<li>
+<p><strong>厂商：</strong> Oracle（最初由 Sun 收购的 Longview Technologies 开发）。</p>
+</li>
+<li>
+<p><strong>核心特点：</strong></p>
+<ul>
+<li>
+<p><strong>热点探测 (Hot Spot Detection)：</strong> 它的名字由来。它不预先编译所有代码，而是像侦探一样通过计数器找到执行最频繁的“热点代码”，然后用 JIT (Just-In-Time) 编译器把它们编译成高度优化的本地机器码。</p>
+</li>
+<li>
+<p><strong>双编译器架构：</strong> 拥有 C1 (Client Compiler，编译快但在优化上较保守) 和 C2 (Server Compiler，编译慢但在优化上极其激进) 两个编译器，现在通常混合使用（分层编译）。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>适用场景：</strong> 通杀。从桌面应用到大型微服务集群。</p>
+</li>
+<li>
+<p><strong>现状：</strong> OpenJDK 的默认虚拟机。</p>
+</li>
+</ul>
+<h3 id="2-j9-openj9--ibm-j9--内存管理的艺术大师">2. J9 (OpenJ9 / IBM J9) —— &ldquo;内存管理的艺术大师&rdquo;
+</h3><p>如果你在 IBM 的体系（如 AIX 系统、WebSphere 中间件）下工作过，你一定见过它。现在已经贡献给 Eclipse 基金会，改名为 <strong>Eclipse OpenJ9</strong>。</p>
+<ul>
+<li>
+<p><strong>厂商：</strong> IBM（现 Eclipse 基金会）。</p>
+</li>
+<li>
+<p><strong>核心区别 (vs HotSpot)：</strong></p>
+<ul>
+<li>
+<p><strong>内存占用极低：</strong> J9 的设计初衷之一就是为了嵌入式和受限环境。同样的 Spring Boot 应用，跑在 OpenJ9 上通常比 HotSpot <strong>节省 30%~50% 的内存</strong>。</p>
+</li>
+<li>
+<p><strong>启动速度快：</strong> 它利用了 <strong>AOT (Ahead-Of-Time)</strong> 编译技术和<strong>类共享 (Shared Classes)</strong> 机制，使得应用启动非常快。</p>
+</li>
+<li>
+<p><strong>吞吐量稍弱：</strong> 在长时间运行的极限吞吐量测试中，通常略逊于 HotSpot 的 C2 编译器。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>适用场景：</strong> 容器化环境（Docker/K8s）、微服务（因为省内存=省钱）、命令行工具。</p>
+</li>
+</ul>
+<h3 id="3-graalvm--多语言通天塔--原生镜像">3. GraalVM —— &ldquo;多语言通天塔 &amp; 原生镜像&rdquo;
+</h3><p>这是 Oracle 实验室搞出来的“新物种”，近年来热度极高。严格来说，它不仅是一个 JVM，更是一个多语言运行时平台。</p>
+<ul>
+<li>
+<p><strong>厂商：</strong> Oracle Labs。</p>
+</li>
+<li>
+<p><strong>核心区别：</strong></p>
+<ul>
+<li>
+<p><strong>Graal Compiler：</strong> 它是用 <strong>Java 写的一个新的 JIT 编译器</strong>，旨在替代 HotSpot 老旧的 C++ 写的 C2 编译器。它的优化能力非常强，尤其是在通过逃逸分析消除对象分配方面。</p>
+</li>
+<li>
+<p><strong>Native Image (原生镜像)：</strong> 这是它最杀手级的功能。它可以把 Java 代码<strong>直接编译成独立的二进制可执行文件</strong>（就像 C++ 编译出来的那样）。</p>
+<ul>
+<li><strong>结果：</strong> 启动时间从几秒变成 <strong>毫秒级</strong>，内存占用极小。但失去了动态加载类的能力（反射受限）。</li>
+</ul>
+</li>
+<li>
+<p><strong>多语言互通：</strong> 你可以在 Java 里无缝调用 Python、R、JavaScript 代码，且性能极高（因为它们最终都变成了 Graal 的中间表示 IR）。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>适用场景：</strong> Serverless (AWS Lambda 等冷启动敏感场景)、云原生应用、多语言混合开发。</p>
+</li>
+</ul>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>JVM 实现</strong></th>
+          <th><strong>别名/特点</strong></th>
+          <th><strong>内存占用</strong></th>
+          <th><strong>启动速度</strong></th>
+          <th><strong>极限吞吐量</strong></th>
+          <th><strong>典型场景</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>HotSpot</strong></td>
+          <td>标准版</td>
+          <td>中</td>
+          <td>中</td>
+          <td><strong>极高</strong></td>
+          <td>通用，绝大多数互联网后端</td>
+      </tr>
+      <tr>
+          <td><strong>OpenJ9</strong></td>
+          <td>省钱版</td>
+          <td><strong>极低</strong></td>
+          <td><strong>快</strong></td>
+          <td>高</td>
+          <td>容器、微服务、受限环境</td>
+      </tr>
+      <tr>
+          <td><strong>GraalVM</strong></td>
+          <td>未来版/原生版</td>
+          <td>低 (Native)</td>
+          <td><strong>极快</strong> (Native)</td>
+          <td>高</td>
+          <td>Serverless、云原生、多语言</td>
+      </tr>
+      <tr>
+          <td><strong>Azul Zing</strong></td>
+          <td>氪金版</td>
+          <td>高</td>
+          <td>快 (ReadyNow)</td>
+          <td><strong>极高</strong></td>
+          <td>金融高频交易、超大堆内存</td>
+      </tr>
+  </tbody>
+</table></div>
+<h2 id="为什么j9比graalvm还省内存">为什么J9比GraalVM还省内存？
+</h2><h3 id="1-杀手锏类共享缓存-shared-classes-cache-scc">1. 杀手锏：类共享缓存 (Shared Classes Cache, SCC)
+</h3><p>这是 OpenJ9 最核心的黑科技。</p>
+<ul>
+<li>
+<p>HotSpot/GraalVM 的做法：</p>
+<p>如果你在同一个机器（或容器宿主机）上启动了 5 个 Spring Boot 应用，HotSpot 会把 java.lang.String、ArrayList 这些基础类的元数据加载 5 次，存在 5 个不同的 Metaspace（元空间）里。这是极大的浪费。</p>
+</li>
+<li>
+<p>OpenJ9 的做法：</p>
+<p>它会在磁盘或内存中创建一个 SCC (Shared Classes Cache) 文件。</p>
+<p>第一个启动的进程把类加载进来，解析好，扔进 SCC。</p>
+<p>后面启动的第 2、3、4、5 个进程，直接映射（mmap）这块内存。它们不需要重新解析类，甚至不需要占用自己的私有内存，直接共用那一份只读内存。</p>
+</li>
+</ul>
+<p><strong>结果：</strong> 在微服务容器化场景下，OpenJ9 能节省惊人的内存（通常 30%~50%），因为 80% 的基础类大家都是一样的。</p>
+<h3 id="2-内存管理策略吝啬-vs-豪横">2. 内存管理策略：吝啬 vs. 豪横
+</h3><ul>
+<li>
+<p>HotSpot (GraalVM) —— “占地为王”：</p>
+<p>HotSpot 的堆内存策略是为了减少和操作系统的交互。</p>
+<p>一旦它向操作系统申请了内存（比如堆涨到了 2GB），即便后来 GC 回收了对象，堆里空了 1.5GB，HotSpot 也往往不愿意把这块物理内存还给操作系统。它会留着，“万一等会儿又要用呢？”</p>
+<p>这就导致它的 RSS (常驻集大小，真正的物理内存占用) 一直很高。</p>
+</li>
+<li>
+<p>OpenJ9 —— “用多少借多少”：</p>
+<p>OpenJ9 的堆扩容极其“吝啬”。它启动时只申请极小的内存。</p>
+<p>更重要的是，GC 发生后，如果发现有空闲内存，它会非常积极地把物理内存归还给操作系统。</p>
+<p>这使得它的 RSS 曲线非常贴合实际使用量，而不是像 HotSpot 那样一直顶着上限跑。</p>
+</li>
+</ul>
+<h3 id="3-对象头与指针压缩-compressed-references">3. 对象头与指针压缩 (Compressed References)
+</h3><p>虽然 HotSpot 也有指针压缩，但 IBM 在这方面做得更绝。</p>
+<ul>
+<li>
+<p><strong>设计渊源：</strong> J9 最早是 IBM 为小型机甚至嵌入式设备设计的（VisualAge Smalltalk 虚拟机演变而来）。</p>
+</li>
+<li>
+<p><strong>实现细节：</strong> OpenJ9 的对象头（Object Header）设计得非常紧凑，甚至在某些复杂的继承结构和锁状态下，它用的辅助数据结构都比 HotSpot 小。对于成千上万个对象来说，每个少几个字节，总量就很客观了。</p>
+</li>
+</ul>
+<h3 id="4-编译器线程的开销">4. 编译器线程的开销
+</h3><ul>
+<li>
+<p>GraalVM (JIT)：</p>
+<p>Graal 编译器本身是用 Java 写的。这意味着 JIT 编译器本身就在消耗 Java 堆内存。当应用刚启动在这个“编译热潮”期，Graal 编译器会产生大量的对象，导致堆内存瞬间飙升。</p>
+</li>
+<li>
+<p>OpenJ9：</p>
+<p>它的 JIT 编译器（Testarossa）是用 C++ 写的，而且对线程资源的调度非常克制。它不会为了追求极速启动而瞬间吃掉大量资源（除非你开启了激进模式）。</p>
+</li>
+</ul>
+<hr>
+<h3 id="总结-1">总结
+</h3><p>为什么 J9 比 GraalVM (JIT模式) 更省内存？</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>特性</strong></th>
+          <th><strong>OpenJ9</strong></th>
+          <th><strong>GraalVM (HotSpot Based)</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>多进程复用</strong></td>
+          <td><strong>SCC 技术</strong> (多个 JVM 共用一份类元数据)</td>
+          <td>无 (每个 JVM 独占一份)</td>
+      </tr>
+      <tr>
+          <td><strong>归还内存</strong></td>
+          <td><strong>极度积极</strong> (GC 后立刻还给 OS)</td>
+          <td><strong>保守</strong> (倾向于持有内存以换取吞吐量)</td>
+      </tr>
+      <tr>
+          <td><strong>JIT 开销</strong></td>
+          <td>C++ 编写，且优化了内存占用</td>
+          <td>Java 编写，编译过程本身消耗堆内存</td>
+      </tr>
+      <tr>
+          <td><strong>设计基因</strong></td>
+          <td><strong>嵌入式/受限环境</strong> (够用就好)</td>
+          <td><strong>服务器/高性能</strong> (性能至上，空间换时间)</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="物理真相page-cache-才是真正的幕后金主">物理真相：Page Cache 才是真正的“幕后金主”
+</h3><p>当 OpenJ9 调用 <code>mmap</code> 将 SCC 文件映射到内存时，发生了以下事情：</p>
+<ol>
+<li>
+<p><strong>文件映射：</strong> 操作系统并不会立刻把整个 SCC 文件读进内存，而是建立了一个“映射关系”。</p>
+</li>
+<li>
+<p><strong>缺页中断 (Page Fault)：</strong> 当 JVM A 试图读取某个类（比如 <code>java.lang.String</code>）时，CPU 发现这块虚拟地址没有对应物理内存，触发缺页中断。</p>
+</li>
+<li>
+<p><strong>内核加载 (Kernel Load)：</strong> 操作系统内核接管，从磁盘读取这部分数据，放入 <strong>内核管理的 Page Cache（物理 RAM）</strong> 中。</p>
+</li>
+<li>
+<p><strong>建立页表 (Page Table)：</strong> 操作系统修改 JVM A 的页表，让 JVM A 的虚拟地址直接指向这块 <strong>Page Cache 的物理页</strong>。</p>
+</li>
+</ol>
+<p><strong>关键点来了：</strong> 当 <strong>JVM B</strong> 启动并也 <code>mmap</code> 同一个 SCC 文件时：</p>
+<ul>
+<li>
+<p>它也要读 <code>java.lang.String</code>。</p>
+</li>
+<li>
+<p>操作系统一看：“嘿，这个文件的这部分数据已经在 <strong>Page Cache</strong> 里了（因为 JVM A 读过了）。”</p>
+</li>
+<li>
+<p>操作系统直接修改 JVM B 的页表，把它也指向 <strong>同一块 Page Cache 物理页</strong>。</p>
+</li>
+</ul>
+<h3 id="为什么比自己解析还要快">为什么比“自己解析”还要快？
+</h3><p>你可能会问：<em>“都在 Page Cache 里，那也只是省了从磁盘读的时间，JVM 不需要解析吗？”</em></p>
+<p><strong>这正是 OpenJ9 SCC 的高明之处：</strong> SCC 文件里存的<strong>不是</strong>原始的 <code>.class</code> 字节码（bytecodes），而是<strong>经过 JVM 解析处理后的内部数据结构（ROMClasses）</strong>，甚至包含了 <strong>AOT 编译后的本地机器码</strong>。</p>
+<ul>
+<li>
+<p><strong>普通 JVM (HotSpot)：</strong> 磁盘 <code>.class</code> -&gt; <code>Page Cache</code> -&gt; <strong>Copy 到堆内存</strong> -&gt; <strong>解析验证</strong> -&gt; <strong>生成内部 Class 对象</strong>。 <em>(每个 JVM 都要把这个流程走一遍，并在自己的堆里存一份)</em></p>
+</li>
+<li>
+<p><strong>OpenJ9 (SCC)：</strong> 磁盘 <code>SCC文件</code> (已经是解析好的结构) -&gt; <code>Page Cache</code> -&gt; <strong>JVM 直接指针引用</strong>。 <em>(JVM 不需要解析，不需要 Verify，直接拿指针指过去就能用。这就是所谓的 &ldquo;Pointer Swizzling&rdquo; 技术)</em></p>
+</li>
+</ul>
 
 </section>
 

@@ -358,6 +358,28 @@
         <li><a href="#为什么比自己解析还要快">为什么比“自己解析”还要快？</a></li>
       </ol>
     </li>
+    <li><a href="#1-业务场景ai-流式响应的同步化">1. 业务场景：AI 流式响应的同步化</a></li>
+    <li><a href="#2-juc-工具对比completablefuture-vs-countdownlatch">2. JUC 工具对比：CompletableFuture vs CountDownLatch</a></li>
+    <li><a href="#3-并发基石aqs-abstractqueuedsynchronizer">3. 并发基石：AQS (AbstractQueuedSynchronizer)</a>
+      <ol>
+        <li><a href="#31-核心三要素"><strong>3.1 核心三要素</strong></a></li>
+        <li><a href="#32-工作机制"><strong>3.2 工作机制</strong></a></li>
+        <li><a href="#33-概念辨析"><strong>3.3 概念辨析</strong></a></li>
+      </ol>
+    </li>
+    <li><a href="#4-线程模型kernel-level-threads-klt">4. 线程模型：Kernel-Level Threads (KLT)</a>
+      <ol>
+        <li><a href="#41-运行位置辨析易错点"><strong>4.1 运行位置辨析（易错点）</strong></a></li>
+        <li><a href="#42-运行机制"><strong>4.2 运行机制</strong></a></li>
+      </ol>
+    </li>
+    <li><a href="#5-jni-与系统调用-system-call">5. JNI 与系统调用 (System Call)</a>
+      <ol>
+        <li><a href="#51-jni-java-native-interface"><strong>5.1 JNI (Java Native Interface)</strong></a></li>
+        <li><a href="#52-系统调用-system-call"><strong>5.2 系统调用 (System Call)</strong></a></li>
+        <li><a href="#53-完整链路以-file-read-为例"><strong>5.3 完整链路（以 File Read 为例）</strong></a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -414,7 +436,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 21 分钟
+                    阅读时长: 24 分钟
                 </time>
             </div>
         
@@ -1500,6 +1522,205 @@ Linux 默认的内存页大小是 <strong>4KB</strong>。为了提高内存访�
 <p><strong>OpenJ9 (SCC)：</strong> 磁盘 <code>SCC文件</code> (已经是解析好的结构) -&gt; <code>Page Cache</code> -&gt; <strong>JVM 直接指针引用</strong>。 <em>(JVM 不需要解析，不需要 Verify，直接拿指针指过去就能用。这就是所谓的 &ldquo;Pointer Swizzling&rdquo; 技术)</em></p>
 </li>
 </ul>
+<h2 id="1-业务场景ai-流式响应的同步化">1. 业务场景：AI 流式响应的同步化
+</h2><p><strong>场景</strong>：在后端调用 AI 模型，既要向前端推送 SSE 流（实时），又要等待完整结果存库（同步）。</p>
+<ul>
+<li>
+<p><strong>解决方案</strong>：<code>CompletableFuture</code> (异步执行 AI 请求) + <code>CountDownLatch</code> (主线程阻塞等待)。</p>
+</li>
+<li>
+<p><strong>核心逻辑</strong>：</p>
+<ul>
+<li>
+<p>主线程 <code>latch.await(30s)</code> 阻塞。</p>
+</li>
+<li>
+<p>异步线程收到 AI 完成信号或报错时，执行 <code>latch.countDown()</code>。</p>
+</li>
+<li>
+<p><strong>优缺</strong>：将异步流强行转为同步阻塞，适合必须存库的场景，但高并发下会占用 Servlet 容器线程。</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="2-juc-工具对比completablefuture-vs-countdownlatch">2. JUC 工具对比：CompletableFuture vs CountDownLatch
+</h2><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>特性</strong></th>
+          <th><strong>CompletableFuture</strong></th>
+          <th><strong>CountDownLatch</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>本质</strong></td>
+          <td><strong>异步编排工具</strong></td>
+          <td><strong>同步协作工具</strong></td>
+      </tr>
+      <tr>
+          <td><strong>核心作用</strong></td>
+          <td>任务链式处理、回调、组合 (Future 的增强版)</td>
+          <td>多线程间的倒计时协调 (A 等 B、C、D 做完)</td>
+      </tr>
+      <tr>
+          <td><strong>阻塞性</strong></td>
+          <td><strong>非阻塞</strong> (基于回调 Callback)</td>
+          <td><strong>阻塞</strong> (调用 <code>await</code> 的线程被挂起)</td>
+      </tr>
+      <tr>
+          <td><strong>底层</strong></td>
+          <td>基于 ForkJoinPool (默认)</td>
+          <td>基于 AQS (共享锁模式)</td>
+      </tr>
+      <tr>
+          <td><strong>适用</strong></td>
+          <td>复杂的异步任务流 (如调用 AI、微服务聚合)</td>
+          <td>并发流程控制 (如压测发令枪、主线程等子线程)</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h2 id="3-并发基石aqs-abstractqueuedsynchronizer">3. 并发基石：AQS (AbstractQueuedSynchronizer)
+</h2><p>AQS 是 Java 并发包（Lock, Latch, Semaphore）的<strong>通用骨架</strong>。</p>
+<h3 id="31-核心三要素"><strong>3.1 核心三要素</strong>
+</h3><ol>
+<li>
+<p><strong>State (volatile int)</strong>：</p>
+<ul>
+<li>
+<p>同步状态资源。</p>
+</li>
+<li>
+<p>ReentrantLock 中代表“锁占用情况”；CountDownLatch 中代表“倒计时剩余次数”。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>CLH 队列 (FIFO)</strong>：</p>
+<ul>
+<li>双向链表，存放抢不到资源、需要排队的线程（Node）。</li>
+</ul>
+</li>
+<li>
+<p><strong>Owner Thread</strong>：</p>
+<ul>
+<li>当前持有资源的线程。</li>
+</ul>
+</li>
+</ol>
+<h3 id="32-工作机制"><strong>3.2 工作机制</strong>
+</h3><ul>
+<li>
+<p><strong>抢锁 (Acquire)</strong>：线程尝试用 <strong>CAS</strong> 修改 <code>state</code>。</p>
+<ul>
+<li>
+<p>成功 -&gt; 执行业务。</p>
+</li>
+<li>
+<p>失败 -&gt; 封装成 Node 入队 -&gt; <strong>自旋</strong>重试 -&gt; <strong>阻塞</strong> (<code>LockSupport.park</code>)。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>释放 (Release)</strong>：修改 <code>state</code> -&gt; 唤醒 (<code>unpark</code>) 队列头部的线程。</p>
+</li>
+</ul>
+<h3 id="33-概念辨析"><strong>3.3 概念辨析</strong>
+</h3><ul>
+<li>
+<p><strong>CAS (砖块)</strong>：CPU 指令 (<code>cmpxchg</code>)，无锁原子操作，是实现 AQS 的基础工具。</p>
+</li>
+<li>
+<p><strong>AQS (图纸)</strong>：定义了排队、阻塞、唤醒的逻辑框架。</p>
+</li>
+<li>
+<p><strong>CountDownLatch (大门)</strong>：基于 AQS 实现的具体工具类。</p>
+</li>
+<li>
+<p><strong>synchronized (房间)</strong>：JVM 层面的互斥锁（Monitor），与 AQS 体系独立。</p>
+</li>
+</ul>
+<hr>
+<h2 id="4-线程模型kernel-level-threads-klt">4. 线程模型：Kernel-Level Threads (KLT)
+</h2><p>Java 线程与操作系统线程是 <strong>1:1</strong> 映射关系。</p>
+<h3 id="41-运行位置辨析易错点"><strong>4.1 运行位置辨析（易错点）</strong>
+</h3><ul>
+<li>
+<p><strong>身份</strong>：Java 线程是<strong>内核级线程</strong>（由 OS 内核管理、调度、发工资）。</p>
+</li>
+<li>
+<p><strong>工作地点</strong>：</p>
+<ul>
+<li>
+<p><strong>90% 时间</strong>：在<strong>用户态 (User Mode)</strong> 运行，执行 JVM 里的 Java 字节码（如 <code>i++</code>, <code>Map.put</code>）。</p>
+</li>
+<li>
+<p><strong>10% 时间</strong>：在<strong>内核态 (Kernel Mode)</strong> 运行，当发起<strong>系统调用</strong>（如 IO、Thread Park）时。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="42-运行机制"><strong>4.2 运行机制</strong>
+</h3><ul>
+<li>
+<p><strong>双栈结构</strong>：每个线程拥有 <strong>User Stack</strong> (运行 Java 代码) 和 <strong>Kernel Stack</strong> (运行内核代码)。</p>
+</li>
+<li>
+<p><strong>陷阱 (Trap)</strong>：线程从用户态切换到内核态的过程。</p>
+</li>
+<li>
+<p><strong>开销</strong>：上下文切换 (Context Switch) 成本高，因为涉及 TLB 刷新、寄存器保存、特权级切换 (Ring 3 -&gt; Ring 0)。</p>
+</li>
+</ul>
+<hr>
+<h2 id="5-jni-与系统调用-system-call">5. JNI 与系统调用 (System Call)
+</h2><h3 id="51-jni-java-native-interface"><strong>5.1 JNI (Java Native Interface)</strong>
+</h3><ul>
+<li>
+<p><strong>本质</strong>：Java 调用 C/C++ 代码的桥梁。</p>
+</li>
+<li>
+<p><strong>通信方式</strong>：<strong>进程内直接调用</strong>，非 IPC（进程间通信）。Java 和 C++ 代码在同一个进程地址空间。</p>
+</li>
+<li>
+<p><strong>是否陷入内核？</strong>：<strong>否</strong>。调用 JNI 方法本身只是 CPU 指令跳转，依然在用户态。</p>
+</li>
+</ul>
+<h3 id="52-系统调用-system-call"><strong>5.2 系统调用 (System Call)</strong>
+</h3><ul>
+<li>
+<p><strong>本质</strong>：用户态程序请求操作系统服务的接口（如 <code>read</code>, <code>write</code>, <code>futex</code>）。</p>
+</li>
+<li>
+<p><strong>触发</strong>：通常由 JNI 调用的 C++ 代码（如 glibc 库）发起汇编指令（<code>SYSCALL</code>/<code>INT 0x80</code>）。</p>
+</li>
+<li>
+<p><strong>结果</strong>：CPU 发生<strong>陷入 (Trap)</strong>，切换到内核态，在内核栈执行 OS 代码。</p>
+</li>
+</ul>
+<h3 id="53-完整链路以-file-read-为例"><strong>5.3 完整链路（以 File Read 为例）</strong>
+</h3><ol>
+<li>
+<p><strong>Java</strong>: <code>FileInputStream.read()</code> (用户态)</p>
+</li>
+<li>
+<p><strong>JNI</strong>: <code>read0()</code> -&gt; <code>JVM_Read</code> (用户态，跳转到 C++)</p>
+</li>
+<li>
+<p><strong>C/C++</strong>: 调用 glibc <code>read()</code> (用户态)</p>
+</li>
+<li>
+<p><strong>Assembly</strong>: 执行 <code>SYSCALL</code> 指令 (触发点)</p>
+</li>
+<li>
+<p><strong>Kernel</strong>: CPU 陷入内核态 -&gt; 执行文件系统驱动 -&gt; 读取硬盘 (内核态)</p>
+</li>
+<li>
+<p><strong>Return</strong>: 数据拷回用户缓冲区 -&gt; 返回 Java (回到用户态)</p>
+</li>
+</ol>
 
 </section>
 

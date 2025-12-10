@@ -380,6 +380,26 @@
         <li><a href="#53-完整链路以-file-read-为例"><strong>5.3 完整链路（以 File Read 为例）</strong></a></li>
       </ol>
     </li>
+    <li><a href="#1-spring-boottomcat-的核心网络模型">1. Spring Boot/Tomcat 的核心网络模型</a>
+      <ol>
+        <li><a href="#11-工作流程">1.1 工作流程</a></li>
+        <li><a href="#12-关键区分">1.2 关键区分</a></li>
+      </ol>
+    </li>
+    <li><a href="#2-架构对比tomcat-nio-vs-redis-60">2. 架构对比：Tomcat NIO vs Redis 6.0+</a></li>
+    <li><a href="#3-java-io-模型演进-bio-vs-nio-vs-aio">3. Java I/O 模型演进 (BIO vs NIO vs AIO)</a>
+      <ol>
+        <li><a href="#31-bio-blocking-io---jdk-14-前">3.1 BIO (Blocking I/O) - JDK 1.4 前</a></li>
+        <li><a href="#32-nio-non-blocking-io---jdk-14-tomcat-默认">3.2 NIO (Non-blocking I/O) - JDK 1.4+ (Tomcat 默认)</a></li>
+        <li><a href="#33-aio-asynchronous-io---jdk-17">3.3 AIO (Asynchronous I/O) - JDK 1.7+</a></li>
+      </ol>
+    </li>
+    <li><a href="#4-操作系统底层差异-linux-vs-windows">4. 操作系统底层差异 (Linux vs Windows)</a>
+      <ol>
+        <li><a href="#41-bio-的线程代价">4.1 BIO 的线程代价</a></li>
+        <li><a href="#42-为什么服务器首选-linux">4.2 为什么服务器首选 Linux？</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -436,7 +456,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 24 分钟
+                    阅读时长: 27 分钟
                 </time>
             </div>
         
@@ -1721,6 +1741,187 @@ Linux 默认的内存页大小是 <strong>4KB</strong>。为了提高内存访�
 <p><strong>Return</strong>: 数据拷回用户缓冲区 -&gt; 返回 Java (回到用户态)</p>
 </li>
 </ol>
+<h2 id="1-spring-boottomcat-的核心网络模型">1. Spring Boot/Tomcat 的核心网络模型
+</h2><p><strong>结论</strong>：Spring Boot（默认 Tomcat）底层确实使用了 <strong>I/O 多路复用</strong>。</p>
+<h3 id="11-工作流程">1.1 工作流程
+</h3><p>在 Linux 环境下，Tomcat（NioEndpoint）通过 JDK NIO 映射到内核的 <strong><code>epoll</code></strong> 机制。</p>
+<ol>
+<li>
+<p><strong>监听 (<code>Poller</code>)</strong>：Tomcat 使用少量的 <code>Poller</code> 线程（持有 <code>Selector</code>）通过 <code>epoll_wait</code> 监听成千上万个连接。</p>
+</li>
+<li>
+<p><strong>触发</strong>：仅当网卡接收到数据，并通过中断写入内核缓冲区后，<code>epoll</code> 才会唤醒 <code>Poller</code> 线程。</p>
+</li>
+<li>
+<p><strong>分发 (<code>Dispatch</code>)</strong>：<code>Poller</code> 将就绪的 Socket 封装成任务，丢给 <strong>Worker 线程池</strong>。</p>
+</li>
+<li>
+<p><strong>处理</strong>：Worker 线程执行 <code>read()</code>（将数据从内核态拷贝到用户态）、解析 HTTP、执行 Controller 业务逻辑。</p>
+</li>
+</ol>
+<h3 id="12-关键区分">1.2 关键区分
+</h3><ul>
+<li>
+<p><strong>硬件层</strong>：网卡到内核的数据传输由 <strong>硬中断/软中断</strong> 处理（不涉及 epoll）。</p>
+</li>
+<li>
+<p><strong>应用层</strong>：内核通知应用“有数据了”，才是 <strong>epoll</strong> 发挥作用的地方。</p>
+</li>
+</ul>
+<hr>
+<h2 id="2-架构对比tomcat-nio-vs-redis-60">2. 架构对比：Tomcat NIO vs Redis 6.0+
+</h2><p>两者都利用多线程来减轻主线程在 <strong>“内核态 -&gt; 用户态”数据拷贝 (<code>read/write</code>)</strong> 上的 CPU 开销，但业务处理模型截然不同。</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>维度</strong></th>
+          <th><strong>Tomcat (NIO + ThreadPool)</strong></th>
+          <th><strong>Redis 6.0+ (IO Threads)</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>IO 读写执行者</strong></td>
+          <td><strong>Worker 线程</strong> (并发)</td>
+          <td><strong>辅助 IO 线程</strong> (并发)</td>
+      </tr>
+      <tr>
+          <td><strong>业务逻辑执行者</strong></td>
+          <td><strong>Worker 线程</strong> (并发)</td>
+          <td><strong>Main 线程</strong> (单线程)</td>
+      </tr>
+      <tr>
+          <td><strong>并发安全性</strong></td>
+          <td><strong>需考虑锁</strong> (多线程并发执行业务)</td>
+          <td><strong>无需锁</strong> (业务逻辑串行)</td>
+      </tr>
+      <tr>
+          <td><strong>设计哲学</strong></td>
+          <td><strong>全栈代理</strong>：Worker 负责从读写到业务的全流程。</td>
+          <td><strong>工具人模式</strong>：IO 线程只负责搬运数据，主线程独掌大权。</td>
+      </tr>
+  </tbody>
+</table></div>
+<ul>
+<li>
+<p><strong>形象比喻</strong>：</p>
+<ul>
+<li>
+<p><strong>Tomcat</strong>：多个服务员同时接待客人，每个人既负责点菜也负责炒菜（并发高，需解决资源竞争）。</p>
+</li>
+<li>
+<p><strong>Redis</strong>：多个帮厨只负责洗菜切菜，所有菜都由同一个主厨亲自炒（无竞争，速度极快）。</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="3-java-io-模型演进-bio-vs-nio-vs-aio">3. Java I/O 模型演进 (BIO vs NIO vs AIO)
+</h2><p>核心区别在于 <strong>“谁在等数据”</strong> 和 <strong>“谁在拷贝数据”</strong>。</p>
+<h3 id="31-bio-blocking-io---jdk-14-前">3.1 BIO (Blocking I/O) - JDK 1.4 前
+</h3><ul>
+<li>
+<p><strong>机制</strong>：<strong>One Thread Per Connection</strong>。</p>
+</li>
+<li>
+<p><strong>痛点</strong>：线程在 <code>read()</code> 时，如果没数据会<strong>死等</strong>（阻塞）。</p>
+</li>
+<li>
+<p><strong>状态</strong>：1000 个连接需要 1000 个线程，资源消耗极大。Tomcat 已弃用。</p>
+</li>
+</ul>
+<h3 id="32-nio-non-blocking-io---jdk-14-tomcat-默认">3.2 NIO (Non-blocking I/O) - JDK 1.4+ (Tomcat 默认)
+</h3><ul>
+<li>
+<p><strong>机制</strong>：<strong>多路复用 (Epoll/Selector)</strong>。</p>
+</li>
+<li>
+<p><strong>流程</strong>：</p>
+<ol>
+<li>
+<p><strong>等数据</strong>：由 <code>Selector</code>（内核 epoll）负责，线程不阻塞。</p>
+</li>
+<li>
+<p><strong>拷贝数据</strong>：数据就绪后，<strong>Worker 线程自己</strong>负责调用 <code>read()</code> 拷贝数据（此处是同步的）。</p>
+</li>
+</ol>
+</li>
+<li>
+<p><strong>优势</strong>：少量线程管理海量连接。</p>
+</li>
+</ul>
+<h3 id="33-aio-asynchronous-io---jdk-17">3.3 AIO (Asynchronous I/O) - JDK 1.7+
+</h3><ul>
+<li>
+<p><strong>机制</strong>：<strong>Proactor (异步回调)</strong>。</p>
+</li>
+<li>
+<p><strong>流程</strong>：</p>
+<ol>
+<li>
+<p>应用发起读请求后<strong>直接返回</strong>。</p>
+</li>
+<li>
+<p><strong>操作系统</strong>负责等待数据 <strong>并</strong> 将数据拷贝到用户内存。</p>
+</li>
+<li>
+<p>全部做完后，操作系统回调通知应用。</p>
+</li>
+</ol>
+</li>
+<li>
+<p><strong>现状</strong>：</p>
+<ul>
+<li>
+<p>Windows (<code>IOCP</code>) 支持完美。</p>
+</li>
+<li>
+<p>Linux 底层缺乏真正 AIO 支持（本质还是 epoll 模拟），性能提升不明显且复杂。</p>
+</li>
+<li>
+<p>因此 <strong>Tomcat 和 Netty 均未采用 AIO</strong>。</p>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="4-操作系统底层差异-linux-vs-windows">4. 操作系统底层差异 (Linux vs Windows)
+</h2><h3 id="41-bio-的线程代价">4.1 BIO 的线程代价
+</h3><ul>
+<li>
+<p><strong>1:1 模型</strong>：Java 的一个用户线程 = 操作系统的一个内核线程 (LWP)。</p>
+</li>
+<li>
+<p><strong>阻塞后果</strong>：BIO 模式下，如果有 N 个 Socket，内核中就有 N 个线程处于阻塞状态，导致<strong>上下文切换</strong>和<strong>内存占用</strong>极高。</p>
+</li>
+</ul>
+<h3 id="42-为什么服务器首选-linux">4.2 为什么服务器首选 Linux？
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>特性</strong></th>
+          <th><strong>Linux</strong></th>
+          <th><strong>Windows</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>核心机制</strong></td>
+          <td><strong>epoll</strong> (高效、被动通知)</td>
+          <td><strong>IOCP</strong> (异步、主动通知)</td>
+      </tr>
+      <tr>
+          <td><strong>内核设计</strong></td>
+          <td>专为服务器吞吐量优化，系统调用开销低。</td>
+          <td>兼顾桌面响应性，内核对象复杂，高频 Syscall 开销较大。</td>
+      </tr>
+      <tr>
+          <td><strong>生态</strong></td>
+          <td>Java/Tomcat/Redis 等中间件原生适配度最高。</td>
+          <td>虽然支持，但在高并发网络 I/O 场景下通常不如 Linux 高效。</td>
+      </tr>
+  </tbody>
+</table></div>
 
 </section>
 

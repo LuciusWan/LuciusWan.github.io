@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>LuciusWan</copyright>
-        <lastBuildDate>Sat, 06 Dec 2025 15:00:20 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 15 Dec 2025 19:03:54 +0800</lastBuildDate><atom:link href="https://LuciusWan.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Redis学习与实战</title>
         <link>https://LuciusWan.github.io/p/redis%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%AE%9E%E6%88%98/</link>
         <pubDate>Sun, 16 Mar 2025 20:30:40 +0800</pubDate>
@@ -9665,6 +9665,840 @@ export default {
 &lt;p&gt;此时前端的代码为&lt;/p&gt;
 &lt;p&gt;以后设计接口最好这样搞&lt;/p&gt;
 &lt;p&gt;TODO标签代表还没做完的事，后面可以查看TODO标签对没写完的代码进行完善&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>二面复盘笔记</title>
+        <link>https://LuciusWan.github.io/p/%E4%BA%8C%E9%9D%A2%E5%A4%8D%E7%9B%98%E7%AC%94%E8%AE%B0/</link>
+        <pubDate>Mon, 15 Dec 2025 19:03:54 +0800</pubDate>
+        
+        <guid>https://LuciusWan.github.io/p/%E4%BA%8C%E9%9D%A2%E5%A4%8D%E7%9B%98%E7%AC%94%E8%AE%B0/</guid>
+        <description>&lt;h2 id=&#34;这次二面主要考察了什么&#34;&gt;这次二面主要考察了什么？
+&lt;/h2&gt;&lt;p&gt;面试围绕四个方向展开：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;实习时间&lt;/strong&gt;：12月29日到岗，持续6个月以上&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;项目深挖&lt;/strong&gt;：EduAgentX（比赛）、心理医生知识库（实习）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;中间件原理&lt;/strong&gt;：Redis/RPC 序列化&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;手写算法&lt;/strong&gt;：求N次方根（二分法/牛顿迭代）&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;面试官问了很多细节jvm参数redis内存数据量这些我都没做过怎么办&#34;&gt;面试官问了很多细节（JVM参数、Redis内存、数据量），这些我都没做过怎么办？
+&lt;/h2&gt;&lt;p&gt;这叫&amp;quot;工程化细节拷打&amp;quot;，考察项目是&amp;quot;玩具&amp;quot;还是&amp;quot;产品&amp;quot;。需要准备合理的参数和回答逻辑。&lt;/p&gt;
+&lt;h3 id=&#34;jvm-启动参数jdk-17&#34;&gt;JVM 启动参数（JDK 17）
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;-Xms4g -Xmx4g  &lt;span class=&#34;c1&#34;&gt;# 初始堆和最大堆设为一致，避免内存抖动&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;JDK 17 默认 G1 GC，适合大内存服务器，主要依赖 G1 的自适应能力。&lt;/p&gt;
+&lt;h3 id=&#34;redis-内存规划&#34;&gt;Redis 内存规划
+&lt;/h3&gt;&lt;p&gt;申请 8GB 是基于容量预估：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;对话上下文（List）：单条 1KB，几万条才几十 MB，设置 10分钟 TTL&lt;/li&gt;
+&lt;li&gt;预留 Buffer：避免后续频繁扩容&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;数据库文件大小&#34;&gt;数据库文件大小
+&lt;/h3&gt;&lt;p&gt;查看方式：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;SELECT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;table_name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ROUND&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;((&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;data_length&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;index_length&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1024&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1024&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;AS&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Size (MB)&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;information_schema&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;TABLES&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;WHERE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;table_schema&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;数据库名&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;估算：1万条 × 1KB ≈ 10MB，加碎片约 50-100MB。256GB 内存服务器，数据库完全可加载进内存。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;redis序列化和dubbo-rpc序列化不懂怎么办&#34;&gt;Redis序列化和Dubbo RPC序列化不懂怎么办？
+&lt;/h2&gt;&lt;h3 id=&#34;redis-序列化&#34;&gt;Redis 序列化
+&lt;/h3&gt;&lt;p&gt;Java 对象存入 Redis 必须序列化，Redis 只认字节/字符串。&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;方式&lt;/th&gt;
+          &lt;th&gt;特点&lt;/th&gt;
+          &lt;th&gt;场景&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;JDK 序列化&lt;/td&gt;
+          &lt;td&gt;字节流长，不可读&lt;/td&gt;
+          &lt;td&gt;不推荐&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;JSON 序列化&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;可读性强，方便调试&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;推荐&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;Protobuf&lt;/td&gt;
+          &lt;td&gt;体积小，解析快&lt;/td&gt;
+          &lt;td&gt;高并发微服务&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;话术&lt;/strong&gt;：选 JSON 是因为需要在 Redis Desktop Manager 里直接看到清晰的 JSON 结构排查问题，可读性和开发效率优先。&lt;/p&gt;
+&lt;h3 id=&#34;rpc-protobuf-机制&#34;&gt;RPC Protobuf 机制
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;之前的错误理解&lt;/strong&gt;：&lt;code&gt;.proto&lt;/code&gt; 文件在运行时传输&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;正确理解&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;.proto&lt;/code&gt; 是 IDL（接口定义语言），是服务契约&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;编译期&lt;/strong&gt;：&lt;code&gt;protoc&lt;/code&gt; 生成 Java 代码，服务端和客户端都依赖这份代码&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;运行时&lt;/strong&gt;：只传序列化后的二进制流，不传文件&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;优势&lt;/strong&gt;：TLV 编码，不传字段名只传字段编号，体积比 JSON 小很多&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;话术&lt;/strong&gt;：Redis 侧选 JSON（可读性第一），RPC 侧选 Protobuf（性能第一）。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;应用程序和数据库部署在一块吗数据库文件多大&#34;&gt;应用程序和数据库部署在一块吗？数据库文件多大？
+&lt;/h2&gt;&lt;h3 id=&#34;部署架构&#34;&gt;部署架构
+&lt;/h3&gt;&lt;p&gt;单机部署是合理选择：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;降低网络延迟（Localhost 通信比走网卡快）&lt;/li&gt;
+&lt;li&gt;方便维护&lt;/li&gt;
+&lt;li&gt;Docker 容器进行逻辑隔离&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;话术&lt;/strong&gt;：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;数据库文件只有几十 MB，服务器有 256GB 内存。操作系统 Page Cache 和 MySQL Buffer Pool 会将热点数据完全缓存，磁盘 I/O 不是瓶颈，所有查询本质上都是纯内存操作。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;大模型应用怎么做评测没做过指标评测怎么办&#34;&gt;大模型应用怎么做评测？没做过指标评测怎么办？
+&lt;/h2&gt;&lt;p&gt;把&amp;quot;没做过&amp;quot;变成&amp;quot;我知道该怎么做&amp;quot;。&lt;/p&gt;
+&lt;h3 id=&#34;双层评测框架&#34;&gt;双层评测框架
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;维度&lt;/th&gt;
+          &lt;th&gt;方法&lt;/th&gt;
+          &lt;th&gt;指标&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;准确性&lt;/td&gt;
+          &lt;td&gt;离线评估 + 黄金数据集&lt;/td&gt;
+          &lt;td&gt;Hit Rate, Faithfulness&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;性能&lt;/td&gt;
+          &lt;td&gt;用户体验延迟&lt;/td&gt;
+          &lt;td&gt;TTFT &amp;lt; 1.5s, Total &amp;lt; 15s&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;反馈&lt;/td&gt;
+          &lt;td&gt;专家验收 + 人在回路&lt;/td&gt;
+          &lt;td&gt;采纳率, 专家评分&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id=&#34;rag-评测指标ragas-框架&#34;&gt;RAG 评测指标（RAGAS 框架）
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;检索层&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Hit Rate@K&lt;/strong&gt;：正确文档是否在前K个结果中&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;MRR&lt;/strong&gt;：正确文档的排名位置&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;生成层&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Faithfulness（忠实度）&lt;/strong&gt;：答案是否基于检索文档，无幻觉&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Answer Relevance（相关性）&lt;/strong&gt;：是否答非所问&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Context Precision（精确度）&lt;/strong&gt;：检索内容的信噪比&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;性能评测&#34;&gt;性能评测
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;TTFT (Time To First Token)&lt;/strong&gt;：首字延迟，目标 &amp;lt; 1.5秒&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;E2E Latency&lt;/strong&gt;：端到端耗时，目标 &amp;lt; 15秒&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;话术&lt;/strong&gt;：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;当时受限于实习时间主要靠人工验收。如果复盘，我会引入 RAGAS 框架，重点考核 Faithfulness（防幻觉）和 Answer Relevance（防答非所问）。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;比赛项目没有用户反馈怎么证明生成结果有用&#34;&gt;比赛项目没有用户反馈，怎么证明生成结果有用？
+&lt;/h2&gt;&lt;h3 id=&#34;第一层防御比赛本身就是测试&#34;&gt;第一层防御：比赛本身就是测试
+&lt;/h3&gt;&lt;p&gt;评委和竞争对手就是&amp;quot;种子用户&amp;quot;，评委充当&amp;quot;领域专家&amp;quot;角色，给出定性反馈。&lt;/p&gt;
+&lt;h3 id=&#34;第二层防御human-in-the-loop-机制&#34;&gt;第二层防御：Human-in-the-Loop 机制
+&lt;/h3&gt;&lt;p&gt;AI 生成只是初稿，老师的修改才是最终修正：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;教师点击&amp;quot;采纳&amp;quot; = 正向评分&lt;/li&gt;
+&lt;li&gt;教师修改/重新生成 = 负向反馈&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;第三层防御黄金数据集&#34;&gt;第三层防御：黄金数据集
+&lt;/h3&gt;&lt;p&gt;找教材目录和课后习题作为 Ground Truth，人工核查知识点覆盖率。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;话术&lt;/strong&gt;：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;采取&amp;rsquo;离线评估 + 专家抽检&amp;rsquo;策略。以经典教材为基准确保知识点不跑偏，设计 Human-in-the-Loop 机制让老师把关最后一道防线。AI 负责提供灵感，人类负责把控质量。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;内部测试是怎么做的怎么说是用公司服务器测试的&#34;&gt;内部测试是怎么做的？怎么说是用公司服务器测试的？
+&lt;/h2&gt;&lt;p&gt;把&amp;quot;宝塔面板&amp;quot;翻译成&amp;quot;Docker + Nginx + Shell脚本&amp;quot;。&lt;/p&gt;
+&lt;h3 id=&#34;环境搭建&#34;&gt;环境搭建
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;基于 Docker 的单机微服务部署。Docker Compose 编排中间件（MySQL、Redis、ES、Nacos），应用打包成 JAR 构建镜像，Volume 挂载日志目录。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;接口暴露&#34;&gt;接口暴露
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;Nginx 反向代理转发请求，集成 Swagger/Knife4j 提供接口文档，组员通过内网 IP 访问。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;代码更新&#34;&gt;代码更新
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;写了简单的 Shell 脚本：git pull → mvn package → docker restart，实现半自动化部署。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;服务挂了怎么办&#34;&gt;服务挂了怎么办
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;Docker 启动参数配置了 &lt;code&gt;--restart=always&lt;/code&gt;，守护进程会自动拉起崩溃的服务。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;怎么看日志&#34;&gt;怎么看日志
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;登录服务器，去挂载的日志目录用 &lt;code&gt;grep&lt;/code&gt; 搜 Error，或 &lt;code&gt;tail -f&lt;/code&gt; 实时盯日志配合前端复现 Bug。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;怎么体现做过接口评测&#34;&gt;怎么体现做过接口评测？
+&lt;/h2&gt;&lt;p&gt;把&amp;quot;开会演示&amp;quot;包装成&amp;quot;UAT 验收测试&amp;quot;。&lt;/p&gt;
+&lt;h3 id=&#34;演示前性能优化故事&#34;&gt;演示前性能优化故事
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;演示前冒烟测试发现历史记录接口响应超过 2秒。排查发现是深分页问题，引入时间游标分页 + 复合索引，响应时间从 &lt;strong&gt;2.1s 降至 0.7s&lt;/strong&gt;。演示时业务方快速滑动历史记录非常丝滑。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;演示中实时监控&#34;&gt;演示中实时监控
+&lt;/h3&gt;&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;演示过程中通过 SSH 连接服务器，&lt;code&gt;tail -f&lt;/code&gt; 查看日志，&lt;code&gt;top&lt;/code&gt; 监控资源。观察 SSE 连接保持情况，验证心跳机制和断点续传逻辑正常工作。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;话术&lt;/strong&gt;：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;业务方的现场验收就是最真实的评测。能扛住演示时的随机操作和现场网络环境，比单纯跑 Benchmark 更有说服力。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;ai生成内容的评测怎么做医院有反馈过问题&#34;&gt;AI生成内容的评测怎么做？医院有反馈过问题
+&lt;/h2&gt;&lt;p&gt;医院的反馈就是最好的&amp;quot;UAT 验收测试&amp;quot;证据。&lt;/p&gt;
+&lt;h3 id=&#34;问题1语气冰冷像知识问答&#34;&gt;问题1：语气冰冷，像知识问答
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;痛点&lt;/strong&gt;：直接把知识点甩给病人，缺乏共情，甚至输出表格&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;解决方案&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;强化 System Prompt 角色设定：&lt;em&gt;&amp;ldquo;你是有10年经验的心理咨询师，用温暖包容的口吻对话&amp;rdquo;&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;Few-Shot Learning：找医生要 3-5 个优秀医患对话案例作为示例&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;结果&lt;/strong&gt;：AI 会先说&amp;quot;我理解您的焦虑&amp;quot;，再给建议&lt;/p&gt;
+&lt;h3 id=&#34;问题2输出大量文本token-失控&#34;&gt;问题2：输出大量文本，Token 失控
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;痛点&lt;/strong&gt;：一次性输出几百字&amp;quot;小作文&amp;quot;，病人没耐心看&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;解决方案&lt;/strong&gt;：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;限制 &lt;code&gt;max_tokens&lt;/code&gt; 参数（300 token 以内）&lt;/li&gt;
+&lt;li&gt;Prompt 约束：&lt;em&gt;&amp;ldquo;不要一次性解决所有问题，每次回复控制在3句话以内&amp;rdquo;&lt;/em&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;结果&lt;/strong&gt;：AI 能一句一句有来有回，还节省了 40% Token 成本&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;话术&lt;/strong&gt;：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;早期 Demo 阶段，医院医生提出 AI &amp;lsquo;太冷漠&amp;rsquo;且&amp;rsquo;废话太多&amp;rsquo;。我通过 Prompt Few-Shot 技术解决共情问题，通过 Token 限制和对话策略优化解决长文本问题。最终版本经医生试用通过。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;心理医生平台还会遇到什么问题&#34;&gt;心理医生平台还会遇到什么问题？
+&lt;/h2&gt;&lt;h3 id=&#34;安全风控最致命&#34;&gt;安全风控（最致命）
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;危机干预熔断&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户输入&amp;quot;我不想活了&amp;quot;时，必须熔断&lt;/li&gt;
+&lt;li&gt;请求发给大模型前，先经过关键词/语义分类器&lt;/li&gt;
+&lt;li&gt;检测到高危意图，立即绕过大模型，输出危机干预话术并触发人工介入&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;诱导性回复拦截&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;System Prompt 加入安全围栏&lt;/li&gt;
+&lt;li&gt;接入内容安全 API 二次校验&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;技术架构&#34;&gt;技术架构
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;长期记忆丢失&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Redis List 只存最近几十条，一个月前的信息丢失&lt;/li&gt;
+&lt;li&gt;解决：Memory Summarization，每天对话结束后异步任务浓缩成&amp;quot;侧写&amp;quot;存入向量数据库&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;语义检索不准&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户描述隐晦：&amp;ldquo;心里堵得慌&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;解决：Query Rewrite，让大模型把口语翻译成标准医学术语再检索&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;隐私合规&#34;&gt;隐私合规
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;PII 过滤器&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;调用大模型前，正则 + NLP 工具将手机号、姓名替换为占位符&lt;/li&gt;
+&lt;li&gt;确保核心隐私数据不出域&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;话术&lt;/strong&gt;：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;如果继续做，安全性和长期记忆是两个最大瓶颈。安全性上增加危机干预熔断机制，记忆上引入每日摘要功能解决长周期咨询问题。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;正常实习写代码的流程是什么样的&#34;&gt;正常实习写代码的流程是什么样的？
+&lt;/h2&gt;&lt;h3 id=&#34;写代码之前&#34;&gt;写代码之前
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;需求评审&lt;/strong&gt;：听懂需求，评估技术可行性&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;技术方案设计&lt;/strong&gt;：写 TDD（接口定义、表结构、流程图）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;方案评审&lt;/strong&gt;：Mentor 审核技术选型&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;写代码之中&#34;&gt;写代码之中
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;分支管理&lt;/strong&gt;：基于最新代码拉 &lt;code&gt;feature/xxx&lt;/code&gt; 分支&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;单元测试&lt;/strong&gt;：JUnit/Mockito，覆盖率 60%-80%&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;代码规范&lt;/strong&gt;：Checkstyle/Sonar 扫描&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;提交代码&#34;&gt;提交代码
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;发起 MR/PR&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Code Review&lt;/strong&gt;：逐行审查，打回修改 3-5 次正常&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;合并主干&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;测试上线&#34;&gt;测试上线
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;测试环境验收&lt;/strong&gt;：QA 提 Bug 单&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;灰度发布&lt;/strong&gt;：先发一台观察 CPU/内存/日志，再全量&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;监控告警&lt;/strong&gt;：配置日志报警&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;话术&lt;/strong&gt;：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;上一段实习团队规模较小，我主要锻炼了独立负责项目全生命周期的能力。但我也意识到在大型团队协作流程（Code Review、单元测试、CI/CD）上还缺乏实战经验，非常渴望加入规范的团队来补齐这块拼图。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;面试暴露的所有问题清单&#34;&gt;面试暴露的所有问题清单
+&lt;/h2&gt;&lt;h3 id=&#34;算法基础最致命&#34;&gt;算法基础（最致命）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;求N次方根无法解出，放弃过早&lt;/li&gt;
+&lt;li&gt;需掌握：二分查找、牛顿迭代法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;底层原理概念混淆&#34;&gt;底层原理（概念混淆）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;RPC Protobuf 机制理解错误（以为运行时传 .proto 文件）&lt;/li&gt;
+&lt;li&gt;序列化选择逻辑薄弱&lt;/li&gt;
+&lt;li&gt;Redis 数据结构理解不深&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;工程化细节盲区最大&#34;&gt;工程化细节（盲区最大）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;不知道 JVM 启动参数&lt;/li&gt;
+&lt;li&gt;不知道 Redis 实际内存占用&lt;/li&gt;
+&lt;li&gt;不知道数据库文件大小&lt;/li&gt;
+&lt;li&gt;部署架构辩护不足&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;项目闭环产品思维缺失&#34;&gt;项目闭环（产品思维缺失）
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;缺乏量化指标（QPS、TP99、准确率）&lt;/li&gt;
+&lt;li&gt;缺乏用户反馈机制&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;沟通软技能&#34;&gt;沟通软技能
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;过度推卸责任（&amp;ldquo;不是我负责的&amp;quot;说太多）&lt;/li&gt;
+&lt;li&gt;主动暴露项目缺陷却没有补救方案&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;简历策略调整&#34;&gt;简历策略调整
+&lt;/h2&gt;&lt;p&gt;把&amp;quot;水分较多&amp;quot;的实习经历转为&amp;quot;项目经历&amp;quot;展示，避免被问流程细节。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;如果被问到&lt;/strong&gt;：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;这其实是我在暑期实习期间主要负责的落地项目。因为团队规模精简，我拥有很大的技术自主权，作为核心开发者完整主导了从 RAG 架构设计到 Redis 异步通信的落地。虽然是实习期间做的，但我对底层逻辑和技术细节掌握得非常清楚。&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;好处&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;诚实承认是实习背景&lt;/li&gt;
+&lt;li&gt;把&amp;quot;公司小/流程水&amp;quot;转化为&amp;quot;权限大/独立负责/全栈锻炼&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;dubbo3-进行-rpc-调用经历了什么&#34;&gt;Dubbo3 进行 RPC 调用经历了什么？
+&lt;/h2&gt;&lt;h3 id=&#34;消费端consumer-决策与封装&#34;&gt;消费端（Consumer）—— 决策与封装
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;代理拦截 (Proxy)&lt;/strong&gt;：业务代码调用接口，被动态代理拦截，封装成 &lt;code&gt;Invocation&lt;/code&gt; 对象&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;集群容错 (Cluster)&lt;/strong&gt;：决定失败策略（Failover/Failfast），掩盖多个 Provider 的事实&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;服务目录 (Directory)&lt;/strong&gt;：从注册中心获取服务列表，Dubbo 3 采用应用级服务发现&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;路由选路 (Router)&lt;/strong&gt;：根据路由规则过滤机器（如标签路由、同机房优先）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;负载均衡 (LoadBalance)&lt;/strong&gt;：从过滤后的列表选出一台（Random/RoundRobin/LeastActive/ConsistentHash）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;过滤器链 (Filter)&lt;/strong&gt;：传递 Context、监控埋点、限流降级&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;协议与序列化&lt;/strong&gt;：Triple 协议封装为 HTTP/2 Frame，默认 Protobuf 序列化&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;网络传输&#34;&gt;网络传输
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Netty 通过 TCP/IP 发送到 Provider&lt;/li&gt;
+&lt;li&gt;Triple 协议支持 Stream 流式调用和背压&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;服务端provider-接收与执行&#34;&gt;服务端（Provider）—— 接收与执行
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;解码与线程池派发&lt;/strong&gt;：Netty 解码，请求扔给业务线程池&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;服务端过滤器&lt;/strong&gt;：鉴权、超时检查、限流、解压 Context&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;真实调用&lt;/strong&gt;：通过反射调用 ServiceImpl 方法&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;结果返回&lt;/strong&gt;：序列化 -&amp;gt; 编码 -&amp;gt; Netty 发回 Consumer&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;关键路径记忆&#34;&gt;关键路径记忆
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Proxy -&amp;gt; Cluster -&amp;gt; Directory -&amp;gt; Router -&amp;gt; LoadBalance -&amp;gt; Filter -&amp;gt; Codec/Transport -&amp;gt; ThreadPool -&amp;gt; Implementation
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;hr&gt;
+&lt;h2 id=&#34;dubbo3-是怎么做序列化的&#34;&gt;Dubbo3 是怎么做序列化的？
+&lt;/h2&gt;&lt;h3 id=&#34;两大流派&#34;&gt;两大流派
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;流派&lt;/th&gt;
+          &lt;th&gt;协议&lt;/th&gt;
+          &lt;th&gt;默认序列化&lt;/th&gt;
+          &lt;th&gt;特点&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;经典流派&lt;/td&gt;
+          &lt;td&gt;Dubbo 协议 (TCP)&lt;/td&gt;
+          &lt;td&gt;Hessian2 → Fastjson2&lt;/td&gt;
+          &lt;td&gt;Java 内部调用&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;云原生流派&lt;/td&gt;
+          &lt;td&gt;Triple 协议 (HTTP/2)&lt;/td&gt;
+          &lt;td&gt;Protobuf&lt;/td&gt;
+          &lt;td&gt;跨语言、网关穿透&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id=&#34;dubbo-协议处理流程&#34;&gt;Dubbo 协议处理流程
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Consumer 将 POJO 通过 Hessian2/Fastjson2 序列化成字节数组&lt;/li&gt;
+&lt;li&gt;填充到 Dubbo TCP 报文的 Body 部分&lt;/li&gt;
+&lt;li&gt;Provider 读取 Header 中的序列化 ID，找到反序列化器还原对象&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;triple-协议两种模式&#34;&gt;Triple 协议两种模式
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Wrapper 模式（兼容 Java 接口）&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;第一层：Hessian2 序列化业务对象&lt;/li&gt;
+&lt;li&gt;第二层：封装进 Protobuf 对象（TripleRequestWrapper）&lt;/li&gt;
+&lt;li&gt;缺点：双重序列化，性能有损耗&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;IDL 模式（原生 gRPC）&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;直接使用 Protobuf 序列化&lt;/li&gt;
+&lt;li&gt;性能最高，天然支持跨语言&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;配置方式&#34;&gt;配置方式
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;dubbo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;protocol&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;tri &lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 或 dubbo&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;serialization&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;fastjson2&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;hr&gt;
+&lt;h2 id=&#34;dubbo-协议相比-triple-协议差在哪&#34;&gt;Dubbo 协议相比 Triple 协议差在哪？
+&lt;/h2&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;维度&lt;/th&gt;
+          &lt;th&gt;Dubbo 协议 (TCP)&lt;/th&gt;
+          &lt;th&gt;Triple 协议 (HTTP/2)&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;穿透网关&lt;/td&gt;
+          &lt;td&gt;差（私有协议）&lt;/td&gt;
+          &lt;td&gt;极佳（标准 HTTP/2）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;跨语言&lt;/td&gt;
+          &lt;td&gt;困难&lt;/td&gt;
+          &lt;td&gt;原生支持&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;流式通信&lt;/td&gt;
+          &lt;td&gt;不支持&lt;/td&gt;
+          &lt;td&gt;原生支持 (gRPC)&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;性能 (直连)&lt;/td&gt;
+          &lt;td&gt;极高&lt;/td&gt;
+          &lt;td&gt;较高&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;Service Mesh&lt;/td&gt;
+          &lt;td&gt;难以治理&lt;/td&gt;
+          &lt;td&gt;完美兼容&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;选择建议&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;老系统、纯 Java 内部调用、追求极致速度 → Dubbo 协议&lt;/li&gt;
+&lt;li&gt;新业务、跨语言、上云上 Mesh → Triple 协议&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;proto-文件什么时候交换新服务上线多久能感知&#34;&gt;.proto 文件什么时候交换？新服务上线多久能感知？
+&lt;/h2&gt;&lt;h3 id=&#34;proto-文件交换时机&#34;&gt;.proto 文件交换时机
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;答案：编译期，而非运行期&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;交换方式：Git 仓库或 Maven 依赖（api-jar）&lt;/li&gt;
+&lt;li&gt;原因：Protobuf 传输时完全剔除元数据（字段名、类型），客户端必须提前拿到 .proto 生成代码&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;新服务感知延迟&#34;&gt;新服务感知延迟
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;答案：通常 1 秒以内（Nacos 2.x），最慢 3-5 秒&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;流程（以 Nacos 为例）：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Provider 启动，向 Nacos 发送注册请求 (T0)&lt;/li&gt;
+&lt;li&gt;Nacos 更新注册表 (T0 + 10ms)&lt;/li&gt;
+&lt;li&gt;Nacos 通过 gRPC 长连接推送给 Consumer (T0 + 20ms)&lt;/li&gt;
+&lt;li&gt;Consumer 更新本地服务目录 (T0 + 50ms)&lt;/li&gt;
+&lt;li&gt;下一个请求可能选中新机器 (T0 + 100ms)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;http2-的序列化一般基于什么&#34;&gt;HTTP/2 的序列化一般基于什么？
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;HTTP/2 本身不限制序列化方式&lt;/strong&gt;，Body 里装什么都可以。&lt;/p&gt;
+&lt;h3 id=&#34;常见搭配&#34;&gt;常见搭配
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;序列化&lt;/th&gt;
+          &lt;th&gt;场景&lt;/th&gt;
+          &lt;th&gt;说明&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;JSON&lt;/td&gt;
+          &lt;td&gt;Web 领域&lt;/td&gt;
+          &lt;td&gt;浏览器访问后端，可读性好&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;Protobuf&lt;/td&gt;
+          &lt;td&gt;微服务/RPC&lt;/td&gt;
+          &lt;td&gt;gRPC/Dubbo3，体积小解析快&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;Hessian2&lt;/td&gt;
+          &lt;td&gt;Dubbo 兼容&lt;/td&gt;
+          &lt;td&gt;Triple + Wrapper 模式&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id=&#34;http2--json-的优势是否发挥&#34;&gt;HTTP/2 + JSON 的优势是否发挥？
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;你说得对，JSON 确实拖后腿&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;编解码 CPU 浪费（文本解析 vs 二进制复制）&lt;/li&gt;
+&lt;li&gt;体积膨胀（冗余字段名）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;但 HTTP/2 核心优势依然生效&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;多路复用&lt;/strong&gt;：50 个请求瞬间并发，不再排队&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;头部压缩 (HPACK)&lt;/strong&gt;：Header 可能比 Body 还大，压缩 80%-90%&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;连接复用&lt;/strong&gt;：避免 TCP 握手和慢启动&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;结论&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;浏览器 → 服务器：HTTP/2 + JSON 是最佳实践&lt;/li&gt;
+&lt;li&gt;服务器 → 服务器：请用 HTTP/2 + Protobuf&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;介绍-hessian2&#34;&gt;介绍 Hessian2
+&lt;/h2&gt;&lt;h3 id=&#34;核心特点&#34;&gt;核心特点
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;二进制传输&lt;/strong&gt;：体积比 JSON 小&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Java 友好&lt;/strong&gt;：无需 IDL，实现 Serializable 即可&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;性能均衡&lt;/strong&gt;：比 Java 原生序列化快 10 倍，体积小 50%&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;三大坑&#34;&gt;三大坑
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Java 8 时间类型支持差&lt;/strong&gt;：LocalDateTime 可能变 null 或 HashMap&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;方法重载混乱&lt;/strong&gt;：Dubbo 接口严禁方法重载&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;父类字段丢失&lt;/strong&gt;：父类未实现 Serializable 时行为不一致&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;对比&#34;&gt;对比
+&lt;/h3&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;特性&lt;/th&gt;
+          &lt;th&gt;Hessian2&lt;/th&gt;
+          &lt;th&gt;Protobuf&lt;/th&gt;
+          &lt;th&gt;JSON&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;开发模式&lt;/td&gt;
+          &lt;td&gt;代码优先&lt;/td&gt;
+          &lt;td&gt;IDL 优先&lt;/td&gt;
+          &lt;td&gt;代码优先&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;性能&lt;/td&gt;
+          &lt;td&gt;中等偏上&lt;/td&gt;
+          &lt;td&gt;极高&lt;/td&gt;
+          &lt;td&gt;中等&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;跨语言&lt;/td&gt;
+          &lt;td&gt;差&lt;/td&gt;
+          &lt;td&gt;完美&lt;/td&gt;
+          &lt;td&gt;完美&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;可读性&lt;/td&gt;
+          &lt;td&gt;不可读&lt;/td&gt;
+          &lt;td&gt;不可读&lt;/td&gt;
+          &lt;td&gt;可读&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;hessian2-生成的字节流是怎样的&#34;&gt;Hessian2 生成的字节流是怎样的？
+&lt;/h2&gt;&lt;h3 id=&#34;结构类定义--实例数据&#34;&gt;结构：类定义 + 实例数据
+&lt;/h3&gt;&lt;p&gt;假设 &lt;code&gt;new User(1, &amp;quot;dubbo&amp;quot;)&lt;/code&gt;：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;第一部分：类定义&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;C (0x43)                    -&amp;gt; 类定义开始
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&amp;#34;com.example.User&amp;#34;          -&amp;gt; 类全限定名
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;2 (0x92)                    -&amp;gt; 字段数量
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&amp;#34;id&amp;#34;, &amp;#34;name&amp;#34;                -&amp;gt; 字段名
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;第二部分：实例数据&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;O (0x4f)                    -&amp;gt; 对象标记
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;0 (0x90)                    -&amp;gt; 引用第 0 号类定义
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;1 (0x91)                    -&amp;gt; id 的值（紧凑写法，1 字节）
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;0x05 + &amp;#34;dubbo&amp;#34;              -&amp;gt; name 的值
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;比-json-强在哪&#34;&gt;比 JSON 强在哪？
+&lt;/h3&gt;&lt;p&gt;发送 100 个 User 对象：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;JSON&lt;/strong&gt;：&lt;code&gt;&amp;quot;id&amp;quot;&lt;/code&gt; 和 &lt;code&gt;&amp;quot;name&amp;quot;&lt;/code&gt; 重复写 100 次&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hessian2&lt;/strong&gt;：类定义只发一次，后续只发值&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;比-protobuf-弱在哪&#34;&gt;比 Protobuf 弱在哪？
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Protobuf&lt;/strong&gt;：连类名和字段名都不发（双方代码里已生成）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hessian2&lt;/strong&gt;：第一次传输必须带元数据（为了不写 .proto 的代价）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;hessian2-每次服务器重启都要发送类结构吗&#34;&gt;Hessian2 每次服务器重启都要发送类结构吗？
+&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;答案：不是每次重启，而是每次 RPC 请求都重新发送&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id=&#34;原因请求级上下文&#34;&gt;原因：请求级上下文
+&lt;/h3&gt;&lt;p&gt;Hessian2 的&amp;quot;字典&amp;quot;是&lt;strong&gt;请求级&lt;/strong&gt;的，不是连接级的：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;每次 RPC 调用创建新的 &lt;code&gt;Hessian2ObjectOutput&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;保证无状态，请求可以打到任何机器&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;为什么不能跨请求复用&#34;&gt;为什么不能跨请求复用？
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;网络抖动导致 TCP 断开重连&lt;/li&gt;
+&lt;li&gt;负载均衡转发到另一台机器&lt;/li&gt;
+&lt;li&gt;新机器不知道&amp;quot;定义 #0&amp;quot;是什么&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;感知重启的机制&#34;&gt;感知重启的机制
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;TCP 连接断开&lt;/strong&gt;：Netty 监听 &lt;code&gt;channelInactive&lt;/code&gt; 事件&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;心跳机制&lt;/strong&gt;：默认 60 秒心跳，3 次无响应判定死亡&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;注册中心通知&lt;/strong&gt;：Nacos 推送下线事件&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;proto-生成的-java-代码是干什么的&#34;&gt;.proto 生成的 Java 代码是干什么的？
+&lt;/h2&gt;&lt;h3 id=&#34;三件大事&#34;&gt;三件大事
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;造数据（DTO）&lt;/strong&gt;：超级数据传输对象&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;转数据（序列化）&lt;/strong&gt;：硬编码的位运算逻辑&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;传数据（RPC 桩）&lt;/strong&gt;：客户端和服务端对接&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;消息类代码特点&#34;&gt;消息类代码特点
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;强制 Builder 模式&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;UserRequest&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;request&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;UserRequest&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;newBuilder&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;setId&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;1001&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;build&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;不可变性：build() 后无法修改，多线程安全&lt;/li&gt;
+&lt;li&gt;链式调用：代码流畅&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;丰富的访问器&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;getId()&lt;/code&gt;, &lt;code&gt;hasAddress()&lt;/code&gt;, &lt;code&gt;getRolesList()&lt;/code&gt;, &lt;code&gt;getRolesCount()&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;序列化逻辑硬编码&#34;&gt;序列化逻辑（硬编码）
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kd&#34;&gt;public&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;void&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;writeTo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Output&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;output&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 不需要反射，直接写字节&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;output&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;writeRawByte&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;0x08&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// Tag&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;output&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;writeRawByte&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;0xAC&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// Value (Varint 编码)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;output&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;writeRawByte&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;0x02&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;优势&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;去掉反射，运行时不查找字段&lt;/li&gt;
+&lt;li&gt;直接操作字节位，CPU 指令数最少&lt;/li&gt;
+&lt;li&gt;自动 Varint 压缩，小数字只占 1 字节&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;服务类代码stub&#34;&gt;服务类代码（Stub）
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;方法描述符&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;MethodDescriptor&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;UserRequest&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;UserResponse&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GET_USER_METHOD&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;MethodDescriptor&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;newBuilder&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;setFullMethodName&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;com.example.UserService/GetUser&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;setRequestMarshaller&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(...)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;build&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;客户端调用&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kd&#34;&gt;public&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;UserResponse&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;getUser&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;UserRequest&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;request&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ClientCall&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;call&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;channel&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;newCall&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;GET_USER_METHOD&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;callOptions&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;return&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ClientCalls&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;blockingUnaryCall&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;call&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;request&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;hr&gt;
+&lt;h2 id=&#34;grpc-的工作流程总结&#34;&gt;gRPC 的工作流程总结
+&lt;/h2&gt;&lt;h3 id=&#34;三步走&#34;&gt;三步走
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;定义数据结构&lt;/strong&gt;：编写 &lt;code&gt;.proto&lt;/code&gt; 文件（语言中立的公约）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;生成转换代码&lt;/strong&gt;：&lt;code&gt;protoc&lt;/code&gt; 编译器翻译成各语言代码&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Java → &lt;code&gt;User.java&lt;/code&gt; + &lt;code&gt;UserServiceGrpc.java&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Go → &lt;code&gt;user.pb.go&lt;/code&gt; + &lt;code&gt;user_grpc.pb.go&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;调用生成代码&lt;/strong&gt;：像调本地方法一样顺滑&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;stub&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;getUser&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;request&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 感觉不到网络存在&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;跨语言示例&#34;&gt;跨语言示例
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-protobuf&#34; data-lang=&#34;protobuf&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 共用一份 .proto
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;message&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;HelloRequest&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;string&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;kd&#34;&gt;service&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Greeter&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;rpc&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;SayHello&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;HelloRequest&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;...&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Java 客户端&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;stub&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;sayHello&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;HelloRequest&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;newBuilder&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;().&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;setName&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;Lucius&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;na&#34;&gt;build&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;());&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Go 服务端&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kd&#34;&gt;func&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;server&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;SayHello&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Context&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;req&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;pb&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;HelloRequest&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;fmt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;Println&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;req&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;// 输出 &amp;#34;Lucius&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;生成代码做的-4-件事&#34;&gt;生成代码做的 4 件事
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;数据校验与存储&lt;/strong&gt;：&lt;code&gt;setId(1)&lt;/code&gt; 存入内存字段&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;二进制打包&lt;/strong&gt;：&lt;code&gt;writeTo()&lt;/code&gt; 转换成紧凑字节流&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;路由填单&lt;/strong&gt;：定义 &lt;code&gt;MethodDescriptor&lt;/code&gt; 常量&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;交给运输队&lt;/strong&gt;：&lt;code&gt;ClientCalls.blockingUnaryCall&lt;/code&gt; 交给 Netty/HTTP2&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;一句话总结&lt;/strong&gt;：根据 Java 对象，利用硬编码逻辑压缩进二进制缓冲区，贴上路由标签，交给 gRPC 核心层通过 HTTP/2 发送。&lt;/p&gt;
 </description>
         </item>
         <item>

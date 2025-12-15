@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="这次二面主要考察了什么？ 面试围绕四个方向展开：\n实习时间：12月29日到岗，持续6个月以上 项目深挖：EduAgentX（比赛）、心理医生知识库（实习） 中间件原理：Redis/RPC 序列化 手写算法：求N次方根（二分法/牛顿迭代） 面试官问了很多细节（JVM参数、Redis内存、数据量），这些我都没做过怎么办？ 这叫&quot;工程化细节拷打&quot;，考察项目是&quot;玩具&quot;还是&quot;产品&quot;。需要准备合理的参数和回答逻辑。\n">
+<title>二面复盘笔记</title>
+
+<link rel='canonical' href='https://LuciusWan.github.io/p/%E4%BA%8C%E9%9D%A2%E5%A4%8D%E7%9B%98%E7%AC%94%E8%AE%B0/'>
+
+<link rel="stylesheet" href="/scss/style.min.6a692fd055deae459f2a9767f57f3855ba80cafd5041317f24f7360f6ca47cdf.css"><meta property='og:title' content="二面复盘笔记">
+<meta property='og:description' content="这次二面主要考察了什么？ 面试围绕四个方向展开：\n实习时间：12月29日到岗，持续6个月以上 项目深挖：EduAgentX（比赛）、心理医生知识库（实习） 中间件原理：Redis/RPC 序列化 手写算法：求N次方根（二分法/牛顿迭代） 面试官问了很多细节（JVM参数、Redis内存、数据量），这些我都没做过怎么办？ 这叫&quot;工程化细节拷打&quot;，考察项目是&quot;玩具&quot;还是&quot;产品&quot;。需要准备合理的参数和回答逻辑。\n">
+<meta property='og:url' content='https://LuciusWan.github.io/p/%E4%BA%8C%E9%9D%A2%E5%A4%8D%E7%9B%98%E7%AC%94%E8%AE%B0/'>
+<meta property='og:site_name' content='LuciusWan'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-12-15T19:03:54&#43;08:00'/><meta property='article:modified_time' content='2025-12-15T19:03:54&#43;08:00'/>
+<meta name="twitter:title" content="二面复盘笔记">
+<meta name="twitter:description" content="这次二面主要考察了什么？ 面试围绕四个方向展开：\n实习时间：12月29日到岗，持续6个月以上 项目深挖：EduAgentX（比赛）、心理医生知识库（实习） 中间件原理：Redis/RPC 序列化 手写算法：求N次方根（二分法/牛顿迭代） 面试官问了很多细节（JVM参数、Redis内存、数据量），这些我都没做过怎么办？ 这叫&quot;工程化细节拷打&quot;，考察项目是&quot;玩具&quot;还是&quot;产品&quot;。需要准备合理的参数和回答逻辑。\n">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_a00c4178710685fc.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🎇</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">LuciusWan</a></h1>
+            <h2 class="site-description">欢迎来到我的blog</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/440554295'
+                        target="_blank"
+                        title="Bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://github.com/LuciusWan'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>归档</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#这次二面主要考察了什么">这次二面主要考察了什么？</a></li>
+    <li><a href="#面试官问了很多细节jvm参数redis内存数据量这些我都没做过怎么办">面试官问了很多细节（JVM参数、Redis内存、数据量），这些我都没做过怎么办？</a>
+      <ol>
+        <li><a href="#jvm-启动参数jdk-17">JVM 启动参数（JDK 17）</a></li>
+        <li><a href="#redis-内存规划">Redis 内存规划</a></li>
+        <li><a href="#数据库文件大小">数据库文件大小</a></li>
+      </ol>
+    </li>
+    <li><a href="#redis序列化和dubbo-rpc序列化不懂怎么办">Redis序列化和Dubbo RPC序列化不懂怎么办？</a>
+      <ol>
+        <li><a href="#redis-序列化">Redis 序列化</a></li>
+        <li><a href="#rpc-protobuf-机制">RPC Protobuf 机制</a></li>
+      </ol>
+    </li>
+    <li><a href="#应用程序和数据库部署在一块吗数据库文件多大">应用程序和数据库部署在一块吗？数据库文件多大？</a>
+      <ol>
+        <li><a href="#部署架构">部署架构</a></li>
+      </ol>
+    </li>
+    <li><a href="#大模型应用怎么做评测没做过指标评测怎么办">大模型应用怎么做评测？没做过指标评测怎么办？</a>
+      <ol>
+        <li><a href="#双层评测框架">双层评测框架</a></li>
+        <li><a href="#rag-评测指标ragas-框架">RAG 评测指标（RAGAS 框架）</a></li>
+        <li><a href="#性能评测">性能评测</a></li>
+      </ol>
+    </li>
+    <li><a href="#比赛项目没有用户反馈怎么证明生成结果有用">比赛项目没有用户反馈，怎么证明生成结果有用？</a>
+      <ol>
+        <li><a href="#第一层防御比赛本身就是测试">第一层防御：比赛本身就是测试</a></li>
+        <li><a href="#第二层防御human-in-the-loop-机制">第二层防御：Human-in-the-Loop 机制</a></li>
+        <li><a href="#第三层防御黄金数据集">第三层防御：黄金数据集</a></li>
+      </ol>
+    </li>
+    <li><a href="#内部测试是怎么做的怎么说是用公司服务器测试的">内部测试是怎么做的？怎么说是用公司服务器测试的？</a>
+      <ol>
+        <li><a href="#环境搭建">环境搭建</a></li>
+        <li><a href="#接口暴露">接口暴露</a></li>
+        <li><a href="#代码更新">代码更新</a></li>
+        <li><a href="#服务挂了怎么办">服务挂了怎么办</a></li>
+        <li><a href="#怎么看日志">怎么看日志</a></li>
+      </ol>
+    </li>
+    <li><a href="#怎么体现做过接口评测">怎么体现做过接口评测？</a>
+      <ol>
+        <li><a href="#演示前性能优化故事">演示前性能优化故事</a></li>
+        <li><a href="#演示中实时监控">演示中实时监控</a></li>
+      </ol>
+    </li>
+    <li><a href="#ai生成内容的评测怎么做医院有反馈过问题">AI生成内容的评测怎么做？医院有反馈过问题</a>
+      <ol>
+        <li><a href="#问题1语气冰冷像知识问答">问题1：语气冰冷，像知识问答</a></li>
+        <li><a href="#问题2输出大量文本token-失控">问题2：输出大量文本，Token 失控</a></li>
+      </ol>
+    </li>
+    <li><a href="#心理医生平台还会遇到什么问题">心理医生平台还会遇到什么问题？</a>
+      <ol>
+        <li><a href="#安全风控最致命">安全风控（最致命）</a></li>
+        <li><a href="#技术架构">技术架构</a></li>
+        <li><a href="#隐私合规">隐私合规</a></li>
+      </ol>
+    </li>
+    <li><a href="#正常实习写代码的流程是什么样的">正常实习写代码的流程是什么样的？</a>
+      <ol>
+        <li><a href="#写代码之前">写代码之前</a></li>
+        <li><a href="#写代码之中">写代码之中</a></li>
+        <li><a href="#提交代码">提交代码</a></li>
+        <li><a href="#测试上线">测试上线</a></li>
+      </ol>
+    </li>
+    <li><a href="#面试暴露的所有问题清单">面试暴露的所有问题清单</a>
+      <ol>
+        <li><a href="#算法基础最致命">算法基础（最致命）</a></li>
+        <li><a href="#底层原理概念混淆">底层原理（概念混淆）</a></li>
+        <li><a href="#工程化细节盲区最大">工程化细节（盲区最大）</a></li>
+        <li><a href="#项目闭环产品思维缺失">项目闭环（产品思维缺失）</a></li>
+        <li><a href="#沟通软技能">沟通软技能</a></li>
+      </ol>
+    </li>
+    <li><a href="#简历策略调整">简历策略调整</a></li>
+    <li><a href="#dubbo3-进行-rpc-调用经历了什么">Dubbo3 进行 RPC 调用经历了什么？</a>
+      <ol>
+        <li><a href="#消费端consumer-决策与封装">消费端（Consumer）—— 决策与封装</a></li>
+        <li><a href="#网络传输">网络传输</a></li>
+        <li><a href="#服务端provider-接收与执行">服务端（Provider）—— 接收与执行</a></li>
+        <li><a href="#关键路径记忆">关键路径记忆</a></li>
+      </ol>
+    </li>
+    <li><a href="#dubbo3-是怎么做序列化的">Dubbo3 是怎么做序列化的？</a>
+      <ol>
+        <li><a href="#两大流派">两大流派</a></li>
+        <li><a href="#dubbo-协议处理流程">Dubbo 协议处理流程</a></li>
+        <li><a href="#triple-协议两种模式">Triple 协议两种模式</a></li>
+        <li><a href="#配置方式">配置方式</a></li>
+      </ol>
+    </li>
+    <li><a href="#dubbo-协议相比-triple-协议差在哪">Dubbo 协议相比 Triple 协议差在哪？</a></li>
+    <li><a href="#proto-文件什么时候交换新服务上线多久能感知">.proto 文件什么时候交换？新服务上线多久能感知？</a>
+      <ol>
+        <li><a href="#proto-文件交换时机">.proto 文件交换时机</a></li>
+        <li><a href="#新服务感知延迟">新服务感知延迟</a></li>
+      </ol>
+    </li>
+    <li><a href="#http2-的序列化一般基于什么">HTTP/2 的序列化一般基于什么？</a>
+      <ol>
+        <li><a href="#常见搭配">常见搭配</a></li>
+        <li><a href="#http2--json-的优势是否发挥">HTTP/2 + JSON 的优势是否发挥？</a></li>
+      </ol>
+    </li>
+    <li><a href="#介绍-hessian2">介绍 Hessian2</a>
+      <ol>
+        <li><a href="#核心特点">核心特点</a></li>
+        <li><a href="#三大坑">三大坑</a></li>
+        <li><a href="#对比">对比</a></li>
+      </ol>
+    </li>
+    <li><a href="#hessian2-生成的字节流是怎样的">Hessian2 生成的字节流是怎样的？</a>
+      <ol>
+        <li><a href="#结构类定义--实例数据">结构：类定义 + 实例数据</a></li>
+        <li><a href="#比-json-强在哪">比 JSON 强在哪？</a></li>
+        <li><a href="#比-protobuf-弱在哪">比 Protobuf 弱在哪？</a></li>
+      </ol>
+    </li>
+    <li><a href="#hessian2-每次服务器重启都要发送类结构吗">Hessian2 每次服务器重启都要发送类结构吗？</a>
+      <ol>
+        <li><a href="#原因请求级上下文">原因：请求级上下文</a></li>
+        <li><a href="#为什么不能跨请求复用">为什么不能跨请求复用？</a></li>
+        <li><a href="#感知重启的机制">感知重启的机制</a></li>
+      </ol>
+    </li>
+    <li><a href="#proto-生成的-java-代码是干什么的">.proto 生成的 Java 代码是干什么的？</a>
+      <ol>
+        <li><a href="#三件大事">三件大事</a></li>
+        <li><a href="#消息类代码特点">消息类代码特点</a></li>
+        <li><a href="#序列化逻辑硬编码">序列化逻辑（硬编码）</a></li>
+        <li><a href="#服务类代码stub">服务类代码（Stub）</a></li>
+      </ol>
+    </li>
+    <li><a href="#grpc-的工作流程总结">gRPC 的工作流程总结</a>
+      <ol>
+        <li><a href="#三步走">三步走</a></li>
+        <li><a href="#跨语言示例">跨语言示例</a></li>
+        <li><a href="#生成代码做的-4-件事">生成代码做的 4 件事</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E4%BA%8C%E9%9D%A2%E5%A4%8D%E7%9B%98%E7%AC%94%E8%AE%B0/">二面复盘笔记</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-12-15</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 14 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="这次二面主要考察了什么">这次二面主要考察了什么？
+</h2><p>面试围绕四个方向展开：</p>
+<ol>
+<li><strong>实习时间</strong>：12月29日到岗，持续6个月以上</li>
+<li><strong>项目深挖</strong>：EduAgentX（比赛）、心理医生知识库（实习）</li>
+<li><strong>中间件原理</strong>：Redis/RPC 序列化</li>
+<li><strong>手写算法</strong>：求N次方根（二分法/牛顿迭代）</li>
+</ol>
+<hr>
+<h2 id="面试官问了很多细节jvm参数redis内存数据量这些我都没做过怎么办">面试官问了很多细节（JVM参数、Redis内存、数据量），这些我都没做过怎么办？
+</h2><p>这叫&quot;工程化细节拷打&quot;，考察项目是&quot;玩具&quot;还是&quot;产品&quot;。需要准备合理的参数和回答逻辑。</p>
+<h3 id="jvm-启动参数jdk-17">JVM 启动参数（JDK 17）
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">-Xms4g -Xmx4g  <span class="c1"># 初始堆和最大堆设为一致，避免内存抖动</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>JDK 17 默认 G1 GC，适合大内存服务器，主要依赖 G1 的自适应能力。</p>
+<h3 id="redis-内存规划">Redis 内存规划
+</h3><p>申请 8GB 是基于容量预估：</p>
+<ul>
+<li>对话上下文（List）：单条 1KB，几万条才几十 MB，设置 10分钟 TTL</li>
+<li>预留 Buffer：避免后续频繁扩容</li>
+</ul>
+<h3 id="数据库文件大小">数据库文件大小
+</h3><p>查看方式：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="k">table_name</span><span class="p">,</span><span class="w"> </span><span class="n">ROUND</span><span class="p">((</span><span class="n">data_length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">index_length</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s2">&#34;Size (MB)&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">FROM</span><span class="w"> </span><span class="n">information_schema</span><span class="p">.</span><span class="n">TABLES</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">table_schema</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&#34;数据库名&#34;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>估算：1万条 × 1KB ≈ 10MB，加碎片约 50-100MB。256GB 内存服务器，数据库完全可加载进内存。</p>
+<hr>
+<h2 id="redis序列化和dubbo-rpc序列化不懂怎么办">Redis序列化和Dubbo RPC序列化不懂怎么办？
+</h2><h3 id="redis-序列化">Redis 序列化
+</h3><p>Java 对象存入 Redis 必须序列化，Redis 只认字节/字符串。</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>方式</th>
+          <th>特点</th>
+          <th>场景</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>JDK 序列化</td>
+          <td>字节流长，不可读</td>
+          <td>不推荐</td>
+      </tr>
+      <tr>
+          <td><strong>JSON 序列化</strong></td>
+          <td>可读性强，方便调试</td>
+          <td><strong>推荐</strong></td>
+      </tr>
+      <tr>
+          <td>Protobuf</td>
+          <td>体积小，解析快</td>
+          <td>高并发微服务</td>
+      </tr>
+  </tbody>
+</table></div>
+<p><strong>话术</strong>：选 JSON 是因为需要在 Redis Desktop Manager 里直接看到清晰的 JSON 结构排查问题，可读性和开发效率优先。</p>
+<h3 id="rpc-protobuf-机制">RPC Protobuf 机制
+</h3><p><strong>之前的错误理解</strong>：<code>.proto</code> 文件在运行时传输</p>
+<p><strong>正确理解</strong>：</p>
+<ul>
+<li><code>.proto</code> 是 IDL（接口定义语言），是服务契约</li>
+<li><strong>编译期</strong>：<code>protoc</code> 生成 Java 代码，服务端和客户端都依赖这份代码</li>
+<li><strong>运行时</strong>：只传序列化后的二进制流，不传文件</li>
+<li><strong>优势</strong>：TLV 编码，不传字段名只传字段编号，体积比 JSON 小很多</li>
+</ul>
+<p><strong>话术</strong>：Redis 侧选 JSON（可读性第一），RPC 侧选 Protobuf（性能第一）。</p>
+<hr>
+<h2 id="应用程序和数据库部署在一块吗数据库文件多大">应用程序和数据库部署在一块吗？数据库文件多大？
+</h2><h3 id="部署架构">部署架构
+</h3><p>单机部署是合理选择：</p>
+<ul>
+<li>降低网络延迟（Localhost 通信比走网卡快）</li>
+<li>方便维护</li>
+<li>Docker 容器进行逻辑隔离</li>
+</ul>
+<p><strong>话术</strong>：</p>
+<blockquote>
+<p>&ldquo;数据库文件只有几十 MB，服务器有 256GB 内存。操作系统 Page Cache 和 MySQL Buffer Pool 会将热点数据完全缓存，磁盘 I/O 不是瓶颈，所有查询本质上都是纯内存操作。&rdquo;</p>
+</blockquote>
+<hr>
+<h2 id="大模型应用怎么做评测没做过指标评测怎么办">大模型应用怎么做评测？没做过指标评测怎么办？
+</h2><p>把&quot;没做过&quot;变成&quot;我知道该怎么做&quot;。</p>
+<h3 id="双层评测框架">双层评测框架
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>维度</th>
+          <th>方法</th>
+          <th>指标</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>准确性</td>
+          <td>离线评估 + 黄金数据集</td>
+          <td>Hit Rate, Faithfulness</td>
+      </tr>
+      <tr>
+          <td>性能</td>
+          <td>用户体验延迟</td>
+          <td>TTFT &lt; 1.5s, Total &lt; 15s</td>
+      </tr>
+      <tr>
+          <td>反馈</td>
+          <td>专家验收 + 人在回路</td>
+          <td>采纳率, 专家评分</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="rag-评测指标ragas-框架">RAG 评测指标（RAGAS 框架）
+</h3><p><strong>检索层</strong>：</p>
+<ul>
+<li><strong>Hit Rate@K</strong>：正确文档是否在前K个结果中</li>
+<li><strong>MRR</strong>：正确文档的排名位置</li>
+</ul>
+<p><strong>生成层</strong>：</p>
+<ul>
+<li><strong>Faithfulness（忠实度）</strong>：答案是否基于检索文档，无幻觉</li>
+<li><strong>Answer Relevance（相关性）</strong>：是否答非所问</li>
+<li><strong>Context Precision（精确度）</strong>：检索内容的信噪比</li>
+</ul>
+<h3 id="性能评测">性能评测
+</h3><ul>
+<li><strong>TTFT (Time To First Token)</strong>：首字延迟，目标 &lt; 1.5秒</li>
+<li><strong>E2E Latency</strong>：端到端耗时，目标 &lt; 15秒</li>
+</ul>
+<p><strong>话术</strong>：</p>
+<blockquote>
+<p>&ldquo;当时受限于实习时间主要靠人工验收。如果复盘，我会引入 RAGAS 框架，重点考核 Faithfulness（防幻觉）和 Answer Relevance（防答非所问）。&rdquo;</p>
+</blockquote>
+<hr>
+<h2 id="比赛项目没有用户反馈怎么证明生成结果有用">比赛项目没有用户反馈，怎么证明生成结果有用？
+</h2><h3 id="第一层防御比赛本身就是测试">第一层防御：比赛本身就是测试
+</h3><p>评委和竞争对手就是&quot;种子用户&quot;，评委充当&quot;领域专家&quot;角色，给出定性反馈。</p>
+<h3 id="第二层防御human-in-the-loop-机制">第二层防御：Human-in-the-Loop 机制
+</h3><p>AI 生成只是初稿，老师的修改才是最终修正：</p>
+<ul>
+<li>教师点击&quot;采纳&quot; = 正向评分</li>
+<li>教师修改/重新生成 = 负向反馈</li>
+</ul>
+<h3 id="第三层防御黄金数据集">第三层防御：黄金数据集
+</h3><p>找教材目录和课后习题作为 Ground Truth，人工核查知识点覆盖率。</p>
+<p><strong>话术</strong>：</p>
+<blockquote>
+<p>&ldquo;采取&rsquo;离线评估 + 专家抽检&rsquo;策略。以经典教材为基准确保知识点不跑偏，设计 Human-in-the-Loop 机制让老师把关最后一道防线。AI 负责提供灵感，人类负责把控质量。&rdquo;</p>
+</blockquote>
+<hr>
+<h2 id="内部测试是怎么做的怎么说是用公司服务器测试的">内部测试是怎么做的？怎么说是用公司服务器测试的？
+</h2><p>把&quot;宝塔面板&quot;翻译成&quot;Docker + Nginx + Shell脚本&quot;。</p>
+<h3 id="环境搭建">环境搭建
+</h3><blockquote>
+<p>&ldquo;基于 Docker 的单机微服务部署。Docker Compose 编排中间件（MySQL、Redis、ES、Nacos），应用打包成 JAR 构建镜像，Volume 挂载日志目录。&rdquo;</p>
+</blockquote>
+<h3 id="接口暴露">接口暴露
+</h3><blockquote>
+<p>&ldquo;Nginx 反向代理转发请求，集成 Swagger/Knife4j 提供接口文档，组员通过内网 IP 访问。&rdquo;</p>
+</blockquote>
+<h3 id="代码更新">代码更新
+</h3><blockquote>
+<p>&ldquo;写了简单的 Shell 脚本：git pull → mvn package → docker restart，实现半自动化部署。&rdquo;</p>
+</blockquote>
+<h3 id="服务挂了怎么办">服务挂了怎么办
+</h3><blockquote>
+<p>&ldquo;Docker 启动参数配置了 <code>--restart=always</code>，守护进程会自动拉起崩溃的服务。&rdquo;</p>
+</blockquote>
+<h3 id="怎么看日志">怎么看日志
+</h3><blockquote>
+<p>&ldquo;登录服务器，去挂载的日志目录用 <code>grep</code> 搜 Error，或 <code>tail -f</code> 实时盯日志配合前端复现 Bug。&rdquo;</p>
+</blockquote>
+<hr>
+<h2 id="怎么体现做过接口评测">怎么体现做过接口评测？
+</h2><p>把&quot;开会演示&quot;包装成&quot;UAT 验收测试&quot;。</p>
+<h3 id="演示前性能优化故事">演示前性能优化故事
+</h3><blockquote>
+<p>&ldquo;演示前冒烟测试发现历史记录接口响应超过 2秒。排查发现是深分页问题，引入时间游标分页 + 复合索引，响应时间从 <strong>2.1s 降至 0.7s</strong>。演示时业务方快速滑动历史记录非常丝滑。&rdquo;</p>
+</blockquote>
+<h3 id="演示中实时监控">演示中实时监控
+</h3><blockquote>
+<p>&ldquo;演示过程中通过 SSH 连接服务器，<code>tail -f</code> 查看日志，<code>top</code> 监控资源。观察 SSE 连接保持情况，验证心跳机制和断点续传逻辑正常工作。&rdquo;</p>
+</blockquote>
+<p><strong>话术</strong>：</p>
+<blockquote>
+<p>&ldquo;业务方的现场验收就是最真实的评测。能扛住演示时的随机操作和现场网络环境，比单纯跑 Benchmark 更有说服力。&rdquo;</p>
+</blockquote>
+<hr>
+<h2 id="ai生成内容的评测怎么做医院有反馈过问题">AI生成内容的评测怎么做？医院有反馈过问题
+</h2><p>医院的反馈就是最好的&quot;UAT 验收测试&quot;证据。</p>
+<h3 id="问题1语气冰冷像知识问答">问题1：语气冰冷，像知识问答
+</h3><p><strong>痛点</strong>：直接把知识点甩给病人，缺乏共情，甚至输出表格</p>
+<p><strong>解决方案</strong>：</p>
+<ol>
+<li>强化 System Prompt 角色设定：<em>&ldquo;你是有10年经验的心理咨询师，用温暖包容的口吻对话&rdquo;</em></li>
+<li>Few-Shot Learning：找医生要 3-5 个优秀医患对话案例作为示例</li>
+</ol>
+<p><strong>结果</strong>：AI 会先说&quot;我理解您的焦虑&quot;，再给建议</p>
+<h3 id="问题2输出大量文本token-失控">问题2：输出大量文本，Token 失控
+</h3><p><strong>痛点</strong>：一次性输出几百字&quot;小作文&quot;，病人没耐心看</p>
+<p><strong>解决方案</strong>：</p>
+<ol>
+<li>限制 <code>max_tokens</code> 参数（300 token 以内）</li>
+<li>Prompt 约束：<em>&ldquo;不要一次性解决所有问题，每次回复控制在3句话以内&rdquo;</em></li>
+</ol>
+<p><strong>结果</strong>：AI 能一句一句有来有回，还节省了 40% Token 成本</p>
+<p><strong>话术</strong>：</p>
+<blockquote>
+<p>&ldquo;早期 Demo 阶段，医院医生提出 AI &lsquo;太冷漠&rsquo;且&rsquo;废话太多&rsquo;。我通过 Prompt Few-Shot 技术解决共情问题，通过 Token 限制和对话策略优化解决长文本问题。最终版本经医生试用通过。&rdquo;</p>
+</blockquote>
+<hr>
+<h2 id="心理医生平台还会遇到什么问题">心理医生平台还会遇到什么问题？
+</h2><h3 id="安全风控最致命">安全风控（最致命）
+</h3><p><strong>危机干预熔断</strong>：</p>
+<ul>
+<li>用户输入&quot;我不想活了&quot;时，必须熔断</li>
+<li>请求发给大模型前，先经过关键词/语义分类器</li>
+<li>检测到高危意图，立即绕过大模型，输出危机干预话术并触发人工介入</li>
+</ul>
+<p><strong>诱导性回复拦截</strong>：</p>
+<ul>
+<li>System Prompt 加入安全围栏</li>
+<li>接入内容安全 API 二次校验</li>
+</ul>
+<h3 id="技术架构">技术架构
+</h3><p><strong>长期记忆丢失</strong>：</p>
+<ul>
+<li>Redis List 只存最近几十条，一个月前的信息丢失</li>
+<li>解决：Memory Summarization，每天对话结束后异步任务浓缩成&quot;侧写&quot;存入向量数据库</li>
+</ul>
+<p><strong>语义检索不准</strong>：</p>
+<ul>
+<li>用户描述隐晦：&ldquo;心里堵得慌&rdquo;</li>
+<li>解决：Query Rewrite，让大模型把口语翻译成标准医学术语再检索</li>
+</ul>
+<h3 id="隐私合规">隐私合规
+</h3><p><strong>PII 过滤器</strong>：</p>
+<ul>
+<li>调用大模型前，正则 + NLP 工具将手机号、姓名替换为占位符</li>
+<li>确保核心隐私数据不出域</li>
+</ul>
+<p><strong>话术</strong>：</p>
+<blockquote>
+<p>&ldquo;如果继续做，安全性和长期记忆是两个最大瓶颈。安全性上增加危机干预熔断机制，记忆上引入每日摘要功能解决长周期咨询问题。&rdquo;</p>
+</blockquote>
+<hr>
+<h2 id="正常实习写代码的流程是什么样的">正常实习写代码的流程是什么样的？
+</h2><h3 id="写代码之前">写代码之前
+</h3><ol>
+<li><strong>需求评审</strong>：听懂需求，评估技术可行性</li>
+<li><strong>技术方案设计</strong>：写 TDD（接口定义、表结构、流程图）</li>
+<li><strong>方案评审</strong>：Mentor 审核技术选型</li>
+</ol>
+<h3 id="写代码之中">写代码之中
+</h3><ol>
+<li><strong>分支管理</strong>：基于最新代码拉 <code>feature/xxx</code> 分支</li>
+<li><strong>单元测试</strong>：JUnit/Mockito，覆盖率 60%-80%</li>
+<li><strong>代码规范</strong>：Checkstyle/Sonar 扫描</li>
+</ol>
+<h3 id="提交代码">提交代码
+</h3><ol>
+<li><strong>发起 MR/PR</strong></li>
+<li><strong>Code Review</strong>：逐行审查，打回修改 3-5 次正常</li>
+<li><strong>合并主干</strong></li>
+</ol>
+<h3 id="测试上线">测试上线
+</h3><ol>
+<li><strong>测试环境验收</strong>：QA 提 Bug 单</li>
+<li><strong>灰度发布</strong>：先发一台观察 CPU/内存/日志，再全量</li>
+<li><strong>监控告警</strong>：配置日志报警</li>
+</ol>
+<p><strong>话术</strong>：</p>
+<blockquote>
+<p>&ldquo;上一段实习团队规模较小，我主要锻炼了独立负责项目全生命周期的能力。但我也意识到在大型团队协作流程（Code Review、单元测试、CI/CD）上还缺乏实战经验，非常渴望加入规范的团队来补齐这块拼图。&rdquo;</p>
+</blockquote>
+<hr>
+<h2 id="面试暴露的所有问题清单">面试暴露的所有问题清单
+</h2><h3 id="算法基础最致命">算法基础（最致命）
+</h3><ul>
+<li>求N次方根无法解出，放弃过早</li>
+<li>需掌握：二分查找、牛顿迭代法</li>
+</ul>
+<h3 id="底层原理概念混淆">底层原理（概念混淆）
+</h3><ul>
+<li>RPC Protobuf 机制理解错误（以为运行时传 .proto 文件）</li>
+<li>序列化选择逻辑薄弱</li>
+<li>Redis 数据结构理解不深</li>
+</ul>
+<h3 id="工程化细节盲区最大">工程化细节（盲区最大）
+</h3><ul>
+<li>不知道 JVM 启动参数</li>
+<li>不知道 Redis 实际内存占用</li>
+<li>不知道数据库文件大小</li>
+<li>部署架构辩护不足</li>
+</ul>
+<h3 id="项目闭环产品思维缺失">项目闭环（产品思维缺失）
+</h3><ul>
+<li>缺乏量化指标（QPS、TP99、准确率）</li>
+<li>缺乏用户反馈机制</li>
+</ul>
+<h3 id="沟通软技能">沟通软技能
+</h3><ul>
+<li>过度推卸责任（&ldquo;不是我负责的&quot;说太多）</li>
+<li>主动暴露项目缺陷却没有补救方案</li>
+</ul>
+<hr>
+<h2 id="简历策略调整">简历策略调整
+</h2><p>把&quot;水分较多&quot;的实习经历转为&quot;项目经历&quot;展示，避免被问流程细节。</p>
+<p><strong>如果被问到</strong>：</p>
+<blockquote>
+<p>&ldquo;这其实是我在暑期实习期间主要负责的落地项目。因为团队规模精简，我拥有很大的技术自主权，作为核心开发者完整主导了从 RAG 架构设计到 Redis 异步通信的落地。虽然是实习期间做的，但我对底层逻辑和技术细节掌握得非常清楚。&rdquo;</p>
+</blockquote>
+<p><strong>好处</strong>：</p>
+<ul>
+<li>诚实承认是实习背景</li>
+<li>把&quot;公司小/流程水&quot;转化为&quot;权限大/独立负责/全栈锻炼&rdquo;</li>
+</ul>
+<hr>
+<h2 id="dubbo3-进行-rpc-调用经历了什么">Dubbo3 进行 RPC 调用经历了什么？
+</h2><h3 id="消费端consumer-决策与封装">消费端（Consumer）—— 决策与封装
+</h3><ol>
+<li>
+<p><strong>代理拦截 (Proxy)</strong>：业务代码调用接口，被动态代理拦截，封装成 <code>Invocation</code> 对象</p>
+</li>
+<li>
+<p><strong>集群容错 (Cluster)</strong>：决定失败策略（Failover/Failfast），掩盖多个 Provider 的事实</p>
+</li>
+<li>
+<p><strong>服务目录 (Directory)</strong>：从注册中心获取服务列表，Dubbo 3 采用应用级服务发现</p>
+</li>
+<li>
+<p><strong>路由选路 (Router)</strong>：根据路由规则过滤机器（如标签路由、同机房优先）</p>
+</li>
+<li>
+<p><strong>负载均衡 (LoadBalance)</strong>：从过滤后的列表选出一台（Random/RoundRobin/LeastActive/ConsistentHash）</p>
+</li>
+<li>
+<p><strong>过滤器链 (Filter)</strong>：传递 Context、监控埋点、限流降级</p>
+</li>
+<li>
+<p><strong>协议与序列化</strong>：Triple 协议封装为 HTTP/2 Frame，默认 Protobuf 序列化</p>
+</li>
+</ol>
+<h3 id="网络传输">网络传输
+</h3><ul>
+<li>Netty 通过 TCP/IP 发送到 Provider</li>
+<li>Triple 协议支持 Stream 流式调用和背压</li>
+</ul>
+<h3 id="服务端provider-接收与执行">服务端（Provider）—— 接收与执行
+</h3><ol>
+<li>
+<p><strong>解码与线程池派发</strong>：Netty 解码，请求扔给业务线程池</p>
+</li>
+<li>
+<p><strong>服务端过滤器</strong>：鉴权、超时检查、限流、解压 Context</p>
+</li>
+<li>
+<p><strong>真实调用</strong>：通过反射调用 ServiceImpl 方法</p>
+</li>
+<li>
+<p><strong>结果返回</strong>：序列化 -&gt; 编码 -&gt; Netty 发回 Consumer</p>
+</li>
+</ol>
+<h3 id="关键路径记忆">关键路径记忆
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Proxy -&gt; Cluster -&gt; Directory -&gt; Router -&gt; LoadBalance -&gt; Filter -&gt; Codec/Transport -&gt; ThreadPool -&gt; Implementation
+</span></span></code></pre></td></tr></table>
+</div>
+</div><hr>
+<h2 id="dubbo3-是怎么做序列化的">Dubbo3 是怎么做序列化的？
+</h2><h3 id="两大流派">两大流派
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>流派</th>
+          <th>协议</th>
+          <th>默认序列化</th>
+          <th>特点</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>经典流派</td>
+          <td>Dubbo 协议 (TCP)</td>
+          <td>Hessian2 → Fastjson2</td>
+          <td>Java 内部调用</td>
+      </tr>
+      <tr>
+          <td>云原生流派</td>
+          <td>Triple 协议 (HTTP/2)</td>
+          <td>Protobuf</td>
+          <td>跨语言、网关穿透</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="dubbo-协议处理流程">Dubbo 协议处理流程
+</h3><ol>
+<li>Consumer 将 POJO 通过 Hessian2/Fastjson2 序列化成字节数组</li>
+<li>填充到 Dubbo TCP 报文的 Body 部分</li>
+<li>Provider 读取 Header 中的序列化 ID，找到反序列化器还原对象</li>
+</ol>
+<h3 id="triple-协议两种模式">Triple 协议两种模式
+</h3><p><strong>Wrapper 模式（兼容 Java 接口）</strong>：</p>
+<ul>
+<li>第一层：Hessian2 序列化业务对象</li>
+<li>第二层：封装进 Protobuf 对象（TripleRequestWrapper）</li>
+<li>缺点：双重序列化，性能有损耗</li>
+</ul>
+<p><strong>IDL 模式（原生 gRPC）</strong>：</p>
+<ul>
+<li>直接使用 Protobuf 序列化</li>
+<li>性能最高，天然支持跨语言</li>
+</ul>
+<h3 id="配置方式">配置方式
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">dubbo</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">protocol</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">tri </span><span class="w"> </span><span class="c"># 或 dubbo</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">serialization</span><span class="p">:</span><span class="w"> </span><span class="l">fastjson2</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><hr>
+<h2 id="dubbo-协议相比-triple-协议差在哪">Dubbo 协议相比 Triple 协议差在哪？
+</h2><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>维度</th>
+          <th>Dubbo 协议 (TCP)</th>
+          <th>Triple 协议 (HTTP/2)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>穿透网关</td>
+          <td>差（私有协议）</td>
+          <td>极佳（标准 HTTP/2）</td>
+      </tr>
+      <tr>
+          <td>跨语言</td>
+          <td>困难</td>
+          <td>原生支持</td>
+      </tr>
+      <tr>
+          <td>流式通信</td>
+          <td>不支持</td>
+          <td>原生支持 (gRPC)</td>
+      </tr>
+      <tr>
+          <td>性能 (直连)</td>
+          <td>极高</td>
+          <td>较高</td>
+      </tr>
+      <tr>
+          <td>Service Mesh</td>
+          <td>难以治理</td>
+          <td>完美兼容</td>
+      </tr>
+  </tbody>
+</table></div>
+<p><strong>选择建议</strong>：</p>
+<ul>
+<li>老系统、纯 Java 内部调用、追求极致速度 → Dubbo 协议</li>
+<li>新业务、跨语言、上云上 Mesh → Triple 协议</li>
+</ul>
+<hr>
+<h2 id="proto-文件什么时候交换新服务上线多久能感知">.proto 文件什么时候交换？新服务上线多久能感知？
+</h2><h3 id="proto-文件交换时机">.proto 文件交换时机
+</h3><p><strong>答案：编译期，而非运行期</strong></p>
+<ul>
+<li>交换方式：Git 仓库或 Maven 依赖（api-jar）</li>
+<li>原因：Protobuf 传输时完全剔除元数据（字段名、类型），客户端必须提前拿到 .proto 生成代码</li>
+</ul>
+<h3 id="新服务感知延迟">新服务感知延迟
+</h3><p><strong>答案：通常 1 秒以内（Nacos 2.x），最慢 3-5 秒</strong></p>
+<p>流程（以 Nacos 为例）：</p>
+<ol>
+<li>Provider 启动，向 Nacos 发送注册请求 (T0)</li>
+<li>Nacos 更新注册表 (T0 + 10ms)</li>
+<li>Nacos 通过 gRPC 长连接推送给 Consumer (T0 + 20ms)</li>
+<li>Consumer 更新本地服务目录 (T0 + 50ms)</li>
+<li>下一个请求可能选中新机器 (T0 + 100ms)</li>
+</ol>
+<hr>
+<h2 id="http2-的序列化一般基于什么">HTTP/2 的序列化一般基于什么？
+</h2><p><strong>HTTP/2 本身不限制序列化方式</strong>，Body 里装什么都可以。</p>
+<h3 id="常见搭配">常见搭配
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>序列化</th>
+          <th>场景</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>JSON</td>
+          <td>Web 领域</td>
+          <td>浏览器访问后端，可读性好</td>
+      </tr>
+      <tr>
+          <td>Protobuf</td>
+          <td>微服务/RPC</td>
+          <td>gRPC/Dubbo3，体积小解析快</td>
+      </tr>
+      <tr>
+          <td>Hessian2</td>
+          <td>Dubbo 兼容</td>
+          <td>Triple + Wrapper 模式</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="http2--json-的优势是否发挥">HTTP/2 + JSON 的优势是否发挥？
+</h3><p><strong>你说得对，JSON 确实拖后腿</strong>：</p>
+<ul>
+<li>编解码 CPU 浪费（文本解析 vs 二进制复制）</li>
+<li>体积膨胀（冗余字段名）</li>
+</ul>
+<p><strong>但 HTTP/2 核心优势依然生效</strong>：</p>
+<ul>
+<li><strong>多路复用</strong>：50 个请求瞬间并发，不再排队</li>
+<li><strong>头部压缩 (HPACK)</strong>：Header 可能比 Body 还大，压缩 80%-90%</li>
+<li><strong>连接复用</strong>：避免 TCP 握手和慢启动</li>
+</ul>
+<p><strong>结论</strong>：</p>
+<ul>
+<li>浏览器 → 服务器：HTTP/2 + JSON 是最佳实践</li>
+<li>服务器 → 服务器：请用 HTTP/2 + Protobuf</li>
+</ul>
+<hr>
+<h2 id="介绍-hessian2">介绍 Hessian2
+</h2><h3 id="核心特点">核心特点
+</h3><ul>
+<li><strong>二进制传输</strong>：体积比 JSON 小</li>
+<li><strong>Java 友好</strong>：无需 IDL，实现 Serializable 即可</li>
+<li><strong>性能均衡</strong>：比 Java 原生序列化快 10 倍，体积小 50%</li>
+</ul>
+<h3 id="三大坑">三大坑
+</h3><ol>
+<li><strong>Java 8 时间类型支持差</strong>：LocalDateTime 可能变 null 或 HashMap</li>
+<li><strong>方法重载混乱</strong>：Dubbo 接口严禁方法重载</li>
+<li><strong>父类字段丢失</strong>：父类未实现 Serializable 时行为不一致</li>
+</ol>
+<h3 id="对比">对比
+</h3><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>特性</th>
+          <th>Hessian2</th>
+          <th>Protobuf</th>
+          <th>JSON</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>开发模式</td>
+          <td>代码优先</td>
+          <td>IDL 优先</td>
+          <td>代码优先</td>
+      </tr>
+      <tr>
+          <td>性能</td>
+          <td>中等偏上</td>
+          <td>极高</td>
+          <td>中等</td>
+      </tr>
+      <tr>
+          <td>跨语言</td>
+          <td>差</td>
+          <td>完美</td>
+          <td>完美</td>
+      </tr>
+      <tr>
+          <td>可读性</td>
+          <td>不可读</td>
+          <td>不可读</td>
+          <td>可读</td>
+      </tr>
+  </tbody>
+</table></div>
+<hr>
+<h2 id="hessian2-生成的字节流是怎样的">Hessian2 生成的字节流是怎样的？
+</h2><h3 id="结构类定义--实例数据">结构：类定义 + 实例数据
+</h3><p>假设 <code>new User(1, &quot;dubbo&quot;)</code>：</p>
+<p><strong>第一部分：类定义</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">C (0x43)                    -&gt; 类定义开始
+</span></span><span class="line"><span class="cl">&#34;com.example.User&#34;          -&gt; 类全限定名
+</span></span><span class="line"><span class="cl">2 (0x92)                    -&gt; 字段数量
+</span></span><span class="line"><span class="cl">&#34;id&#34;, &#34;name&#34;                -&gt; 字段名
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>第二部分：实例数据</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">O (0x4f)                    -&gt; 对象标记
+</span></span><span class="line"><span class="cl">0 (0x90)                    -&gt; 引用第 0 号类定义
+</span></span><span class="line"><span class="cl">1 (0x91)                    -&gt; id 的值（紧凑写法，1 字节）
+</span></span><span class="line"><span class="cl">0x05 + &#34;dubbo&#34;              -&gt; name 的值
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="比-json-强在哪">比 JSON 强在哪？
+</h3><p>发送 100 个 User 对象：</p>
+<ul>
+<li><strong>JSON</strong>：<code>&quot;id&quot;</code> 和 <code>&quot;name&quot;</code> 重复写 100 次</li>
+<li><strong>Hessian2</strong>：类定义只发一次，后续只发值</li>
+</ul>
+<h3 id="比-protobuf-弱在哪">比 Protobuf 弱在哪？
+</h3><ul>
+<li><strong>Protobuf</strong>：连类名和字段名都不发（双方代码里已生成）</li>
+<li><strong>Hessian2</strong>：第一次传输必须带元数据（为了不写 .proto 的代价）</li>
+</ul>
+<hr>
+<h2 id="hessian2-每次服务器重启都要发送类结构吗">Hessian2 每次服务器重启都要发送类结构吗？
+</h2><p><strong>答案：不是每次重启，而是每次 RPC 请求都重新发送</strong></p>
+<h3 id="原因请求级上下文">原因：请求级上下文
+</h3><p>Hessian2 的&quot;字典&quot;是<strong>请求级</strong>的，不是连接级的：</p>
+<ul>
+<li>每次 RPC 调用创建新的 <code>Hessian2ObjectOutput</code></li>
+<li>保证无状态，请求可以打到任何机器</li>
+</ul>
+<h3 id="为什么不能跨请求复用">为什么不能跨请求复用？
+</h3><ul>
+<li>网络抖动导致 TCP 断开重连</li>
+<li>负载均衡转发到另一台机器</li>
+<li>新机器不知道&quot;定义 #0&quot;是什么</li>
+</ul>
+<h3 id="感知重启的机制">感知重启的机制
+</h3><ol>
+<li><strong>TCP 连接断开</strong>：Netty 监听 <code>channelInactive</code> 事件</li>
+<li><strong>心跳机制</strong>：默认 60 秒心跳，3 次无响应判定死亡</li>
+<li><strong>注册中心通知</strong>：Nacos 推送下线事件</li>
+</ol>
+<hr>
+<h2 id="proto-生成的-java-代码是干什么的">.proto 生成的 Java 代码是干什么的？
+</h2><h3 id="三件大事">三件大事
+</h3><ol>
+<li><strong>造数据（DTO）</strong>：超级数据传输对象</li>
+<li><strong>转数据（序列化）</strong>：硬编码的位运算逻辑</li>
+<li><strong>传数据（RPC 桩）</strong>：客户端和服务端对接</li>
+</ol>
+<h3 id="消息类代码特点">消息类代码特点
+</h3><p><strong>强制 Builder 模式</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">UserRequest</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">UserRequest</span><span class="p">.</span><span class="na">newBuilder</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">.</span><span class="na">setId</span><span class="p">(</span><span class="n">1001</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">.</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>不可变性：build() 后无法修改，多线程安全</li>
+<li>链式调用：代码流畅</li>
+</ul>
+<p><strong>丰富的访问器</strong>：</p>
+<ul>
+<li><code>getId()</code>, <code>hasAddress()</code>, <code>getRolesList()</code>, <code>getRolesCount()</code></li>
+</ul>
+<h3 id="序列化逻辑硬编码">序列化逻辑（硬编码）
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">writeTo</span><span class="p">(</span><span class="n">Output</span><span class="w"> </span><span class="n">output</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 不需要反射，直接写字节</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">output</span><span class="p">.</span><span class="na">writeRawByte</span><span class="p">(</span><span class="n">0x08</span><span class="p">);</span><span class="w">  </span><span class="c1">// Tag</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">output</span><span class="p">.</span><span class="na">writeRawByte</span><span class="p">(</span><span class="n">0xAC</span><span class="p">);</span><span class="w">  </span><span class="c1">// Value (Varint 编码)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">output</span><span class="p">.</span><span class="na">writeRawByte</span><span class="p">(</span><span class="n">0x02</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>优势</strong>：</p>
+<ul>
+<li>去掉反射，运行时不查找字段</li>
+<li>直接操作字节位，CPU 指令数最少</li>
+<li>自动 Varint 压缩，小数字只占 1 字节</li>
+</ul>
+<h3 id="服务类代码stub">服务类代码（Stub）
+</h3><p><strong>方法描述符</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">MethodDescriptor</span><span class="o">&lt;</span><span class="n">UserRequest</span><span class="p">,</span><span class="w"> </span><span class="n">UserResponse</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GET_USER_METHOD</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">MethodDescriptor</span><span class="p">.</span><span class="na">newBuilder</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">.</span><span class="na">setFullMethodName</span><span class="p">(</span><span class="s">&#34;com.example.UserService/GetUser&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">.</span><span class="na">setRequestMarshaller</span><span class="p">(...)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">.</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>客户端调用</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="n">UserResponse</span><span class="w"> </span><span class="nf">getUser</span><span class="p">(</span><span class="n">UserRequest</span><span class="w"> </span><span class="n">request</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">ClientCall</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">channel</span><span class="p">.</span><span class="na">newCall</span><span class="p">(</span><span class="n">GET_USER_METHOD</span><span class="p">,</span><span class="w"> </span><span class="n">callOptions</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ClientCalls</span><span class="p">.</span><span class="na">blockingUnaryCall</span><span class="p">(</span><span class="n">call</span><span class="p">,</span><span class="w"> </span><span class="n">request</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><hr>
+<h2 id="grpc-的工作流程总结">gRPC 的工作流程总结
+</h2><h3 id="三步走">三步走
+</h3><ol>
+<li>
+<p><strong>定义数据结构</strong>：编写 <code>.proto</code> 文件（语言中立的公约）</p>
+</li>
+<li>
+<p><strong>生成转换代码</strong>：<code>protoc</code> 编译器翻译成各语言代码</p>
+<ul>
+<li>Java → <code>User.java</code> + <code>UserServiceGrpc.java</code></li>
+<li>Go → <code>user.pb.go</code> + <code>user_grpc.pb.go</code></li>
+</ul>
+</li>
+<li>
+<p><strong>调用生成代码</strong>：像调本地方法一样顺滑</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">stub</span><span class="p">.</span><span class="na">getUser</span><span class="p">(</span><span class="n">request</span><span class="p">);</span><span class="w">  </span><span class="c1">// 感觉不到网络存在</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+<h3 id="跨语言示例">跨语言示例
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-protobuf" data-lang="protobuf"><span class="line"><span class="cl"><span class="c1">// 共用一份 .proto
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">message</span> <span class="nc">HelloRequest</span> <span class="p">{</span> <span class="kt">string</span> <span class="n">name</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="p">}</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="kd">service</span> <span class="n">Greeter</span> <span class="p">{</span> <span class="k">rpc</span> <span class="n">SayHello</span> <span class="p">(</span><span class="n">HelloRequest</span><span class="p">)</span> <span class="o">...</span> <span class="p">}</span><span class="err">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>Java 客户端</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">stub</span><span class="p">.</span><span class="na">sayHello</span><span class="p">(</span><span class="n">HelloRequest</span><span class="p">.</span><span class="na">newBuilder</span><span class="p">().</span><span class="na">setName</span><span class="p">(</span><span class="s">&#34;Lucius&#34;</span><span class="p">).</span><span class="na">build</span><span class="p">());</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>Go 服务端</strong>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span><span class="w"> </span><span class="p">(</span><span class="nx">s</span><span class="w"> </span><span class="o">*</span><span class="nx">server</span><span class="p">)</span><span class="w"> </span><span class="nf">SayHello</span><span class="p">(</span><span class="nx">ctx</span><span class="w"> </span><span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span><span class="w"> </span><span class="nx">req</span><span class="w"> </span><span class="o">*</span><span class="nx">pb</span><span class="p">.</span><span class="nx">HelloRequest</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span><span class="w">  </span><span class="c1">// 输出 &#34;Lucius&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="生成代码做的-4-件事">生成代码做的 4 件事
+</h3><ol>
+<li><strong>数据校验与存储</strong>：<code>setId(1)</code> 存入内存字段</li>
+<li><strong>二进制打包</strong>：<code>writeTo()</code> 转换成紧凑字节流</li>
+<li><strong>路由填单</strong>：定义 <code>MethodDescriptor</code> 常量</li>
+<li><strong>交给运输队</strong>：<code>ClientCalls.blockingUnaryCall</code> 交给 Netty/HTTP2</li>
+</ol>
+<p><strong>一句话总结</strong>：根据 Java 对象，利用硬编码逻辑压缩进二进制缓冲区，贴上路由标签，交给 gRPC 核心层通过 HTTP/2 发送。</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2025 LuciusWan
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

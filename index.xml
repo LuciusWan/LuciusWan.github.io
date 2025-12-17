@@ -19873,6 +19873,50 @@ $$
   &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;hr&gt;
+&lt;h2 id=&#34;遇到的问题与解决方式&#34;&gt;遇到的问题与解决方式
+&lt;/h2&gt;&lt;h3 id=&#34;大纲生成&#34;&gt;大纲生成
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;1. 背景 (Situation)&lt;/strong&gt; “这个故事发生在我们的比赛决赛夏令营期间。当时我们有机会面对面和几位行业内的专家评委交流。
+专家们对我们的‘课程大纲自动生成’功能很感兴趣，但在实测后，一位专家犀利地指出了一个问题：&lt;strong&gt;‘你们生成的每一个字我都认识，但感觉跟上传的这个课件关系不大，像是在一本正经地胡说八道。’&lt;/strong&gt; 这就是典型的 &lt;strong&gt;RAG 幻觉&lt;/strong&gt;问题。生成的每一章都看似专业，但其实是大模型用自己的训练数据编的，丢失了用户上传文档的&lt;strong&gt;特异性&lt;/strong&gt;。”&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2. 归因分析 (Analysis)&lt;/strong&gt; “我当时非常焦虑，回去立刻排查。
+当时受限于学生服务器的算力（可能只有几核CPU，没有显卡），我们没法部署重型的 Re-rank（重排序）模型，也没法搭建 Elasticsearch 做混合检索（当时还没想到利用 Redis 的全文检索或是云端知识库）。
+我们只用了最基础的&lt;strong&gt;向量检索（Vector Search）&lt;/strong&gt;。
+问题就出在&lt;strong&gt;切片&lt;/strong&gt;上。把一份逻辑严密的教材切成碎片后，向量检索只能搜到‘关键词相似’的片段，丢失了整本书的&lt;strong&gt;目录结构&lt;/strong&gt;和&lt;strong&gt;章节逻辑&lt;/strong&gt;。大模型拿不到宏观结构，只能瞎编。”&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;3. 解决方案 (Action) —— 专家的建议与落地&lt;/strong&gt; “当时专家给了一个非常巧妙的思路，我们称之为&lt;strong&gt;LLM 导读模式&lt;/strong&gt;（或者叫 Map-Reduce 思想），完全避开了复杂的检索算法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;第一步：全库浏览，提取目录（Map）。&lt;/strong&gt; 对于几十页的文档，我们不再切片，而是让长窗口模型（Long-Context LLM）先快速通读全文，让它只做一件事：&lt;strong&gt;生成一份带页码的详细目录&lt;/strong&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;第二步：让模型自主决策（Agentic Decision）。&lt;/strong&gt; 当需要生成大纲时，我们把这份‘目录’扔给大模型，问它：‘你要写大纲，需要参考哪几部分内容？’
+大模型会根据目录判断：‘我需要第 1-5 页的简介，和第 20-25 页的核心算法。’&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;第三步：精准投喂（Fetch &amp;amp; Generate）。&lt;/strong&gt; 程序根据大模型返回的页码，直接去原始 PDF 里把这几页的&lt;strong&gt;完整文本&lt;/strong&gt;提取出来，原封不动地喂给模型。
+这样，模型看到的是完整的上下文，而不是破碎的片段。”&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;4. 结果 (Result)&lt;/strong&gt; “改用这个方案后，虽然我们没有增加任何硬件成本，但生成效果有了质的飞跃。大纲的每一级标题都能精确对应到文档的具体章节，&lt;strong&gt;幻觉率几乎降到了零&lt;/strong&gt;。这次经历也让我明白，解决 RAG 问题不一定非要靠堆算力，**数据处理的逻辑（Workflow）**往往比模型本身更重要。”&lt;/p&gt;
+&lt;h3 id=&#34;题目生成&#34;&gt;题目生成
+&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;背景与挑战（起头：先说遇到的尴尬）&lt;/strong&gt; “我想讲讲我在做那个 AI 出题项目时遇到的一个的挑战。
+当时项目差不多写完了，离比赛交稿还有一周左右，我们找了自己的高中老师来试用我们的项目。结果老师们的反馈让我们挺意外的。
+他们说：‘你们的 AI 很严谨，生成的题目完全没有科学性错误，也没有歧义，&lt;strong&gt;但是太水了&lt;/strong&gt;。’
+简单说就是，题目太简单，干扰项（错误选项）设计得太假，学生根本不用动脑子，一看就知道哪个是错的，用排除法直接就选对了。这对考察学生能力根本没用。我们当时问他们有没有切换一下难度选项，当时我们设置了3个难度等级，简单，中等，困难，他们切换了一下，结果发现结果没啥变化，还是比较简单”&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2. 归因分析（过渡：我是怎么排查的）&lt;/strong&gt; “我当时就去扒我们的 Prompt 和工作流，发现主要有两个坑：
+第一，&lt;strong&gt;干扰项太随意&lt;/strong&gt;。AI 纯粹是为了凑四个选项，正确答案可能是知识库文档的内容，错误选项就是随便更改了知识库文档的一两个词语，根本没有设计什么‘思维陷阱’，甚至AI会出一些显而易见的错误来。
+第二，&lt;strong&gt;我们给的例子（Example）不好&lt;/strong&gt;。给大模型的参考案例太简单了，三个难度用的是同一套案例，导致AI认为案例就是对应的难度了，AI 就照葫芦画瓢，出的题也简单。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;3. 解决方案（高光：我是怎么修的——重点记这三招）&lt;/strong&gt; “为了解决这个，我主要做了三件事：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;第一，改干扰项的逻辑。&lt;/strong&gt; 我改了 Prompt，中等和困难题目强制要求 AI &lt;strong&gt;‘站在学生的易错点上去出题’&lt;/strong&gt;。比如故意模拟一些计算错误或者逻辑漏洞作为选项。这样学生想做对，就必须真的懂，光靠蒙是不行的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;第二，把‘样题’升级了。&lt;/strong&gt; 我把提示词里的参考案例全换成了那种需要深度思考的应用题，告诉大模型：‘这种有难度的题，才是我想要的’。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;第三，这也是最关键的一步，我加了个AI 质检员&lt;/strong&gt; 先让普通模型出题，然后引入一个更厉害的模型Gemini2.5Pro当‘审核员’，以前的质检节点只是检查题目有没有问题，如果没有问题就去生成下一道或者结束任务了，现在AI会把生成题目的问题放入上下文中，然后让AI根据问题进行重新生成。直到审核通过，才会发给用户。并且还加了个兜底机制，既然普通模型（学生）教了 3 遍还不会，那就让高级模型（Gemini 2.5 Pro，老师）&lt;strong&gt;直接亲自上手改写&lt;/strong&gt;，而不是只给意见了。”&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;4. 结果（收尾：最后效果咋样）&lt;/strong&gt; “改完后，老师们的态度立马变了。他们说现在的题目&lt;strong&gt;有嚼头&lt;/strong&gt;了，能真正考察学生会不会用知识，而不是死记硬背。后来这种&lt;strong&gt;生成-审核-修改&lt;/strong&gt;的闭环模式，也成了我们项目的一个标准做法。”&lt;/p&gt;
 &lt;h2 id=&#34;二核心亮点详细话术融合八股版&#34;&gt;二、核心亮点详细话术（融合八股版）
 &lt;/h2&gt;&lt;h3 id=&#34;亮点一高并发抢课系统redis--lua--rocketmq&#34;&gt;亮点一：高并发抢课系统（Redis + Lua + RocketMQ）
 &lt;/h3&gt;&lt;h4 id=&#34;问题背景&#34;&gt;问题背景

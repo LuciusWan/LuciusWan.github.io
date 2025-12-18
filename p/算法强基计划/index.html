@@ -300,6 +300,10 @@
     <li><a href="#257-二叉树的所有路径---力扣leetcode">257. 二叉树的所有路径 - 力扣（LeetCode）</a></li>
     <li><a href="#404-左叶子之和---力扣leetcode">404. 左叶子之和 - 力扣（LeetCode）</a></li>
     <li><a href="#222-完全二叉树的节点个数---力扣leetcode">222. 完全二叉树的节点个数 - 力扣（LeetCode）</a></li>
+    <li><a href="#654-最大二叉树---力扣leetcode">654. 最大二叉树 - 力扣（LeetCode）</a></li>
+    <li><a href="#617-合并二叉树---力扣leetcode">617. 合并二叉树 - 力扣（LeetCode）</a></li>
+    <li><a href="#700-二叉搜索树中的搜索---力扣leetcode">700. 二叉搜索树中的搜索 - 力扣（LeetCode）</a></li>
+    <li><a href="#98-验证二叉搜索树---力扣leetcode">98. 验证二叉搜索树 - 力扣（LeetCode）</a></li>
   </ol>
 </nav>
         </div>
@@ -360,7 +364,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 12 分钟
+                    阅读时长: 13 分钟
                 </time>
             </div>
         
@@ -2989,6 +2993,200 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">0</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">countNodes</span><span class="p">(</span><span class="n">root</span><span class="p">.</span><span class="na">left</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">countNodes</span><span class="p">(</span><span class="n">root</span><span class="p">.</span><span class="na">right</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="654-最大二叉树---力扣leetcode"><a class="link" href="https://leetcode.cn/problems/maximum-binary-tree/"  target="_blank" rel="noopener"
+    >654. 最大二叉树 - 力扣（LeetCode）</a>
+</h2><p>这道题很像之前学过的快速排序的分治思想</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">Solution</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">TreeNode</span><span class="w"> </span><span class="nf">constructMaximumBinaryTree</span><span class="p">(</span><span class="kt">int</span><span class="o">[]</span><span class="w"> </span><span class="n">nums</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">TreeNode</span><span class="w"> </span><span class="n">root1</span><span class="o">=</span><span class="n">build</span><span class="p">(</span><span class="n">nums</span><span class="p">,</span><span class="n">0</span><span class="p">,</span><span class="n">nums</span><span class="p">.</span><span class="na">length</span><span class="o">-</span><span class="n">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">root1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">TreeNode</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="kt">int</span><span class="o">[]</span><span class="w"> </span><span class="n">nums</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">left</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">right</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">left</span><span class="o">&lt;=</span><span class="n">right</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kt">int</span><span class="o">[]</span><span class="w"> </span><span class="n">pivot</span><span class="o">=</span><span class="n">findMax</span><span class="p">(</span><span class="n">nums</span><span class="p">,</span><span class="n">left</span><span class="p">,</span><span class="n">right</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">TreeNode</span><span class="w"> </span><span class="n">node</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">TreeNode</span><span class="p">(</span><span class="n">pivot</span><span class="o">[</span><span class="n">0</span><span class="o">]</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">TreeNode</span><span class="w"> </span><span class="n">leftNode</span><span class="o">=</span><span class="n">build</span><span class="p">(</span><span class="n">nums</span><span class="p">,</span><span class="n">left</span><span class="p">,</span><span class="n">pivot</span><span class="o">[</span><span class="n">1</span><span class="o">]-</span><span class="n">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">leftNode</span><span class="o">!=</span><span class="kc">null</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">node</span><span class="p">.</span><span class="na">left</span><span class="o">=</span><span class="n">leftNode</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">TreeNode</span><span class="w"> </span><span class="n">rightNode</span><span class="o">=</span><span class="n">build</span><span class="p">(</span><span class="n">nums</span><span class="p">,</span><span class="n">pivot</span><span class="o">[</span><span class="n">1</span><span class="o">]+</span><span class="n">1</span><span class="p">,</span><span class="n">right</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">rightNode</span><span class="o">!=</span><span class="kc">null</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">node</span><span class="p">.</span><span class="na">right</span><span class="o">=</span><span class="n">rightNode</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">node</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="o">[]</span><span class="w"> </span><span class="nf">findMax</span><span class="p">(</span><span class="kt">int</span><span class="o">[]</span><span class="w"> </span><span class="n">nums</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">left</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">right</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">max</span><span class="o">=-</span><span class="n">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="o">=-</span><span class="n">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">left</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">right</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">max</span><span class="o">&lt;</span><span class="n">nums</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">max</span><span class="o">=</span><span class="n">Math</span><span class="p">.</span><span class="na">max</span><span class="p">(</span><span class="n">nums</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">,</span><span class="n">max</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">index</span><span class="o">=</span><span class="n">i</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="o">[]</span><span class="w"> </span><span class="n">arr</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="kt">int</span><span class="o">[</span><span class="n">2</span><span class="o">]</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">arr</span><span class="o">[</span><span class="n">0</span><span class="o">]=</span><span class="n">max</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">arr</span><span class="o">[</span><span class="n">1</span><span class="o">]=</span><span class="n">index</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">arr</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="617-合并二叉树---力扣leetcode"><a class="link" href="https://leetcode.cn/problems/merge-two-binary-trees/description/"  target="_blank" rel="noopener"
+    >617. 合并二叉树 - 力扣（LeetCode）</a>
+</h2><p>这题一开始是是真没思路，逻辑就是先判断节点是否为空，如果都为空就返回，如果都不为空就让两个节点相加，然后分别合并其左右子树</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">Solution</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">TreeNode</span><span class="w"> </span><span class="nf">mergeTrees</span><span class="p">(</span><span class="n">TreeNode</span><span class="w"> </span><span class="n">root1</span><span class="p">,</span><span class="w"> </span><span class="n">TreeNode</span><span class="w"> </span><span class="n">root2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">root1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">root2</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">root2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">root1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">root1</span><span class="p">.</span><span class="na">val</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">root2</span><span class="p">.</span><span class="na">val</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">root1</span><span class="p">.</span><span class="na">left</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mergeTrees</span><span class="p">(</span><span class="n">root1</span><span class="p">.</span><span class="na">left</span><span class="p">,</span><span class="n">root2</span><span class="p">.</span><span class="na">left</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">root1</span><span class="p">.</span><span class="na">right</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mergeTrees</span><span class="p">(</span><span class="n">root1</span><span class="p">.</span><span class="na">right</span><span class="p">,</span><span class="n">root2</span><span class="p">.</span><span class="na">right</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">root1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="700-二叉搜索树中的搜索---力扣leetcode"><a class="link" href="https://leetcode.cn/problems/search-in-a-binary-search-tree/"  target="_blank" rel="noopener"
+    >700. 二叉搜索树中的搜索 - 力扣（LeetCode）</a>
+</h2><p>二叉搜索树的特性是中序遍历的时候是顺序的，左边的节点一定小于右边，所以天然构成了二分查找的条件，比当前节点大就去右边，比当前节点小就去左边，如果为空就说明没有</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">Solution</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">TreeNode</span><span class="w"> </span><span class="nf">searchBST</span><span class="p">(</span><span class="n">TreeNode</span><span class="w"> </span><span class="n">root</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">val</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">root</span><span class="o">==</span><span class="kc">null</span><span class="o">||</span><span class="n">root</span><span class="p">.</span><span class="na">val</span><span class="o">==</span><span class="n">val</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">root</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">root</span><span class="p">.</span><span class="na">val</span><span class="o">&lt;</span><span class="n">val</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">           </span><span class="k">return</span><span class="w"> </span><span class="n">searchBST</span><span class="p">(</span><span class="n">root</span><span class="p">.</span><span class="na">right</span><span class="p">,</span><span class="n">val</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="k">else</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">searchBST</span><span class="p">(</span><span class="n">root</span><span class="p">.</span><span class="na">left</span><span class="p">,</span><span class="n">val</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="98-验证二叉搜索树---力扣leetcode"><a class="link" href="https://leetcode.cn/problems/validate-binary-search-tree/"  target="_blank" rel="noopener"
+    >98. 验证二叉搜索树 - 力扣（LeetCode）</a>
+</h2><p>验证二叉搜索树就利用他中序遍历有序性</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">class</span> <span class="nc">Solution</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">isValidBST</span><span class="p">(</span><span class="n">TreeNode</span><span class="w"> </span><span class="n">root</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">check</span><span class="p">(</span><span class="n">root</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">list</span><span class="p">.</span><span class="na">size</span><span class="p">();</span><span class="n">i</span><span class="o">++</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">list</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">&lt;=</span><span class="n">list</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="n">1</span><span class="p">)){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">list</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">check</span><span class="p">(</span><span class="n">TreeNode</span><span class="w"> </span><span class="n">node</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">node</span><span class="o">==</span><span class="kc">null</span><span class="p">){</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">check</span><span class="p">(</span><span class="n">node</span><span class="p">.</span><span class="na">left</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">list</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">node</span><span class="p">.</span><span class="na">val</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">check</span><span class="p">(</span><span class="n">node</span><span class="p">.</span><span class="na">right</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>

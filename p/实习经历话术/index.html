@@ -261,120 +261,43 @@
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ol>
-    <li><a href="#一实习整体介绍30秒版本">一、实习整体介绍（30秒版本）</a></li>
-    <li><a href="#二八股文融合速查表">二、八股文融合速查表</a></li>
-    <li><a href="#三核心亮点一ai-大模型集成">三、核心亮点一：AI 大模型集成</a>
+    <li><a href="#你是怎么设计你们的技术选型的">你是怎么设计你们的技术选型的</a>
       <ol>
-        <li><a href="#问题背景">问题背景</a></li>
-        <li><a href="#技术方案">技术方案</a></li>
-        <li><a href="#-融合八股策略模式">🎯 融合八股：策略模式</a></li>
-      </ol>
-    </li>
-    <li><a href="#四核心亮点二rag-混合检索">四、核心亮点二：RAG 混合检索</a>
-      <ol>
-        <li><a href="#问题背景-1">问题背景</a></li>
-        <li><a href="#技术方案-1">技术方案</a></li>
-        <li><a href="#效果数据">效果数据</a></li>
-        <li><a href="#-融合八股es-倒排索引">🎯 融合八股：ES 倒排索引</a></li>
-        <li><a href="#-融合八股向量检索">🎯 融合八股：向量检索</a></li>
-        <li><a href="#-融合八股rerank-机制">🎯 融合八股：Rerank 机制</a></li>
-      </ol>
-    </li>
-    <li><a href="#五核心亮点三对话历史查询优化">五、核心亮点三：对话历史查询优化</a>
-      <ol>
-        <li><a href="#问题背景-2">问题背景</a></li>
-        <li><a href="#技术方案-2">技术方案</a></li>
-        <li><a href="#索引设计">索引设计</a></li>
-        <li><a href="#效果数据-1">效果数据</a></li>
-        <li><a href="#-融合八股mysql-深分页问题">🎯 融合八股：MySQL 深分页问题</a></li>
-        <li><a href="#-融合八股游标分页原理">🎯 融合八股：游标分页原理</a></li>
-        <li><a href="#-融合八股复合索引最左前缀">🎯 融合八股：复合索引最左前缀</a></li>
-      </ol>
-    </li>
-    <li><a href="#六核心亮点四接口限流">六、核心亮点四：接口限流</a>
-      <ol>
-        <li><a href="#问题背景-3">问题背景</a></li>
-        <li><a href="#技术方案-3">技术方案</a></li>
-        <li><a href="#-融合八股令牌桶-vs-漏桶">🎯 融合八股：令牌桶 vs 漏桶</a></li>
-        <li><a href="#-融合八股redisson-分布式限流">🎯 融合八股：Redisson 分布式限流</a></li>
-        <li><a href="#-融合八股aop-实现原理">🎯 融合八股：AOP 实现原理</a></li>
-      </ol>
-    </li>
-    <li><a href="#七核心亮点五可观测性建设">七、核心亮点五：可观测性建设</a>
-      <ol>
-        <li><a href="#问题背景-4">问题背景</a></li>
-        <li><a href="#技术方案-4">技术方案</a></li>
-        <li><a href="#-融合八股prometheus-指标类型">🎯 融合八股：Prometheus 指标类型</a></li>
-      </ol>
-    </li>
-    <li><a href="#八口语化面试话术完整版">八、口语化面试话术（完整版）</a>
-      <ol>
-        <li><a href="#话术一rag-混合检索系统">【话术一】RAG 混合检索系统</a>
+        <li>
           <ol>
-            <li><a href="#1-业务背景30秒">1️⃣ 业务背景（30秒）</a></li>
-            <li><a href="#2-技术选型原因1分钟">2️⃣ 技术选型原因（1分钟）</a></li>
-            <li><a href="#3-核心难点实现2分钟">3️⃣ 核心难点实现（2分钟）</a></li>
-            <li><a href="#4-遇到的坑与解决1分钟">4️⃣ 遇到的坑与解决（1分钟）</a></li>
-            <li><a href="#5-未来优化方向30秒">5️⃣ 未来优化方向（30秒）</a></li>
-          </ol>
-        </li>
-        <li><a href="#话术二对话历史分页优化">【话术二】对话历史分页优化</a>
-          <ol>
-            <li><a href="#1-业务背景30秒-1">1️⃣ 业务背景（30秒）</a></li>
-            <li><a href="#2-技术选型原因30秒">2️⃣ 技术选型原因（30秒）</a></li>
-            <li><a href="#3-核心难点实现1分钟">3️⃣ 核心难点实现（1分钟）</a></li>
-            <li><a href="#4-遇到的坑与解决30秒">4️⃣ 遇到的坑与解决（30秒）</a></li>
-            <li><a href="#5-未来优化方向30秒-1">5️⃣ 未来优化方向（30秒）</a></li>
-          </ol>
-        </li>
-        <li><a href="#话术三接口限流设计">【话术三】接口限流设计</a>
-          <ol>
-            <li><a href="#1-业务背景30秒-2">1️⃣ 业务背景（30秒）</a></li>
-            <li><a href="#2-技术选型原因30秒-1">2️⃣ 技术选型原因（30秒）</a></li>
-            <li><a href="#3-核心难点实现1分钟-1">3️⃣ 核心难点实现（1分钟）</a></li>
-            <li><a href="#4-遇到的坑与解决30秒-1">4️⃣ 遇到的坑与解决（30秒）</a></li>
-            <li><a href="#5-未来优化方向30秒-2">5️⃣ 未来优化方向（30秒）</a></li>
+            <li><a href="#第二阶段基建搭建与规范制定-infrastructure--standardization">第二阶段：基建搭建与规范制定 (Infrastructure &amp; Standardization)</a></li>
+            <li><a href="#第三阶段团队分工与协作流-workflow--cicd">第三阶段：团队分工与协作流 (Workflow &amp; CI/CD)</a></li>
           </ol>
         </li>
       </ol>
     </li>
-    <li><a href="#九常见追问及回答">九、常见追问及回答</a>
+    <li><a href="#为什么移动端推荐用-jwt-而不是-session">为什么移动端推荐用 JWT 而不是 Session？</a></li>
+    <li><a href="#开发过程中有遇到需求变更吗怎么处理的">开发过程中有遇到需求变更吗？怎么处理的？</a></li>
+    <li><a href="#你是怎么拆分产品的需求的">你是怎么拆分产品的需求的</a>
       <ol>
-        <li><a href="#q1-为什么选择-elasticsearch-而不是专门的向量数据库">Q1: 为什么选择 ElasticSearch 而不是专门的向量数据库？</a></li>
-        <li><a href="#q2-rerank-模型用的是什么">Q2: Rerank 模型用的是什么？</a></li>
-        <li><a href="#q3-游标分页的缺点是什么">Q3: 游标分页的缺点是什么？</a></li>
-        <li><a href="#q4-限流被触发后怎么处理">Q4: 限流被触发后怎么处理？</a></li>
-        <li><a href="#q5-实习期间最大的收获是什么">Q5: 实习期间最大的收获是什么？</a></li>
+        <li><a href="#理解产品目标划分核心模块">理解产品目标，划分核心模块</a></li>
       </ol>
     </li>
-    <li><a href="#十面试前-checklist">十、面试前 Checklist</a>
+    <li><a href="#你们的部署细节是怎样的">你们的部署细节是怎样的？</a>
       <ol>
-        <li><a href="#必须能脱口而出的">必须能脱口而出的</a></li>
-        <li><a href="#最好能说清楚的">最好能说清楚的</a></li>
-        <li><a href="#加分项">加分项</a></li>
+        <li><a href="#2-具体配置策略">2. 具体配置策略</a>
+          <ol>
+            <li><a href="#-mysql-配置800mb-方案">🐬 MySQL 配置（800MB 方案）</a></li>
+            <li><a href="#-redis-配置256mb-方案">🔴 Redis 配置（256MB 方案）</a></li>
+            <li><a href="#-springboot-配置512mb-方案">☕ SpringBoot 配置（512MB 方案）</a></li>
+          </ol>
+        </li>
+        <li><a href="#3-结果验证">3. 结果验证</a></li>
       </ol>
     </li>
-    <li><a href="#十一实习经历软性问题必问">十一、实习经历软性问题（必问）</a>
+    <li><a href="#有经历过接口评审吗">有经历过接口评审吗？</a>
       <ol>
-        <li><a href="#q1-实习期间加班多吗怎么看待加班">Q1: 实习期间加班多吗？怎么看待加班？</a></li>
-        <li><a href="#q2-你的代码是怎么上线的经历过完整的上线流程吗">Q2: 你的代码是怎么上线的？经历过完整的上线流程吗？</a></li>
-        <li><a href="#q3-和同事mentor-是怎么协作的">Q3: 和同事/mentor 是怎么协作的？</a></li>
-        <li><a href="#q4-遇到过和同事意见不一致的情况吗怎么处理的">Q4: 遇到过和同事意见不一致的情况吗？怎么处理的？</a></li>
-        <li><a href="#q5-实习期间遇到过什么困难怎么解决的">Q5: 实习期间遇到过什么困难？怎么解决的？</a></li>
-        <li><a href="#q6-mentor-对你的评价怎么样">Q6: mentor 对你的评价怎么样？</a></li>
-        <li><a href="#q7-为什么从上一家公司离职实习结束">Q7: 为什么从上一家公司离职/实习结束？</a></li>
-        <li><a href="#q8-实习期间有没有主动做过什么事情">Q8: 实习期间有没有主动做过什么事情？</a></li>
-        <li><a href="#q9-你觉得自己在实习中有什么不足">Q9: 你觉得自己在实习中有什么不足？</a></li>
-        <li><a href="#q10-你对这份工作有什么期望">Q10: 你对这份工作有什么期望？</a></li>
+        <li><a href="#设计阶段技术合同评审-design-review">设计阶段：技术合同评审 (Design Review)</a></li>
+        <li><a href="#开发阶段代码走查-code-review">开发阶段：代码走查 (Code Review)</a></li>
+        <li><a href="#交付阶段业务与验收评审-acceptance-review">交付阶段：业务与验收评审 (Acceptance Review)</a></li>
       </ol>
     </li>
-    <li><a href="#十二软性问题回答技巧">十二、软性问题回答技巧</a>
-      <ol>
-        <li><a href="#回答公式star-法则">回答公式：STAR 法则</a></li>
-        <li><a href="#几个原则">几个原则</a></li>
-        <li><a href="#避免的雷区">避免的雷区</a></li>
-      </ol>
-    </li>
+    <li><a href="#es你们是怎么部署的">ES你们是怎么部署的。</a></li>
   </ol>
 </nav>
         </div>
@@ -435,7 +358,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 21 分钟
+                    阅读时长: 9 分钟
                 </time>
             </div>
         
@@ -451,910 +374,215 @@
     
     
     <h1 id="智识神工实习经历---面试话术指南">智识神工实习经历 - 面试话术指南
-</h1><h2 id="一实习整体介绍30秒版本">一、实习整体介绍（30秒版本）
+</h1><h2 id="你是怎么设计你们的技术选型的">你是怎么设计你们的技术选型的
+</h2><p>拿到项目的那几天，先我先进行技术选型，考虑用户的数量，模型的价格，知识库的选型，前端工程的选型，组内分工，前后端对接方式，代码提交方式等等，我让跟我一起去做后端的同事去调研相关技术，当时我跟后端同事对接出来的结果是前期用户量较少，可以选择先用单体架构，然后先使用<strong>SpringBoot</strong>进行项目快速搭建，这块我们都比较熟悉，然后我花了大概一天的时间大概搭出了个框架，包括了统一结果返回，统一的异常处理，讨论出有移动端的存在的话，使用jwt鉴权比较好，AI应用开发方面我比较熟，这块就交给我了，我当时比较熟练使用<strong>SpringAI</strong>去搭建项目，所以就选择了这套技术栈，后面我对整个后端部分进行了分工，我来开发AI应用，另一个同事开发用户模块，我们都会把代码先push到feature分支，然后自己进行单元测试和接口集成测试，测试通过放入test分支，然后写入接口文档，当时我是把接口文档的编写任务交给了另外一个同事，规定了一套标准，接口信息，请求方法，请求路径，样例请求，请求参数，返回参数，样例返回，注意事项等等，pr给前端，前端同学对接完接口后我们把代码放入main分支。</p>
+<blockquote>
+<p>&ldquo;首先是技术调研。考虑到项目处于 <strong>MVP（最小可行性产品）</strong> 阶段，我们的首要目标是<strong>快速验证业务价值</strong>，同时兼顾成本控制。</p>
+<ul>
+<li>
+<p><strong>架构决策</strong>：虽然微服务很火，但考虑到初期用户量级较小，且团队规模精简，为了避免分布式事务等复杂性带来的开发成本，我拍板决定采用 <strong>SpringBoot 单体架构</strong>。这也符合&rsquo;架构演进&rsquo;的原则，先跑通业务，后期再拆分。</p>
+</li>
+<li>
+<p><strong>核心技术栈</strong>：鉴于业务核心是 AI 对话，而我对 <strong>Spring AI</strong> 生态非常熟悉，它能极大简化 LLM 的接入成本，因此后端定栈为 JDK 17 + SpringBoot 3 + Spring AI。</p>
+</li>
+<li>
+<p><strong>鉴权方案</strong>：考虑到未来有多端适配（移动端/H5）的需求，我选择了无状态的 <strong>JWT + Spring Security</strong> 方案。&rdquo;</p>
+</li>
+</ul>
+</blockquote>
+<h4 id="第二阶段基建搭建与规范制定-infrastructure--standardization">第二阶段：基建搭建与规范制定 (Infrastructure &amp; Standardization)
+</h4><blockquote>
+<p>&ldquo;技术选型确定后，我没有急着写业务代码，而是花了一天时间搭建了<strong>项目脚手架（Scaffolding）</strong>。
+这不仅是建个工程，而是制定了整个后端的<strong>开发规范</strong>：</p>
+<ol>
+<li>
+<p><strong>统一响应结构</strong>：封装了全局的 <code>Result&lt;T&gt;</code> 对象和全局异常处理器 (<code>GlobalExceptionHandler</code>)，确保前后端交互的一致性。</p>
+</li>
+<li>
+<p><strong>标准化配置</strong>：集成了 Swagger/Knife4j 自动生成接口文档，确立了 <strong>&lsquo;API First&rsquo;（接口先行）</strong> 的开发模式。</p>
+</li>
+<li>
+<p><strong>模块划分</strong>：虽然是单体，但我按业务领域划分了清晰的包结构（Package Structure），防止代码耦合，为未来可能的微服务拆分留好口子。&rdquo;</p>
+</li>
+</ol>
+</blockquote>
+<h4 id="第三阶段团队分工与协作流-workflow--cicd">第三阶段：团队分工与协作流 (Workflow &amp; CI/CD)
+</h4><blockquote>
+<p>&ldquo;基建完成后，我对后端开发进行了分工：</p>
+<ul>
+<li>
+<p><strong>职责划分</strong>：我负责攻坚核心的 <strong>AI 应用开发（RAG、SSE、Prompt 工程）</strong>；另一位同事负责用户体系等基础业务模块。</p>
+</li>
+<li>
+<p><strong>Git 工作流</strong>：为了保证代码质量，我制定了一套适合我们小团队的 <strong>Gitflow 规范</strong>：</p>
+<ul>
+<li>
+<p>每人基于 <code>feature</code> 分支开发，本地完成<strong>单元测试</strong>。</p>
+</li>
+<li>
+<p>代码合并前必须进行 <code>Self-Review</code>，推送到 <code>test</code> 分支进行接口集成测试。</p>
+</li>
+<li>
+<p>测试通过并更新接口文档后，通过 PR (Pull Request) 流程合并入 <code>main</code> 分支交付前端。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>这套流程虽然简单，但有效避免了代码冲突，保证了主分支的稳定性。</p>
+</blockquote>
+<h2 id="为什么移动端推荐用-jwt-而不是-session">为什么移动端推荐用 JWT 而不是 Session？
+</h2><ol>
+<li>
+<p><strong>客户端兼容性</strong>：Cookie 是浏览器的机制，原生 App（Android/iOS）对 Cookie 的支持不如浏览器友好，需要大量额外的代码去管理 Cookie 的生命周期；而 JWT 通过 HTTP Header 传输，对任何客户端（包括小程序、IoT 设备）都通用。</p>
+</li>
+<li>
+<p><strong>服务端无状态（核心）</strong>：Session 需要服务端存储状态，在高并发场景下会增加服务器内存或 Redis 的压力。JWT 是<strong>无状态</strong>的，用户信息自包含在 Token 中，服务端只需验签，更易于<strong>水平扩展</strong>（扩充机器）。</p>
+</li>
+</ol>
+<h2 id="开发过程中有遇到需求变更吗怎么处理的">开发过程中有遇到需求变更吗？怎么处理的？
+</h2><p>“有的，印象最深的是<strong>语音对话功能</strong>的变更。</p>
+<p><strong>背景是这样：</strong> 我们的 AI 对话接口原本已经定稿了，只支持文本和图片文件，还有pdf解析。但后来医院那边提出，很多患者打字不方便，强烈要求增加<strong>发送语音</strong>的功能。</p>
+<p><strong>我的处理思路是：</strong> 我没有去重写一套‘语音对话’的独立接口，而是把语音视为一种<strong>预处理</strong>步骤。</p>
+<ol>
+<li>
+<p><strong>接入语音识别模型：</strong> 我调研并接入了qwen3的paraformer-realtime-v2的语音转文字API。</p>
+</li>
+<li>
+<p><strong>增加适配层：</strong> 我在 Controller 层新增了一个处理音频的入口。当接收到音频文件（MultipartFile）时，先调用 语音转文字服务把它<strong>转录成 Text</strong>。</p>
+</li>
+<li>
+<p><strong>逻辑复用：</strong> 拿到转录后的 Text 之后，我直接复用了之前写好的 <code>chat(String text)</code> 核心业务方法。</p>
+</li>
+</ol>
+<p><strong>结果：</strong> 这样相当于给核心逻辑加了一个‘翻译官’，底层的 RAG 检索、对话记忆、SSE 流式响应这些复杂逻辑完全不用动，只花了一天时间就平滑支持了语音功能。”</p>
+<h2 id="你是怎么拆分产品的需求的">你是怎么拆分产品的需求的
+</h2><h3 id="理解产品目标划分核心模块">理解产品目标，划分核心模块
+</h3><blockquote>
+<p>&ldquo;产品给我们的需求是做一个&rsquo;智能心理健康评估与咨询系统&rsquo;。拿到需求后，我并没有急着写代码，之前听别人分享时说过，开发和架构分析设计应该花费相同的时间，一开始设计的系统的时候下功夫了，后面开发起来才不会一直因为一些细节问题频繁打断开发流程，我们经过仔细分析后，先把它拆成了 5 个核心业务模块：&rdquo;</p>
+</blockquote>
+<ul>
+<li>
+<p><strong>用户体系</strong>：患者端 + 医生端，双角色设计。</p>
+</li>
+<li>
+<p><strong>心理量表评估</strong>：标准化量表作答、自动评分与生成报告。</p>
+</li>
+<li>
+<p><strong>AI 智能咨询</strong>：基于大模型的心理对话核心功能。</p>
+</li>
+<li>
+<p><strong>知识库系统</strong>：文档上传、向量化处理、RAG 检索增强。</p>
+</li>
+<li>
+<p><strong>专家对接</strong>：专家信息管理和留言预约功能。</p>
+</li>
+</ul>
+<p>医生端主要负责上传知识库文档，还有管理知识库文档，还有管理心理测评的量纲。</p>
+<p>患者端主要负责的是AI对话机器人，知识库搭建，文件和音频的解析等部分，我比较熟悉AI的开发，所以这块我来做，我的让另外一个同事去做一些用户信息校验，还有答题系统的开发，还有把集成测试的工作交给了他。</p>
+<p>我们设计了一下后面数据库的表结构，还有一些代码细节，比如返回格式，异常处理，接口文档规范等等。</p>
+<h2 id="你们的部署细节是怎样的">你们的部署细节是怎样的？
 </h2><blockquote>
-<p>&ldquo;我在智识神工实习期间，负责<strong>心理医生知识库</strong>项目的后端开发。这是一个 AI 驱动的心理健康服务平台，核心功能是让用户可以和 AI 进行心理咨询对话。</p>
-<p>我主要做了几件事：</p>
+<p>&ldquo;为了保证各个服务在共享资源时互不干扰，我们采用了 <strong>Docker Compose</strong> 进行容器化编排。
+核心策略是：<strong>在 Docker 层面设置&rsquo;硬上限&rsquo;，在应用层面设置&rsquo;软上限&rsquo;，并预留足够的 Buffer（缓冲空间）。</strong>&rdquo;</p>
+</blockquote>
+<h3 id="2-具体配置策略">2. 具体配置策略
+</h3><p>我主要针对 MySQL、Redis 和 SpringBoot 做了精细化的内存划分：</p>
+<h4 id="-mysql-配置800mb-方案">🐬 MySQL 配置（800MB 方案）
+</h4><ul>
+<li>
+<p><strong>Docker 限制（硬限）</strong>：
+我们在 <code>docker-compose.yml</code> 中限制了 MySQL 容器最大内存为 <strong>800MB</strong>。如果超过这个值，容器会被宿主机的 OOM Killer 杀掉，保护整机稳定。</p>
+</li>
+<li>
+<p><strong>内部配置（软限）</strong>：
+我将 InnoDB 的核心参数 <code>innodb_buffer_pool_size</code> 设置为 <strong>500MB</strong>。</p>
+</li>
+<li>
+<p><strong>设计思考</strong>：</p>
+<blockquote>
+<p>&ldquo;为什么留了 300MB 空隙？因为 MySQL 除了 Buffer Pool，每个连接线程（Thread Stack）、排序缓冲（Sort Buffer）以及系统库都需要内存。如果 Buffer Pool 占满 800MB，一来并发请求时容器必挂，二来没有空间给操作系统缓存。500MB 存数据，300MB 留给连接和系统，这是经过计算的安全比例。&rdquo;</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="-redis-配置256mb-方案">🔴 Redis 配置（256MB 方案）
+</h4><ul>
+<li>
+<p><strong>Docker 限制</strong>：
+容器内存限制为 <strong>256MB</strong>。</p>
+</li>
+<li>
+<p><strong>内部配置</strong>：</p>
+<ul>
+<li>
+<p><strong>Max Memory</strong>：在 <code>redis.conf</code> 中设置 <code>maxmemory 200mb</code>。</p>
+</li>
+<li>
+<p><strong>淘汰策略</strong>：配置 <code>maxmemory-policy allkeys-lru</code>。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>设计思考</strong>：</p>
+<blockquote>
+<p>&ldquo;Redis 不是只存数据就行的，它还需要内存来处理客户端缓冲区、AOF 重写缓冲以及内存碎片。所以我**预留了 56MB（约 20%）的 Headroom（头部空间）**给这些后台任务。
+同时，配合 LRU 策略，一旦数据量达到 200MB，自动剔除最近最少用的数据，保证 Redis 永远不会因为数据写满而撑破 Docker 的 256MB 限制导致崩溃。&rdquo;</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="-springboot-配置512mb-方案">☕ SpringBoot 配置（512MB 方案）
+</h4><ul>
+<li>
+<p><strong>JVM 参数</strong>：
+设置 <code>-Xms512m -Xmx512m</code>。</p>
+</li>
+<li>
+<p><strong>设计思考</strong>：</p>
+<blockquote>
+<p>&ldquo;我们将初始堆（Xms）和最大堆（Xmx）设置为相等。
+这样做有两个好处：第一，避免 JVM 在运行时动态调整堆大小带来的性能抖动；第二，明确告知 JVM 就用这么多，防止它贪婪申请内存导致容器 OOM。
+配合 Docker 容器大约 600MB-700MB 的限制（堆外内存+MetaSpace），对于我们目前的测试量级，服务运行非常稳定。&rdquo;</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="3-结果验证">3. 结果验证
+</h3><blockquote>
+<p>&ldquo;通过这套<strong>内外结合</strong>的配置，在目前的测试环境下，我们从未出现过服务因为 OOM 被 Docker 强杀的情况，资源利用率也控制在非常合理的范围内。&rdquo;</p>
+</blockquote>
+<h2 id="有经历过接口评审吗">有经历过接口评审吗？
+</h2><h3 id="设计阶段技术合同评审-design-review">设计阶段：技术合同评审 (Design Review)
+</h3><p>这是你写代码之前的阶段。如果你当时和队友讨论过“接口返回什么格式”、“Redis 存什么数据”，其实就已经在做评审了。</p>
+<ul>
+<li>
+<p><strong>关注点：</strong> 接口路径（URL）、请求参数（Input）、返回结构（Output）。</p>
+</li>
+<li>
+<p><strong>你的情况：</strong> 你确定了用 <code>List</code> 结构存 Redis，用 <code>max_tokens</code> 限制长度等，这些都属于<strong>技术方案评审</strong>。</p>
+</li>
+</ul>
+<h3 id="开发阶段代码走查-code-review">开发阶段：代码走查 (Code Review)
+</h3><p>这是在你把代码推送到服务器之前的自查或互查。</p>
+<ul>
+<li>
+<p><strong>关注点：</strong> 内存分配（<code>-Xms</code> / <code>-Xmx</code>）、数据库连接是否关闭、SQL 是否有性能问题。</p>
+</li>
+<li>
+<p><strong>你的情况：</strong> 比如你考虑给 MySQL 分配 800MB 内存，给 Redis 限制 256MB，这就是在进行<strong>资源配额评审</strong>。</p>
+</li>
+</ul>
+<h3 id="交付阶段业务与验收评审-acceptance-review">交付阶段：业务与验收评审 (Acceptance Review)
+</h3><p>当时医院的人看到我们生成的结果，发现了问题，我们输出的内容都没有问题，AI 返回的内容过于‘冰冷’且带有‘表格’，不符合患者的心理预期。我们生成的内容甚至直接告诉患者你大概得的是什么病，这是不好的，我们在这个对话中主要做的还是陪伴患者，给患者做心理疏导，最后医生可以通过总结患者对话来总结出患者到底是什么问题，后续进行人工介入。</p>
+<h2 id="es你们是怎么部署的">ES你们是怎么部署的。
+</h2><p>是的，ES 确实非常吃内存。如果为了我们这个新项目单独部署一套 ES，起步就要占用 4G+ 内存，在我们的共享服务器上不太现实，维护成本也高。</p>
+<p>也就是在这个时候，我了解到公司内部（或组内）<strong>已经有一套正在运行的 ES 集群</strong>（可能是给日志系统或者旧搜索业务用的）。</p>
+<p>所以我采取了<strong>逻辑隔离，物理共享</strong>的策略：</p>
 <ol>
-<li><strong>AI 大模型集成</strong>：用 Spring AI 封装了通义、Ollama 等多个大模型的统一调用接口</li>
-<li><strong>RAG 混合检索</strong>：基于 ElasticSearch 实现了语义+关键词的混合检索，召回率提升 40%</li>
-<li><strong>对话历史优化</strong>：用时间游标分页解决了深分页性能问题，百万级数据查询从 2.1 秒降到 0.7 秒</li>
-<li><strong>接口限流</strong>：用 Redisson + AOP 实现了令牌桶限流，保护 AI 接口</li>
+<li>
+<p><strong>复用基础设施</strong>：直接连接现有的 ES 集群，省去了部署和运维成本。</p>
+</li>
+<li>
+<p><strong>索引隔离 (Index Isolation)</strong>：我没有把数据混在一起，而是为我们的项目单独建立了专属的索引，命名为 <code>psy_chat_vector_index</code>。</p>
+</li>
 </ol>
-<p>这段实习让我对 <strong>RAG 系统</strong>、<strong>大模型应用开发</strong>、<strong>性能优化</strong> 有了深入的实践经验。&rdquo;</p>
-</blockquote>
-<hr>
-<h2 id="二八股文融合速查表">二、八股文融合速查表
-</h2><div class="table-wrapper"><table>
-  <thead>
-      <tr>
-          <th>八股知识点</th>
-          <th>项目中的应用场景</th>
-          <th>引出话术</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td><strong>ElasticSearch 原理</strong></td>
-          <td>RAG 混合检索</td>
-          <td>&ldquo;ES 的倒排索引原理是&hellip;&rdquo;</td>
-      </tr>
-      <tr>
-          <td><strong>向量检索</strong></td>
-          <td>语义匹配</td>
-          <td>&ldquo;向量相似度计算用的是余弦相似度&hellip;&rdquo;</td>
-      </tr>
-      <tr>
-          <td><strong>MySQL 深分页</strong></td>
-          <td>对话历史查询</td>
-          <td>&ldquo;深分页问题的本质是&hellip;&rdquo;</td>
-      </tr>
-      <tr>
-          <td><strong>游标分页</strong></td>
-          <td>时间游标优化</td>
-          <td>&ldquo;游标分页避免了 OFFSET 的问题&hellip;&rdquo;</td>
-      </tr>
-      <tr>
-          <td><strong>复合索引</strong></td>
-          <td>查询优化</td>
-          <td>&ldquo;我建了联合索引&hellip;&rdquo;</td>
-      </tr>
-      <tr>
-          <td><strong>令牌桶算法</strong></td>
-          <td>接口限流</td>
-          <td>&ldquo;令牌桶和漏桶的区别是&hellip;&rdquo;</td>
-      </tr>
-      <tr>
-          <td><strong>AOP 原理</strong></td>
-          <td>限流注解</td>
-          <td>&ldquo;我用 AOP 实现了声明式限流&hellip;&rdquo;</td>
-      </tr>
-      <tr>
-          <td><strong>Redis 分布式</strong></td>
-          <td>Redisson 限流</td>
-          <td>&ldquo;Redisson 的 RRateLimiter 底层是&hellip;&rdquo;</td>
-      </tr>
-      <tr>
-          <td><strong>策略模式</strong></td>
-          <td>多模型切换</td>
-          <td>&ldquo;我用策略模式封装了多个大模型&hellip;&rdquo;</td>
-      </tr>
-      <tr>
-          <td><strong>Rerank 机制</strong></td>
-          <td>检索结果排序</td>
-          <td>&ldquo;Rerank 是二次排序，用交叉编码器&hellip;&rdquo;</td>
-      </tr>
-  </tbody>
-</table></div>
-<hr>
-<h2 id="三核心亮点一ai-大模型集成">三、核心亮点一：AI 大模型集成
-</h2><h3 id="问题背景">问题背景
-</h3><blockquote>
-<p>&ldquo;我们的系统需要对接多个大模型：通义千问用于生产环境，Ollama 本地模型用于开发测试。</p>
-<p><strong>问题是</strong>：每个模型的 API 格式不一样，如果在业务代码里写一堆 if-else，代码会很乱，而且每次加新模型都要改业务代码。&rdquo;</p>
-</blockquote>
-<h3 id="技术方案">技术方案
-</h3><blockquote>
-<p>&ldquo;我用 <strong>Spring AI + 策略模式</strong> 解决：</p>
-<ol>
-<li>定义统一的 <code>AiModelService</code> 接口</li>
-<li>每个模型实现一个策略类</li>
-<li>用 Spring 的 <code>Map&lt;String, Interface&gt;</code> 注入自动收集所有实现</li>
-<li>业务代码只调用统一接口，根据配置切换模型&rdquo;</li>
-</ol>
-</blockquote>
-<h3 id="-融合八股策略模式">🎯 融合八股：策略模式
-</h3><blockquote>
-<p><strong>面试官追问</strong>：为什么用策略模式？</p>
-<p><strong>回答</strong>：&ldquo;策略模式的核心是<strong>把算法封装成独立的类，让它们可以互相替换</strong>。好处是：</p>
-<ol>
-<li><strong>开闭原则</strong>：加新模型只需新增策略类，不改原有代码</li>
-<li><strong>消除 if-else</strong>：不用写条件判断</li>
-<li><strong>易于测试</strong>：每个策略可以独立单元测试&rdquo;</li>
-</ol>
-</blockquote>
-<hr>
-<h2 id="四核心亮点二rag-混合检索">四、核心亮点二：RAG 混合检索
-</h2><h3 id="问题背景-1">问题背景
-</h3><blockquote>
-<p>&ldquo;心理咨询场景有个特点：用户问题很口语化，比如&rsquo;我最近心情不好&rsquo;，但知识库里是专业术语&rsquo;抑郁情绪&rsquo;。</p>
-<p><strong>纯关键词检索</strong>：词不一样，匹配不上 <strong>纯向量检索</strong>：能匹配语义，但可能召回不相关内容</p>
-<p>所以需要<strong>混合检索</strong>，结合两者优点。&rdquo;</p>
-</blockquote>
-<h3 id="技术方案-1">技术方案
-</h3><blockquote>
-<p>&ldquo;我设计了三阶段检索架构：</p>
-<p><strong>第一阶段：混合召回</strong></p>
-<ul>
-<li>关键词检索：ES 的 BM25 算法</li>
-<li>向量检索：ES 的 kNN 搜索</li>
-<li>两路结果合并去重</li>
-</ul>
-<p><strong>第二阶段：Rerank 精排</strong></p>
-<ul>
-<li>用交叉编码器对召回结果重新打分</li>
-</ul>
-<p><strong>第三阶段：Top-K 截断</strong></p>
-<ul>
-<li>取 Top 5 拼接到 Prompt&rdquo;</li>
-</ul>
-</blockquote>
-<h3 id="效果数据">效果数据
-</h3><blockquote>
-<p>&ldquo;- <strong>召回率提升 40%</strong></p>
-<ul>
-<li><strong>NDCG 提升 35%</strong></li>
-<li><strong>响应时间 &lt; 0.2 秒</strong>&rdquo;</li>
-</ul>
-</blockquote>
-<h3 id="-融合八股es-倒排索引">🎯 融合八股：ES 倒排索引
-</h3><blockquote>
-<p><strong>面试官追问</strong>：ES 检索原理是什么？</p>
-<p><strong>回答</strong>：&ldquo;ES 底层用 Lucene，核心是<strong>倒排索引</strong>。</p>
-<p>传统数据库是正排：文档 ID → 内容
-倒排索引反过来：词 → 包含这个词的文档列表</p>
-<p>比如：<code>'抑郁' → [doc1, doc3, doc7]</code></p>
-<p>搜索时取列表的交集或并集，就能快速找到相关文档。</p>
-<p><strong>BM25</strong> 在此基础上计算相关性分数，考虑词频、逆文档频率、文档长度。&rdquo;</p>
-</blockquote>
-<h3 id="-融合八股向量检索">🎯 融合八股：向量检索
-</h3><blockquote>
-<p><strong>面试官追问</strong>：向量检索怎么实现？</p>
-<p><strong>回答</strong>：&ldquo;核心是把文本转成向量，计算相似度。</p>
-<p><strong>Embedding</strong>：用预训练模型把文本转成 1024 维向量 <strong>相似度</strong>：余弦相似度 cos(A,B) = A·B / (|A|*|B|) <strong>ES kNN</strong>：底层用 HNSW 算法，时间复杂度 O(log n)&rdquo;</p>
-</blockquote>
-<h3 id="-融合八股rerank-机制">🎯 融合八股：Rerank 机制
-</h3><blockquote>
-<p><strong>面试官追问</strong>：Rerank 和初次检索的区别？</p>
-<p><strong>回答</strong>：&ldquo;初次检索用<strong>双塔模型</strong>：Query 和 Document 分别编码，快但精度一般。</p>
-<p>Rerank 用<strong>交叉编码器</strong>：Query 和 Document 拼接输入，精度高但慢。</p>
-<p>策略是：双塔快速召回 Top 100，交叉编码器精排出 Top 5。&rdquo;</p>
-</blockquote>
-<hr>
-<h2 id="五核心亮点三对话历史查询优化">五、核心亮点三：对话历史查询优化
-</h2><h3 id="问题背景-2">问题背景
-</h3><blockquote>
-<p>&ldquo;用户的对话历史会越来越多，产品要求支持分页查看历史记录。</p>
-<p><strong>问题</strong>：传统的 <code>LIMIT offset, size</code> 在深分页时性能很差。比如查第 10000 页，MySQL 要先扫描前 10000*20 条记录，再丢弃，非常慢。</p>
-<p>测试数据：百万级数据，查第 5000 页，耗时 2.1 秒，完全不能接受。&rdquo;</p>
-</blockquote>
-<h3 id="技术方案-2">技术方案
-</h3><blockquote>
-<p>&ldquo;我用<strong>时间游标分页</strong>替代传统分页：</p>
-<p><strong>传统分页</strong>：<code>SELECT * FROM chat_history WHERE user_id = ? ORDER BY timestamp DESC LIMIT 100000, 20</code></p>
-<p><strong>游标分页</strong>：<code>SELECT * FROM chat_history WHERE user_id = ? AND timestamp &lt; ? ORDER BY timestamp DESC LIMIT 20</code></p>
-<p>区别是：游标分页不用 OFFSET，直接从上一页最后一条记录的时间戳开始查，走索引，性能稳定。&rdquo;</p>
-</blockquote>
-<h3 id="索引设计">索引设计
-</h3><blockquote>
-<p>&ldquo;我建了复合索引：<code>(user_id, timestamp, session_id)</code></p>
-<p>为什么这个顺序？</p>
-<ol>
-<li><code>user_id</code> 放最前面，因为每次查询都带这个条件</li>
-<li><code>timestamp</code> 放第二，用于游标定位和排序</li>
-<li><code>session_id</code> 放最后，用于覆盖索引，避免回表&rdquo;</li>
-</ol>
-</blockquote>
-<h3 id="效果数据-1">效果数据
-</h3><blockquote>
-<p>&ldquo;- 查询性能提升 <strong>3 倍</strong></p>
-<ul>
-<li>百万级数据响应时间从 <strong>2.1 秒降到 0.7 秒</strong></li>
-<li>无论查第几页，性能都稳定&rdquo;</li>
-</ul>
-</blockquote>
-<h3 id="-融合八股mysql-深分页问题">🎯 融合八股：MySQL 深分页问题
-</h3><blockquote>
-<p><strong>面试官追问</strong>：深分页为什么慢？</p>
-<p><strong>回答</strong>：&ldquo;深分页的本质问题是 <strong>OFFSET 需要扫描并丢弃大量数据</strong>。</p>
-<p><code>LIMIT 100000, 20</code> 的执行过程：</p>
-<ol>
-<li>从索引中找到符合条件的记录</li>
-<li>扫描前 100020 条</li>
-<li>丢弃前 100000 条</li>
-<li>返回最后 20 条</li>
-</ol>
-<p>OFFSET 越大，扫描的数据越多，性能越差。这是 MySQL 的机制决定的，无法优化。&rdquo;</p>
-</blockquote>
-<h3 id="-融合八股游标分页原理">🎯 融合八股：游标分页原理
-</h3><blockquote>
-<p><strong>面试官追问</strong>：游标分页为什么快？</p>
-<p><strong>回答</strong>：&ldquo;游标分页用 <strong>WHERE 条件替代 OFFSET</strong>。比如上一页最后一条的时间戳是 <code>2024-01-01 12:00:00</code>，下一页查询 <code>WHERE timestamp &lt; '2024-01-01 12:00:00' LIMIT 20</code>。这样 MySQL 直接从索引定位到这个时间点，往前取 20 条，不需要扫描前面的数据。<strong>时间复杂度</strong>：传统分页 O(offset + limit)，游标分页 O(limit)。&rdquo;</p>
-</blockquote>
-<h3 id="-融合八股复合索引最左前缀">🎯 融合八股：复合索引最左前缀
-</h3><blockquote>
-<p><strong>面试官追问</strong>：为什么索引顺序是 (user_id, timestamp, session_id)？</p>
-<p><strong>回答</strong>：&ldquo;遵循<strong>最左前缀原则</strong>。</p>
-<p>这个索引可以支持：</p>
-<ul>
-<li><code>WHERE user_id = ?</code> ✅</li>
-<li><code>WHERE user_id = ? AND timestamp &lt; ?</code> ✅</li>
-<li><code>WHERE user_id = ? AND timestamp &lt; ? ORDER BY timestamp</code> ✅</li>
-</ul>
-<p>但不支持：</p>
-<ul>
-<li><code>WHERE timestamp &lt; ?</code> ❌（没有 user_id）</li>
-<li><code>WHERE session_id = ?</code> ❌（跳过了前两列）</li>
-</ul>
-<p>我的查询条件是 <code>user_id = ? AND timestamp &lt; ?</code>，正好匹配索引前两列，可以走索引。&rdquo;</p>
-</blockquote>
-<hr>
-<h2 id="六核心亮点四接口限流">六、核心亮点四：接口限流
-</h2><h3 id="问题背景-3">问题背景
-</h3><blockquote>
-<p>&ldquo;AI 接口调用大模型，成本很高（按 Token 计费），而且响应慢。如果不限流：</p>
-<ol>
-<li>恶意用户可能刷接口，造成巨额费用</li>
-<li>大量请求可能打垮服务&rdquo;</li>
-</ol>
-</blockquote>
-<h3 id="技术方案-3">技术方案
-</h3><blockquote>
-<p>&ldquo;我用 <strong>Redisson RRateLimiter + Spring AOP</strong> 实现了声明式限流，底层用 Redisson 的 RRateLimiter，基于 Redis 实现分布式限流。&rdquo;</p>
-</blockquote>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@RateLimit</span><span class="p">(</span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;ai:chat&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">limit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">10</span><span class="p">,</span><span class="w"> </span><span class="n">window</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">60</span><span class="p">)</span><span class="w">  </span><span class="c1">// 每分钟10次</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">chat</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">prompt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">aiService</span><span class="p">.</span><span class="na">chat</span><span class="p">(</span><span class="n">prompt</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="-融合八股令牌桶-vs-漏桶">🎯 融合八股：令牌桶 vs 漏桶
-</h3><blockquote>
-<p><strong>面试官追问</strong>：令牌桶和漏桶有什么区别？</p>
-<p><strong>回答</strong>：&ldquo;两者都是限流算法，但特性不同：</p>
-<p><strong>漏桶</strong>：</p>
-<ul>
-<li>请求进入桶中，以固定速率流出</li>
-<li>特点是<strong>平滑流量</strong>，无论请求多快，处理速度恒定</li>
-<li>缺点是无法应对突发流量</li>
-</ul>
-<p><strong>令牌桶</strong>：</p>
-<ul>
-<li>以固定速率往桶里放令牌，请求需要拿到令牌才能执行</li>
-<li>特点是<strong>允许突发</strong>，桶里有令牌就能立即执行</li>
-<li>可以设置桶的容量，控制突发上限</li>
-</ul>
-<p>我选令牌桶是因为 AI 接口允许一定的突发，比如用户连续问几个问题。&rdquo;</p>
-</blockquote>
-<h3 id="-融合八股redisson-分布式限流">🎯 融合八股：Redisson 分布式限流
-</h3><blockquote>
-<p><strong>面试官追问</strong>：为什么用 Redisson 而不是本地限流？</p>
-<p><strong>回答</strong>：&ldquo;因为我们是分布式部署，多个实例。</p>
-<p>本地限流（如 Guava RateLimiter）只能限制单个实例，3 个实例就是 3 倍的限流额度。</p>
-<p>Redisson RRateLimiter 基于 Redis，所有实例共享同一个限流器，能实现全局限流。</p>
-<p>底层原理是用 Redis 的 Lua 脚本实现令牌桶，保证原子性。&rdquo;</p>
-</blockquote>
-<h3 id="-融合八股aop-实现原理">🎯 融合八股：AOP 实现原理
-</h3><blockquote>
-<p><strong>面试官追问</strong>：限流注解是怎么生效的？</p>
-<p><strong>回答</strong>：&ldquo;通过 Spring AOP 实现。</p>
-<ol>
-<li>定义 <code>@RateLimit</code> 注解</li>
-<li>写一个切面类，用 <code>@Around</code> 拦截带注解的方法</li>
-<li>在切面里调用 Redisson 限流器</li>
-<li>限流通过则执行原方法，否则抛异常</li>
-</ol>
-<p>Spring AOP 底层用动态代理：</p>
-<ul>
-<li>如果目标类实现了接口，用 JDK 动态代理</li>
-<li>否则用 CGLIB 生成子类&rdquo;</li>
-</ul>
-</blockquote>
-<hr>
-<h2 id="七核心亮点五可观测性建设">七、核心亮点五：可观测性建设
-</h2><h3 id="问题背景-4">问题背景
-</h3><blockquote>
-<p>&ldquo;AI 应用有个特点：大模型是黑盒，出了问题很难排查。比如用户反馈回答不好，我们需要知道：</p>
-<ul>
-<li>检索到了哪些文档？</li>
-<li>Prompt 是什么？</li>
-<li>大模型返回了什么？</li>
-<li>Token 消耗了多少？&rdquo;</li>
-</ul>
-</blockquote>
-<h3 id="技术方案-4">技术方案
-</h3><blockquote>
-<p>&ldquo;我搭建了完整的可观测性体系：</p>
-<p><strong>监控告警</strong>：ARMS（阿里云应用监控）</p>
-<ul>
-<li>接口响应时间、错误率</li>
-<li>JVM 内存、GC 情况</li>
-</ul>
-<p><strong>自定义指标</strong>：Prometheus + Grafana</p>
-<ul>
-<li>大模型 Token 用量</li>
-<li>检索召回率</li>
-<li>限流触发次数</li>
-</ul>
-<p><strong>日志追踪</strong>：</p>
-<ul>
-<li>每次请求记录完整的 RAG 链路</li>
-<li>检索结果、Prompt、响应都落日志&rdquo;</li>
-</ul>
-</blockquote>
-<h3 id="-融合八股prometheus-指标类型">🎯 融合八股：Prometheus 指标类型
-</h3><blockquote>
-<p><strong>面试官追问</strong>：Prometheus 有哪些指标类型？</p>
-<p><strong>回答</strong>：&ldquo;四种：</p>
-<ol>
-<li><strong>Counter</strong>：只增不减的计数器，如请求总数</li>
-<li><strong>Gauge</strong>：可增可减的仪表盘，如当前连接数</li>
-<li><strong>Histogram</strong>：直方图，统计分布，如响应时间分布</li>
-<li><strong>Summary</strong>：摘要，计算分位数，如 P99 响应时间</li>
-</ol>
-<p>我用 Counter 统计 Token 用量，用 Histogram 统计响应时间分布。&rdquo;</p>
-</blockquote>
-<hr>
-<h2 id="八口语化面试话术完整版">八、口语化面试话术（完整版）
-</h2><blockquote>
-<p><strong>公式</strong>：业务背景 → 技术选型原因 → 核心难点实现 → 遇到的坑与解决 → 未来优化方向</p>
-</blockquote>
-<hr>
-<h3 id="话术一rag-混合检索系统">【话术一】RAG 混合检索系统
-</h3><h4 id="1-业务背景30秒">1️⃣ 业务背景（30秒）
-</h4><p>&ldquo;我们做的是一个心理咨询 AI，用户可以和 AI 聊天，AI 会根据专业知识库给出回答。</p>
-<p><strong>核心问题是检索</strong>：用户说&rsquo;我最近心情不好睡不着&rsquo;，但知识库里写的是&rsquo;失眠症状&rsquo;、&lsquo;抑郁情绪&rsquo;这种专业术语。</p>
-<p>如果用传统的关键词搜索，根本搜不到，因为词不一样。但如果纯用向量语义搜索，又可能召回一些不太相关的内容。</p>
-<p>所以我需要设计一个<strong>混合检索</strong>方案，把关键词匹配和语义匹配结合起来。&rdquo;</p>
-<h4 id="2-技术选型原因1分钟">2️⃣ 技术选型原因（1分钟）
-</h4><p>&ldquo;我调研了几种方案：</p>
-<p><strong>方案一：纯 ES 关键词检索</strong></p>
-<ul>
-<li>用 BM25 算法匹配关键词</li>
-<li>问题是：用户口语化表达和专业术语对不上</li>
-</ul>
-<p><strong>方案二：纯向量检索</strong></p>
-<ul>
-<li>用 Embedding 模型把文本转成向量，计算余弦相似度</li>
-<li>问题是：可能召回语义相近但实际不相关的内容</li>
-</ul>
-<p><strong>方案三：混合检索 + Rerank</strong>（我最终选的）</p>
-<ul>
-<li>关键词和向量两路召回，合并结果</li>
-<li>用 Rerank 模型二次排序，提高精度</li>
-</ul>
-<p>选这个方案是因为它<strong>结合了两者的优点</strong>：关键词保证精确匹配，向量保证语义理解，Rerank 保证排序质量。&rdquo;</p>
-<h4 id="3-核心难点实现2分钟">3️⃣ 核心难点实现（2分钟）
-</h4><p>&ldquo;整个检索分三个阶段：</p>
-<p><strong>第一阶段：混合召回</strong></p>
-<p>我在 ES 里同时存了原文和向量。查询时并行执行两个搜索：&rdquo;</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 关键词检索 - BM25</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">List</span><span class="o">&lt;</span><span class="n">Doc</span><span class="o">&gt;</span><span class="w"> </span><span class="n">keywordResults</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">es</span><span class="p">.</span><span class="na">search</span><span class="p">(</span><span class="n">matchQuery</span><span class="p">(</span><span class="s">&#34;content&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">query</span><span class="p">));</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 向量检索 - kNN</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kt">float</span><span class="o">[]</span><span class="w"> </span><span class="n">vector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">embeddingModel</span><span class="p">.</span><span class="na">embed</span><span class="p">(</span><span class="n">query</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">List</span><span class="o">&lt;</span><span class="n">Doc</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vectorResults</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">es</span><span class="p">.</span><span class="na">knnSearch</span><span class="p">(</span><span class="s">&#34;embedding&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">vector</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 合并去重</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Set</span><span class="o">&lt;</span><span class="n">Doc</span><span class="o">&gt;</span><span class="w"> </span><span class="n">merged</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">LinkedHashSet</span><span class="o">&lt;&gt;</span><span class="p">();</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">merged</span><span class="p">.</span><span class="na">addAll</span><span class="p">(</span><span class="n">keywordResults</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">merged</span><span class="p">.</span><span class="na">addAll</span><span class="p">(</span><span class="n">vectorResults</span><span class="p">);</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>&ldquo;<strong>第二阶段：Rerank 精排</strong></p>
-<p>召回的结果可能有几十条，但给大模型的 context 不能太长。我用交叉编码器重新打分：&rdquo;</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// Rerank - 交叉编码器</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">List</span><span class="o">&lt;</span><span class="n">Doc</span><span class="o">&gt;</span><span class="w"> </span><span class="n">reranked</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rerankModel</span><span class="p">.</span><span class="na">rerank</span><span class="p">(</span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="n">merged</span><span class="p">);</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>&ldquo;交叉编码器和双塔模型的区别是：双塔模型分别编码 query 和 doc，交叉编码器把两者拼在一起编码，能捕捉更细粒度的交互，精度更高。</p>
-<p><strong>第三阶段：构建 Prompt</strong></p>
-<p>取 Top 5 的文档，拼接到 Prompt 里：&rdquo;</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span><span class="lnt">5
-</span><span class="lnt">6
-</span><span class="lnt">7
-</span><span class="lnt">8
-</span><span class="lnt">9
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">你是一个专业的心理咨询师。根据以下参考资料回答用户问题：
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">【参考资料】
-</span></span><span class="line"><span class="cl">1. {doc1}
-</span></span><span class="line"><span class="cl">2. {doc2}
-</span></span><span class="line"><span class="cl">...
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">【用户问题】
-</span></span><span class="line"><span class="cl">{query}
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h4 id="4-遇到的坑与解决1分钟">4️⃣ 遇到的坑与解决（1分钟）
-</h4><p>&ldquo;<strong>坑一：向量维度不匹配</strong></p>
-<p>一开始用的 Embedding 模型输出 768 维，后来换了个模型输出 1024 维，ES 里的旧数据就查不了了。</p>
-<p><strong>解决</strong>：重新建索引，写了个迁移脚本，把旧数据重新 Embedding 一遍。以后换模型前先评估维度兼容性。</p>
-<p><strong>坑二：Rerank 太慢</strong></p>
-<p>交叉编码器精度高但是慢，100 条文档 Rerank 要 500ms。</p>
-<p><strong>解决</strong>：控制召回数量，两路各召回 50 条，去重后大概 70-80 条，Rerank 时间控制在 200ms 以内。</p>
-<p><strong>坑三：ES 向量检索版本问题</strong></p>
-<p>ES 7.x 的向量检索是插件形式，不太稳定。</p>
-<p><strong>解决</strong>：升级到 ES 8.x，原生支持 kNN 搜索，性能和稳定性都好很多。&rdquo;</p>
-<h4 id="5-未来优化方向30秒">5️⃣ 未来优化方向（30秒）
-</h4><p>&ldquo;1. <strong>Query 改写</strong>：用大模型把用户口语化的问题改写成专业术语，提高关键词召回率
-2. <strong>多路召回融合</strong>：除了关键词和向量，还可以加知识图谱召回
-3. <strong>在线学习</strong>：根据用户反馈调整 Rerank 模型的权重&rdquo;</p>
-<hr>
-<h3 id="话术二对话历史分页优化">【话术二】对话历史分页优化
-</h3><h4 id="1-业务背景30秒-1">1️⃣ 业务背景（30秒）
-</h4><p>&ldquo;用户和 AI 的对话历史需要持久化，产品要求支持分页查看历史记录。</p>
-<p><strong>问题是</strong>：用户聊得越多，数据越多。有的用户聊了几千条，用传统的 <code>LIMIT offset, size</code> 分页，翻到后面特别慢。</p>
-<p>我测了一下，百万级数据查第 5000 页，要 2.1 秒，用户体验完全不能接受。&rdquo;</p>
-<h4 id="2-技术选型原因30秒">2️⃣ 技术选型原因（30秒）
-</h4><p>&ldquo;深分页慢的根本原因是 <strong>OFFSET 需要扫描并丢弃大量数据</strong>。</p>
-<p><code>LIMIT 100000, 20</code> 实际上要扫描 100020 条，丢弃前 100000 条，只返回最后 20 条。</p>
-<p>解决方案有两种：</p>
-<ol>
-<li><strong>子查询优化</strong>：先查出 ID，再根据 ID 查数据。能优化一些，但还是要扫描</li>
-<li><strong>游标分页</strong>：用 WHERE 条件替代 OFFSET，彻底避免扫描</li>
-</ol>
-<p>我选了游标分页，因为它<strong>无论查第几页，性能都是恒定的</strong>。&rdquo;</p>
-<h4 id="3-核心难点实现1分钟">3️⃣ 核心难点实现（1分钟）
-</h4><p>&ldquo;游标分页的核心思想是：<strong>记住上一页最后一条记录的位置，下一页从这个位置开始查</strong>。</p>
-<p>传统分页：&rdquo;</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">chat_history</span><span class="w"> 
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w"> </span><span class="n">user_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">123</span><span class="w"> 
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">timestamp</span><span class="w"> </span><span class="k">DESC</span><span class="w"> 
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">100000</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>&ldquo;游标分页：&rdquo;</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span><span class="lnt">4
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">chat_history</span><span class="w"> 
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">WHERE</span><span class="w"> </span><span class="n">user_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">123</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">timestamp</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="s1">&#39;2024-01-01 12:00:00&#39;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">timestamp</span><span class="w"> </span><span class="k">DESC</span><span class="w"> 
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">20</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>&ldquo;关键是要建好索引：<code>(user_id, timestamp, session_id)</code></p>
-<p>这个索引可以：</p>
-<ol>
-<li>通过 user_id 快速定位到这个用户的数据</li>
-<li>通过 timestamp 快速定位到游标位置</li>
-<li>session_id 作为覆盖索引，避免回表&rdquo;</li>
-</ol>
-<h4 id="4-遇到的坑与解决30秒">4️⃣ 遇到的坑与解决（30秒）
-</h4><p>&ldquo;<strong>坑：同一时间戳有多条记录</strong></p>
-<p>如果两条记录的 timestamp 完全相同，游标分页可能会漏数据或重复。</p>
-<p><strong>解决</strong>：游标改成 <code>(timestamp, id)</code> 组合。先按 timestamp 排序，timestamp 相同时按 id 排序。查询条件改成：&rdquo;</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">WHERE</span><span class="w"> </span><span class="p">(</span><span class="k">timestamp</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="o">?</span><span class="p">)</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="p">(</span><span class="k">timestamp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="o">?</span><span class="p">)</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><h4 id="5-未来优化方向30秒-1">5️⃣ 未来优化方向（30秒）
-</h4><p>&ldquo;1. <strong>缓存热点数据</strong>：最近的对话记录访问频率高，可以缓存到 Redis
-2. <strong>冷热分离</strong>：超过 30 天的历史数据迁移到归档表，减少主表数据量
-3. <strong>ES 检索</strong>：如果要支持全文搜索历史记录，可以同步到 ES&rdquo;</p>
-<hr>
-<h3 id="话术三接口限流设计">【话术三】接口限流设计
-</h3><h4 id="1-业务背景30秒-2">1️⃣ 业务背景（30秒）
-</h4><p>&ldquo;AI 接口调用大模型，按 Token 计费，成本很高。而且大模型响应慢，如果不限流：</p>
-<ol>
-<li>恶意用户刷接口，一天能刷出几千块的账单</li>
-<li>大量请求堆积，正常用户也用不了&rdquo;</li>
-</ol>
-<h4 id="2-技术选型原因30秒-1">2️⃣ 技术选型原因（30秒）
-</h4><p>&ldquo;限流算法有几种：</p>
-<p><strong>固定窗口</strong>：简单但有临界问题 <strong>滑动窗口</strong>：平滑但内存占用大 <strong>漏桶</strong>：平滑流量但不能应对突发 <strong>令牌桶</strong>：允许突发，适合我的场景</p>
-<p>我选<strong>令牌桶</strong>，因为用户可能连续问几个问题，需要允许一定的突发。</p>
-<p>实现上用 <strong>Redisson RRateLimiter</strong>，因为我们是分布式部署，需要全局限流。&rdquo;</p>
-<h4 id="3-核心难点实现1分钟-1">3️⃣ 核心难点实现（1分钟）
-</h4><p>&ldquo;我用 AOP 实现了声明式限流：&rdquo;</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 自定义注解</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Target</span><span class="p">(</span><span class="n">ElementType</span><span class="p">.</span><span class="na">METHOD</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Retention</span><span class="p">(</span><span class="n">RetentionPolicy</span><span class="p">.</span><span class="na">RUNTIME</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="nd">@interface</span><span class="w"> </span><span class="n">RateLimit</span><span class="w"> </span><span class="p">{</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="nf">key</span><span class="p">();</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">limit</span><span class="p">();</span><span class="w">      </span><span class="c1">// 令牌数</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">window</span><span class="p">();</span><span class="w">     </span><span class="c1">// 时间窗口（秒）</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 切面</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nd">@Around</span><span class="p">(</span><span class="s">&#34;@annotation(rateLimit)&#34;</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="nf">around</span><span class="p">(</span><span class="n">ProceedingJoinPoint</span><span class="w"> </span><span class="n">point</span><span class="p">,</span><span class="w"> </span><span class="n">RateLimit</span><span class="w"> </span><span class="n">rateLimit</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">String</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buildKey</span><span class="p">(</span><span class="n">rateLimit</span><span class="p">);</span><span class="w">  </span><span class="c1">// 拼接用户ID</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">RRateLimiter</span><span class="w"> </span><span class="n">limiter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">redisson</span><span class="p">.</span><span class="na">getRateLimiter</span><span class="p">(</span><span class="n">key</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 初始化限流器（只执行一次）</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">limiter</span><span class="p">.</span><span class="na">trySetRate</span><span class="p">(</span><span class="n">RateType</span><span class="p">.</span><span class="na">OVERALL</span><span class="p">,</span><span class="w"> </span><span class="n">rateLimit</span><span class="p">.</span><span class="na">limit</span><span class="p">(),</span><span class="w"> </span><span class="n">rateLimit</span><span class="p">.</span><span class="na">window</span><span class="p">(),</span><span class="w"> </span><span class="n">RateIntervalUnit</span><span class="p">.</span><span class="na">SECONDS</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// 尝试获取令牌</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">limiter</span><span class="p">.</span><span class="na">tryAcquire</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RateLimitException</span><span class="p">(</span><span class="s">&#34;操作过于频繁&#34;</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">point</span><span class="p">.</span><span class="na">proceed</span><span class="p">();</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><p>&ldquo;使用时只需要加注解：&rdquo;</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@RateLimit</span><span class="p">(</span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;ai:chat&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">limit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">10</span><span class="p">,</span><span class="w"> </span><span class="n">window</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">60</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">chat</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">prompt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span><span class="w">
-</span></span></span></code></pre></td></tr></table>
-</div>
-</div><h4 id="4-遇到的坑与解决30秒-1">4️⃣ 遇到的坑与解决（30秒）
-</h4><p>&ldquo;<strong>坑：限流器初始化重复执行</strong></p>
-<p><code>trySetRate</code> 每次请求都调用，虽然 Redisson 内部做了幂等，但还是有性能开销。</p>
-<p><strong>解决</strong>：用一个 Set 记录已初始化的 key，只有第一次才调用 <code>trySetRate</code>。&rdquo;</p>
-<h4 id="5-未来优化方向30秒-2">5️⃣ 未来优化方向（30秒）
-</h4><p>&ldquo;1. <strong>动态限流</strong>：根据系统负载动态调整限流阈值
-2. <strong>分级限流</strong>：VIP 用户限流阈值更高
-3. <strong>熔断降级</strong>：大模型响应慢时自动降级，返回缓存的通用回答&rdquo;</p>
-<hr>
-<h2 id="九常见追问及回答">九、常见追问及回答
-</h2><h3 id="q1-为什么选择-elasticsearch-而不是专门的向量数据库">Q1: 为什么选择 ElasticSearch 而不是专门的向量数据库？
-</h3><blockquote>
-<p>&ldquo;我对比了几个方案：</p>
-<div class="table-wrapper"><table>
-  <thead>
-      <tr>
-          <th>方案</th>
-          <th>优点</th>
-          <th>缺点</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>ES 8.x</td>
-          <td>同时支持关键词和向量，运维成熟</td>
-          <td>向量检索性能不如专业向量库</td>
-      </tr>
-      <tr>
-          <td>Milvus</td>
-          <td>向量检索性能好</td>
-          <td>不支持关键词检索，需要两套系统</td>
-      </tr>
-      <tr>
-          <td>Pinecone</td>
-          <td>托管服务，省心</td>
-          <td>成本高，数据出境问题</td>
-      </tr>
-  </tbody>
-</table></div>
-<p>我选 ES 是因为：</p>
-<ol>
-<li>我需要混合检索，ES 一套系统搞定</li>
-<li>公司已有 ES 集群，运维成本低</li>
-<li>我的数据量不大（几十万条），ES 性能够用&rdquo;</li>
-</ol>
-</blockquote>
-<h3 id="q2-rerank-模型用的是什么">Q2: Rerank 模型用的是什么？
-</h3><blockquote>
-<p>&ldquo;我用的是 <strong>bge-reranker-base</strong>，是智源开源的中文 Rerank 模型。</p>
-<p>选它的原因：</p>
-<ol>
-<li>中文效果好，专门针对中文优化</li>
-<li>模型不大，推理速度可以接受</li>
-<li>开源免费，可以本地部署&rdquo;</li>
-</ol>
-</blockquote>
-<h3 id="q3-游标分页的缺点是什么">Q3: 游标分页的缺点是什么？
-</h3><blockquote>
-<p>&ldquo;游标分页有两个限制：</p>
-<ol>
-<li><strong>不能跳页</strong>：只能上一页、下一页，不能直接跳到第 100 页</li>
-<li><strong>需要稳定的排序字段</strong>：如果数据会更新，排序可能变化</li>
-</ol>
-<p>对于我的场景，对话历史是按时间顺序的，用户也不需要跳页，所以这两个限制可以接受。&rdquo;</p>
-</blockquote>
-<h3 id="q4-限流被触发后怎么处理">Q4: 限流被触发后怎么处理？
-</h3><blockquote>
-<p>&ldquo;我做了几层处理：</p>
-<ol>
-<li><strong>友好提示</strong>：返回&rsquo;操作过于频繁，请稍后重试&rsquo;，不是冷冰冰的错误码</li>
-<li><strong>重试建议</strong>：告诉用户多久后可以重试</li>
-<li><strong>监控告警</strong>：限流触发次数超过阈值时告警，可能是有人在刷接口</li>
-<li><strong>日志记录</strong>：记录被限流的用户 ID 和 IP，方便排查&rdquo;</li>
-</ol>
-</blockquote>
-<h3 id="q5-实习期间最大的收获是什么">Q5: 实习期间最大的收获是什么？
-</h3><blockquote>
-<p>&ldquo;最大的收获是学会了<strong>从 0 到 1 做一个完整的功能</strong>。</p>
-<p>以前在学校做项目，主要是实现功能。实习之后发现，功能只是一部分，还要考虑：</p>
-<ul>
-<li>性能：能不能扛住线上流量</li>
-<li>成本：AI 接口调用费用怎么控制</li>
-<li>可观测性：出了问题怎么排查</li>
-<li>兼容性：新功能上线会不会影响老功能</li>
-</ul>
-<p>这些是在实际工作中才能学到的。&rdquo;</p>
-</blockquote>
-<hr>
-<h2 id="十面试前-checklist">十、面试前 Checklist
-</h2><h3 id="必须能脱口而出的">必须能脱口而出的
-</h3><ul>
-<li><input disabled="" type="checkbox"> 实习 30 秒介绍</li>
-<li><input disabled="" type="checkbox"> RAG 混合检索的三阶段架构</li>
-<li><input disabled="" type="checkbox"> 深分页为什么慢，游标分页为什么快</li>
-<li><input disabled="" type="checkbox"> 令牌桶和漏桶的区别</li>
-<li><input disabled="" type="checkbox"> 为什么用 Redisson 而不是本地限流</li>
-<li><input disabled="" type="checkbox"> 召回率提升 40%、NDCG 提升 35% 这些数据</li>
-</ul>
-<h3 id="最好能说清楚的">最好能说清楚的
-</h3><ul>
-<li><input disabled="" type="checkbox"> ES 倒排索引原理</li>
-<li><input disabled="" type="checkbox"> BM25 算法</li>
-<li><input disabled="" type="checkbox"> 向量检索和余弦相似度</li>
-<li><input disabled="" type="checkbox"> Rerank 交叉编码器 vs 双塔模型</li>
-<li><input disabled="" type="checkbox"> MySQL 复合索引最左前缀原则</li>
-<li><input disabled="" type="checkbox"> AOP 动态代理原理</li>
-</ul>
-<h3 id="加分项">加分项
-</h3><ul>
-<li><input disabled="" type="checkbox"> 遇到的坑和解决方案</li>
-<li><input disabled="" type="checkbox"> 未来优化方向</li>
-<li><input disabled="" type="checkbox"> 技术选型的对比和权衡</li>
-<li><input disabled="" type="checkbox"> 可观测性建设的思路</li>
-</ul>
-<hr>
-<h2 id="十一实习经历软性问题必问">十一、实习经历软性问题（必问）
-</h2><blockquote>
-<p>这部分问题考察的不是技术，而是你的<strong>工作态度、团队协作、抗压能力</strong>。即使实际经历不多，也要准备好合理的回答。</p>
-</blockquote>
-<hr>
-<h3 id="q1-实习期间加班多吗怎么看待加班">Q1: 实习期间加班多吗？怎么看待加班？
-</h3><p><strong>参考回答</strong>：</p>
-<p>&ldquo;实习期间加班不算特别多，但也有过几次。</p>
-<p><strong>印象比较深的一次</strong>是 RAG 检索功能要上线前，发现召回率不达标，我主动留下来和 mentor 一起排查问题。最后发现是 Embedding 模型的版本问题，换了模型后效果好了很多。那次大概加班到晚上 10 点多。</p>
-<p><strong>我对加班的看法</strong>是：</p>
-<ul>
-<li>如果是因为项目紧急、技术攻关，我觉得是可以接受的，毕竟这也是学习和成长的机会</li>
-<li>但如果是因为效率低或者流程问题导致的常态化加班，我觉得应该反思和优化</li>
-<li>我会尽量在工作时间内高效完成任务，减少不必要的加班&rdquo;</li>
-</ul>
-<hr>
-<h3 id="q2-你的代码是怎么上线的经历过完整的上线流程吗">Q2: 你的代码是怎么上线的？经历过完整的上线流程吗？
-</h3><p><strong>参考回答</strong>：</p>
-<p>&ldquo;经历过，我们的上线流程大概是这样的：</p>
-<p><strong>1. 开发阶段</strong></p>
-<ul>
-<li>在本地开发，用 Ollama 本地模型测试</li>
-<li>写完后提交到 Git，发起 Merge Request</li>
-</ul>
-<p><strong>2. Code Review</strong></p>
-<ul>
-<li>mentor 会 review 我的代码，提出修改意见</li>
-<li>我印象比较深的是，mentor 指出我的一个 SQL 没有走索引，让我加了复合索引</li>
-</ul>
-<p><strong>3. 测试环境</strong></p>
-<ul>
-<li>代码合并到 develop 分支后，自动部署到测试环境</li>
-<li>测试同学会做功能测试，我也会自测</li>
-</ul>
-<p><strong>4. 预发布环境</strong></p>
-<ul>
-<li>测试通过后，部署到预发布环境</li>
-<li>预发布环境连的是生产数据库的从库，可以验证真实数据</li>
-</ul>
-<p><strong>5. 生产发布</strong></p>
-<ul>
-<li>一般是晚上低峰期发布</li>
-<li>我参与过一次发布，主要是在旁边看 mentor 操作，学习发布流程</li>
-<li>发布后会观察监控，确认没有异常</li>
-</ul>
-<p><strong>我学到的是</strong>：上线不只是把代码部署上去，还要考虑灰度发布、回滚方案、监控告警这些。&rdquo;</p>
-<hr>
-<h3 id="q3-和同事mentor-是怎么协作的">Q3: 和同事/mentor 是怎么协作的？
-</h3><p><strong>参考回答</strong>：</p>
-<p>&ldquo;我们团队大概 5-6 个人，我主要和 mentor 还有另一个后端同事协作比较多。</p>
-<p><strong>日常协作方式</strong>：</p>
-<ul>
-<li>每天早上有个 15 分钟的站会，同步昨天做了什么、今天计划做什么、有没有阻塞</li>
-<li>有问题会先在飞书群里问，复杂的问题会拉个小会讨论</li>
-<li>代码通过 GitLab 的 Merge Request 协作，互相 review</li>
-</ul>
-<p><strong>印象比较深的一次协作</strong>：
-做 RAG 混合检索的时候，需要和算法同学配合。他负责调 Rerank 模型，我负责工程实现。我们一起定义了接口格式，他把模型封装成 HTTP 服务，我这边调用。中间遇到过返回格式不一致的问题，我们一起 debug 解决的。</p>
-<p><strong>我学到的是</strong>：</p>
-<ul>
-<li>提前对齐接口和预期，能减少很多返工</li>
-<li>遇到问题及时沟通，不要自己闷头搞</li>
-<li>文档很重要，接口文档、设计文档都要写清楚&rdquo;</li>
-</ul>
-<hr>
-<h3 id="q4-遇到过和同事意见不一致的情况吗怎么处理的">Q4: 遇到过和同事意见不一致的情况吗？怎么处理的？
-</h3><p><strong>参考回答</strong>：</p>
-<p>&ldquo;有过一次。</p>
-<p><strong>背景</strong>是：我在做对话历史分页的时候，想用游标分页，但 mentor 一开始建议用传统的 LIMIT OFFSET，因为实现简单。</p>
-<p><strong>我的处理方式</strong>：</p>
-<ol>
-<li>我没有直接反驳，而是先写了个测试，用百万级数据测了两种方案的性能</li>
-<li>测试结果显示，深分页时传统方案要 2 秒多，游标分页只要 0.7 秒</li>
-<li>我把测试结果和分析发给 mentor，说明游标分页虽然实现复杂一点，但性能好很多</li>
-<li>mentor 看了数据后同意了我的方案，还夸我做事有理有据</li>
-</ol>
-<p><strong>我学到的是</strong>：</p>
-<ul>
-<li>意见不一致很正常，关键是用数据和事实说话</li>
-<li>不要情绪化，要尊重对方的经验</li>
-<li>最终目标是把事情做好，不是证明谁对谁错&rdquo;</li>
-</ul>
-<hr>
-<h3 id="q5-实习期间遇到过什么困难怎么解决的">Q5: 实习期间遇到过什么困难？怎么解决的？
-</h3><p><strong>参考回答</strong>：</p>
-<p>&ldquo;遇到过几个困难：</p>
-<p><strong>技术上的困难</strong>：
-刚开始做 RAG 的时候，对向量检索完全不懂，不知道 Embedding 是什么，kNN 是什么。</p>
-<p><strong>我的解决方式</strong>：</p>
-<ol>
-<li>先看了几篇入门文章，了解基本概念</li>
-<li>然后看 ES 官方文档，学习怎么用 ES 做向量检索</li>
-<li>不懂的地方问 mentor，他给我推荐了几篇论文</li>
-<li>最后自己写 demo 验证，边做边学</li>
-</ol>
-<p><strong>工作节奏上的困难</strong>：
-刚开始不太适应，不知道怎么估时间，经常低估任务复杂度，导致 delay。</p>
-<p><strong>我的解决方式</strong>：</p>
-<ol>
-<li>后来学会了把大任务拆成小任务，每个小任务单独估时间</li>
-<li>估时间的时候会乘以 1.5 的系数，留一些 buffer</li>
-<li>如果发现要 delay，提前和 mentor 沟通，而不是等到 deadline 才说</li>
-</ol>
-<p><strong>我学到的是</strong>：遇到困难很正常，关键是主动学习、主动沟通，不要等着别人来帮你。&rdquo;</p>
-<hr>
-<h3 id="q6-mentor-对你的评价怎么样">Q6: mentor 对你的评价怎么样？
-</h3><p><strong>参考回答</strong>：</p>
-<p>&ldquo;mentor 对我的评价总体是正面的。</p>
-<p><strong>他肯定的地方</strong>：</p>
-<ul>
-<li>学习能力强，新技术上手快</li>
-<li>做事有责任心，交给我的任务都能按时完成</li>
-<li>代码质量不错，review 的时候问题比较少</li>
-</ul>
-<p><strong>他给我的建议</strong>：</p>
-<ul>
-<li>要更主动地沟通，有问题早点说，不要自己闷头搞</li>
-<li>技术深度还要加强，不能只停留在会用的层面，要理解原理</li>
-<li>可以多参与技术分享，锻炼表达能力</li>
-</ul>
-<p><strong>我的改进</strong>：
-后来我确实更主动了，每周会主动找 mentor 聊一次，同步进度和问题。技术上也开始看源码、看论文，不只是看教程。&rdquo;</p>
-<hr>
-<h3 id="q7-为什么从上一家公司离职实习结束">Q7: 为什么从上一家公司离职/实习结束？
-</h3><p><strong>参考回答</strong>：</p>
-<p>&ldquo;主要是因为实习期到了，要回学校准备毕业的事情。</p>
-<p><strong>这段实习我收获很大</strong>：</p>
-<ul>
-<li>技术上，学会了 RAG、大模型应用开发、性能优化</li>
-<li>工作方式上，学会了怎么和团队协作、怎么做 code review、怎么上线</li>
-<li>认知上，知道了企业级开发和学校项目的区别</li>
-</ul>
-<p><strong>如果有机会</strong>，我还是很愿意继续在这个方向深耕的，所以现在在找相关的工作机会。&rdquo;</p>
-<hr>
-<h3 id="q8-实习期间有没有主动做过什么事情">Q8: 实习期间有没有主动做过什么事情？
-</h3><p><strong>参考回答</strong>：</p>
-<p>&ldquo;有的，我主动做了几件事：</p>
-<p><strong>1. 写了技术文档</strong> RAG 检索模块做完后，我主动写了一份技术文档，包括架构设计、接口说明、部署方式。后来新来的实习生就是看我的文档上手的。</p>
-<p><strong>2. 优化了一个慢查询</strong> 有一次我在看监控的时候，发现有个接口响应时间很长，排查后发现是 SQL 没走索引。我主动提了优化方案，加了索引后响应时间从 2 秒降到了 200ms。</p>
-<p><strong>3. 分享了一次技术</strong> 实习快结束的时候，我在组内做了一次技术分享，讲的是游标分页的原理和实践。虽然有点紧张，但反馈还不错。</p>
-<p><strong>我觉得</strong>：主动做事不仅能学到更多，也能让 mentor 和团队看到你的价值。&rdquo;</p>
-<hr>
-<h3 id="q9-你觉得自己在实习中有什么不足">Q9: 你觉得自己在实习中有什么不足？
-</h3><p><strong>参考回答</strong>：</p>
-<p>&ldquo;有几个不足：</p>
-<p><strong>1. 技术深度不够</strong> 很多技术只停留在会用的层面，比如 ES 我会用，但底层的 Lucene 原理不太清楚。后来我开始有意识地看源码和论文。</p>
-<p><strong>2. 沟通不够主动</strong> 刚开始遇到问题会自己闷头搞很久，后来才学会及时问 mentor。现在我会设一个时间限制，比如一个问题卡了 2 小时还没解决，就去问人。</p>
-<p><strong>3. 全局视角不够</strong> 我主要关注自己负责的模块，对整个系统的架构了解不多。后来我会主动看其他模块的代码，了解上下游是怎么配合的。</p>
-<p><strong>我在持续改进</strong>，比如现在会定期复盘，看看哪些地方可以做得更好。&rdquo;</p>
-<hr>
-<h3 id="q10-你对这份工作有什么期望">Q10: 你对这份工作有什么期望？
-</h3><p><strong>参考回答</strong>：</p>
-<p>&ldquo;我的期望主要有三点：</p>
-<p><strong>1. 技术成长</strong> 希望能接触到有挑战的项目，比如高并发、大数据、AI 应用这些方向。我不怕难，怕的是没有成长。</p>
-<p><strong>2. 团队氛围</strong> 希望团队氛围是开放的，大家可以互相学习、互相帮助。我在实习的时候很喜欢和 mentor 讨论技术问题，这种感觉很好。</p>
-<p><strong>3. 业务价值</strong> 希望做的事情是有价值的，能真正帮助到用户。我在实习的时候做的心理咨询 AI，虽然是 toB 的产品，但想到能帮助到有心理困扰的人，还是很有成就感的。</p>
-<p><strong>总的来说</strong>，我希望找一个能让我快速成长、做有价值的事情的平台。&rdquo;</p>
-<hr>
-<h2 id="十二软性问题回答技巧">十二、软性问题回答技巧
-</h2><h3 id="回答公式star-法则">回答公式：STAR 法则
-</h3><ul>
-<li><strong>S（Situation）</strong>：背景是什么</li>
-<li><strong>T（Task）</strong>：你的任务是什么</li>
-<li><strong>A（Action）</strong>：你采取了什么行动</li>
-<li><strong>R（Result）</strong>：结果怎么样</li>
-</ul>
-<h3 id="几个原则">几个原则
-</h3><ol>
-<li><strong>诚实但有技巧</strong>：不用编造经历，但可以把普通经历讲得有亮点</li>
-<li><strong>具体比抽象好</strong>：说&quot;我优化了一个 SQL，响应时间从 2 秒降到 200ms&quot;比&quot;我做了性能优化&quot;好</li>
-<li><strong>展示成长</strong>：即使是不足，也要说你怎么改进的</li>
-<li><strong>正面积极</strong>：不要抱怨前公司、前同事，即使有不好的经历也要正面表达</li>
-</ol>
-<h3 id="避免的雷区">避免的雷区
-</h3><ul>
-<li>❌ &ldquo;我没怎么加班&rdquo; → 显得不够投入</li>
-<li>❌ &ldquo;我就是按 mentor 说的做&rdquo; → 显得没有主动性</li>
-<li>❌ &ldquo;前公司/mentor 不好&rdquo; → 显得情商低</li>
-<li>❌ &ldquo;我没遇到什么困难&rdquo; → 显得经历太浅</li>
-<li>❌ &ldquo;我什么都会&rdquo; → 显得不够谦虚</li>
-</ul>
 
 </section>
 

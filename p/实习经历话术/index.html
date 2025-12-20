@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-cn" dir="ltr">
+<html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="会赢的">
 <title>实习经历话术</title>
@@ -298,6 +298,11 @@
       </ol>
     </li>
     <li><a href="#es你们是怎么部署的">ES你们是怎么部署的。</a></li>
+    <li><a href="#你们是怎么监控大模型-token-用量的">你们是怎么监控大模型 Token 用量的？</a>
+      <ol>
+        <li><a href="#可能的追问">可能的追问</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -358,7 +363,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 9 分钟
+                    阅读时长: 10 分钟
                 </time>
             </div>
         
@@ -583,6 +588,38 @@
 <p><strong>索引隔离 (Index Isolation)</strong>：我没有把数据混在一起，而是为我们的项目单独建立了专属的索引，命名为 <code>psy_chat_vector_index</code>。</p>
 </li>
 </ol>
+<h2 id="你们是怎么监控大模型-token-用量的">你们是怎么监控大模型 Token 用量的？
+</h2><p>我们接入的是阿里云通义千问模型，Token 是按量计费的。测试阶段遇到了几个痛点：不知道每天消耗多少 Token，测试完才发现账单超预期；简单说就是：<strong>看不见、算不清、管不住</strong>。</p>
+<p>我对比了几个方案，自己写日志分析太简单但不实时，ELK 功能强但太重运维成本高，云厂商监控开箱即用但贵且和厂商绑定。最终选了 <strong>Prometheus + Grafana</strong>，原因是 Spring Boot Actuator + Micrometer 原生支持，几行配置就能暴露指标；Prometheus 专为时序指标设计，查询性能好；Grafana 图表丰富还能配置告警；而且这是云原生领域的事实标准，学习成本低。</p>
+<blockquote>
+<p>&ldquo;具体实现分三步：</p>
+<p><strong>第一步：埋点采集</strong></p>
+<ul>
+<li>利用 Spring AI 的 <code>ObservationHandler</code> 机制，在每次 AI 调用完成后采集指标</li>
+<li>自定义了核心指标：Token 用量（输入/输出）、请求耗时、并发数、费用估算、错误率</li>
+<li>我们的 RAG 系统涉及三类模型，我按模型类型打标签分别统计：<strong>Chat 模型</strong>（对话生成，单价最高）、<strong>Embedding 模型</strong>（向量化，调用频次最高）、<strong>Rerank 模型</strong>（重排序，按次计费）</li>
+</ul>
+<p><strong>第二步：存储展示</strong></p>
+<ul>
+<li>Prometheus 每 5 秒抓取一次指标，存储时序数据</li>
+<li>Grafana 做可视化 Dashboard，能看到 Token 消耗趋势、响应时间分布、成本曲线</li>
+</ul>
+<p><strong>第三步：告警通知</strong></p>
+<ul>
+<li>配置 Alertmanager，Token 超过阈值自动发邮件</li>
+<li>用时间窗口告警，比如 <code>increase(ai_token_total[1h]) &gt; 3000</code>，监控每小时增量&rdquo;</li>
+</ul>
+</blockquote>
+<p>在测试环境验证下来，这套方案能清晰看到每次测试的 Token 消耗和费用估算，通过响应时间指标也能快速定位是模型慢还是代码问题。</p>
+<h3 id="可能的追问">可能的追问
+</h3><p><strong>Q: RAG 系统里哪个模型消耗最大？</strong></p>
+<blockquote>
+<p>&ldquo;从 Token 数量看，Embedding 模型调用最频繁，因为每次用户提问都要向量化，每次文档入库也要向量化。但从费用看，Chat 模型单价最高，占总成本 60% 以上。Rerank 模型虽然每次调用 Token 不多，但它是按调用次数计费的，也需要单独监控。&rdquo;</p>
+</blockquote>
+<p><strong>Q: Prometheus 和日志系统有什么区别？</strong></p>
+<blockquote>
+<p>&ldquo;Prometheus 是<strong>时序数据库</strong>，存的是数值指标，比如&rsquo;发生了多少次、用了多少量&rsquo;；日志系统存的是文本，记录&rsquo;具体发生了什么&rsquo;。两者互补：指标告诉你&rsquo;有问题&rsquo;，日志告诉你&rsquo;什么问题&rsquo;。&rdquo;</p>
+</blockquote>
 
 </section>
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-cn" dir="ltr">
+<html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="上一个太庞大了，新开一个（">
 <title>面试八股/场景2.0</title>
@@ -2650,14 +2650,14 @@ CPU 把数据从 <strong>Socket 的接收缓冲区（内核内存）</strong> �
 <pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">ObjectMonitor</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">  <span class="p">...</span>
 </span></span><span class="line"><span class="cl">  <span class="kt">void</span> <span class="o">*</span> <span class="k">volatile</span> <span class="n">_owner</span><span class="p">;</span>      <span class="c1">// 指向当前持有锁的线程 (The King)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">volatile</span> <span class="n">jlong</span>  <span class="n">_recursions</span><span class="p">;</span>  <span class="c1">// 锁的重入次数
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">volatile</span> <span class="kt">int</span>    <span class="n">_count</span><span class="p">;</span>       <span class="c1">// 抢锁计数器
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span></span><span class="line"><span class="cl">  <span class="k">volatile</span> <span class="n">jlong</span>  <span class="n">_recursions</span><span class="p">;</span>  <span class="c1">// 锁的重入次数
+</span></span></span><span class="line"><span class="cl">  <span class="k">volatile</span> <span class="kt">int</span>    <span class="n">_count</span><span class="p">;</span>       <span class="c1">// 抢锁计数器
+</span></span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">  <span class="c1">// 核心等待队列
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">ObjectWaiter</span> <span class="o">*</span> <span class="k">volatile</span> <span class="n">_cxq</span><span class="p">;</span>       <span class="c1">// (Contention Queue) 竞争队列，单向链表
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">ObjectWaiter</span> <span class="o">*</span> <span class="k">volatile</span> <span class="n">_EntryList</span><span class="p">;</span> <span class="c1">// 等待队列，双向链表 (阻塞状态的线程)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">ObjectWaiter</span> <span class="o">*</span> <span class="k">volatile</span> <span class="n">_WaitSet</span><span class="p">;</span>   <span class="c1">// 等待集合 (调用wait()后的线程)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">...</span>
+</span></span></span><span class="line"><span class="cl">  <span class="n">ObjectWaiter</span> <span class="o">*</span> <span class="k">volatile</span> <span class="n">_cxq</span><span class="p">;</span>       <span class="c1">// (Contention Queue) 竞争队列，单向链表
+</span></span></span><span class="line"><span class="cl">  <span class="n">ObjectWaiter</span> <span class="o">*</span> <span class="k">volatile</span> <span class="n">_EntryList</span><span class="p">;</span> <span class="c1">// 等待队列，双向链表 (阻塞状态的线程)
+</span></span></span><span class="line"><span class="cl">  <span class="n">ObjectWaiter</span> <span class="o">*</span> <span class="k">volatile</span> <span class="n">_WaitSet</span><span class="p">;</span>   <span class="c1">// 等待集合 (调用wait()后的线程)
+</span></span></span><span class="line"><span class="cl">  <span class="p">...</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
@@ -2839,15 +2839,15 @@ CPU 把数据从 <strong>Socket 的接收缓冲区（内核内存）</strong> �
 <td class="lntd">
 <pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">volatile</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="n">shutdownRequested</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">shutdown</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">shutdown</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">shutdownRequested</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w"> 
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">doWork</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">doWork</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">shutdownRequested</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 执行业务逻辑</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><h4 id="常见场景-2单例模式-double-checked-locking">常见场景 2：单例模式 (Double-Checked Locking)
@@ -2899,7 +2899,7 @@ CPU 把数据从 <strong>Socket 的接收缓冲区（内核内存）</strong> �
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">instance</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><hr>
@@ -3177,10 +3177,10 @@ CPU 把数据从 <strong>Socket 的接收缓冲区（内核内存）</strong> �
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">remove</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">userHolder</span><span class="p">.</span><span class="na">remove</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 业务使用伪代码</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">doBusiness</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 业务使用伪代码</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">doBusiness</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">UserContext</span><span class="p">.</span><span class="na">setUser</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">UserInfo</span><span class="p">(</span><span class="s">&#34;Gemini&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">1</span><span class="p">));</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 执行业务逻辑...</span><span class="w">
@@ -3189,7 +3189,7 @@ CPU 把数据从 <strong>Socket 的接收缓冲区（内核内存）</strong> �
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 5. 必须在 finally 中清除，防止内存泄漏和线程复用导致的数据污染</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">UserContext</span><span class="p">.</span><span class="na">remove</span><span class="p">();</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></td></tr></table>
 </div>
 </div><h3 id="6-父子线程传递-inheritablethreadlocal">6. 父子线程传递 (<code>InheritableThreadLocal</code>)

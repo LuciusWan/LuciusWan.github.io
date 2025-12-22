@@ -733,34 +733,36 @@
 </span><span class="lnt">23
 </span><span class="lnt">24
 </span><span class="lnt">25
+</span><span class="lnt">26
 </span></code></pre></td>
 <td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">flowchart TD
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    A[页面加载] --&gt; B{从localStorage&lt;br/&gt;读取保存的状态}
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    B --&gt;|没有保存的状态| C[正常显示&lt;br/&gt;等待用户发起新对话]
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    B --&gt;|有保存的状态&lt;br/&gt;taskId, lastId, content| D[显示已接收的内容&lt;br/&gt;用户立即看到之前的文字]
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    D --&gt; E[调用 GET /chat/status/taskId&lt;br/&gt;检查任务状态]
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    E --&gt;|404 任务不存在| F[清除localStorage&lt;br/&gt;提示已过期]
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    E --&gt;|completed=true&lt;br/&gt;任务已完成| G[显示完整内容&lt;br/&gt;清除状态]
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    E --&gt;|completed=false&lt;br/&gt;任务进行中| H[自动调用&lt;br/&gt;GET /chat/stream/taskId?lastId=N]
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    H --&gt; I[从lastId+1位置&lt;br/&gt;继续接收数据]
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    I --&gt; J[继续保存状态到localStorage]
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    J --&gt; K{收到completed=true?}
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    K --&gt;|是| L[传输完成&lt;br/&gt;清除localStorage]
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    K --&gt;|否| J
-</span></span></code></pre></td></tr></table>
+<pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">页面加载</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="err">│</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="err">▼</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">从localStorage读取保存的状态</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="err">│</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="err">├──</span><span class="w"> </span><span class="n">没有保存的状态</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="n">正常显示</span><span class="err">，</span><span class="n">等待用户发起新对话</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="err">│</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="err">└──</span><span class="w"> </span><span class="n">有保存的状态</span><span class="err">（</span><span class="n">taskId</span><span class="p">,</span><span class="w"> </span><span class="n">lastId</span><span class="p">,</span><span class="w"> </span><span class="n">content</span><span class="err">）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="err">│</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="err">▼</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">显示已接收的内容</span><span class="err">（</span><span class="n">用户立即看到之前的文字</span><span class="err">）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="err">│</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="err">▼</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">调用</span><span class="w"> </span><span class="n">GET</span><span class="w"> </span><span class="o">/</span><span class="n">chat</span><span class="o">/</span><span class="n">status</span><span class="o">/</span><span class="p">{</span><span class="n">taskId</span><span class="p">}</span><span class="w"> </span><span class="n">检查任务状态</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="err">│</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="err">├──</span><span class="w"> </span><span class="n">任务不存在</span><span class="err">（</span><span class="n">404</span><span class="err">）→</span><span class="w"> </span><span class="n">清除localStorage</span><span class="err">，</span><span class="n">提示已过期</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="err">│</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="err">├──</span><span class="w"> </span><span class="n">任务已完成</span><span class="err">（</span><span class="n">completed</span><span class="o">=</span><span class="kc">true</span><span class="err">）→</span><span class="w"> </span><span class="n">显示完整内容</span><span class="err">，</span><span class="n">清除状态</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="err">│</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="err">└──</span><span class="w"> </span><span class="n">任务进行中</span><span class="err">（</span><span class="n">completed</span><span class="o">=</span><span class="kc">false</span><span class="err">）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="err">│</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="err">▼</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">自动调用</span><span class="w"> </span><span class="n">GET</span><span class="w"> </span><span class="o">/</span><span class="n">chat</span><span class="o">/</span><span class="n">stream</span><span class="o">/</span><span class="p">{</span><span class="n">taskId</span><span class="p">}</span><span class="o">?</span><span class="n">lastId</span><span class="o">=</span><span class="n">N</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="err">│</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="err">▼</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">从lastId</span><span class="o">+</span><span class="n">1位置继续接收数据</span><span class="w">
+</span></span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="你们是怎么监控大模型-token-用量的">你们是怎么监控大模型 Token 用量的？
 </h2><p>我们接入的是阿里云通义千问模型，Token 是按量计费的。测试阶段遇到了几个痛点：不知道每天消耗多少 Token，测试完才发现账单超预期；简单说就是：<strong>看不见、算不清、管不住</strong>。</p>

@@ -298,6 +298,19 @@
       </ol>
     </li>
     <li><a href="#es你们是怎么部署的">ES你们是怎么部署的。</a></li>
+    <li><a href="#讲讲你们这个断点续传的接口实现">讲讲你们这个断点续传的接口实现。</a>
+      <ol>
+        <li><a href="#问能详细说说你是怎么实现的吗">问：能详细说说你是怎么实现的吗？</a></li>
+        <li><a href="#问如果redis挂了怎么办">问：如果Redis挂了怎么办？</a></li>
+        <li><a href="#什么情况下会导致断点续传失败">什么情况下会导致断点续传失败？</a>
+          <ol>
+            <li><a href="#1-正常运行数据不会丢失">1. 正常运行（数据不会丢失）</a></li>
+            <li><a href="#2-异常与边界可能失效">2. 异常与边界（可能失效）</a></li>
+          </ol>
+        </li>
+        <li><a href="#断点续传流程图">断点续传流程图</a></li>
+      </ol>
+    </li>
     <li><a href="#你们是怎么监控大模型-token-用量的">你们是怎么监控大模型 Token 用量的？</a>
       <ol>
         <li><a href="#可能的追问">可能的追问</a></li>
@@ -363,7 +376,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 10 分钟
+                    阅读时长: 13 分钟
                 </time>
             </div>
         
@@ -588,7 +601,168 @@
 <p><strong>索引隔离 (Index Isolation)</strong>：我没有把数据混在一起，而是为我们的项目单独建立了专属的索引，命名为 <code>psy_chat_vector_index</code>。</p>
 </li>
 </ol>
-<h2 id="你们是怎么监控大模型-token-用量的">你们是怎么监控大模型 Token 用量的？
+<h2 id="讲讲你们这个断点续传的接口实现">讲讲你们这个断点续传的接口实现。
+</h2><h3 id="问能详细说说你是怎么实现的吗">问：能详细说说你是怎么实现的吗？
+</h3><p>好的，我从整体架构说起。</p>
+<p><strong>传统方案的问题</strong>是：AI响应直接通过SSE推给客户端，一旦连接断开，数据就丢了。</p>
+<p><strong>我的方案</strong>是把AI响应和客户端推送解耦：</p>
+<ol>
+<li>
+<p>用户发起请求时，后端生成一个唯一的taskId返回给前端</p>
+</li>
+<li>
+<p>后端异步调用AI，把每个响应块按顺序写入Redis List</p>
+</li>
+<li>
+<p>前端用这个taskId建立SSE连接，后端从Redis读取数据推送</p>
+</li>
+<li>
+<p>每个数据块都有一个索引id，前端记录最后收到的id</p>
+</li>
+<li>
+<p>如果连接断开，前端带着taskId和lastId重连，后端从lastId+1的位置继续推送</p>
+</li>
+</ol>
+<p> 这样就实现了断点续传，用户刷新页面也不怕。</p>
+<h3 id="问如果redis挂了怎么办">问：如果Redis挂了怎么办？
+</h3><p>目前是单点Redis，如果挂了会影响服务。生产环境可以：</p>
+<p>用Redis Sentinel或Cluster保证高可用</p>
+<p>加一层本地缓存作为降级方案</p>
+<p>或者直接降级到传统模式，不支持断点续传但基本功能可用</p>
+<h3 id="什么情况下会导致断点续传失败">什么情况下会导致断点续传失败？
+</h3><h4 id="1-正常运行数据不会丢失">1. 正常运行（数据不会丢失）
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>场景</strong></th>
+          <th><strong>状态</strong></th>
+          <th><strong>原因及表现</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>网络闪断</strong></td>
+          <td>✅</td>
+          <td>localStorage 已保存当前状态，网络恢复后重连即可续传。</td>
+      </tr>
+      <tr>
+          <td><strong>用户误刷新页面</strong></td>
+          <td>✅</td>
+          <td>页面加载时自动从 localStorage 读取并恢复进度。</td>
+      </tr>
+      <tr>
+          <td><strong>关闭标签页后重新打开</strong></td>
+          <td>✅</td>
+          <td>localStorage 属于持久化存储，数据依然存在。</td>
+      </tr>
+      <tr>
+          <td><strong>浏览器正常关闭再打开</strong></td>
+          <td>✅</td>
+          <td>只要不清理缓存，数据在物理磁盘上是安全的。</td>
+      </tr>
+  </tbody>
+</table></div>
+<h4 id="2-异常与边界可能失效">2. 异常与边界（可能失效）
+</h4><div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th><strong>场景</strong></th>
+          <th><strong>状态</strong></th>
+          <th><strong>风险点</strong></th>
+          <th><strong>解决方案</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>浏览器崩溃 (Crash)</strong></td>
+          <td>⚠️</td>
+          <td>最后几条指令可能留在内存中，未触发写入磁盘。</td>
+          <td>风险可控。丢失的通常只是崩溃瞬间前极短时间的数据。</td>
+      </tr>
+      <tr>
+          <td><strong>隐私模式 / 无痕浏览</strong></td>
+          <td>❌</td>
+          <td>浏览器关闭后，系统会强制清空 localStorage。</td>
+          <td>在初始化阶段检测存储权限，提示用户切换到正常模式。</td>
+      </tr>
+      <tr>
+          <td><strong>手动清理浏览器缓存</strong></td>
+          <td>❌</td>
+          <td>用户主动清空 Cookie 及网站数据，导致物理删除。</td>
+          <td>属于用户主动行为，通常无需技术处理。</td>
+      </tr>
+      <tr>
+          <td><strong>Redis 数据过期</strong></td>
+          <td>❌</td>
+          <td>后端设定的 TTL（如1小时）到期，导致数据被剔除。</td>
+          <td>延长过期时间，或在过期前提示用户任务即将超时。</td>
+      </tr>
+      <tr>
+          <td><strong>后端/容器重启</strong></td>
+          <td>✅</td>
+          <td>Redis 若开启了 AOF/RDB 持久化，数据不会丢失。</td>
+          <td>确保 Redis 配置了基础的持久化策略。</td>
+      </tr>
+  </tbody>
+</table></div>
+<h3 id="断点续传流程图">断点续传流程图
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">flowchart TD
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    A[页面加载] --&gt; B{从localStorage&lt;br/&gt;读取保存的状态}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    B --&gt;|没有保存的状态| C[正常显示&lt;br/&gt;等待用户发起新对话]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    B --&gt;|有保存的状态&lt;br/&gt;taskId, lastId, content| D[显示已接收的内容&lt;br/&gt;用户立即看到之前的文字]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    D --&gt; E[调用 GET /chat/status/taskId&lt;br/&gt;检查任务状态]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    E --&gt;|404 任务不存在| F[清除localStorage&lt;br/&gt;提示已过期]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    E --&gt;|completed=true&lt;br/&gt;任务已完成| G[显示完整内容&lt;br/&gt;清除状态]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    E --&gt;|completed=false&lt;br/&gt;任务进行中| H[自动调用&lt;br/&gt;GET /chat/stream/taskId?lastId=N]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    H --&gt; I[从lastId+1位置&lt;br/&gt;继续接收数据]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    I --&gt; J[继续保存状态到localStorage]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    J --&gt; K{收到completed=true?}
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    K --&gt;|是| L[传输完成&lt;br/&gt;清除localStorage]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    K --&gt;|否| J
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="你们是怎么监控大模型-token-用量的">你们是怎么监控大模型 Token 用量的？
 </h2><p>我们接入的是阿里云通义千问模型，Token 是按量计费的。测试阶段遇到了几个痛点：不知道每天消耗多少 Token，测试完才发现账单超预期；简单说就是：<strong>看不见、算不清、管不住</strong>。</p>
 <p>我对比了几个方案，自己写日志分析太简单但不实时，ELK 功能强但太重运维成本高，云厂商监控开箱即用但贵且和厂商绑定。最终选了 <strong>Prometheus + Grafana</strong>，原因是 Spring Boot Actuator + Micrometer 原生支持，几行配置就能暴露指标；Prometheus 专为时序指标设计，查询性能好；Grafana 图表丰富还能配置告警；而且这是云原生领域的事实标准，学习成本低。</p>
 <blockquote>

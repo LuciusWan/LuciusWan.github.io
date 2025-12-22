@@ -18585,7 +18585,168 @@ Linux 默认的内存页大小是 &lt;strong&gt;4KB&lt;/strong&gt;。为了提�
 &lt;p&gt;&lt;strong&gt;索引隔离 (Index Isolation)&lt;/strong&gt;：我没有把数据混在一起，而是为我们的项目单独建立了专属的索引，命名为 &lt;code&gt;psy_chat_vector_index&lt;/code&gt;。&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;h2 id=&#34;你们是怎么监控大模型-token-用量的&#34;&gt;你们是怎么监控大模型 Token 用量的？
+&lt;h2 id=&#34;讲讲你们这个断点续传的接口实现&#34;&gt;讲讲你们这个断点续传的接口实现。
+&lt;/h2&gt;&lt;h3 id=&#34;问能详细说说你是怎么实现的吗&#34;&gt;问：能详细说说你是怎么实现的吗？
+&lt;/h3&gt;&lt;p&gt;好的，我从整体架构说起。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;传统方案的问题&lt;/strong&gt;是：AI响应直接通过SSE推给客户端，一旦连接断开，数据就丢了。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;我的方案&lt;/strong&gt;是把AI响应和客户端推送解耦：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;用户发起请求时，后端生成一个唯一的taskId返回给前端&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;后端异步调用AI，把每个响应块按顺序写入Redis List&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;前端用这个taskId建立SSE连接，后端从Redis读取数据推送&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;每个数据块都有一个索引id，前端记录最后收到的id&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;如果连接断开，前端带着taskId和lastId重连，后端从lastId+1的位置继续推送&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt; 这样就实现了断点续传，用户刷新页面也不怕。&lt;/p&gt;
+&lt;h3 id=&#34;问如果redis挂了怎么办&#34;&gt;问：如果Redis挂了怎么办？
+&lt;/h3&gt;&lt;p&gt;目前是单点Redis，如果挂了会影响服务。生产环境可以：&lt;/p&gt;
+&lt;p&gt;用Redis Sentinel或Cluster保证高可用&lt;/p&gt;
+&lt;p&gt;加一层本地缓存作为降级方案&lt;/p&gt;
+&lt;p&gt;或者直接降级到传统模式，不支持断点续传但基本功能可用&lt;/p&gt;
+&lt;h3 id=&#34;什么情况下会导致断点续传失败&#34;&gt;什么情况下会导致断点续传失败？
+&lt;/h3&gt;&lt;h4 id=&#34;1-正常运行数据不会丢失&#34;&gt;1. 正常运行（数据不会丢失）
+&lt;/h4&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;&lt;strong&gt;场景&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;状态&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;原因及表现&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;网络闪断&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;✅&lt;/td&gt;
+          &lt;td&gt;localStorage 已保存当前状态，网络恢复后重连即可续传。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;用户误刷新页面&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;✅&lt;/td&gt;
+          &lt;td&gt;页面加载时自动从 localStorage 读取并恢复进度。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;关闭标签页后重新打开&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;✅&lt;/td&gt;
+          &lt;td&gt;localStorage 属于持久化存储，数据依然存在。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;浏览器正常关闭再打开&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;✅&lt;/td&gt;
+          &lt;td&gt;只要不清理缓存，数据在物理磁盘上是安全的。&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h4 id=&#34;2-异常与边界可能失效&#34;&gt;2. 异常与边界（可能失效）
+&lt;/h4&gt;&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;&lt;strong&gt;场景&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;状态&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;风险点&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;解决方案&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;浏览器崩溃 (Crash)&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;⚠️&lt;/td&gt;
+          &lt;td&gt;最后几条指令可能留在内存中，未触发写入磁盘。&lt;/td&gt;
+          &lt;td&gt;风险可控。丢失的通常只是崩溃瞬间前极短时间的数据。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;隐私模式 / 无痕浏览&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;❌&lt;/td&gt;
+          &lt;td&gt;浏览器关闭后，系统会强制清空 localStorage。&lt;/td&gt;
+          &lt;td&gt;在初始化阶段检测存储权限，提示用户切换到正常模式。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;手动清理浏览器缓存&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;❌&lt;/td&gt;
+          &lt;td&gt;用户主动清空 Cookie 及网站数据，导致物理删除。&lt;/td&gt;
+          &lt;td&gt;属于用户主动行为，通常无需技术处理。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;Redis 数据过期&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;❌&lt;/td&gt;
+          &lt;td&gt;后端设定的 TTL（如1小时）到期，导致数据被剔除。&lt;/td&gt;
+          &lt;td&gt;延长过期时间，或在过期前提示用户任务即将超时。&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;后端/容器重启&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;✅&lt;/td&gt;
+          &lt;td&gt;Redis 若开启了 AOF/RDB 持久化，数据不会丢失。&lt;/td&gt;
+          &lt;td&gt;确保 Redis 配置了基础的持久化策略。&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id=&#34;断点续传流程图&#34;&gt;断点续传流程图
+&lt;/h3&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;flowchart TD
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    A[页面加载] --&amp;gt; B{从localStorage&amp;lt;br/&amp;gt;读取保存的状态}
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    B --&amp;gt;|没有保存的状态| C[正常显示&amp;lt;br/&amp;gt;等待用户发起新对话]
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    B --&amp;gt;|有保存的状态&amp;lt;br/&amp;gt;taskId, lastId, content| D[显示已接收的内容&amp;lt;br/&amp;gt;用户立即看到之前的文字]
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    D --&amp;gt; E[调用 GET /chat/status/taskId&amp;lt;br/&amp;gt;检查任务状态]
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    E --&amp;gt;|404 任务不存在| F[清除localStorage&amp;lt;br/&amp;gt;提示已过期]
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    E --&amp;gt;|completed=true&amp;lt;br/&amp;gt;任务已完成| G[显示完整内容&amp;lt;br/&amp;gt;清除状态]
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    E --&amp;gt;|completed=false&amp;lt;br/&amp;gt;任务进行中| H[自动调用&amp;lt;br/&amp;gt;GET /chat/stream/taskId?lastId=N]
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    H --&amp;gt; I[从lastId+1位置&amp;lt;br/&amp;gt;继续接收数据]
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    I --&amp;gt; J[继续保存状态到localStorage]
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    J --&amp;gt; K{收到completed=true?}
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    K --&amp;gt;|是| L[传输完成&amp;lt;br/&amp;gt;清除localStorage]
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    K --&amp;gt;|否| J
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h2 id=&#34;你们是怎么监控大模型-token-用量的&#34;&gt;你们是怎么监控大模型 Token 用量的？
 &lt;/h2&gt;&lt;p&gt;我们接入的是阿里云通义千问模型，Token 是按量计费的。测试阶段遇到了几个痛点：不知道每天消耗多少 Token，测试完才发现账单超预期；简单说就是：&lt;strong&gt;看不见、算不清、管不住&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;我对比了几个方案，自己写日志分析太简单但不实时，ELK 功能强但太重运维成本高，云厂商监控开箱即用但贵且和厂商绑定。最终选了 &lt;strong&gt;Prometheus + Grafana&lt;/strong&gt;，原因是 Spring Boot Actuator + Micrometer 原生支持，几行配置就能暴露指标；Prometheus 专为时序指标设计，查询性能好；Grafana 图表丰富还能配置告警；而且这是云原生领域的事实标准，学习成本低。&lt;/p&gt;
 &lt;blockquote&gt;

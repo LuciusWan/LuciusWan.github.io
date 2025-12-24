@@ -430,6 +430,13 @@
         <li><a href="#总结-2">总结</a></li>
       </ol>
     </li>
+    <li><a href="#为什么hessian2用别的语言解析非常复杂">为什么Hessian2用别的语言解析非常复杂</a>
+      <ol>
+        <li><a href="#1-它是java-原生类型的直接映射强耦合">1. 它是“Java 原生类型”的直接映射（强耦合）</a></li>
+        <li><a href="#2-类名绑定机制class-name-binding">2. “类名绑定”机制（Class Name Binding）</a></li>
+        <li><a href="#3-生态支持的贫富差距">3. 生态支持的“贫富差距”</a></li>
+      </ol>
+    </li>
   </ol>
 </nav>
         </div>
@@ -486,7 +493,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 30 分钟
+                    阅读时长: 32 分钟
                 </time>
             </div>
         
@@ -2218,6 +2225,76 @@ Linux 默认的内存页大小是 <strong>4KB</strong>。为了提高内存访�
 </li>
 <li>
 <p><strong>永远记住</strong>：在生产环境中，<strong>必须</strong>将 <code>SseEmitter</code> 的发送逻辑剥离到异步线程中执行，严禁在 Controller 主线程中进行长耗时的流式输出。</p>
+</li>
+</ul>
+<h2 id="为什么hessian2用别的语言解析非常复杂">为什么Hessian2用别的语言解析非常复杂
+</h2><h3 id="1-它是java-原生类型的直接映射强耦合">1. 它是“Java 原生类型”的直接映射（强耦合）
+</h3><p>Protobuf 或 JSON 是 <strong>面向数据（Data Oriented）</strong> 的，它们只描述数据长什么样（是一个字符串，还是一个整数）。
+而 Hessian2 是 <strong>面向对象（Object Oriented）</strong> 的，而且特指 <strong>Java 对象</strong>。</p>
+<p><strong>举个最经典的痛点：<code>BigDecimal</code></strong></p>
+<ul>
+<li>
+<p><strong>在 Java 里</strong>：<code>java.math.BigDecimal</code> 是金融计算的标准类型，Hessian2 对它有专门的压缩序列化支持。</p>
+</li>
+<li>
+<p><strong>在 Go/Python/C++ 里</strong>：原生并没有 <code>BigDecimal</code> 这个完全对等的类。</p>
+<ul>
+<li>
+<p>当 Go 接收到 Hessian2 发来的一串二进制，解析器发现标记是“这是一个 BigDecimal”，Go 就懵了：“我该把它转成 <code>float64</code>（会丢精度）还是 <code>string</code>，还是我自己写的一个结构体？”</p>
+</li>
+<li>
+<p>开发者必须在 Go 里面手写一个模拟 Java <code>BigDecimal</code> 行为的结构体，并且要精准对齐 Hessian2 的二进制位操作，否则解析就报错。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-类名绑定机制class-name-binding">2. “类名绑定”机制（Class Name Binding）
+</h3><p>Hessian2 在传输对象时，往往会把 <strong>Java 的完整类名</strong>（Full Class Name）也写进二进制流里。</p>
+<p><strong>场景模拟：</strong></p>
+<ul>
+<li>
+<p><strong>你的 Java 服务</strong> 发送了一个对象：<code>com.lucius.project.user.dto.UserDTO</code>。</p>
+</li>
+<li>
+<p><strong>Python 服务</strong> 收到了这个包。Hessian2 协议告诉它：“这里有一个 <code>com.lucius.project.user.dto.UserDTO</code> 类型的对象，请你还原它。”</p>
+</li>
+<li>
+<p><strong>Python 的反应</strong>：“什么鬼？我只有 <code>class User(object):</code>，我没有 <code>com.lucius...</code> 这种包结构啊！”</p>
+</li>
+</ul>
+<p><strong>后果</strong>：
+在非 Java 语言中，你必须编写复杂的 <strong>映射配置（Mapping）</strong>，告诉解析器：“当你看到 <code>com.lucius...UserDTO</code> 时，请把它映射到我的 <code>user_pb2.User</code> 结构体上。”
+一旦你的 Java 类名改了，或者包路径变了，非 Java 的服务直接反序列化失败。</p>
+<h3 id="3-生态支持的贫富差距">3. 生态支持的“贫富差距”
+</h3><p>这是最现实的问题。</p>
+<ul>
+<li>
+<p><strong>Protobuf / JSON</strong>:</p>
+<ul>
+<li>
+<p>这是**“世界通用语”**（像英语）。</p>
+</li>
+<li>
+<p>Google 官方维护了 C++, Java, Python, Go, Ruby, C# 等所有主流语言的库。保证行为一致，更新及时。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Hessian2</strong>:</p>
+<ul>
+<li>
+<p>这是**“Java 的方言”**。</p>
+</li>
+<li>
+<p><strong>Java</strong>: 官方支持，非常完美。</p>
+</li>
+<li>
+<p><strong>Go</strong>: 有 <code>dubbo-go-hessian2</code>，是阿里和社区为了 Dubbo-Go 硬造出来的，虽然能用，但维护成本高，且对某些复杂泛型支持不如 Java 完美。</p>
+</li>
+<li>
+<p><strong>Python/C++/Node.js</strong>: 基本上<strong>没有</strong>成熟、活跃维护的 Hessian2 库。很多库还停留在 Hessian 1.0 时代，或者已经几年不更新了。</p>
+</li>
+</ul>
 </li>
 </ul>
 
